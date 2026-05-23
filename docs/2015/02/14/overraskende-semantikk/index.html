@@ -11,15 +11,15 @@
     <title>Overraskende semantikk</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,13 +64,13 @@
           <h1>Overraskende semantikk</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 14. februar 2015</small> 
-            <a href="/tags/rebol"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rebol</span></a>
+            <a href="/blog/tags/rebol"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rebol</span></a>
           
-            <a href="/tags/wtf"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> WTF</span></a>
+            <a href="/blog/tags/wtf"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> WTF</span></a>
           </p>
           <p>Mange programmeringsspråk er egentlig ganske like. De har liksom bare litt ulike klær. Vi kaller det <em>syntaks</em>. Når man går fra et språk til et annet må man lære de syntaktiske forskjellene, og så kan man programmere.</p>
 <p>Men av og til støter man på litt større forskjeller. Ting som ser like ut i språk A og språk B kan plutselig ha ulik betydning. Dette kan vi kalle <em>semantiske</em> forskjeller, og de kan ofte være litt mer overraskende. Det tar lengre tid å lære seg semantiske forskjeller, og ikke minst hvordan man <em>utnytter</em> et språks semantiske særegenheter.</p>
-<p>De siste dagene har jeg jobbet litt med <a href="/tags/rebol/">Rebol</a> igjen. Det er et veldig fasinerende språk. Og det skiller seg fra de mere konvensjonelle språkene på en rekke områder - både i forhold til syntaks og semantikk. I dag fikk jeg lyst å vise en konkret forskjell som overrasket meg, og som gjorde at jeg innførte en feil i koden min som det tok laaaang til å debugge.</p>
+<p>De siste dagene har jeg jobbet litt med <a href="/blog/tags/rebol/">Rebol</a> igjen. Det er et veldig fasinerende språk. Og det skiller seg fra de mere konvensjonelle språkene på en rekke områder - både i forhold til syntaks og semantikk. I dag fikk jeg lyst å vise en konkret forskjell som overrasket meg, og som gjorde at jeg innførte en feil i koden min som det tok laaaang til å debugge.</p>
 <p>La oss begynne i et annet språk. Her har du en funksjon i F# - <code>prepend123</code> - som tar i mot en liste med tall og legger på tallene 1, 2 og 3 i starten:</p>
 <pre><code class="hljs">let prepend123 xs <span class="hljs-operator">=</span>
     List.append [<span class="hljs-number">1</span><span class="hljs-comment">; 2; 3] xs  </span></code></pre><p>Hvis jeg nå sier</p>
@@ -128,7 +128,7 @@ c: prepend123 <span class="hljs-selector-attr">[4 5 6]</span></code></pre><p>Hva
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

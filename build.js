@@ -6,6 +6,18 @@ const { Marked } = require('marked');
 const hljs = require('highlight.js');
 const moment = require('moment');
 
+// Parse arguments for URL path prefixing (e.g. --prefix=/blog)
+const args = process.argv.slice(2);
+let pathPrefix = '';
+args.forEach(arg => {
+  if (arg.startsWith('--prefix=')) {
+    pathPrefix = arg.substring(9);
+  }
+});
+if (pathPrefix.endsWith('/') && pathPrefix !== '/') {
+  pathPrefix = pathPrefix.slice(0, -1);
+}
+
 // Set locale to Norwegian Bokmål
 moment.locale('nb');
 
@@ -251,16 +263,31 @@ const renderPage = (page) => {
 };
 
 // URL replacement function
-const cleanUrls = (dir) => {
+const cleanUrls = (dir, prefix) => {
   const files = glob(dir);
   files.forEach(filePath => {
     if (filePath.endsWith('.html') || filePath.endsWith('.json')) {
       let content = fs.readFileSync(filePath, 'utf8');
+      
+      const targetPrefix = prefix ? (prefix.endsWith('/') ? prefix : prefix + '/') : '/';
       content = content
-        .replaceAll('http://blog.kjempekjekt.com/', '/')
-        .replaceAll('http://programmeringsbloggen.no/', '/')
-        .replaceAll('http://blog.kjempekjekt.com', '/')
-        .replaceAll('http://programmeringsbloggen.no', '/');
+        .replaceAll('http://blog.kjempekjekt.com/', targetPrefix)
+        .replaceAll('http://programmeringsbloggen.no/', targetPrefix)
+        .replaceAll('http://blog.kjempekjekt.com', prefix || '/')
+        .replaceAll('http://programmeringsbloggen.no', prefix || '/');
+
+      // Prepend prefix to root-relative paths in HTML/JSON attributes (preventing double-prefixing)
+      if (prefix && prefix !== '/') {
+        const prefixWithoutSlash = prefix.startsWith('/') ? prefix.slice(1) : prefix;
+        const regexDoubleQuotes = new RegExp('(href|src)="\\/((?!' + prefixWithoutSlash + '(?:\\/|$))[^/][^"]*)"', 'g');
+        const regexSingleQuotes = new RegExp('(href|src)=\'\\/((?!' + prefixWithoutSlash + '(?:\\/|$))[^/][^\']*)\'', 'g');
+
+        content = content.replace(regexDoubleQuotes, `$1="${prefix}/$2"`);
+        content = content.replace(regexSingleQuotes, `$1='${prefix}/$2'`);
+        content = content.replaceAll('href="/"', `href="${prefix}/"`);
+        content = content.replaceAll('src="/"', `src="${prefix}/"`);
+      }
+
       fs.writeFileSync(filePath, content);
     }
   });
@@ -502,7 +529,7 @@ const build = () => {
 
   // 12. Clean URLs in docs/ directory
   console.log("Cleaning absolute URLs to relative paths...");
-  cleanUrls('./docs');
+  cleanUrls('./docs', pathPrefix);
 
   console.log("Build completed successfully!");
 };

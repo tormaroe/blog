@@ -11,15 +11,15 @@
     <title>Funksjonell lek med trær i F#</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,13 +64,13 @@
           <h1>Funksjonell lek med trær i F#</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 15. februar 2013</small> 
-            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+            <a href="/blog/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
           
-            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+            <a href="/blog/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
           
-            <a href="/tags/trær"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Trær</span></a>
+            <a href="/blog/tags/trær"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Trær</span></a>
           </p>
-          <p>I forrige post <a href="/2013/02/14/funksjonell-lek-med-lister-i-f/">lekte jeg med med cons-baserte lister</a>. Nå har jeg gått over til tre-strukturer. Som utvikler får man veldig ofte bruk for trær av ett eller annet slag, så dette er noe det kan være greit å øve litt på av og til – og spesielt når man jobber med et nytt programmeringsspråk.</p>
+          <p>I forrige post <a href="/blog/2013/02/14/funksjonell-lek-med-lister-i-f/">lekte jeg med med cons-baserte lister</a>. Nå har jeg gått over til tre-strukturer. Som utvikler får man veldig ofte bruk for trær av ett eller annet slag, så dette er noe det kan være greit å øve litt på av og til – og spesielt når man jobber med et nytt programmeringsspråk.</p>
 <h2>Et node-basert tre</h2>
 <p>Husker du cons-cellen fra forrige bloggpost? I Lisp bruker man rett som det er cons-celler til å lage trær med også. Det jeg skal gjøre nå ligner litt, men jeg skal gjøre det litt enklere.</p>
 <p>Igjen bruker jeg en <em>discriminated union</em> til å definerer en generisk type. Denne gangen kaller jeg den <code>Tree</code>. Tree er en union av to muligheter: Enten er det en <code>Branch</code> (en gren altså), som har en verdi av den generiske typen samt en liste med flere tre-noder. Eller er den et <code>Leaf</code> (et blad), som bare har en verdi.</p>
@@ -184,7 +184,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

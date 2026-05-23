@@ -11,18 +11,19 @@ kjempekjekt.loadSidebar = function() {
       sidebar = $("#sidebar");
 
   if (sidebar.length && sidebar.length > 0) {
-    $.getJSON('/ajax/sidebar.json?' + Date.now(), function(data) {
+    var basePath = window.location.pathname.startsWith('/blog/') ? '/blog' : '';
+    $.getJSON(basePath + '/ajax/sidebar.json?' + Date.now(), function(data) {
 
       items.push(
-        "<div class=\"thumbnail\"><a href=\"/tags/"
+        "<div class=\"thumbnail\"><a href=\"" + basePath + "/tags/"
         + data.featuredTag.slug
-        + "\"><img src=\"/assets/images/bb/" 
+        + "\"><img src=\"" + basePath + "/assets/images/bb/" 
         + data.featuredTag.image 
         + "\"></a><div class=\"caption\"><h4>"
         + data.featuredTag.name
         + "</h4><p>"
         + data.featuredTag.text
-        + "</p><p><a href=\"/tags/"
+        + "</p><p><a href=\"" + basePath + "/tags/"
         + data.featuredTag.slug
         + "\">Alle poster i denne kategorien..</a></p></div></div>");
 
@@ -30,7 +31,7 @@ kjempekjekt.loadSidebar = function() {
         items.push(
           "<div class=\"thumbnail\"><a href=\""
           + feature.link
-          + "\"><img src=\"/assets/images/bb/" 
+          + "\"><img src=\"" + basePath + "/assets/images/bb/" 
           + feature.image 
           + "\"></a><div class=\"caption\"><h4>"
           + feature.heading

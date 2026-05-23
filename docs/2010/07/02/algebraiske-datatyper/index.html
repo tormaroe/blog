@@ -11,15 +11,15 @@
     <title>Algebraiske datatyper</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,17 +64,17 @@
           <h1>Algebraiske datatyper</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 2. juli 2010</small> 
-            <a href="/tags/erlang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Erlang</span></a>
+            <a href="/blog/tags/erlang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Erlang</span></a>
           
-            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+            <a href="/blog/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
           
-            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+            <a href="/blog/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
           
-            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+            <a href="/blog/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
           </p>
           <p>I de programmeringsspråkene vi kaller funksjonelle språk har vi normalt ikke objekter. Det finnes språk som støtter flere paradigmer, men objekter er ikke en del av den funksjonelle. Vi har likevel behov for noe som minner om objekter; en form for entiteter eller typer som har definerte felt, som funkjonene kan jobbe på. </p>
 <p>Vi kaller dem <em><strong>algebraiske datatyper</strong></em>, og det finnes mange varianter. De vanligste minner gjerne om <em><a href="http://en.wikipedia.org/wiki/Struct_(C_programming_language)">structs i C</a></em> eller lignende språk, og i mange språk (spesielt dynamiske) bruker vi gjerne <em><a href="http://en.wikipedia.org/wiki/Associative_array">assosiative arrays</a></em> på samme måte. Her skal jeg sammenligne om noen av de algebraiske datatypene jeg har møtt i min ferd gjennom den funksjonelle programmeringsverdenen.</p>
-<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="algebra" border="0" alt="algebra" src="/uploads/2010/07/algebra.gif" width="400" height="328"> </p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="algebra" border="0" alt="algebra" src="/blog/uploads/2010/07/algebra.gif" width="400" height="328"> </p>
 <h4>records i Erlang</h4>
 <p>Når vi programmerer i Erlang bruker vi ofte <em><a href="http://en.wikipedia.org/wiki/Tuple">tupler</a></em> til å holde data som er relatert til hverandre. En tupel er et sett med verdier i en bestemt rekkefølge. Posisjonene har derimot ikke noe navn, og det blir derfor tungvindt og lite lesbart å bruke lange tupler med mange verdier.</p>
 <p>For å bøte på dette har Erlang en datatype som heter <strong><em>record</em></strong>. En record er en tupel hvor hver posisjon har et navn, og verdiene kan aksesseres ved hjelp av det navnet. Her er et eksempel på definering av en record-type, opprettelse av "instanser" av typen, og bruk av den:</p>
@@ -111,7 +111,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

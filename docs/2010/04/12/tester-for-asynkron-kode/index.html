@@ -11,15 +11,15 @@
     <title>Tester for asynkron kode</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,11 +64,11 @@
           <h1>Tester for asynkron kode</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 12. april 2010</small> 
-            <a href="/tags/testing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing</span></a>
+            <a href="/blog/tags/testing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing</span></a>
           
-            <a href="/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
+            <a href="/blog/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
           
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           </p>
           <p>Lenge siden jeg har hatt noe C#-kode på bloggen nå.., la meg gjøre noe med det. På jobben i forrige uke lagde vi to små <strong><em>extension methods</em></strong> jeg har lyst til å dele med verden. Det er ikke noe <em>rocket science</em>, men kan være greit om du har samme behovet som oss, og du ikke har tenkt på det selv.</p>
 <p>Systemene vi jobber med inneholder MYE asynkronitet / samtidighet. Når vi skal lage automatiserte tester – spesielt integrasjonstester – må vi forholde oss til at vi ikke øyeblikkelig får det resultatet vi forventer (eventual consistency). En test kan f.eks. sende en melding som plukkes opp og behandles av en annen tråd. Dette fører til endel kompleksitet i testene; ofte legger vi inn en <em>sleep</em> før vi kontrollerer resultatet.</p>
@@ -137,7 +137,7 @@
 <font color="#7f7f7f">37 </font>}</div>
 <p></font></div>
 <p>Testen er nå mye mere lesbar (i min mening). I tillegg kjører testene gjevnt over raskere, men uten å feile de gangene maskinen trenger litt mere tid på å gjøre seg ferdig.</p>
-<p>PS: <em>When</em> og <em>Then</em>-nøkkelordene i testene stammer fra min <a href="/2009/08/13/ultra-tiny-given-when-then-dsl-snippet/">Ultra-tiny given-when-then DSL-snippet</a>. <em>ShouldEqual</em>-metoden i den første versjonen av testen kommer fra <a href="http://code.google.com/p/coretdd/">coreTDD</a>, som vi bruker i alle tester i stedet for vanlige <a href="http://www.nunit.org/" target="_blank">nUnit</a> asserts.</p>
+<p>PS: <em>When</em> og <em>Then</em>-nøkkelordene i testene stammer fra min <a href="/blog/2009/08/13/ultra-tiny-given-when-then-dsl-snippet/">Ultra-tiny given-when-then DSL-snippet</a>. <em>ShouldEqual</em>-metoden i den første versjonen av testen kommer fra <a href="http://code.google.com/p/coretdd/">coreTDD</a>, som vi bruker i alle tester i stedet for vanlige <a href="http://www.nunit.org/" target="_blank">nUnit</a> asserts.</p>
 
 
         </div>
@@ -158,7 +158,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

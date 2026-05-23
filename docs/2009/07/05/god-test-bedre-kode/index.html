@@ -11,15 +11,15 @@
     <title>God test, bedre kode</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,11 +64,11 @@
           <h1>God test, bedre kode</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 6. juli 2009</small> 
-            <a href="/tags/ndc"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> NDC</span></a>
+            <a href="/blog/tags/ndc"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> NDC</span></a>
           
-            <a href="/tags/tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> TDD</span></a>
+            <a href="/blog/tags/tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> TDD</span></a>
           
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           </p>
           <p>Av alle de spennende tingene som skulle skje på <a href="http://www.ndc2009.no/">Norwegian Developer Conference 2009</a>, var det en ting jeg gledet meg mere til enn noe annet. Jeg skulle nemlig få oppleve en hel dags workshop med <strong>Scott Bellware</strong>.</p>
 <p style="text-align: center"><a href="http://www.flickr.com/photos/digidragon/1515391370/"><img src="http://farm3.static.flickr.com/2412/1515391370_aa508c7f84.jpg" border="0" /></a><br />
@@ -79,7 +79,7 @@
 <p>Workshopen handlet i hovedsak om å skrive automatiserte tester i form av <em>Context Specifictions</em>. Scott's budskap var at vi må gjemme all støyen fra testene/spesifikasjonene våre - testene er dokumentasjon, og skal være enkle å lese. Han sier at man oppnår høy produktivitet i utvikling om man har et godt design, og et godt design kommer av god TDD.</p>
 <p>Med dette som bakteppe kom Bellware inn på mange ulike områder, og her er noen høydepunkter fra notatene mine:</p>
 <p><img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: De to første stegene i TDD - (1) <strong style="color: red">lag en test som feiler</strong> og (2) <strong style="color: green">få den til å passere på enklest mulig måte</strong> - er egentlig en test av selve testen. Ved å bevise at den først feiler og deretter passerer ved forventet "input til asserten" kan man stole på testen. Først etter at testen er grønn implementerer man funksjonaliteten slik den skal være. (Jeg har forsøkt å poengtere det samme flere ganger, men er ikke alltid like flink til å følge det selv.)</p>
-<p><img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Gjør TDD i så små steg som mulig. <em>"Jeg trodde at de små stegene Kent Beck presenterer <a href="/2009/03/23/l%c3%a6r-tdd-gjennom-eksempler/">i TDD boken sin</a> var som de var for å illustrere prinsippene,"</em> sa Scott. <em>"Det tok meg to år å skjønne at det faktisk er sånn de beste utviklerne praktiserer TDD."</em></p>
+<p><img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Gjør TDD i så små steg som mulig. <em>"Jeg trodde at de små stegene Kent Beck presenterer <a href="/blog/2009/03/23/l%c3%a6r-tdd-gjennom-eksempler/">i TDD boken sin</a> var som de var for å illustrere prinsippene,"</em> sa Scott. <em>"Det tok meg to år å skjønne at det faktisk er sånn de beste utviklerne praktiserer TDD."</em></p>
 <p><img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Jobb bare med én test om gangen. Gjør du en endring som fører til at to tester må endres så gjør du sansynlig vis for mye på en gang.</p>
 <p><img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Ikke bryt testene dine. Skal du gjøre en refakturering som krever en endring av testen er det bedre å legge tilrette for å endre testen uten å fjerne den eksisterende implementasjonen. Når alt er på plass kan du endre testen, uten at den behøvde å bli rød på noe som helst tidspunkt. Til slutt kan du fjerne den delen av implementasjonen som støttet den gamle versjonen av testen.</p>
 <p><img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Husk å alltid skrive hva du ønsker skal eksistere før du implementerer det. <u>Ikke bar når du skriver tester.</u> "Jeg trenger en metode" oppdages ved å kalle metoden (som ikke finnes enda). Først deretter implementeres den.</p>
@@ -128,7 +128,7 @@
 <p style="margin: 0px"><span style="color: #2b91af">   37</span>     <span style="color: #ff8000">protected</span> <span style="color: #ff8000">static</span> <span style="color: yellow">Order</span> order;</p>
 <p style="margin: 0px"><span style="color: #2b91af">   38</span> }</p>
 </div>
-<p><a href="/2009/05/23/fra-enhentstester-til-kjørbare-spesifikasjoner/">Jeg har tidligere blogget om</a> hvordan jeg har gått fra å skrive tradisjonelle enhetstester til å skrive <em>GivenWhenThen</em> senarioer med et rammeverk som heter TinyBDD. Bellware gav meg mange flere tips om hvordan slike spesifikasjoner bør konstrueres. Det ironiske er at jeg etter dette har droppet å bruke BDD-rammeverk til fordel for å skrive mine egne DSL'er. TinyBDD, MSpec og lignende skaper mer støy enn nødvendig, og ved å skrive ren og selvdokumenterende kode føler jeg at jeg kan oppnå vel så god effekt uten dem.</p>
+<p><a href="/blog/2009/05/23/fra-enhentstester-til-kjørbare-spesifikasjoner/">Jeg har tidligere blogget om</a> hvordan jeg har gått fra å skrive tradisjonelle enhetstester til å skrive <em>GivenWhenThen</em> senarioer med et rammeverk som heter TinyBDD. Bellware gav meg mange flere tips om hvordan slike spesifikasjoner bør konstrueres. Det ironiske er at jeg etter dette har droppet å bruke BDD-rammeverk til fordel for å skrive mine egne DSL'er. TinyBDD, MSpec og lignende skaper mer støy enn nødvendig, og ved å skrive ren og selvdokumenterende kode føler jeg at jeg kan oppnå vel så god effekt uten dem.</p>
 <p>Her er et eksempel på hvordan testene jeg skriver for tiden ser ut:</p>
 <div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
 <p style="margin: 0px"><span style="color: #2b91af">    1</span> [<span style="color: yellow">TestFixture</span>]</p>
@@ -177,7 +177,7 @@
 <p><strong>Mer Bellware?</strong></p>
 <p>Er du interessert i å høre mer om hva Bellware har å si om TDD/BDD anbefaler jeg at du lytter til Hanselminutes #146: <a href="http://www.hanselminutes.com/default.aspx?showID=164">Test Driven Development is Design - The Last Word on TDD</a>.</p>
 <p>Og er du mer interessert i hans bråkete side kan du lytte til <a href="http://www.altnetpodcast.com/episodes/17-the-state-of-alt-net">Alt.Net podcast #17: The State of Alt.Net</a>, hvor han rakker ned på miljøet han har vært med å bygge opp. I så fall bør du også laste ned show nummer 18: <a href="http://www.altnetpodcast.com/episodes/18-talking-with-jeremy-miller-about-alt-net">Talking with Jeremy Miller about Alt.Net</a>, som forsøker å roe ned situasjonen igjen.</p>
-<p><strong>Knagger:</strong> <a href="/index.php?s=Alt.Net" rel="tag">Alt.Net</a>, <a href="/index.php?s=BDD" rel="tag">BDD</a>, <a href="/index.php?s=Bellware" rel="tag">Bellware</a>, <a href="/index.php?s=DDD" rel="tag">DDD</a>, <a href="/index.php?s=Dependency+injection" rel="tag">Dependency injection</a>, <a href="/index.php?s=NDC" rel="tag">NDC</a>, <a href="/index.php?s=NNUG" rel="tag">NNUG</a>, <a href="/index.php?s=TinyBDD" rel="tag">TinyBDD</a></p>
+<p><strong>Knagger:</strong> <a href="/blog/index.php?s=Alt.Net" rel="tag">Alt.Net</a>, <a href="/blog/index.php?s=BDD" rel="tag">BDD</a>, <a href="/blog/index.php?s=Bellware" rel="tag">Bellware</a>, <a href="/blog/index.php?s=DDD" rel="tag">DDD</a>, <a href="/blog/index.php?s=Dependency+injection" rel="tag">Dependency injection</a>, <a href="/blog/index.php?s=NDC" rel="tag">NDC</a>, <a href="/blog/index.php?s=NNUG" rel="tag">NNUG</a>, <a href="/blog/index.php?s=TinyBDD" rel="tag">TinyBDD</a></p>
 
 
         </div>
@@ -198,7 +198,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

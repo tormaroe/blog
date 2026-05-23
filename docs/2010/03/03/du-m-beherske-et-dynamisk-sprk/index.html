@@ -11,15 +11,15 @@
     <title>Du må beherske et dynamisk språk</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,17 +64,17 @@
           <h1>Du må beherske et dynamisk språk</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 3. mars 2010</small> 
-            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+            <a href="/blog/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
           </p>
           <p><strong>Jeg vil si det så sterkt: Hvis du ikke behersker et dynamisk programmeringsspråk, slik at du er i stand til å designe fullverdige software-løsninger i det, da er du ikke en ferdig utdannet utvikler! [<a href="#footnote1">1</a>]</strong></p>
 <p>Det har vært mye <em>buzz</em> rundt dynamiske språk de siste årene, og mange utviklere, spesielt i Agile-miljøer, migrerer over fra statiske språk til dynamiske. For å forstå hvorfor dette skjer er det viktig å vite hva vi mener med et dynamisk språk, og hvilke fordeler og ulemper det bringer med seg. Denne artikkelen er en god start for deg som ikke vet så alt for mye om temaet.</p>
 <h4>Hva mener vi med Dynamic?</h4>
 <p>Når vi sier at noe er <strong>STATIC</strong> mener vi at ting er definert og avgjørelser tas ved compile-time, mens <strong>DYNAMIC</strong> impliserer at det samme skjer i runtime. Det er derimot ingen språk som er fullstendig statiske, og heller ingen som er fullstendig dynamiske – de fleste språk befinner seg et sted mellom disse ytterpunktene.</p>
-<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="static_dynamic" border="0" alt="static_dynamic" src="/uploads/2010/03/static_dynamic.png" width="434" height="128"> </p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="static_dynamic" border="0" alt="static_dynamic" src="/blog/uploads/2010/03/static_dynamic.png" width="434" height="128"> </p>
 <p>Egenskaper som gjør et språk dynamisk er ting som <a href="http://c2.com/cgi/wiki?DynamicTyping">dynamisk typing</a>, <a href="http://en.wikipedia.org/wiki/Dynamic_dispatch">dynamisk dispatch</a>, <a href="http://en.wikipedia.org/wiki/Type_introspection">introspection</a>, dynamisk kompilering og <a href="http://en.wikipedia.org/wiki/Dynamic_loading">dynamisk loading</a>. I språk som er mer dynamiske kan man f.eks. gjøre ting som å endre hvordan typer ser ut – legge til metoder o.l. - mens programmet kjører.</p>
 <p>De dynamiske spåkene begynte for alvor å vokse frem på 80-tallet – og språk som Larry Wall's <a href="http://en.wikipedia.org/wiki/Perl">Perl</a> og Guido van Rossum's <a href="http://en.wikipedia.org/wiki/Python_(programming_language)">Python</a> hadde stor betydning for internetts vekst på 90-tallet. De dynamske egenskapene hadde derimot en ulempe: <strong><em>Dårlig performance!</em></strong> Grunnen til at de dynamiske språkene har blitt mer populære de siste 10 årene er at vi nå har fått raskere og bedre maskinvare, som gjøre at vi i mange sammenhenger kan se bort fra at programmene kjører noe tregere relativt til kompilert, statisk kode.</p>
 <h4>Mange språk utvikler seg i dynamisk retning</h4>
-<p><img style="border-right-width: 0px; margin: 0px 0px 5px 15px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="dynamic-lang" border="0" alt="dynamic-lang" align="right" src="/uploads/2010/03/dynamiclang.png" width="317" height="407">Programmeringsspråk utvikler seg hele tiden. De som ikke gjør det er i praksis døde. Og samtidig som dynamiske språk som Perl, Python og Ruby har blitt mer populære, har andre språk beveget seg i en mer dynamisk reting.</p>
+<p><img style="border-right-width: 0px; margin: 0px 0px 5px 15px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="dynamic-lang" border="0" alt="dynamic-lang" align="right" src="/blog/uploads/2010/03/dynamiclang.png" width="317" height="407">Programmeringsspråk utvikler seg hele tiden. De som ikke gjør det er i praksis døde. Og samtidig som dynamiske språk som Perl, Python og Ruby har blitt mer populære, har andre språk beveget seg i en mer dynamisk reting.</p>
 <p>C# har for eksempel en rekke dynamiske egenskaper. Du lager dynamiske programmer om du bl.a. benytter deg av <em>reflection</em> (introspection). Det er bare det at reflection er mye enklere i språk som i utgangspunktet er designet for det. <em>Generics</em> er også en nokså dynamisk feature, som gir inntrykk av løsere typing i koden. Type inference – bruk av "var" – gir C# en dynamisk følelse. Og sist men ikke minst innfører man i .NET 4.0 <strong><em>Dynamic</em></strong>, en type hvor metodekall ikke evalueres før runtime (dynamic dispatch), slik at C# bedre kan kommunisere med mere dynamiske språk.</p>
 <p>Ved å beherske et dynamisk språk vil man lære seg teknikker som gjør en til en bedre utvikler også når man jobber i mere statiske språk.</p>
 <p><em>PS: Det dynamiske språktreet er ikke komplett, men viser de mest sentrale språkene, og hvordan de i hovedsak har påvirket hverandre.</em></p>
@@ -114,7 +114,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

@@ -11,15 +11,15 @@
     <title>UTF-8, ISO-8859-1, og slike ting</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,11 +64,11 @@
           <h1>UTF-8, ISO-8859-1, og slike ting</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 30. mai 2015</small> 
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           
-            <a href="/tags/historie"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Historie</span></a>
+            <a href="/blog/tags/historie"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Historie</span></a>
           </p>
-          <img src="/uploads/2015/05/unicodepope.jpg" alt="Pope embraces unicode" />
+          <img src="/blog/uploads/2015/05/unicodepope.jpg" alt="Pope embraces unicode" />
 
 <blockquote>
 <p><strong>In the beginning,</strong> there was ASCII, and things were simple. But they weren&#39;t good, for no one could write in Cyrillic or Thai. So there exploded a proliferation of character encodings .. <small><a href="http://htmlpurifier.org/docs/enduser-utf8.html">UTF-8: The Secret of Character Encoding</a></small></p>
@@ -88,9 +88,9 @@
 <span class="hljs-attribute">54</span>  <span class="hljs-number">6</span>F  <span class="hljs-number">72</span>  <span class="hljs-number">62</span>  <span class="hljs-number">6</span>A  F8  <span class="hljs-number">72</span>  <span class="hljs-number">6</span>E
 <span class="hljs-attribute">T</span>   o   r   b   j   ø   r   n</code></pre><p>Akkurat, ja, det var <em>navnet mitt</em> dette her :)</p>
 <h2>UTF-8</h2>
-<img src="/uploads/2015/05/utf8.png" alt="UTS-8's vekst" />
+<img src="/blog/uploads/2015/05/utf8.png" alt="UTS-8's vekst" />
 
-<p>ISO-8859-1 er derimot ikke lenger den tegnkodingen man støter på oftest. Verden har de senere årene gått mer og mer over til UTF-8, som kan representere alle tegn i Unicode. UTF-8 ble oppfunnet av <a href="/2010/12/23/informatisk-julekalender-lille-julaften/">Ken Thompson</a>, som er aller mest kjent for å ha designet og implementert operativsystemet Unix. Sammen med Rob Pike implementerte han UTF-8 i 1992.</p>
+<p>ISO-8859-1 er derimot ikke lenger den tegnkodingen man støter på oftest. Verden har de senere årene gått mer og mer over til UTF-8, som kan representere alle tegn i Unicode. UTF-8 ble oppfunnet av <a href="/blog/2010/12/23/informatisk-julekalender-lille-julaften/">Ken Thompson</a>, som er aller mest kjent for å ha designet og implementert operativsystemet Unix. Sammen med Rob Pike implementerte han UTF-8 i 1992.</p>
 <p>Yngre utviklere vil kanskje også kjenne igjen disse to navnene; både Rob og Ken jobber for Google i dag, og har vært delaktige i utviklingen av programmeringsspråket Go.</p>
 <p><strong>Regel nummer 1</strong> når man skal forholde seg til tegnkoding er at tekst ikke inneholder informasjon om hvilken koding som er brukt. Normalt sett da - her er det unntak, men la oss holde det enkelt. Tekst er bare en rekke bytes, og du må selv vite hvilken tegnkoding du skal bruke for å tolke dem. En fil som inneholder teksten <code>Torbjørn</code> og er kodet med ISO-8859-1 inneholder åtte bytes - de bytene jeg startet denne posten med. </p>
 <p>Om filen derimot er kodet med UTF-8 vil den inneholde ni bytes! UTF-8 bruker et variablet antall bytes for å representere et tegn; én byte for de vanligste tegnene, men opp til fire bytes (og i teorien enda mer) for mer uvanlige tegn.</p>
@@ -147,7 +147,7 @@ Console.WriteLine(BitConverter.ToString(data2));
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

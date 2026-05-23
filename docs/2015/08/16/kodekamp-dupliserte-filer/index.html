@@ -11,15 +11,15 @@
     <title>Kodekamp: Finn dupliserte filer</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,11 +64,11 @@
           <h1>Kodekamp: Finn dupliserte filer</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 16. august 2015</small> 
-            <a href="/tags/konkurranse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Konkurranse</span></a>
+            <a href="/blog/tags/konkurranse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Konkurranse</span></a>
           
-            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+            <a href="/blog/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
           </p>
-          <p style="text-align:center;"><img src="/uploads/2015/08/kodekamp2.png"></p>
+          <p style="text-align:center;"><img src="/blog/uploads/2015/08/kodekamp2.png"></p>
 
 <p>Trenger du noe å gjøre på? Velkommen til kodekamp nummer 2! Dette er en uhøytidelig og vennskapelig utviklerkonkurranse hvor alle som har lyst til å delta har én uke til å kode opp en løsning og sende den til <a href="mailto:kodekamp@kjempekjekt.com">kodekamp@kjempekjekt.com</a>.</p>
 <h2>Problemet: Dupliserte filer</h2>
@@ -78,7 +78,7 @@
 <h2>Oppgaven</h2>
 <p>I denne kodekampen skal du lage et program som tar som innput to verdier: Første argument er et tall som representerer antall bytes. La oss kalle den <code>arg1</code>. Andre argument er en folder-sti; absolutt, eller relativt til hvor programmet kjøres fra. La oss kalle den <code>arg2</code>.</p>
 <p>Programmet skal så traversere nedover folderstrukturen fra <code>arg2</code> og finne alle filer det finnes to eller flere av. To filer vurderes å være den samme om innholdet er identisk.</p>
-<p style="text-align:center;"><img src="/uploads/2015/08/duplicate-file-remover.jpg"></p>
+<p style="text-align:center;"><img src="/blog/uploads/2015/08/duplicate-file-remover.jpg"></p>
 
 <p>Hvis filstørrelsen er mindre enn <code>arg1</code> skal programmet se bort fra den.</p>
 <p>Programmet skal liste ut dubletter på en fornuftig måte.</p>
@@ -86,7 +86,7 @@
 <p>Og til slutt: Programmeringsspråket som er valgt denne gang er F#. Oppgaven skal leveres som én .fs-fil som kan kompileres til et konsoll-program med F# 3.1, uten andre avhengigheter. Jeg ønsker altså ikke å motta noe Visual Studio-prosjekt.</p>
 <p>PS: Jeg tar ikke her stilling til om du utvikler/kjører på Windows, Mac eller Linux - ingen diskriminering her. Eventuelle OS-ulikheter som har noe å si for å løse oppgaven må du selv vurdere hva du gjør med.</p>
 <h3>Hvis du ikke kan FSharp..</h3>
-<p>... så er dette en fin anledning til å lære! <a href="/2011/12/06/f/">Her er min introduksjon til F#</a>, og <a href="http://fsharp.org/about/learning.html">her finner du noen lære-ressurser</a>.</p>
+<p>... så er dette en fin anledning til å lære! <a href="/blog/2011/12/06/f/">Her er min introduksjon til F#</a>, og <a href="http://fsharp.org/about/learning.html">her finner du noen lære-ressurser</a>.</p>
 <h2>Vurdering av besvarelen</h2>
 <p>Som i forrige runde vil besvarelsene vurderes i forhold til korrekthet, lesbarhet og eleganse. Jeg vil spesielt vurdere strategien valgt for å traversere folderstrukturen, strategien for å finne duplikater, og hvordan resultatet presenteres (god brukeropplevelse). Jeg vil også måle og sammenligne hastighet.</p>
 <p>Besvarelsen må leveres til <a href="mailto:kodekamp@kjempekjekt.com">kodekamp@kjempekjekt.com</a> senest søndag 23. august 2015. Om du synes det er greit at jeg bruker ditt fulle navn, inkluderer lenke til twitter, hjemmeside eller lignende, så gi meg beskjed om det.</p>
@@ -111,7 +111,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

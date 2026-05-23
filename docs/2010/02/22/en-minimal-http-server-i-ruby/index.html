@@ -11,15 +11,15 @@
     <title>En minimal http-server i Ruby</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,13 +64,13 @@
           <h1>En minimal http-server i Ruby</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 22. februar 2010</small> 
-            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+            <a href="/blog/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
           
-            <a href="/tags/sinatra"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Sinatra</span></a>
+            <a href="/blog/tags/sinatra"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Sinatra</span></a>
           
-            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+            <a href="/blog/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
           </p>
-          <p>I denne oppfølgingsposten til <em><a href="/2010/02/18/en-minimal-http-server-i-net/">En minimal http-server i .Net</a></em> viser jeg hvordan jeg raskt kan sette opp en tilsvarende løsning i Ruby. Jeg skal altså implementere en tjeneste som lytter på http, og som responderer på ulike argumenter. Løsningen skal være enkel å utvide med flere "respondere" – det skal ikke være nødvendig å editere eksisterende kode for å håndtere nye typer forespørsler (se forrige post om du vil vite mer om oppgaven).</p>
+          <p>I denne oppfølgingsposten til <em><a href="/blog/2010/02/18/en-minimal-http-server-i-net/">En minimal http-server i .Net</a></em> viser jeg hvordan jeg raskt kan sette opp en tilsvarende løsning i Ruby. Jeg skal altså implementere en tjeneste som lytter på http, og som responderer på ulike argumenter. Løsningen skal være enkel å utvide med flere "respondere" – det skal ikke være nødvendig å editere eksisterende kode for å håndtere nye typer forespørsler (se forrige post om du vil vite mer om oppgaven).</p>
 <p>Ruby shipper med mange, nyttige moduler - blant annet en søt, liten tjeneste som heter <strong><em><a href="http://en.wikipedia.org/wiki/WEBrick" target="_blank">WEBrick</a></em></strong>, som kan brukes ganske likt som .Net's HttpListener egentlig. I følgende program setter jeg opp en server til å lytte på port 8081:</p>
 <div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   1</span> <span style="color: #a0dafc">require</span> 'webrick'</p>
@@ -115,7 +115,7 @@
 </div>
 <p>Resultatet er altså at jeg på 20 linjer har satt opp en dynamisk webserver som jeg kan utvide ved å legge til flere <em>.responder</em>-filer. Definisjonen av hver responder er veldig konsis og grei, og står på ingen måte tilbake for .Net-løsningen. I Ruby har jeg ikke behøvd å definere interface for respondere, og lastingen av dem – som er basert på fil-extension i stedet for refleksion og attributter – er mye enklere. Når du tar med i betraktning at jeg ikke engang behøver å kompilere Ruby-løsningen, så er det ikke vanskelig for meg å foretrekke denne når jeg får behov for å raskt sette opp web-tjenester av ulik art f.eks. for å simulere tjenester jeg skal integrere mot.</p>
 <h4>Sinatra entrer scenen</h4>
-<p><img style="border-right-width: 0px; margin: 0px 0px 10px 15px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="frank_sinatra" border="0" alt="frank_sinatra" align="right" src="/uploads/2010/02/frank_sinatra.jpg" width="138" height="148"> Å bruke WEBrick til dette her er ganske "<em>low level"</em> (på samme måte som HttpListener var det). I .NET-verden har vi rammeverk for webutvikling på et høyere nivå som blant andre WebForms, <a href="http://www.asp.net/mvc/" target="_blank">ASP.NET MVC</a>, <a href="http://code.google.com/p/fubumvc/" target="_blank">FubuMVC</a> og <a href="http://www.castleproject.org/monorail/index.html" target="_blank">MonoRail</a> (det er egentlig alle jeg vet om). <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a> har også dette; det desidert mest kjente er <a href="http://rubyonrails.org/" target="_blank">Ruby on Rails</a>, som gjør deg ekstremt produktiv så sant du er villig til å følge Rails konvensjoner og måter å gjøre ting på. <a href="http://ramaze.net/" target="_blank">Ramaze</a> er et rammeverk med mye større frihet, hvor man kan velge mellom et hav av moduler og måter å gjøre ting på. Begge disse baserer seg i hovedsak på <em>Model-View-Controller</em> paradigmet.</p>
+<p><img style="border-right-width: 0px; margin: 0px 0px 10px 15px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="frank_sinatra" border="0" alt="frank_sinatra" align="right" src="/blog/uploads/2010/02/frank_sinatra.jpg" width="138" height="148"> Å bruke WEBrick til dette her er ganske "<em>low level"</em> (på samme måte som HttpListener var det). I .NET-verden har vi rammeverk for webutvikling på et høyere nivå som blant andre WebForms, <a href="http://www.asp.net/mvc/" target="_blank">ASP.NET MVC</a>, <a href="http://code.google.com/p/fubumvc/" target="_blank">FubuMVC</a> og <a href="http://www.castleproject.org/monorail/index.html" target="_blank">MonoRail</a> (det er egentlig alle jeg vet om). <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a> har også dette; det desidert mest kjente er <a href="http://rubyonrails.org/" target="_blank">Ruby on Rails</a>, som gjør deg ekstremt produktiv så sant du er villig til å følge Rails konvensjoner og måter å gjøre ting på. <a href="http://ramaze.net/" target="_blank">Ramaze</a> er et rammeverk med mye større frihet, hvor man kan velge mellom et hav av moduler og måter å gjøre ting på. Begge disse baserer seg i hovedsak på <em>Model-View-Controller</em> paradigmet.</p>
 <p><a href="http://www.sinatrarb.com/" target="_blank"><strong>Sinatra</strong></a> er et tredje ruby-biblotek som er ganske nyttig til å utvikle mindre websider og tjenester. Det minner mye om det jeg har gjort i denne artikkelen, og ved å bruke Sinatra kan jeg forenkle tjenesten min ganske mye (som om den ikke var enkel nok allerede).</p>
 <p>Sinatra-versjonen av selve tjenesten min ser slik ut:</p>
 <div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
@@ -131,7 +131,7 @@
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   4</span> <span style="color: #70aeed">end</span></p>
 </div>
 <p>Dermed har jeg gått fra 24 til 6 linjer. Det er latterlig lite!</p>
-<p>Og den tilsvarende C#-løsningen fra <a href="/2010/02/18/en-minimal-http-server-i-net/">forrige post</a> var på over 170 linjer. Det finnes selvfølgelig mere optimale løsninger, men jeg har vært en C#-utvikler i åtte år, og 170 liner ++ var det jeg havnet på. Jeg har vært Ruby-utvikler på hobbybasis i et par måneder, og landet på 6 linjer. Det MÅ jo si noe om Ruby og dynamisk programmering! </p>
+<p>Og den tilsvarende C#-løsningen fra <a href="/blog/2010/02/18/en-minimal-http-server-i-net/">forrige post</a> var på over 170 linjer. Det finnes selvfølgelig mere optimale løsninger, men jeg har vært en C#-utvikler i åtte år, og 170 liner ++ var det jeg havnet på. Jeg har vært Ruby-utvikler på hobbybasis i et par måneder, og landet på 6 linjer. Det MÅ jo si noe om Ruby og dynamisk programmering! </p>
 
 
         </div>
@@ -152,7 +152,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

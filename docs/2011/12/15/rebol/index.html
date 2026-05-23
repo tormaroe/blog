@@ -11,15 +11,15 @@
     <title>Rebol</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,26 +64,26 @@
           <h1>Rebol</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 15. desember 2011</small> 
-            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+            <a href="/blog/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
           
-            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+            <a href="/blog/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
           
-            <a href="/tags/rebol"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rebol</span></a>
+            <a href="/blog/tags/rebol"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rebol</span></a>
           </p>
           <p>Er du en rebell som stiller spørsmål ved etablerte sannheter? Da er kanskje <strong><em>REBOL</em></strong> et programmeringsspråk for deg. Rebol gjør opprør mot kompleksiteten vi ser i dagens software og språk.</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="rebol" border="0" alt="rebol" src="/uploads/2011/12/rebol.jpg" width="500" height="404"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="rebol" border="0" alt="rebol" src="/blog/uploads/2011/12/rebol.jpg" width="500" height="404"></p>
 <p>REBOL står for <em><strong>Relative Expression Based Object Language</strong></em>. Første versjon kom i 1997, utviklet av selveste <a href="http://www.sassenrath.com/">Carl Sassenrath</a>, som var arkitekten og primær utvikler av AmigaOS i sin tid, og som i 1985 introduserte <em>multitasking</em> til PC-verden.</p>
 <p><em>(Denne artikkelen omhandler REBOL 2. REBOL3 er en komplett omskrivning som har vært under utvikling en stund nå, og som har en god del endringer, men er fortsatt i alpha.)</em></p>
 <p>REBOL setter enkelhet i høysetet. Det har i grunnen mange likheter med Lisp – det er <em>symbolsk</em> og <em><a href="http://en.wikipedia.org/wiki/Homoiconicity">homoikonisk</a></em> for dem som skjønner hva det innebærer – men er likevel et mere moderne språk enn Lisp. Språket er dynamisk og sterkt typet. Det støtter flere programmeringsparadigmer, og har blant annet prototype-basert objektorientering (sånn som JavaScript).</p>
 <p>Plattformen – om man kan kalle det det – er veldig liten og kompakt (dokumentasjonen sier <em>ultra-kompakt</em>), og programmene man lager blir også overraskende små.</p>
 <p>Her ser du en figur som viser hvilke språk som har influert REBOL, og det faktum at REBOL var en viktig inspirasjonsskilde for JSON:</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="rebol_legacy" border="0" alt="rebol_legacy" src="/uploads/2011/12/rebol_legacy.png" width="500" height="165"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="rebol_legacy" border="0" alt="rebol_legacy" src="/blog/uploads/2011/12/rebol_legacy.png" width="500" height="165"></p>
 <h4>Hva kan man bruke REBOL til?</h4>
 <p>Et av hovedfokusene i REBOL er nettverkskommunikasjon og distribuerte løsninger. Det legger også vekt på utvikling av domenespesifike språk og meta-programmering. REBOL inkluderer grafisk brukergrensesnitt (GUI) som er likt på tvers av plattformer, funksjoner for bildemanipulering, parsing, komprimering, sikre nettverkstjenester, lyd, en database og mye mer.</p>
 <p>Du kan bruke REBOL til å lage desktop applikasjoner, dynamiske web apps og server-tjenester, mobilapplikasjoner m.m. Det inkluderer også noe som nesten må betegnes som et virtuelt operativsystem:</p>
 <p style="color: #555; margin-left: 18px"><em>"REBOL can also be used immediately, <u>without installation</u>, <u>on over 40 operating systems</u> as a lightweight file manager, text editor, calculator, database manager, email client, ftp client, news reader, image viewer/editor, OS shell, and more. You can use it as a simple utility program with a familiar interface to common computing activities, on just about any computer, even if you're unfamiliar with the operating system."</em></p>
 <h4>På tide med litt kode</h4>
-<p>Som vanlig var det første jeg gjorde i REBOL å implementere en løsning på <a href="/2011/11/24/hello-world-euler-style/">Eulerproblem nummer 1</a>. Helt uten forkunnskaper tok det meg kun 10-12 minutter å implementere en fungerende løsningen som du ser nedenfor:</p>
+<p>Som vanlig var det første jeg gjorde i REBOL å implementere en løsning på <a href="/blog/2011/11/24/hello-world-euler-style/">Eulerproblem nummer 1</a>. Helt uten forkunnskaper tok det meg kun 10-12 minutter å implementere en fungerende løsningen som du ser nedenfor:</p>
 <pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Statement">REBOL</span> [ <span class="Identifier">Title</span>: <span class="String">"Euler Problem #1"</span> ]
 <span class="lnr">11 </span>
 <span class="lnr">12 </span><span class="Identifier">dividable-by</span>: <span class="Statement">func</span> [<span class="Identifier">x</span> <span class="Identifier">y</span>] [ <span class="Number">0</span> <span class="Operator">=</span> <span class="Identifier">modulo</span> <span class="Identifier">x</span> <span class="Identifier">y</span> ]
@@ -171,7 +171,7 @@
 
 </pre>
 <p>Og slik ser det ut når programmet kjøres, før og etter at knappen trykkes:</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="eulerGUI" border="0" alt="eulerGUI" src="/uploads/2011/12/eulerGUI.png" width="475" height="140"> </p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="eulerGUI" border="0" alt="eulerGUI" src="/blog/uploads/2011/12/eulerGUI.png" width="475" height="140"> </p>
 <h4>Hva er ikke så bra med REBOL, og hva er alternativet?</h4>
 <p>For det første: Bare <em>deler</em> av REBOL er open source, og språket finnes både i en gratis-utgave og i en betalt versjon med kommersiell support. For noen kan dette være problematisk og "skummelt". Men gratisutgaven kan benyttes kommersielt, nesten uten noen restriksjoner.</p>
 <p>REBOL har dessuten begrenset støtte for multithreading, og dette kan by på utfordringer for enkelte bruksområder.</p>
@@ -182,7 +182,7 @@
 <p>Disse tingene har ført til utviklingen av et nytt open-source programmeringsspråk som er basert på REBOL. Dette heter <a href="http://www.re-bol.com/rebol.html">Red</a>, og har vært under utvikling i et drøyt halvår. Det skal gi deg det meste av hva REBOL har, men i tillegg ha støtte for parallellisering gjennom actors, støtte lavnivå systemprogrammering ala C med inline assembly, og være lett å embedde i andre systemer (som Lua). Det vil også legge vekt på å ha et godt IDE med gode debuggings-muligheter, og spåket vil ha en statisk kompilator og en JIT-kompilator.</p>
 <h4>Hvordan komme igang</h4>
 <p>Naviger til <a href="http://www.rebol.com/">www.rebol.com</a> og last ned <a href="http://www.rebol.com/download-view.html">siste versjon av REBOL/View</a> for din plattform. Når du starter programmet får du opp en slags desktop hvor du kan navigere deg gjennom et hav av eksempler som du kan kjøre og studere kildekoden til.</p>
-<p><a href="/uploads/2011/12/Rebol_env.png"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Rebol_env" border="0" alt="Rebol_env" src="/uploads/2011/12/Rebol_env_thumb.png" width="500" height="350"></a></p>
+<p><a href="/blog/uploads/2011/12/Rebol_env.png"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Rebol_env" border="0" alt="Rebol_env" src="/blog/uploads/2011/12/Rebol_env_thumb.png" width="500" height="350"></a></p>
 <p>For å begynne å kode er det aller enkleste å lage en ny tekstfil med navn som ender på ".r". Vim er en av flere editorer som har støtte for REBOL-syntaks, men støtten er strengt tatt ikke nødvendig. Og er du på Windows som meg kan du eksekvere r-filene direkte for å kjøre programmene.</p>
 <p>Måten jeg begynte å lære var at jeg åpnet siden <a href="http://www.re-bol.com/rebol.html">Learn REBOL</a>, og rett og slett søkte og skumleste meg frem til det jeg trengte for å løse min første oppgave. Det kan hende min erfaring fra bl.a. Lisp og Forth hjalp meg endel. Etterhvert kan du lese det mere nøye, og i tilleg støtte deg på <a href="http://www.rebol.com/docs/dictionary.html">REBOL Function Dictionary</a>, en API-referanse for enkeltfunksjoner.</p>
 <p>Går du virkelig inn for full indoktrinering kan du gå igang med online-boken <a href="http://www.rebol.com/docs/core23/rebolcore.html">REBOL/Core Users Guide</a>. Du finner alt dette og mye mer på <a href="http://www.rebol.com/docs.html">REBOL Documentation</a>-siden.</p>
@@ -211,7 +211,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

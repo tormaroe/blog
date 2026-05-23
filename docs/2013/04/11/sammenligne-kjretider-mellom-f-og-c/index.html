@@ -11,15 +11,15 @@
     <title>Sammenligne kjøretider mellom F# og C#</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,16 +64,16 @@
           <h1>Sammenligne kjøretider mellom F# og C#</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 12. april 2013</small> 
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           
-            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+            <a href="/blog/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
           
-            <a href="/tags/ytelse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ytelse</span></a>
+            <a href="/blog/tags/ytelse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ytelse</span></a>
           </p>
-          <p>Dette er en oppfølger til blogposten <a href="/2013/04/09/litt-f-kode-for-mle-kjretid/">Litt F#-kode for å måle kjøretid</a>, hvor jeg blant annet målte tiden på ulike løsninger på Euler1-problemet. Det kom som en stor overraskelse at den rekursive varianten var såpass mye raskere enn å bruke løkker og muterbare variabler.</p>
+          <p>Dette er en oppfølger til blogposten <a href="/blog/2013/04/09/litt-f-kode-for-mle-kjretid/">Litt F#-kode for å måle kjøretid</a>, hvor jeg blant annet målte tiden på ulike løsninger på Euler1-problemet. Det kom som en stor overraskelse at den rekursive varianten var såpass mye raskere enn å bruke løkker og muterbare variabler.</p>
 <p>Spørsmålet jeg da stod igjen med var hvor rask den rekursive F#-varianten var i forhold til en løsning i C# – det har jeg nå undersøkt, og det er disse resultatene jeg skal presentere her. Og mot slutten kommer det <strong>en overraskelse!</strong></p>
 <h2>Et testprogram</h2>
-<p>Jeg valgte å lage et testprogram i C#. Programmet inneholder tre ulike varianter av Euler1: En som bruker en for-løkke, en som bruker Linq, og en crazy variant som bruker GOTO. I Main-metoden kjører jeg disse tre samt de fire orginale variantene fra <a href="/2013/04/09/litt-f-kode-for-mle-kjretid/">F#-bloggposten</a>.</p>
+<p>Jeg valgte å lage et testprogram i C#. Programmet inneholder tre ulike varianter av Euler1: En som bruker en for-løkke, en som bruker Linq, og en crazy variant som bruker GOTO. I Main-metoden kjører jeg disse tre samt de fire orginale variantene fra <a href="/blog/2013/04/09/litt-f-kode-for-mle-kjretid/">F#-bloggposten</a>.</p>
 <pre>public class Program
 {
     public static void CSharpTest1()
@@ -131,14 +131,14 @@
 }</pre>
 <h2>Resultatet</h2>
 <p>Og nå er du vel spent? Kjøringen av dette testprogrammet gav følgende output, presentert som en graf:</p>
-<p><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Measurements" border="0" alt="Measurements" src="/uploads/2013/04/Measurements.jpg" width="483" height="267"></p>
+<p><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Measurements" border="0" alt="Measurements" src="/blog/uploads/2013/04/Measurements.jpg" width="483" height="267"></p>
 <p>Resultatet er nedslående. Det er forsåvidt greit nok – og ikke uventet – at en rekursiv løsning er treigere enn en for-løkke i C#, selv om F# har <em>tail call optimization</em>. Men hvorfor er sekvens-løsningen i F# så veldig mye mere tidkrevende enn sekvens-løsningen i C#?</p>
 <p>For sikkerhets skyld forsøkte jeg også å kjøre alle variantene fra en F# executable (man vet jo aldri), men det gav akkurat det samme resultatet.</p>
 <p>Og det var da det slo meg: <strong>Jeg kompilerer testene mine i DEBUG modus! Kan det hende kjøretiden vil ble bedre i RELEASE?</strong> Jeg er ikke vandt til at det har så mye å si i C#, men kanskje det er anderledes i F#?</p>
 <h2>RELEASE-modus</h2>
 <p>Så jeg endret prosjektene til å kompilere i RELEASE-modus, og forsøkte C#-testprogrammet på nytt. Ingen merkbar endring!</p>
 <p>Ok – hva om jeg tester fra F# igjen da? <strong>Og da ble resultatet anderledes!</strong></p>
-<p><a href="/uploads/2013/04/Measurements2.jpg"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Measurements2" border="0" alt="Measurements2" src="/uploads/2013/04/Measurements2_thumb.jpg" width="615" height="300"></a></p>
+<p><a href="/blog/uploads/2013/04/Measurements2.jpg"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Measurements2" border="0" alt="Measurements2" src="/blog/uploads/2013/04/Measurements2_thumb.jpg" width="615" height="300"></a></p>
 <p>I RELEASE-modus på F# runtime ble plutselig den rekursive algoritmen nøyaktig like rask som for-løkken i C#. Kompilatoren har altså sansynligvis vært i stand til å transformere rekursjonen til mer eller mindre den samme IL-koden som for-løkken. De andre variantene ble også betydelig raskere, selv om de fortsatt er et stykke fra den optimale løsningen.</p>
 <p>Så det er på tide med en <em>Note To Self</em>: <strong>Mål alltid performance i RELEASE. Kompileringsmodus har mye å si for optimalisering av F#-kode.</strong></p>
 
@@ -161,7 +161,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

@@ -11,15 +11,15 @@
     <title>Parallellprosessering i Common Lisp</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,13 +64,13 @@
           <h1>Parallellprosessering i Common Lisp</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 17. desember 2015</small> 
-            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+            <a href="/blog/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
           
-            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+            <a href="/blog/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
           
-            <a href="/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
+            <a href="/blog/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
           </p>
-          <img src="/uploads/2015/12/scatter-gather.png" alt="Scatter - Gather" />
+          <img src="/blog/uploads/2015/12/scatter-gather.png" alt="Scatter - Gather" />
 
 <p>I denne bloggposten vil jeg demonstrere ulike teknikker for parallellisering i Common Lisp, jeg vil se på <em>channels</em>, <em>futures</em>, og parallelle versjoner av normale listeoperasjoner. Jeg vil også komme borti hvordan man kan distribuere arbeidsmengden over flere maskiner.</p>
 <h2>Knowit juleluke 16</h2>
@@ -174,7 +174,7 @@
 <p>Av og til er antall CPU-kjerner ikke nok, og vi skulle hatt en enkel og tilsvarende måte å spre jobbene ut over flere maskiner. Frykt ikke - til det har vi pakken <a href="http://quickdocs.org/lfarm/">lfarm</a>.</p>
 <p>lfarm gjenbruker samme API som lparallel, men i stedet for å distribuere jobber i en thread pool så distribuerer den jobbene over et sett med servere.</p>
 <p>I skjermdumpen nedenfor ser du tre terminaler. I de to nederste terminalene starter jeg opp en lfarm server (på samme maskin, men det hadde det altså ikke behøvd å være). I den første terminalen registrerer jeg de to serverne i <code>*kernel*</code>, og så bruker jeg <code>pmapcar</code> til å distribuere seks jobber.</p>
-<img src="/uploads/2015/12/lfarm.png" alt="lfarm demo" />
+<img src="/blog/uploads/2015/12/lfarm.png" alt="lfarm demo" />
 
 <p>Kult? I alle fall er det enkelt.</p>
 <h2>Konklusjon</h2>
@@ -201,7 +201,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

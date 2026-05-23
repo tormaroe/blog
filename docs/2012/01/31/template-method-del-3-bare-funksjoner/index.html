@@ -11,15 +11,15 @@
     <title>Template Method del 3: Bare funksjoner</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,13 +64,13 @@
           <h1>Template Method del 3: Bare funksjoner</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 31. januar 2012</small> 
-            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+            <a href="/blog/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
           
-            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+            <a href="/blog/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
           
-            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+            <a href="/blog/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
           </p>
-          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 20px 22px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="tp_del3" border="0" alt="tp_del3" align="left" src="/uploads/2012/01/tp_del3.png" width="146" height="127">I <a href="/2012/01/30/template-method-del-1-statisk-oop/">del 1</a> og <a href="/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">del 2</a> har du sett meg implementere Template Method pattern i C# – først i en tradisjonell, objektorientert variant, og så i en mere fleksibel variant inspirert av funksjonell programmering. Nå er det på tide å se hvordan det samme kan gjøre kun med funksjoner. Det er på tide å finne frem F#.</p>
+          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 20px 22px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="tp_del3" border="0" alt="tp_del3" align="left" src="/blog/uploads/2012/01/tp_del3.png" width="146" height="127">I <a href="/blog/2012/01/30/template-method-del-1-statisk-oop/">del 1</a> og <a href="/blog/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">del 2</a> har du sett meg implementere Template Method pattern i C# – først i en tradisjonell, objektorientert variant, og så i en mere fleksibel variant inspirert av funksjonell programmering. Nå er det på tide å se hvordan det samme kan gjøre kun med funksjoner. Det er på tide å finne frem F#.</p>
 <p>Først trenger vi selve templaten, eller algoritme-skjelettet om du vil. processLog er en funksjon som har fire andre funksjoner som parametre, og bruker disse til å prosessere loggfilen. En slik funksjon kalles en <em><a href="http://en.wikipedia.org/wiki/Higher-order_function">høyereordens funksjon</a></em>.</p>
 <pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Keyword">let</span> processLog init read processLine cleanup <span class="Keyword">=</span>
 <span class="lnr">11 </span>    init<span class="Constant">()</span>
@@ -89,7 +89,7 @@
 <span class="lnr">29 </span>                <span class="Keyword">(</span>m.<span class="PreProc">Groups</span>.<span class="Constant">Item</span><span class="Keyword">(</span><span class="Number">1</span><span class="Keyword">)</span>.<span class="Constant">Value</span><span class="Keyword">)</span>
 <span class="lnr">30 </span>                <span class="Keyword">(</span>m.<span class="PreProc">Groups</span>.<span class="Constant">Item</span><span class="Keyword">(</span><span class="Number">3</span><span class="Keyword">)</span>.<span class="Constant">Value</span><span class="Keyword">)</span>
 </pre>
-<p>Det neste jeg trenger er FTP-stegene. Nedenfor oppretter jeg en funksjon som tar som innput en URL og returnerer to funksjoner – en for Initialize-steget i algoritmen og en for Cleanup-steget. Disse to funksjonene er <em>lexical closures</em>, fordi de har tilgang til URL-variabelen (mer om dette <a href="/2011/08/20/message-passing-style/">mange</a> andre <a href="/2010/08/04/lispy-c-og-hva-er-en-closure/">steder</a> i bloggen).</p>
+<p>Det neste jeg trenger er FTP-stegene. Nedenfor oppretter jeg en funksjon som tar som innput en URL og returnerer to funksjoner – en for Initialize-steget i algoritmen og en for Cleanup-steget. Disse to funksjonene er <em>lexical closures</em>, fordi de har tilgang til URL-variabelen (mer om dette <a href="/blog/2011/08/20/message-passing-style/">mange</a> andre <a href="/blog/2010/08/04/lispy-c-og-hva-er-en-closure/">steder</a> i bloggen).</p>
 <pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">33 </span><span class="Comment">(* Evaluates to a tuple of two closures *)</span>
 <span class="lnr">34 </span><span class="Keyword">let</span> makeFtpSteps url <span class="Keyword">=</span>
 <span class="lnr">35 </span>    <span class="Keyword">let</span> setup <span class="Keyword">=</span> <span class="Keyword">fun</span> <span class="Constant">()</span> <span class="Keyword">-&gt;</span> printfn <span class="String">"Fetching log file from %s"</span> url
@@ -103,7 +103,7 @@
 <span class="lnr">43 </span>    makeFtpSteps <span class="String">"ftp://foobar.com/logs/my.log"</span>
 </pre>
 <h4>Å komponere funksjoner..</h4>
-<p>Jeg har nå to forskjellige funksjoner som skal kalles i Initialize-steget i templaten: <em>ftpFetch</em> og <em>errorInit</em>. <a href="/2012/01/30/template-method-del-1-statisk-oop/">I del 1 løste jeg dette</a> ved at FTP-initialiseringsmetoden kalte baseklassens Initialize. <a href="/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">I del 2 løste jeg det</a> ved å ha en builder-klasse som kunne kombinere flere Action-delegater. Nå befinner jeg meg derimot i et funksjonelt språk, og da er det ingen sak å slå sammen to funksjoner til én:</p>
+<p>Jeg har nå to forskjellige funksjoner som skal kalles i Initialize-steget i templaten: <em>ftpFetch</em> og <em>errorInit</em>. <a href="/blog/2012/01/30/template-method-del-1-statisk-oop/">I del 1 løste jeg dette</a> ved at FTP-initialiseringsmetoden kalte baseklassens Initialize. <a href="/blog/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">I del 2 løste jeg det</a> ved å ha en builder-klasse som kunne kombinere flere Action-delegater. Nå befinner jeg meg derimot i et funksjonelt språk, og da er det ingen sak å slå sammen to funksjoner til én:</p>
 <pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">48 </span><span class="Comment">(* Using forward composition operator to compose two functions *)</span>
 <span class="lnr">49 </span><span class="Keyword">let</span> errorInitWithFtpFetch <span class="Keyword">=</span> ftpFetch <span class="Keyword">&gt;&gt;</span> errorInit
 </pre>
@@ -162,7 +162,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

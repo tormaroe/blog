@@ -11,15 +11,15 @@
     <title>Enhetstesting av konsoll-applikasjoner</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,10 +64,10 @@
           <h1>Enhetstesting av konsoll-applikasjoner</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 7. juli 2009</small> 
-            <a href="/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
+            <a href="/blog/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
           </p>
-          <p>I artikkelen min on <a href="/2009/07/05/god-test-bedre-kode/">Bellware's NDC workshop</a> inkluderte jeg en enhetstest jeg hadde skrevet for å teste output til <strong>System.Console</strong>. Her følger jeg opp med å forklare hvordan jeg gjorde det.</p>
-<p>I <a href="/2009/06/26/snookiepoof-pa-google-code/">Snookiepoof</a>, hvor testen var hentet fra, ønsker jeg å ha så høy test coverage som mulig. Jeg utviklet nesten alt vha TDD/BDD, men brukegrensesnittet - et tynt lag som presenterte ting til konsollet - hadde jeg ingen tester for. Etterhvert begynte dette å irritere meg, og jeg måtte finne en måte å få dette under test på.</p>
+          <p>I artikkelen min on <a href="/blog/2009/07/05/god-test-bedre-kode/">Bellware's NDC workshop</a> inkluderte jeg en enhetstest jeg hadde skrevet for å teste output til <strong>System.Console</strong>. Her følger jeg opp med å forklare hvordan jeg gjorde det.</p>
+<p>I <a href="/blog/2009/06/26/snookiepoof-pa-google-code/">Snookiepoof</a>, hvor testen var hentet fra, ønsker jeg å ha så høy test coverage som mulig. Jeg utviklet nesten alt vha TDD/BDD, men brukegrensesnittet - et tynt lag som presenterte ting til konsollet - hadde jeg ingen tester for. Etterhvert begynte dette å irritere meg, og jeg måtte finne en måte å få dette under test på.</p>
 <p>Her er et eksempel på en test jeg ønsket å kjøre:</p>
 <div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
 <p style="margin: 0px"><span style="color: #2b91af">    1</span> [<span style="color: yellow">Test</span>]</p>
@@ -235,7 +235,7 @@
 <p>Her er en annen <a href="http://blogs.msdn.com/ploeh/archive/2006/10/21/ConsoleUnitTesting.aspx">blogpost om å erstatte Console.Out og Console.In</a> som jeg brukte som referanse når jeg implementerte min fixture. Og her <a href="http://mark.michaelis.net/Blog/UnitTestingConsoleInputOutput.aspx">er en fyr</a> som har gått for en løsning med attributter på test-metodene for å spesifisere input og forventet output.</p>
 <p>Det kan også være lurt å ta en titt på hva test-rammeverket du bruker har for støtte av konsoll-testing "out of the box". Skriver du mye konsoll-applikasjoner bør du kanskje også se på <a href="http://nconsoler.csharpus.com/">NConsoler</a>, et open source biblotek for å bygge konsoll apps som også skal ha noe støtte for enhetstester (sies det).</p>
 <p>Lurer du forresten på hvor <strong>should_contain</strong> metoden jeg kalte på Output i linje 6 i den aller første testen kommer fra? For å skrive lesbare tester er det ganske vanlig å erstatte de vanlige kallene til Assert med metodenavn som <em>flyter bedre</em>. <a href="http://code.google.com/p/snookiepoof/source/browse/trunk/src/Marosoft.Testing/FluentAsserts.cs">Klikk her for å ta en titt på min FluentAsserts.cs</a> som oversetter NUnits mange asserts til noe jeg er mere fornøyd med vha Extension methods. Koden er mer eller mindre rappet fra open source prosjektet <a href="http://code.google.com/p/coretdd/">coretdd</a>, som også inneholder tilsvarene metoder for xUnit, MbUnit og MsTest.</p>
-<p><strong>Knagger:</strong> <a href="/index.php?s=BDD" rel="tag">BDD</a>, <a href="/index.php?s=NUnit" rel="tag">NUnit</a>, <a href="/index.php?s=Snookiepoof" rel="tag">Snookiepoof</a>, <a href="/index.php?s=TDD" rel="tag">TDD</a></p>
+<p><strong>Knagger:</strong> <a href="/blog/index.php?s=BDD" rel="tag">BDD</a>, <a href="/blog/index.php?s=NUnit" rel="tag">NUnit</a>, <a href="/blog/index.php?s=Snookiepoof" rel="tag">Snookiepoof</a>, <a href="/blog/index.php?s=TDD" rel="tag">TDD</a></p>
 
 
         </div>
@@ -256,7 +256,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

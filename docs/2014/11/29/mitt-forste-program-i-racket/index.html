@@ -11,15 +11,15 @@
     <title>Mitt første program i Racket</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,19 +64,19 @@
           <h1>Mitt første program i Racket</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 29. november 2014</small> 
-            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+            <a href="/blog/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
           
-            <a href="/tags/scheme"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Scheme</span></a>
+            <a href="/blog/tags/scheme"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Scheme</span></a>
           </p>
           <p>I går fikk jeg en forespørsel fra CFO&#39;en vår som sa han trengte litt programmeringshjelp. Han hadde et par tusen kommaseparerte filer i en katalog, og trengte å samle siste rad i hver av filene inn i en ny fil.</p>
 <p>Greit nok. Siden det ble fredagskvelden før jeg fikk gjort dette måtte jeg gjøre det litt gøy, så jeg valgte meg et programmeringsspråk jeg aldri har brukt før og satte i gang.</p>
-<p class="text-center"><img src="/uploads/2014/11/racket.jpg"></p>
+<p class="text-center"><img src="/blog/uploads/2014/11/racket.jpg"></p>
 
 <p>Språket jeg valgte var <strong><a href="http://racket-lang.org/">Racket</a></strong> (tidligere kalt <em>PLT Scheme</em>). Språket tilhører Lisp-familien, brukes / er tilrettelagt for undervisning, men er ikke noe &quot;lekespråk&quot; - det er raskt, har alt man trenger til de fleste oppgaver, og kommer med et eget utviklingsmiljø som kalles <em>DrRacket</em>. Språket er modent og godt dokumentert, og kan brukes på Windows, Linux og Mac.</p>
 <h2>Enkelt å distribuere</h2>
 <p>En fordel med Racket er at det er enkelt å kompilere skripts til selvstendige, eksekverbare program som kan kopieres til en ny maskin og kjøres der - altså helt uten avhengigheter.</p>
 <h2>Programmet</h2>
-<p>Jeg har <a href="/tags/scheme/">brukt Scheme på denne bloggen før</a>, og Racket er ikke helt ulikt. Så la meg bare presentere det lille programmet jeg har laget, med noen få kommentarer.</p>
+<p>Jeg har <a href="/blog/tags/scheme/">brukt Scheme på denne bloggen før</a>, og Racket er ikke helt ulikt. Så la meg bare presentere det lille programmet jeg har laget, med noen få kommentarer.</p>
 <p>Jeg starter med en deklarasjon som forteller Racket hvilken dialekt av språket jeg vil bruke. Jeg <em>tror</em> at <code>racket/base</code> vil si at jeg kun bruker en liten basisdel av Racket.</p>
 <pre><code class="hljs"><span class="hljs-meta prompt_">#</span><span class="language-bash">lang racket/base</span></code></pre><p>Så må jeg hente inn et par moduler jeg skal bruke:</p>
 <pre><code class="hljs">(require racket/file
@@ -127,7 +127,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

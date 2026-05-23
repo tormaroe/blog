@@ -11,15 +11,15 @@
     <title>Strømlinjeformede enhetstester</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,11 +64,11 @@
           <h1>Strømlinjeformede enhetstester</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 20. januar 2011</small> 
-            <a href="/tags/dsl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DSL</span></a>
+            <a href="/blog/tags/dsl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DSL</span></a>
           
-            <a href="/tags/tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> TDD</span></a>
+            <a href="/blog/tags/tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> TDD</span></a>
           
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           </p>
           <p><strong>Når man skriver enhetstester kan det fort bli mye rot om man ikke tenker nøye gjennom hvordan de bør struktureres. Det vanlige er å lage testmetoder som inneholder en eller annen form for <em>Arrange-Act-Assert</em> eller <em>Given-When-Then</em>; man setter altså opp et miljø som skal testes, utfører en handling, og sjekker at det man forventer har skjedd. Desverre blir dette ofte for mye støy i én metode, og man trenger et bedre “rammeverk” for testene.</strong></p>
 <p>Ingen situasjoner er like, og strukturen på testene bør derfor heller ikke alltid følge samme mal. I denne blogposten forteller jeg om et mønster som ofte gir meg renere enhetstester..</p>
@@ -226,7 +226,7 @@
 <span class="lnr">124 </span>}
 </pre>
 <p>Jeg bruker en ekstra teknikk i denne testen, og det er å bruke <i>Generics</i> til å spesifisere hvilken klasse jeg tester – nemlig <tt>ExpectedRepliesVerifier</tt>. Baseklassen oppretter en instans av denne, og bruker den til å validere de to modellene mot hverandre. Dermed kan jeg bruke denne samme teknikken på alle verifiseringsobjekter jeg lager, og for alle tenkelige oppsett av modeller.</p>
-<p>Les også mine mest populære testrelaterte artikler: <a href="/2009/08/25/utenfra-og-inn-programmering/">Utenfra-og-inn programmering</a> og <a href="/2009/08/30/tdd-og-mocking-i-praksis/">TDD og mocking i praksis</a>.</p>
+<p>Les også mine mest populære testrelaterte artikler: <a href="/blog/2009/08/25/utenfra-og-inn-programmering/">Utenfra-og-inn programmering</a> og <a href="/blog/2009/08/30/tdd-og-mocking-i-praksis/">TDD og mocking i praksis</a>.</p>
 
 
         </div>
@@ -247,7 +247,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

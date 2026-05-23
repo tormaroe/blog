@@ -11,15 +11,15 @@
     <title>Kompakt serialisering med MessagePack</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,15 +64,15 @@
           <h1>Kompakt serialisering med MessagePack</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 13. mai 2015</small> 
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           
-            <a href="/tags/software-verktøy"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Software/verktøy</span></a>
+            <a href="/blog/tags/software-verktøy"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Software/verktøy</span></a>
           
-            <a href="/tags/ytelse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ytelse</span></a>
+            <a href="/blog/tags/ytelse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ytelse</span></a>
           </p>
           <p><strong>MessagePack</strong> er et binært serialiseringsformat. Omtrent som JSON, bare raskere og mer kompakt (..er slagordet på <a href="http://msgpack.org/">msgpack.org</a>).</p>
 <p>Et bilde på internett indikerer at dette kan være noe jeg bør se nærmere på: </p>
-<img src="/uploads/2015/05/speedtest.png" alt="Et random bilde fra internett" />
+<img src="/blog/uploads/2015/05/speedtest.png" alt="Et random bilde fra internett" />
 
 <p>JSON er normalt veldig greit å bruke i mange sammenhenger, men når antall bytes er viktig blir JSON unødvendig stort. For eksempel om du skal lagre en masse data i memcached eller Redis, eller sende mange meldinger gjennom beanstalkd eller RabbitMQ. Da er MessagePack er bra alternativ.</p>
 <p>Ikke nødvendigvis fordi man ikke har plass til å lagre mye data, men fordi ting går raskere når det er <em>mindre data som skal sendes over nettverket eller skrives til disk</em>.</p>
@@ -219,7 +219,7 @@ using (<span class="hljs-keyword">var</span> reader = <span class="hljs-keyword"
         .Deserialize(zip) <span class="hljs-keyword">as</span> TvSeries;
     Console.WriteLine(fromBinary.Quotes.First().Text);
 }</code></pre><p>De ulike formatene, side ved side:</p>
-<img src="/uploads/2015/05/msgpack_bytes.png" alt="Sammenligning av serialiseringsformater" />
+<img src="/blog/uploads/2015/05/msgpack_bytes.png" alt="Sammenligning av serialiseringsformater" />
 
 <h2>Andre alternativ</h2>
 <p>Det finnes noen andre, populære serialiseringsformat med samme bruksområde som MessagePack, men som jeg ikke har noe særlig erfaring med. Jeg tenker på <strong><a href="https://developers.google.com/protocol-buffers/">Protocol Buffers</a></strong> utviklet av Google, og <strong><a href="http://thrift.apache.org/">Apache Thrift</a></strong>.</p>
@@ -264,7 +264,7 @@ obj = MessagePack.<span class="hljs-built_in">unpack</span> msg</code></pre><p>J
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

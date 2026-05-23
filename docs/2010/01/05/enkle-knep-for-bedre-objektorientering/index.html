@@ -11,15 +11,15 @@
     <title>Enkle knep for bedre objektorientering</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,7 +64,7 @@
           <h1>Enkle knep for bedre objektorientering</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 5. januar 2010</small> 
-            <a href="/tags/oop"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OOP</span></a>
+            <a href="/blog/tags/oop"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OOP</span></a>
           </p>
           <p>Konseptet <strong>objektorientering</strong> (OO) ble født allerede på 60-tallet; <a href="http://en.wikipedia.org/wiki/Simula" target="_blank">Simula</a>, som ble utviklet på <a href="http://www.nr.no/" target="_blank">Norsk Regnesentral</a> med Ole-Johan Dahl og Kristen Nygaard i spissen, var det første objektorienterte programmeringsspråket. Det var likevel ikke før på 90-tallet at OO ble <em>mainstream</em>. I dag foregår det meste av moderne systemutvikling i objektorienterte språk.</p>
 <p>Men det at man bruker et slikt språk er <em>ikke</em> det samme som at man driver med <em>god</em> objektorientering.</p>
@@ -119,11 +119,11 @@
 <p>Den tredje og siste huskeregelen som vil gjøre deg til en bedre utvikler er at <strong style="background-color: yellow">OO <em>ikke</em> nødvendigvis skal modellere virkeligheten!</strong> Dette er en vanlig misforståelse som mange av oss fikk innprentet da vi begynte å lære objektorientert programmering. Om vi begynner å designe et system ved å lage klasser av alle entitetene vi kan observere i det domenet vi skal modellere kommer vi ofte skjevt ut. Begynn i stedet med adferden du ønsker, og se hvilke objekter som "naturlig" kommer ut av det.</p>
 <p>Skal vi for eksempel designe et kontrollsystem for en bil kan det være veldig feil å starte med å lage klasser for hjul, bremser, ratt, motor, bensintank, gir og bilen selv. Et system med klasser som drivstoffregulator, bremsekraftforsterker, oljenivå og servostyring vil kanskje bli enklere og mere oversiktelig. Testdreven utvikling (TDD) vil kunne hjelpe deg til å drive frem det beste designet.</p>
 <h4>På tide med en Oppsummering</h4>
-<p>De tre huskereglene jeg har presentert, sammen med de to kanskje aller viktigste programmeringsprinsippene – <em>Single Responsibility</em> (SRP) og <em>Don't Repeat Yourself</em> (<a href="/2009/03/11/dry-dont-repeat-yourself/">DRY</a>) – vil sørge for at du designer kode som er enklere å forstå, og lar seg vedlikeholde, endre og utvide. </p>
+<p>De tre huskereglene jeg har presentert, sammen med de to kanskje aller viktigste programmeringsprinsippene – <em>Single Responsibility</em> (SRP) og <em>Don't Repeat Yourself</em> (<a href="/blog/2009/03/11/dry-dont-repeat-yourself/">DRY</a>) – vil sørge for at du designer kode som er enklere å forstå, og lar seg vedlikeholde, endre og utvide. </p>
 <p>Fortell objektene hva de skal gjøre på enklest mulig måte, ikke spør de hva de holder på med. Mange properties (eller andre typer gettere og settere) betyr sansynligvis at du kan gjøre designet bedre. Ikke la objektene dine snakke med fremmede. Og ikke begynn med å modellere virkeligheten, driv i stedet frem objekter du trenger gjennom å starte med implementering av adferd.</p>
-<p>Helt til slutt: Jeg snakker her om hvordan ideell, objektorientert kode ser ut. OO er ikke den optimale løsningen for <em>alle</em> problemer. Lager du f.eks. en enkel <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete" target="_blank">CRUD</a>-applikasjon er full objektorientering overkill. OO egner seg bedre jo mere adferd systemet skal ha. Se for eksempel <a href="/2009/09/27/greg-young-slapp-ls-domenet-sitt-p-nnug-i-bergen/">posten om Greg Young's foredrag i Bergen</a>, hvor han bruker OO på "command-siden" av systemet, men ikke på "query-delen".</p>
+<p>Helt til slutt: Jeg snakker her om hvordan ideell, objektorientert kode ser ut. OO er ikke den optimale løsningen for <em>alle</em> problemer. Lager du f.eks. en enkel <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete" target="_blank">CRUD</a>-applikasjon er full objektorientering overkill. OO egner seg bedre jo mere adferd systemet skal ha. Se for eksempel <a href="/blog/2009/09/27/greg-young-slapp-ls-domenet-sitt-p-nnug-i-bergen/">posten om Greg Young's foredrag i Bergen</a>, hvor han bruker OO på "command-siden" av systemet, men ikke på "query-delen".</p>
 <p><strong>Noen eksterne lenker:</strong> <a href="http://en.wikipedia.org/wiki/Law_of_Demeter" target="_blank">Law of Demeter</a> | <a href="http://www.pragprog.com/articles/tell-dont-ask" target="_blank">Tell, Don't Ask</a> | <a href="http://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank">Object-oriented programming</a> | <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle" target="_blank">Single Responsibility Prinsiple</a> | <a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself" target="_blank">Don't Repeat Yourself</a></p>
-<p><em>PS: Denne blogposten begynte som en intern </em><a href="/2009/12/19/ziptalks-p-jobben/" target="_blank"><em>ZipTalk</em></a><em> jeg holdt for utviklingsavdelingen i </em><a href="http://pswin.com"><em>PSWinCom</em></a><em>. Tittelen var da "OO &gt; O".</em></p>
+<p><em>PS: Denne blogposten begynte som en intern </em><a href="/blog/2009/12/19/ziptalks-p-jobben/" target="_blank"><em>ZipTalk</em></a><em> jeg holdt for utviklingsavdelingen i </em><a href="http://pswin.com"><em>PSWinCom</em></a><em>. Tittelen var da "OO &gt; O".</em></p>
 
 
         </div>
@@ -144,7 +144,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

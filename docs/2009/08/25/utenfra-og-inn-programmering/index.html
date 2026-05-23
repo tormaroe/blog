@@ -11,15 +11,15 @@
     <title>Utenfra-og-inn programmering</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,13 +64,13 @@
           <h1>Utenfra-og-inn programmering</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 25. august 2009</small> 
-            <a href="/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
+            <a href="/blog/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
           </p>
           <p><strong>Outside-in development</strong>, eller <em>utenfra-og-inn</em> programmering som jeg kaller det, er et av elementene i Dan Norths <a href="http://en.wikipedia.org/wiki/Behavior_Driven_Development" target="_blank">Behavior-Driven Development</a> (BDD). Mens testdreven utvikling (TDD) i bunn og grunn bare betyr at du skal skrive tester før du skriver kode, forteller BDD gjennom utenfra-og-inn prinsippet hvordan du bør <em>designe</em> systemet ditt <em>ved hjelp av</em> testdreven utvikling (eller Code-by-Example, som Dan kaller det).</p>
 <p>Prinsippet er ganske enkelt: Du begynner med det du vet at du trenger – det kravspesifikasjonen eller User Storien sier at du skal lage – adferden du skal produsere. For eksempel blir du bedt om å lage en webside hvor man kan administrere ett eller annet.., la oss si at vi skal administrere lagerbeholdningen i en butikk. Ok, da begynner vi ytterst med brukergrensesnittet.</p>
 <p>Vi definerer da gjerne et View, som har ansvar for å vise lagerbeholdningen, og la brukeren gjøre operasjoner mot denne (legge til/slette/etc). Og så arbeider vi oss innover. Vi lager typisk en controller/presenter som har som oppgave å populere viewet med data og håndtere kommandoer fra brukeren via viewet. Når vi har den på plass ser vi at vi trenger mer – data fra en repository f.eks., så da lager vi den.</p>
 <p>Gjennom denne prosessen <em>oppdager</em> vi de objektene brukergrensesnittet trenger å sammarbeide med, de objektene vi trenger på neste nivå, de objektene vi trenger på nivået etter det - slik fortsetter det til vi er i mål og alt fungerer. På denne måten følger vi <a href="http://en.wikipedia.org/wiki/YAGNI" target="_blank">YAGNI</a>-prinsippet (<em>You Ain't Gonna Need It</em>), fordi all koden vi skriver enten brukes av brukeren direkte (<em>viewet</em> i dette tilfellet), eller av annen kode som allerede er skrevet. Alt vi gjør gir dermed verdi her og nå.</p>
-<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="rect3489" border="0" alt="rect3489" src="/uploads/2009/08/rect3489.png" width="484" height="347"></p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="rect3489" border="0" alt="rect3489" src="/blog/uploads/2009/08/rect3489.png" width="484" height="347"></p>
 <h4>En historie fra virkeligheten..</h4>
 <p>Kontrasten til denne fremgangsmåten er typisk at vi begynner med en datamodell, gjerne i form av en relasjonsdatabase, og arbeider oss utover. Vi tror vi vet hva vi trenger i neste ledd, og lager en modell vi håper passer. Etterhvert som vi arbeider oss utover i lagene må vi hele tiden tilpasse oss det som ligger innenfor.</p>
 <p>I forrige uke skulle vi løse en oppgave hvor vi skulle ta imot en innkommende SMS-melding, ta noen avgjørelser basert på meldingens innhold og tidligere hendelser i systemet, og sende ut en ny SMS. </p>
@@ -78,7 +78,7 @@
 <p>Min kollega begynte i andre enden. Han definerte et par databasetabeller, et par entitetsklasser, og laget en repository med metoder for CRUD-operasjoner mot tabellene og mapping mot entitetene. Da vi etter ikke alt for lang tid sammenlignet hva vi hadde gjort, så vi raskt at det var en klar mismatch. Logikken jeg hadde laget hadde ikke noe behov for alle CRUD-operasjonene min kollega hadde laget – jeg trengte bare noen få og dessuten mye enklere metoder. Og entitetsklassene ble forkastet. <em>Utenfra-og-inn</em> hadde hjulpet meg til å lage et design som var mer fokusert på adferden vi skulle levere. Modellen man tror man trenger når man tenker innenfra-og-utover stemmer ofte ikke med det designet testdreven utvikling gir deg.</p>
 <p>I <a href="http://msdn.microsoft.com/en-us/magazine/cc337902.aspx" target="_blank">ALT.NET miljøet</a> sier man ofte at du kan/bør designe hele systemet ditt <em><strong>før</strong></em> du oppretter databasen. Databasen er der bare for å persistere tilstand, eller ta vare på historikk for rapportering. Den er ikke essensiell for programvaren. De bruker uttrykket <strong><a href="http://www.google.no/search?q=persistence+ignorance" target="_blank">persistence ignorance</a></strong> – forretningslogikken, kjernen i programvaren, skal ikke bry seg om hvordan data lagres. Dette står i sterk kontrast til hvordan de fleste utviklingsprosjekter jeg har vært borti foregår, hvor det første man gjør når man skal begynne på en ny feature er å definere <em>hvordan tabellen skal se ut</em>.</p>
 <h4>"Mocking"</h4>
-<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 10px; border-left-width: 0px; margin-right: 0px" title="mockery" border="0" alt="mockery" align="right" src="/uploads/2009/08/mockery_thumb.png" width="200" height="135"> For å gjøre utenfra-og-inn programmering på en effektiv måte må man gå i små steg, og få tilbakemelding hele tiden gjennom testene man skriver. Hvis man skal utvikle alle klassene man trenger for å tilfredstille en feature før man kan sjekke om den fungerer som forventet, gjør man det ekstremt vanskelig for seg selv. Det er her <em>mocking</em> kommer inn i bildet.</p>
+<p><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 10px; border-left-width: 0px; margin-right: 0px" title="mockery" border="0" alt="mockery" align="right" src="/blog/uploads/2009/08/mockery_thumb.png" width="200" height="135"> For å gjøre utenfra-og-inn programmering på en effektiv måte må man gå i små steg, og få tilbakemelding hele tiden gjennom testene man skriver. Hvis man skal utvikle alle klassene man trenger for å tilfredstille en feature før man kan sjekke om den fungerer som forventet, gjør man det ekstremt vanskelig for seg selv. Det er her <em>mocking</em> kommer inn i bildet.</p>
 <p><em>(Illustrasjonen til høyre er hentet fra Michael Feathers og Steve Freemans foredrag </em><a href="http://www.infoq.com/presentations/tdd-ten-years-later" target="_blank">Test Driven Development: Ten Years Later</a><em>. Anbefales som en historisk oppsummering av TDD.)</em></p>
 <p>Det vi populært kaller mocking betyr at når vi utvikler en betsemt enhet/klasse/modul så isolerer vi oss bort fra avhengighetene til denne enheten/klassen/modulen. I eksempelet mitt hvor jeg skal lage et webgrensesnitt for å administrere lagerbeholdning vil jeg ikke tenke på repository-klassen når jeg utvikler controlleren. Men controlleren trenger helt klart en repository. Vi lager da en <em>falsk</em> repository som controlleren kan bruke i testene vi skriver.</p>
 <p>Når vi er ferdig med controlleren, og skal utvikle repository-klassen, er det repositoriens avhengigheter vi "mocker ut". Følger man dette helt strickt, vil en feil i en testklasse alltid korrespondere til en feil i den éne testede klassen. Klassen som testes/utvikles isoleres fra resten av systemet.</p>
@@ -86,7 +86,7 @@
 <h4>Konklusjon</h4>
 <p>Utenfra-og-inn er en måte å kode på hvor vi driver frem designet av systemet gjennom tester. Vi går i små steg, og gjør oss ferdige med det vi holder på med før vi går videre. Ting vi ser vi trenger underveis mocker vi. Gjennom denne fremgangsmåten skiller vi bedre hva vi trenger fra hvordan det skal løses – vi fokuserer på det logiske designet og adferd, og det fysiske designet (implementasjonen om du vil) er underordnet og kommer etterhvert. Vi drives primært av forretningsbehov, og vokser systemet vårt organisk med de tingene vi oppdager at vi trenger.</p>
 <p>Dette er uten tvil en herlig måte å jobbe på, og alle som ikke kjenner seg igjen i denne fremgangsmåten bør forsøke den.</p>
-<p><strong>Knagger:</strong> <a href="/index.php?s=ALT.NET" rel="tag">ALT.NET</a>, <a href="/index.php?s=BDD" rel="tag">BDD</a>, <a href="/index.php?s=Michael+Feathers" rel="tag">Michael Feathers</a>, <a href="/index.php?s=Mocking" rel="tag">Mocking</a>, <a href="/index.php?s=TDD" rel="tag">TDD</a></p>
+<p><strong>Knagger:</strong> <a href="/blog/index.php?s=ALT.NET" rel="tag">ALT.NET</a>, <a href="/blog/index.php?s=BDD" rel="tag">BDD</a>, <a href="/blog/index.php?s=Michael+Feathers" rel="tag">Michael Feathers</a>, <a href="/blog/index.php?s=Mocking" rel="tag">Mocking</a>, <a href="/blog/index.php?s=TDD" rel="tag">TDD</a></p>
 
 
         </div>
@@ -107,7 +107,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

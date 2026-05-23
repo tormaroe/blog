@@ -11,15 +11,15 @@
     <title>JavaScript revolution</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,9 +64,9 @@
           <h1>JavaScript revolution</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 22. oktober 2011</small> 
-            <a href="/tags/javascript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> JavaScript</span></a>
+            <a href="/blog/tags/javascript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> JavaScript</span></a>
           
-            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+            <a href="/blog/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
           </p>
           <p><a href="https://developer.mozilla.org/en/JavaScript/Reference"><img style="background-image: none; border-right-width: 0px; margin: 0px 20px 0px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" border="0" align="left" src="http://static.jsconf.us/promotejshs.png"></a>JavaScript har i løpet av 15 år gått fra å være et forferdelig mareritt til å bli en av de mest spennende og pulserende teknologiene man kan holde på med. Det skjer så mye rundt JavaScript for tiden at det rett å slett er vanskelig å henge med.</p>
 <p>Denne artikkelen er et forsøk på å skape en oversikt over viktige open-source biblotek det kan være nyttig å vite om. I takt med modningen av HTML5 har jeg blitt mer og mer interessert i JavaScript-utvikling det siste året. Denne listen inneholder noen ting jeg har testet ut, men vel så mange ting jeg ikke har jobbet med, men ønsker å få sett nærmere på i tiden fremover.</p>
@@ -75,13 +75,13 @@
 <p>Først og fremst bør alle webutviklere kjenne til det jeg tenker på som de store, generelle JavaScript/Ajax-biblotekene. Jeg tenker da på <a href="http://www.prototypejs.org/"><strong>Prototype</strong></a>, <strong><a href="http://dojotoolkit.org/">DOJO</a></strong>, <strong><a href="http://mootools.net/">Moo Tools</a></strong>, <strong><a href="http://developer.yahoo.com/yui/">YUI Library</a></strong>, og sist men ikke minst <strong><a href="http://jquery.com/">jQuery</a></strong>, som er det som nå er aller mest populært. Siden jeg bruker jQuery selv, ser jeg ingen åpenbar grunn til å se på de andre.</p>
 <p>jQuery har som kjent også et hav av plugins for alt mulig man kan komme til å trenge. Det kan være viktig å lete litt blant dem før man begynner å lage noe selv.</p>
 <h4>JavaScript også utenfor browseren</h4>
-<p>JavaScript er et kraftig språk med noen av de raskeste, dynamiske tolkerne (interpreters) som finnes. Og det brukes til langt mer enn å bare lage websider. <a href="http://nodejs.org/"><strong>Node.js</strong></a> er det mest populære rammeverket som tar JavaScript server-side, og er basert på Google's V8-motor som kjører i Chrome. Jeg <a href="/2011/07/06/min-frste-nodejs-server/">har lekt meg litt med Node</a> tidligere, og synes det er veldig spennende.</p>
+<p>JavaScript er et kraftig språk med noen av de raskeste, dynamiske tolkerne (interpreters) som finnes. Og det brukes til langt mer enn å bare lage websider. <a href="http://nodejs.org/"><strong>Node.js</strong></a> er det mest populære rammeverket som tar JavaScript server-side, og er basert på Google's V8-motor som kjører i Chrome. Jeg <a href="/blog/2011/07/06/min-frste-nodejs-server/">har lekt meg litt med Node</a> tidligere, og synes det er veldig spennende.</p>
 <p><a href="http://www.commonjs.org/"><strong>CommonJS</strong></a> er et initiativ som skal definere et standard API for JavaScript utover det som språket selv definerer. Fokuset her er nettopp på det å bruke JavaScript utenfor browseren – til å lage server-applikasjoner, kommandolinje-verktøy, desktop GUI-applikasjoner, og hybridapplikasjoner i f.eks. <a href="http://www.appcelerator.com/">Titanium</a> og <a href="http://www.adobe.com/products/air.html">Adobe AIR</a>. Titanium har jeg også testet litt, og det er et veldig spennende alternativ hvor du lager programmer som kjører på Windows/Mac/Linux ved å bruke HTML og CSS pluss en valgfri kombo av JavaScript, Ruby og Python.</p>
 <p>Når jeg sier JavaScript så mener jeg forresten egentlig <strong><a href="http://jashkenas.github.com/coffee-script/">CoffeeScript</a></strong>. Dette er en rykende ferskt språk som kompileres ned til JavaScript. Man kan bruke alt som finnes av biblotek fra JavaScript-verdenen, men koder selv i en mye mere behagelig syntaks. Jeg har allerede konvertert teamet mitt på jobben til å bruke CoffeeScript fremfor JavaScript, og anbefaler deg til å vurdere det samme.</p>
 <h4>Noen sentrale byggeklosser</h4>
 <p><a href="http://busterjs.org/"><strong>RequireJS</strong></a> laster JavaScript-filer og moduler. Å bruke dette vil gjøre løsningen din både raskere og enklere å holde oversiktelig etterhvert som den vokser seg større. RequireJS gjør det enklere for deg som utvikler å lage større JavaScript-løsninger, samtidig som den optimaliserer selve deploymenten av løsningen.</p>
 <p><strong><a href="http://documentcloud.github.com/underscore/">Underscore.js</a></strong> er en verktøykasse som gir JavaScript bedre støtte for funskjonell programmering. Her finner du rundt 60 generelle funksjoner som <em>each, map, select, reduce, range</em> osv.</p>
-<p><a href="http://www.w3.org/html/logo/"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="HTML5_Logo_128" border="0" alt="HTML5_Logo_128" align="left" src="/uploads/2011/10/HTML5_Logo_128.png" width="128" height="128"></a></p>
+<p><a href="http://www.w3.org/html/logo/"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="HTML5_Logo_128" border="0" alt="HTML5_Logo_128" align="left" src="/blog/uploads/2011/10/HTML5_Logo_128.png" width="128" height="128"></a></p>
 <p><strong><a href="http://www.modernizr.com/">Modernizr</a></strong> er et biblotek som skal hjelpe deg å bygge neste generasjons HTML5- og CSS3-løsninger som også vil virke for dem som bruker browsere som ikke støtter de nye featurene. Dvs., Modernizr utfører ikke mirakler – det får ikke disse nye tingene til å virke i gamle browsere – men det forteller deg hva som virker, slik at du kan ta høyde for det og kode deretter.</p>
 <p><strong>WebSockets</strong> har potensialet til å revolusjonere hvordan vi lager rike webapplikasjoner, og er noe av det aller mest spennende som ligger i HTML5-standarden (<a href="http://www.infoq.com/presentations/WebSockets-The-Web-Communication-Revolution">en bra presentasjon om dette</a>).<strong>&nbsp;</strong><a href="http://socket.io/"><strong>Socket.IO</strong></a> er et biblotek som skal gi deg <em>realtime apps</em>, uavhengig av hvilken browser eller mobil-device brukeren har. Det bruker WebSockets om det er tilgjengelig, og faller tilbake på andre løsninger om det ikke er det. Socket.IO kan også brukes på server-siden i f.eks. Node.js.</p>
 <p>Og så må jeg få nevne <a href="http://www.datejs.com/"><strong>Date.js</strong></a>, et lite biblotek som lar deg jobbe med datoer i JavaScript på en enkel måte.</p>
@@ -122,7 +122,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

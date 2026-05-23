@@ -11,15 +11,15 @@
     <title>Dekorer klassene dine med funksjonalitet</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,11 +64,11 @@
           <h1>Dekorer klassene dine med funksjonalitet</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 17. juli 2009</small> 
-            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+            <a href="/blog/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
           
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           </p>
-          <p><img style="border-right-width: 0px; margin: 0px 20px 10px 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="CropperCapture[18]" border="0" alt="CropperCapture[18]" align="left" src="/uploads/2009/07/CropperCapture18.png" width="192" height="200"> </p>
+          <p><img style="border-right-width: 0px; margin: 0px 20px 10px 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="CropperCapture[18]" border="0" alt="CropperCapture[18]" align="left" src="/blog/uploads/2009/07/CropperCapture18.png" width="192" height="200"> </p>
 <p><strong><em>Decorator pattern</em></strong> er et objektorientert designmønster som lar deg legge ny funksjonalitet til et eksisterende objekt uten å modifisere det. Funksjonalitet implementert som decorators kan "plugges inn" dynamisk når man måtte ønske det, og holder grunn-klassen fri for forstyrrende kode.</p>
 <p>I denne artikkelen illustrerer jeg et tenkt tilfelle hvor vi blir bedt om å legge til ny funksjonalitet i et eksisterende system, og hvor vi kan velge å gjøre det enkelt – noe som kan føre til større problemer på sikt – eller vi kan velge å bruke decorators, som vil la oss beholde en ren og fleksibel løsning. Jeg viser hvordan jeg dekorerer den eksisterende klassen med ny funkjonalitet, og snakker til slutt litt om motivasjonen for å gjøre det på denne måten.</p>
 <p>I det tenkte systemet vårt har vi et abstrakt begrep vi kaller for en Service. Du kan tenke på det som en typisk windows service. For å administrere en service har vi laget en klasse vi kaller <strong>ServiceRunner</strong> – den har metoder for å starte, stoppe, pause og re-starte en service.</p>
@@ -220,7 +220,7 @@
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 16</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
 </div>
 <p>Som du ser har hver av klassene vi nå står igjen med hvert sitt ansvar: StrictServiceRunner handler kun om autorisasjon, LoggingServiceRunner handler kun om logging, ServiceRunnerImplementor bryr seg kun om å utføre de nødvendige operasjonene på Service-instansen. Hver av disse klassene kan så komponeres sammen, slik at når brukeren kaller Start() på sin instans av ServiceRunner så kalles Start-metoden etter tur i alle klassene, som nå utgjør en "pipeline" med relatert funksjonalitet. Du kan se for deg hvordan dekoratørene pakker inn den orginale ServiceRunner'en lag for lag, som en løk:</p>
-<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="DecoratorOnion" border="0" alt="DecoratorOnion" src="/uploads/2009/07/DecoratorOnion.png" width="297" height="150"></p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="DecoratorOnion" border="0" alt="DecoratorOnion" src="/blog/uploads/2009/07/DecoratorOnion.png" width="297" height="150"></p>
 <p>Nå bør vi til slutt implementere en <em>factory</em> for å opprette ServiceRunnere, slik som jeg hintet til helt i starten. Gitt en Service kan vi komponere en ServiceRunner med ønsket funksjonalitet (eller "dekor" om du vil).</p>
 <div style="font-family: consolas; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp;&nbsp; 1</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #2b91af">ServiceRunner</span> CreateServiceRunner(<span style="color: #2b91af">Service</span> service)</p>
@@ -257,12 +257,12 @@
 <h4>Når skal man bruke decorators?</h4>
 <p>I <a href="http://www.amazon.com/Working-Effectively-Legacy-Robert-Martin/dp/0131177052" target="_blank">Working Effectively with Legacy Code</a><em></em> (kapittel 6: <em>"I Don't Have Much Time and I Have to Change It"</em>) snakker Michael Feathers om hvordan Decorator pattern kan være et nyttig hjelpemiddel når man skal implementere ny funksjonalitet i et komplisert system man ikke er trygg på. La oss tenke oss at den orginale ServiceRunner-klassen er mye større, og allerede har mange avhengigheter som gjør det svært vanskelig å lage enhetstester for den. Vi ønsker å være trygg på den nye funksjonaliteten vi skal implementere, og vil derfor skrive tester, men det koster rett og slett for mye å få ServiceRunner inn i et <em>testing harness</em>.</p>
 <p>Da kan man velge å implementere den nye funksjonaliteten som en dekoratør. Den kan testes uavhengig av ServiceRunner. ServiceRunner er i seg selv fortsatt Legacy Code, men alt nytt vi legger til er enhetstestet og til å stole på. Dette er ikke ønskedrømmen – aller helst burde vi klare å få testet ServiceRunner også - men noen ganger må man ta snarveier, og da er Decorator pattern et bra verktøy.</p>
-<p>Robert C. Martin forteller også om Decorator i boken <em><a href="/2009/06/05/min-nye-bibel-innen-smidig-design/">Agile Principles, Patterns, and Practices in C#</a></em>, hvor han klassifiserer mønsteret sammen med <em>Visitor pattern</em> og <em>Extension pattern</em>. Han har følgende å si om hvordan disse teknikkene støtter opp under gode OO-prinsipper:</p>
+<p>Robert C. Martin forteller også om Decorator i boken <em><a href="/blog/2009/06/05/min-nye-bibel-innen-smidig-design/">Agile Principles, Patterns, and Practices in C#</a></em>, hvor han klassifiserer mønsteret sammen med <em>Visitor pattern</em> og <em>Extension pattern</em>. Han har følgende å si om hvordan disse teknikkene støtter opp under gode OO-prinsipper:</p>
 <p style="padding-left: 20px"><em>"The Visitor family of patterns provides us with a number of ways to modify the behaviour of a hierarchy of classes without having to change them. Thus, they help us maintain the <strong>Open/Closed Prinsiple</strong>. They also provide mechanisms for segregating various kinds of funktionality, keeping classes from getting cluttered with many different functions. As such, they help us maintain the <strong>Common Closure Prinsiple</strong>. It should be clear that <strong>LSP [Liskov's Substitution Principle]</strong> and <strong>DIP [Dependency Invertion Principle]</strong> are also applied to the structure of the Visitor family."</em></p>
 <p>Uncle Bob gir videre følgende råd om bruken av Visitor, Decorator og Extension:</p>
 <p style="padding-left: 20px"><em>"The Visitor patterns are seductive. It is easy to get carried away with them. Use them when they help, but maintain a healthy skepticism about their necessity. Often, something that can be solved with a Visitor can also be solved by something simpler."</em></p>
 <p>For mer informasjon anbefaler jeg at du tar en titt på <a href="http://en.wikipedia.org/wiki/Decorator_pattern" target="_blank">Decorator Pattern på wikipedia</a>, og så finner du en video kalt <a href="http://dimecasts.net/Casts/CastDetails/120" target="_blank">Learning the Decorator Pattern</a> som er under 10 minutter lang på DimeCasts.NET.</p>
-<p><strong>Knagger:</strong> <a href="/index.php?s=Agile+Principles,+Patterns,+and+Practices+in+C#" rel="tag">Agile Principles, Patterns, and Practices in C#</a>, <a href="/index.php?s=Dependency+Injection" rel="tag">Dependency Injection</a>, <a href="/index.php?s=Dependency+Invertion+Principle" rel="tag">Dependency Invertion Principle</a>, <a href="/index.php?s=Open+Closed+principle" rel="tag">Open Closed principle</a>, <a href="/index.php?s=Michael+Feathers" rel="tag">Michael Feathers</a>, <a href="/index.php?s=Legacy" rel="tag">Legacy</a>, <a href="/index.php?s=Robert+C.+Martin" rel="tag">Robert C. Martin</a>, <a href="/index.php?s=Single+Responsibility+Principle" rel="tag">Single Responsibility Principle</a>, <a href="/index.php?s=SOLID" rel="tag">SOLID</a></p>
+<p><strong>Knagger:</strong> <a href="/blog/index.php?s=Agile+Principles,+Patterns,+and+Practices+in+C#" rel="tag">Agile Principles, Patterns, and Practices in C#</a>, <a href="/blog/index.php?s=Dependency+Injection" rel="tag">Dependency Injection</a>, <a href="/blog/index.php?s=Dependency+Invertion+Principle" rel="tag">Dependency Invertion Principle</a>, <a href="/blog/index.php?s=Open+Closed+principle" rel="tag">Open Closed principle</a>, <a href="/blog/index.php?s=Michael+Feathers" rel="tag">Michael Feathers</a>, <a href="/blog/index.php?s=Legacy" rel="tag">Legacy</a>, <a href="/blog/index.php?s=Robert+C.+Martin" rel="tag">Robert C. Martin</a>, <a href="/blog/index.php?s=Single+Responsibility+Principle" rel="tag">Single Responsibility Principle</a>, <a href="/blog/index.php?s=SOLID" rel="tag">SOLID</a></p>
 
 
         </div>
@@ -283,7 +283,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

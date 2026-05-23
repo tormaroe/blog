@@ -11,15 +11,15 @@
     <title>Ping Ring del 5: Erlang</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,27 +64,27 @@
           <h1>Ping Ring del 5: Erlang</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 12. september 2010</small> 
-            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+            <a href="/blog/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
           
-            <a href="/tags/ping-ring"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ping Ring</span></a>
+            <a href="/blog/tags/ping-ring"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ping Ring</span></a>
           
-            <a href="/tags/erlang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Erlang</span></a>
+            <a href="/blog/tags/erlang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Erlang</span></a>
           
-            <a href="/tags/actor-model"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Actor model</span></a>
+            <a href="/blog/tags/actor-model"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Actor model</span></a>
           
-            <a href="/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
+            <a href="/blog/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
           </p>
-          <p style="border-bottom: darkgrey 1px solid; border-left: darkgrey 1px solid; padding-bottom: 7px; background-color: #ffd79b; padding-left: 7px; padding-right: 7px; border-top: darkgrey 1px solid; border-right: darkgrey 1px solid; padding-top: 7px">Dette er del 5 i artikkelserien <strong><em>Ping Ring</em></strong> hvor jeg implementerer et og samme program i et utall ulike programmeringsspråk - for å se om det er noe å lære gjennom å gjøre det. <a href="/2010/09/04/ping-ring-del-1-introduksjon/">Introduksjonen kan du lese her</a>.</p>
-<p><a href="http://steve.vinoski.net/blog/2010/03/29/erlang-the-movie-poster/" target="_blank"><img style="border-right-width: 0px; margin: 0px 0px 5px 15px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="erlang_poster" border="0" alt="erlang_poster" align="right" src="/uploads/2010/09/erlang_poster.jpg" width="120" height="167"></a>Jeg har ikke kunnet komme med noen banebrytende oppdagelser sålangt i denne serien. Språkene jeg har valgt har vært for like. Jeg har egentlig implementert nøyaktig det samme programmet i alle språkene, og ikke funnet noen forskjeller av stor nok betydning til å utrope ett av språkene som mere egnet for oppgaven enn de andre. Det er på tide å forsøke noe radikalt anderledes…</p>
-<p>Derfor har jeg nå valgt <strong><a href="/2010/04/21/en-introduksjon-til-erlang/">Erlang</a></strong>. Mens C#, Ruby og Boo er objektorienterte språk, er Erlang funksjonsbasert. Dette betyr blant annet at jeg bør finne en alternativ måte å løse <em>shared state</em> på – i de tidligere implementasjonene har listener- og alerter-trådene begge hatt tilgang til en variabel med tidspunktet for sist innkommende ping. Slikt fnyser man av i den funksjonelle verden.</p>
+          <p style="border-bottom: darkgrey 1px solid; border-left: darkgrey 1px solid; padding-bottom: 7px; background-color: #ffd79b; padding-left: 7px; padding-right: 7px; border-top: darkgrey 1px solid; border-right: darkgrey 1px solid; padding-top: 7px">Dette er del 5 i artikkelserien <strong><em>Ping Ring</em></strong> hvor jeg implementerer et og samme program i et utall ulike programmeringsspråk - for å se om det er noe å lære gjennom å gjøre det. <a href="/blog/2010/09/04/ping-ring-del-1-introduksjon/">Introduksjonen kan du lese her</a>.</p>
+<p><a href="http://steve.vinoski.net/blog/2010/03/29/erlang-the-movie-poster/" target="_blank"><img style="border-right-width: 0px; margin: 0px 0px 5px 15px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="erlang_poster" border="0" alt="erlang_poster" align="right" src="/blog/uploads/2010/09/erlang_poster.jpg" width="120" height="167"></a>Jeg har ikke kunnet komme med noen banebrytende oppdagelser sålangt i denne serien. Språkene jeg har valgt har vært for like. Jeg har egentlig implementert nøyaktig det samme programmet i alle språkene, og ikke funnet noen forskjeller av stor nok betydning til å utrope ett av språkene som mere egnet for oppgaven enn de andre. Det er på tide å forsøke noe radikalt anderledes…</p>
+<p>Derfor har jeg nå valgt <strong><a href="/blog/2010/04/21/en-introduksjon-til-erlang/">Erlang</a></strong>. Mens C#, Ruby og Boo er objektorienterte språk, er Erlang funksjonsbasert. Dette betyr blant annet at jeg bør finne en alternativ måte å løse <em>shared state</em> på – i de tidligere implementasjonene har listener- og alerter-trådene begge hatt tilgang til en variabel med tidspunktet for sist innkommende ping. Slikt fnyser man av i den funksjonelle verden.</p>
 <p>Viktigere er det at <strong>Erlang er designet med fokus på samtidighet</strong>, og dessuten mye brukt i løsninger som baserer seg på TCP og andre lavnivå-protokoller. Jeg hadde derfor store forventninger til Erlang-implementasjonen av Ping-Ring.</p>
 <h4>Actor model</h4>
 <p>Et sentralt begrep i Erlang er <a href="http://en.wikipedia.org/wiki/Actor_model" target="_blank">Actor Model</a>. Det språket i praksis støtter er at man oppretter isolerte prosesser (actors), og at prosessene deretter enkelt kan sende meldinger til hverandre. Hver prosess har en inbox i form av en kø, og leser og behandler meldinger asynkront i forhold til resten av programmet.</p>
 <p>Figuren nedenfor er et gjensyn fra Ping Ring del 2, og illustrerer designet jeg brukte da jeg har implementert løsningene i C# / Ruby / Boo. Her ser du at jeg hadde to tråder som delte en variabel, og som opprettet egne tråder hver gang et ping skulle sendes.</p>
-<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="pingring_alg_1" border="0" alt="pingring_alg_1" src="/uploads/2010/09/pingring_alg_11.png" width="470" height="222"> </p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="pingring_alg_1" border="0" alt="pingring_alg_1" src="/blog/uploads/2010/09/pingring_alg_11.png" width="470" height="222"> </p>
 <p>Neste figur illustrerer hvordan Erlang-løsningen skiller seg fra de foregående. Her har jeg tre selvstendige prosesser som hver holder på sin egen <em>state</em>, og som kommuniserer via meldinger. Både Listener og Alerter sender for eksempel melding til Pinger når de ønsker å få sendt en ping.</p>
-<p><img style="display: block; float: none; margin-left: auto; margin-right: auto" title="pingring_alg_2" alt="pingring_alg_2" src="/uploads/2010/09/pingring_alg_2.png" width="470" height="222"> </p>
-<p>Mange ser på actor model som en bedre/mere riktig form for <a href="/category/oo-designclean-code/">objektorientering</a>, og spår at vi kommer til å få se flere språk med innebygd støtte for denne modellen i årene som kommer.</p>
+<p><img style="display: block; float: none; margin-left: auto; margin-right: auto" title="pingring_alg_2" alt="pingring_alg_2" src="/blog/uploads/2010/09/pingring_alg_2.png" width="470" height="222"> </p>
+<p>Mange ser på actor model som en bedre/mere riktig form for <a href="/blog/category/oo-designclean-code/">objektorientering</a>, og spår at vi kommer til å få se flere språk med innebygd støtte for denne modellen i årene som kommer.</p>
 <h4>Problemene</h4>
 <p>Erlang gir meg altså muligheten til å lage et ganske elegant design for å løse denne oppgaven. Problemet ligger derimot i detaljene. Før du tar en titt på koden vil jeg gå gjennom noen av de tingene jeg ikke liker med løsningen jeg har kommet opp med.</p>
 <p>Merk at noen av mine erfaringer helt sikkert kan skyldes at jeg fortsatt er ganske fersk i Erlang. Har du mer kunnskap enn meg er det bare å sette meg på plass.</p>
@@ -98,7 +98,7 @@
 <h4>Konklusjon</h4>
 <p>Actor-modellen er elegant, og passer veldig bra for denne oppgaven. Språket er derimot ikke så veldig bra å implementere i (eller eventuelt min kunnskap om det er for dårlig). Det er alt i alt lite tilfredstillende - kildekoden ser ikke fin ut, det er for mye av den, og den føles gammeldags. Jeg merker at jeg ønsker meg en fullgod implementasjon av actor model i et annet språk.</p>
 <p>I neste runde av denne serien vil jeg bruke et språk som er enda eldre enn Erlang, men som har en syntax jeg synes er super-elegant…</p>
-<p><strong>Tidligere i serien:</strong> <a href="/2010/09/04/ping-ring-del-1-introduksjon/">Introduksjon</a> | <a href="/2010/09/06/ping-ring-del-2-c/">Del 2 (C#)</a> | <a href="/2010/09/07/ping-ring-del-3-ruby/">Del 3 (Ruby)</a> | <a href="/2010/09/08/ping-ring-del-4-boo/">Del 4 (Boo)</a>.</p>
+<p><strong>Tidligere i serien:</strong> <a href="/blog/2010/09/04/ping-ring-del-1-introduksjon/">Introduksjon</a> | <a href="/blog/2010/09/06/ping-ring-del-2-c/">Del 2 (C#)</a> | <a href="/blog/2010/09/07/ping-ring-del-3-ruby/">Del 3 (Ruby)</a> | <a href="/blog/2010/09/08/ping-ring-del-4-boo/">Del 4 (Boo)</a>.</p>
 <p style="border-bottom: darkgrey 1px solid; border-left: darkgrey 1px solid; padding-bottom: 7px; background-color: #ffd79b; padding-left: 7px; padding-right: 7px; border-top: darkgrey 1px solid; border-right: darkgrey 1px solid; padding-top: 7px">Kildekoden fra denne blogposten er <a href="http://github.com/tormaroe/Ping-Ring">tilgjengelig på Github</a>. Der står du fritt til å forgrene løsningen og gjøre egne modifikasjoner om du ønsker det (for å illustrere et poeng eller lignende). Som alt annet på bloggen er koden lisensiert under Creative Commons.</p>
 
 
@@ -120,7 +120,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

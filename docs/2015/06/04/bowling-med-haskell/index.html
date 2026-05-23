@@ -11,15 +11,15 @@
     <title>Bowling med Haskell</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,16 +64,16 @@
           <h1>Bowling med Haskell</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 4. juni 2015</small> 
-            <a href="/tags/haskell"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Haskell</span></a>
+            <a href="/blog/tags/haskell"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Haskell</span></a>
           
-            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+            <a href="/blog/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
           
-            <a href="/tags/pattern-matching"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Pattern matching</span></a>
+            <a href="/blog/tags/pattern-matching"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Pattern matching</span></a>
           </p>
-          <img src="/uploads/2015/06/bowling.jpg" alt="Bowling" />
+          <img src="/blog/uploads/2015/06/bowling.jpg" alt="Bowling" />
 
-<p>Jeg har lekt meg litt med <a href="/2011/12/07/haskell/">Haskell</a> igjen. Jeg kjøpte en bok om programmeringsspråket for lenge siden, som jeg aldri har lest meg gjennom.., men av og til titter jeg i den, og får lyst til å prøve litt.</p>
-<p>Denne gangen tenkte jeg å implementere en enkel løsning på <em>bowling game kata</em> som jeg viste tidligere i F# og Erlang (<a href="/2011/11/18/likheter-mellom-f-og-erlang/">post fra 2011</a>). Jeg skal gjengi de to implementasjonene her før jeg viser hva jeg ha gjort i Haskell - sånn at du kan sammenligne hvordan det ser ut.</p>
+<p>Jeg har lekt meg litt med <a href="/blog/2011/12/07/haskell/">Haskell</a> igjen. Jeg kjøpte en bok om programmeringsspråket for lenge siden, som jeg aldri har lest meg gjennom.., men av og til titter jeg i den, og får lyst til å prøve litt.</p>
+<p>Denne gangen tenkte jeg å implementere en enkel løsning på <em>bowling game kata</em> som jeg viste tidligere i F# og Erlang (<a href="/blog/2011/11/18/likheter-mellom-f-og-erlang/">post fra 2011</a>). Jeg skal gjengi de to implementasjonene her før jeg viser hva jeg ha gjort i Haskell - sånn at du kan sammenligne hvordan det ser ut.</p>
 <h2>Bowling game kata?</h2>
 <p>Oppgaven er bare å lage en funksjon som kan gi poengresultatet av et bowling-spill. Spillet er representert som en liste med antall kjegler man har fått ned pr kast. Jeg lagde en video hvor jeg demonstrerte dette i Clojure også, og hvor jeg gjorde det test-drevet.</p>
 <h2>FSharp</h2>
@@ -162,7 +162,7 @@ score <span class="hljs-symbol">:</span><span class="hljs-symbol">:</span> [<spa
 score = calcFrame <span class="hljs-number">0</span></code></pre><p>Enda litt flere abstraksjoner nå - om det gjør det enklere eller vanskeligere å forstå koden kan diskuteres.</p>
 <p>Nye ting jeg lærte meg og brukte her:</p>
 <pre><code class="hljs"><span class="hljs-function"><span class="hljs-title">flip</span> :: (a -&gt;</span> <span class="hljs-function"><span class="hljs-title">b</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">c</span>) -&gt;</span> <span class="hljs-function"><span class="hljs-title">b</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> c
-(.) :: (<span class="hljs-function"><span class="hljs-title">b</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">c</span>) -&gt;</span> (<span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">b</span>) -&gt;</span> <span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> c</code></pre><p><code>flip</code> er en funksjon som endrer rekkefølgen på parametrene til en annen funksjon. Punktum bruker for <em>funksjonskomposisjon</em> - å slå sammen to funksjoner. Jeg brukte dette til å implementere <code>sumRolls</code> og <code>nextWithout</code> i såkalt <em>point-free style</em>, nevnt for ikke så lenge siden i posten <a href="/2015/04/02/reverser-deg-frem-til-svaret/">reverser deg frem til svaret</a>.</p>
+(.) :: (<span class="hljs-function"><span class="hljs-title">b</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">c</span>) -&gt;</span> (<span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">b</span>) -&gt;</span> <span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> c</code></pre><p><code>flip</code> er en funksjon som endrer rekkefølgen på parametrene til en annen funksjon. Punktum bruker for <em>funksjonskomposisjon</em> - å slå sammen to funksjoner. Jeg brukte dette til å implementere <code>sumRolls</code> og <code>nextWithout</code> i såkalt <em>point-free style</em>, nevnt for ikke så lenge siden i posten <a href="/blog/2015/04/02/reverser-deg-frem-til-svaret/">reverser deg frem til svaret</a>.</p>
 <h2>Sirkelen sluttes</h2>
 <p>Da jeg begynte å skrive denne posten for å dokumentere hva jeg hadde gjort, kom jeg på at Christian (som implementerte F#-løsningen) i 2011 kommenterte at hans kode egentlig var en portering av en løsning han hadde gjort i Haskell!!!</p>
 <p>... og i <a href="http://codernub.blogspot.no/2010/03/bowling-kata-as-haskell-exercise-first.html">en blogpost fra mars 2010</a> fant jeg også den:</p>
@@ -197,7 +197,7 @@ scoreFrame (<span class="hljs-variable language_">x</span>:<span class="hljs-var
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

@@ -11,15 +11,15 @@
     <title>HEAD@^~</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,13 +64,13 @@
           <h1>HEAD@^~</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 14. mars 2014</small> 
-            <a href="/tags/git"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Git</span></a>
+            <a href="/blog/tags/git"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Git</span></a>
           </p>
           <p>Her følger ukens GIT #7 fra <a href="http://www.eikeland.se/">Stian</a>.</p>
 <p>Du har sikkert sett referanser til <code>HEAD@</code>, <code>HEAD~</code>, <code>HEAD^</code> og lignende, men vet du hva alle disse egentlig er? La oss begynne med selve <code>HEAD</code>: <code>HEAD</code> er rett og slett en peker til <em>hvor du er nå</em>. Et Git-depot inneholder som du nok vet en tre-lignende graf (egentlig en DAG), og commits er noder i &quot;treet&quot;. <code>HEAD</code> er en peker til noden som er utsjekket for øyeblikket.</p>
 <p>Utover <code>HEAD</code> finnes det også andre navngitte referanser (noder du kan referere med navn), for eksempel greiner (<code>master</code>), tags/merker (<code>v1.0</code>), eksterne greiner (<code>origin/master</code>). Depotes navngitte referanser og hvor de peker til finner du ved å ta en titt på <code>git show-ref</code></p>
 <h2>HEAD@, head@, master@ og @</h2>
-<p>Som vi så i tipset om <code>git reflog</code> <a href="/2014/03/08/git-reflog/">i forrige uke</a>, så kan man bruke @ til å referere relativt i historien fra vår navigering rundt i depoet. Med andre ord, <em>hvor vi er nå og stegene vi sekvensielt utførte for å komme oss hit</em>.</p>
+<p>Som vi så i tipset om <code>git reflog</code> <a href="/blog/2014/03/08/git-reflog/">i forrige uke</a>, så kan man bruke @ til å referere relativt i historien fra vår navigering rundt i depoet. Med andre ord, <em>hvor vi er nå og stegene vi sekvensielt utførte for å komme oss hit</em>.</p>
 <pre><code class="hljs"><span class="hljs-comment"># Reflog lar oss se historikk på våre operasjoner</span>
 <span class="hljs-variable">$ </span>git reflog head   <span class="hljs-comment"># Se global historikk</span>
 <span class="hljs-variable">$ </span>git reflog master <span class="hljs-comment"># Se historikk for master-greinen</span>
@@ -103,7 +103,7 @@
 <span class="hljs-comment"># Hva er forskjellen før og etter en pull?</span>
 <span class="hljs-variable">$ </span>git pull
 <span class="hljs-variable">$ </span>git diff master master@{<span class="hljs-number">1</span>}</code></pre><h2>HEAD^ og HEAD~</h2>
-<img style="float:left" style="margin-right:10px;" src="/uploads/2014/03/grener.svg" />
+<img style="float:left" style="margin-right:10px;" src="/blog/uploads/2014/03/grener.svg" />
 
 <p>Som vi så kunne vi bruke <code>@</code>-operatoren til å navigere i historikken vår. Nå skal vi se på <code>^</code> og <code>~</code> som lar oss referere relativt i commit-treet.</p>
 <h4>HEAD^</h4>
@@ -146,7 +146,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

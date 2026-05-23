@@ -11,15 +11,15 @@
     <title>Template Method del 2: På vei mot funksjonell programmering</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,14 +64,14 @@
           <h1>Template Method del 2: På vei mot funksjonell programmering</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 30. januar 2012</small> 
-            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+            <a href="/blog/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
           
-            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+            <a href="/blog/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
           
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           </p>
-          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 20px 0px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="tp_del2" border="0" alt="tp_del2" align="left" src="/uploads/2012/01/tp_del2.png" width="146" height="127">I <a href="/2012/01/30/template-method-del-1-statisk-oop/">del 1</a> så du et ganske typisk, objektorientert design som kalles Template Method. I denne oppfølgeren vil jeg forsøke å gjøre designet mer fleksibelt uten å miste det jeg ønsket å oppnå – nemlig å definere skjelettet til algoritmen kun én gang.</p>
-<p>Om du ikke har lest gjennom del 1 allerede <a href="/2012/01/30/template-method-del-1-statisk-oop/">bør du gjøre det først..</a></p>
+          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 20px 0px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="tp_del2" border="0" alt="tp_del2" align="left" src="/blog/uploads/2012/01/tp_del2.png" width="146" height="127">I <a href="/blog/2012/01/30/template-method-del-1-statisk-oop/">del 1</a> så du et ganske typisk, objektorientert design som kalles Template Method. I denne oppfølgeren vil jeg forsøke å gjøre designet mer fleksibelt uten å miste det jeg ønsket å oppnå – nemlig å definere skjelettet til algoritmen kun én gang.</p>
+<p>Om du ikke har lest gjennom del 1 allerede <a href="/blog/2012/01/30/template-method-del-1-statisk-oop/">bør du gjøre det først..</a></p>
 <h4>Fra abstrakt til konkret</h4>
 <p>Den første endringen jeg gjør er å endre LogProcessor fra å være en abstrakt klasse til å bli en konkret klasse jeg kan opprette instanser av. C# har noen delegat-typer som heter <em>Action</em> og <em>Func</em>, og jeg bytter du de abstrakte metodene i LogProcessor med private felt av tilsvarende delegattype. Til slutt legger jeg til en konstruktør som lar meg opprette LogProcessor med alle de manglende bitene til templaten:</p>
 <pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 10 </span><span class="Type">public</span> <span class="Type">class</span> LogProcessor
@@ -105,7 +105,7 @@
 </pre>
 <h4>Builder Pattern</h4>
 <p>For å gjøre det enklere å opprette en fornuftig LogProcessor har jeg så brukt et annet pattern som kalles Builder: LogProcessorBuilder er en klasse som steg-for-steg lar meg definere hvordan en LogProcessor skal fungere.</p>
-<p>Studer Initialize-propertien nøye – <strong>den gav flere personer en aha-opplevelse</strong> under <a href="/2012/01/26/oop-vs-fp-p-nnug-bergens-januarmte/">NNUG-foredraget mitt som koden er hentet fra</a>. Her gjør jeg det mulig å sette propertien flere ganger, noe som vil føre til at Action-delegatene vil bli kombinert. Jeg burde gjort det samme for de andre propertiene også, men lar være for å spare litt plass.</p>
+<p>Studer Initialize-propertien nøye – <strong>den gav flere personer en aha-opplevelse</strong> under <a href="/blog/2012/01/26/oop-vs-fp-p-nnug-bergens-januarmte/">NNUG-foredraget mitt som koden er hentet fra</a>. Her gjør jeg det mulig å sette propertien flere ganger, noe som vil føre til at Action-delegatene vil bli kombinert. Jeg burde gjort det samme for de andre propertiene også, men lar være for å spare litt plass.</p>
 <pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 39 </span><span class="Comment">// More pattern fun: Adding a Builder</span>
 <span class="lnr"> 40 </span><span class="Type">public</span> <span class="Type">class</span> LogProcessorBuilder
 <span class="lnr"> 41 </span>{
@@ -211,7 +211,7 @@
 </pre>
 <h4>Konklusjon for del 2</h4>
 <p>Dette er fortsatt Template Method pattern, men designet er ikke lenger så rigid. Bruk av Action og Func lar meg legge til funksjonalitet i LogProcessor uten å måtte arve eller definere konkrete typer for denne funksjonaliteten. Jeg sender i prinsippet <em>funksjoner</em> til LogProcessor, som den så kan bruke når den skal prosessere loggfilen. Dermed kan jeg enkelt definere nye LogProcessor-instanser med kun små endringer i funksjonalitet – blande stegene fritt, uten at antall klasser i løsningen eksploderer. Og designet er fortsatt ganske rent, ryddig og forståelig.</p>
-<p>Det jeg har gjort er å tenke som en funksjonell programmerer, og <a href="/2012/01/31/template-method-del-3-bare-funksjoner/">i del 3 vil jeg ta steget fullt ut og implementere en løsning i F#</a> som kun baserer seg på funksjoner.</p>
+<p>Det jeg har gjort er å tenke som en funksjonell programmerer, og <a href="/blog/2012/01/31/template-method-del-3-bare-funksjoner/">i del 3 vil jeg ta steget fullt ut og implementere en løsning i F#</a> som kun baserer seg på funksjoner.</p>
 
 
         </div>
@@ -232,7 +232,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

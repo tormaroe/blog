@@ -11,15 +11,15 @@
     <title>Actor Model i F# ved hjelp av MailboxProcessor</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,17 +64,17 @@
           <h1>Actor Model i F# ved hjelp av MailboxProcessor</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 16. februar 2013</small> 
-            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+            <a href="/blog/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
           
-            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+            <a href="/blog/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
           
-            <a href="/tags/actor-model"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Actor model</span></a>
+            <a href="/blog/tags/actor-model"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Actor model</span></a>
           
-            <a href="/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
+            <a href="/blog/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
           </p>
           <p>Jeg fortsetter å eksperimentere med F#, og nå går vi over til noe litt mere avansert. <strong><code>MailboxProcessor</code></strong> er en klasse man finner i modulen Microsoft.FSharp.Control. Den er en slags agent som prosesserer meldinger asynkront. Den har en meldingskø som mange kan skrive til, men kun MailboxProcessor-agenten kan lese fra den.</p>
-<p>Dette minner veldig om <strong>Actor Model</strong>, som jeg har eksperimentert med blant annet i Erlang tidligere. Se <a href="/2010/04/21/en-introduksjon-til-erlang/">En introduksjon til Erlang</a> og&nbsp; <a href="/2010/09/12/ping-ring-del-5-erlang/">Ping Ring del 5</a> for mer info – begge fra 2010.</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="Actors" border="0" alt="Actors" src="/uploads/2013/02/Actors.png" width="510" height="307"></p>
+<p>Dette minner veldig om <strong>Actor Model</strong>, som jeg har eksperimentert med blant annet i Erlang tidligere. Se <a href="/blog/2010/04/21/en-introduksjon-til-erlang/">En introduksjon til Erlang</a> og&nbsp; <a href="/blog/2010/09/12/ping-ring-del-5-erlang/">Ping Ring del 5</a> for mer info – begge fra 2010.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="Actors" border="0" alt="Actors" src="/blog/uploads/2013/02/Actors.png" width="510" height="307"></p>
 <p>I denne artikkelen vil jeg gi et grunnleggende eksempel på hvordan Actors fungerer i F#. Jeg vil lage starten på en asynkron kalkulator, og så bruke den til å plusse sammen en rekke tall.</p>
 <h2>En liten debug-funksjon</h2>
 <p>Når jeg skal illustrere hvordan asynkron kode fungerer kan det være greit å printe ut litt til konsollet, slik at man kan se hvilken rekkefølge ting skjer i. Derfor lager jeg en funksjon jeg kaller <code>dbg</code> som skriver ut en streng sammen med et timestamp (med millisekund-presisjon).</p>
@@ -98,7 +98,7 @@ dbg "test 4"</pre>
 <p><strong>Et tips:</strong> Jeg koder i F# i Visual Studio. Men jeg kompilerer ikke, og kjører ikke programmet med F5 som jeg ville gjort i C#. I stedet har jeg åpnet et vindu som kalles F# Interactive, og hvis jeg markerer litt kode i editoren og trykker Alt+ENTER vil koden eksekveres og resultatet vises i det vinduet.</p>
 <h2>En Actor-basert kalkulator</h2>
 <p>En actor skal som sagt prosessere meldinger. F# er sterkt typet, så jeg trenger en meldingstype. Jeg bruker en <a href="http://msdn.microsoft.com/en-us/library/dd233226.aspx">Discriminated Union</a> til det i dette tilfellet. Her sier jeg at en melding kan være enten en pluss-operasjon med et tilhørende tall, eller en get-operasjon for å lese ut verdien til kalkulatoren. Get-operasjonen sin verdi er en <code>AsyncReplyChannel&lt;int&gt;</code>. Dette er et objekt som kan brukes til å sende en melding tilbake fra actoren til den som sendte Get-meldingen.</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="AsyncReplyChannel" border="0" alt="AsyncReplyChannel" src="/uploads/2013/02/AsyncReplyChannel.png" width="478" height="247"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="AsyncReplyChannel" border="0" alt="AsyncReplyChannel" src="/blog/uploads/2013/02/AsyncReplyChannel.png" width="478" height="247"></p>
 <p>Her definerer jeg meldingstypene:</p>
 <pre>type Message =
     | Add of int 
@@ -201,7 +201,7 @@ dbg "Main thread done!"</pre>
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

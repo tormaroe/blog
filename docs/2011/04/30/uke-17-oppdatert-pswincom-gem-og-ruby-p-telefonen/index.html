@@ -11,15 +11,15 @@
     <title>Uke 17: Oppdatert PSWinCom gem og Ruby på telefonen</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,9 +64,9 @@
           <h1>Uke 17: Oppdatert PSWinCom gem og Ruby på telefonen</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 30. april 2011</small> 
-            <a href="/tags/kjempekjektcom"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> kjempekjekt.com</span></a>
+            <a href="/blog/tags/kjempekjektcom"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> kjempekjekt.com</span></a>
           </p>
-          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 0px 0px 14px; padding-left: 0px; padding-right: 0px; display: inline; float: right; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="Uke17" border="0" alt="Uke17" align="right" src="/uploads/2011/04/Uke17.png" width="210" height="96">Med alt overskuddet etter påsken ble dette en gøy og produktiv uke som bare raste avgårde. Jeg publiserte tre blogposter (+ denne), lagde en <a href="/2011/04/29/en-funksjonell-stack-basert-kalkulator/">kodekata-video</a>, og deltok på <a href="/2011/04/25/praktisk-specflow-p-nnug-bergen/">NNUG-møte om SpecFlow</a>.</p>
+          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 0px 0px 14px; padding-left: 0px; padding-right: 0px; display: inline; float: right; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="Uke17" border="0" alt="Uke17" align="right" src="/blog/uploads/2011/04/Uke17.png" width="210" height="96">Med alt overskuddet etter påsken ble dette en gøy og produktiv uke som bare raste avgårde. Jeg publiserte tre blogposter (+ denne), lagde en <a href="/blog/2011/04/29/en-funksjonell-stack-basert-kalkulator/">kodekata-video</a>, og deltok på <a href="/blog/2011/04/25/praktisk-specflow-p-nnug-bergen/">NNUG-møte om SpecFlow</a>.</p>
 <p>På jobben fikk jeg gjort endel parprogrammering, blant annet i JavaScript/jQuery. Vi fikk også gjort en intern release av det vi jobbet med i ukene før påske, og har begynt å jobbe med tilbakemeldinger vi har fått fra “markedsfolkene”. Jeg har også akseptert en push request til <a href="https://github.com/tormaroe/pswincomgem" target="_blank">PSWinCom ruby gem</a>, og version 0.1.6 er nå publisert med støtte for <a href="http://wiki.pswin.com/CPA-Goods-and-Services.ashx" target="_blank">CPA GAS-meldinger</a>. Det vil si at den nå kan brukes til å ta betalt for varer og tjenester opp til kroner 300,- (krever egen avtale). </p>
 <blockquote><p>Vi oppdaget også at vi hadde problemer med <em>PUT</em> og <em>DELETE</em> i <a href="http://wiki.pswin.com/Intouch-REST-API.ashx" target="_blank">REST-grensesnittet</a> vårt. Det viste seg at <a href="http://en.wikipedia.org/wiki/WebDAV" target="_blank">WebDAV</a>, som av en eller annen grunn var installert på produksjonsserveren, kom i konflikt med og forstyrret OpenRasta og vår bruk av REST i IIS. WebDAV ble avistallert, og da fungerte alt fint.</p>
 </blockquote>
@@ -79,7 +79,7 @@
 <p style="border-bottom: silver 1px solid; border-left: silver 1px solid; padding-bottom: 9px; background-color: #f0f0f0; font-style: italic; padding-left: 9px; padding-right: 9px; margin-left: 10px; border-top: silver 1px solid; margin-right: 10px; border-right: silver 1px solid; padding-top: 9px">“As soon as we started programming, we found to our surprise that it wasn’t as easy to get programs right as we had thought.&nbsp; Debugging had to be discovered.&nbsp; I can remember the exact instant when I realized that a large part of my life from then on was going to be spent in finding mistakes in my own programs.”</p>
 <h4>Litt blog-stats</h4>
 <p>Til slutt noen tall fra programmeringsbloggen, mest for min egen del.</p>
-<p>Antall forskjellige besøkende siste uke: <strong>290</strong> (bloggurat). Antall abonnenter på RSS-feed: <strong>198</strong> (feedburner). Antall followers på twitter: <strong>483</strong>. Fra Google Analytics, siste måned: <strong>1607</strong> besøk, <strong>2596</strong> sidevisninger, <strong>59%</strong> nye besøkende. Mest populære side: <a href="/2011/04/02/en-universell-server-video/">En Universell Server</a>. Antall “likes” på <a href="http://www.facebook.com/pages/Programmeringsbloggen/205611406126181">facebook fanpage</a>: <strong>14</strong>.</p>
+<p>Antall forskjellige besøkende siste uke: <strong>290</strong> (bloggurat). Antall abonnenter på RSS-feed: <strong>198</strong> (feedburner). Antall followers på twitter: <strong>483</strong>. Fra Google Analytics, siste måned: <strong>1607</strong> besøk, <strong>2596</strong> sidevisninger, <strong>59%</strong> nye besøkende. Mest populære side: <a href="/blog/2011/04/02/en-universell-server-video/">En Universell Server</a>. Antall “likes” på <a href="http://www.facebook.com/pages/Programmeringsbloggen/205611406126181">facebook fanpage</a>: <strong>14</strong>.</p>
 
 
         </div>
@@ -100,7 +100,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

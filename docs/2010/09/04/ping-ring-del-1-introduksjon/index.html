@@ -11,15 +11,15 @@
     <title>Ping Ring del 1: Introduksjon</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,25 +64,25 @@
           <h1>Ping Ring del 1: Introduksjon</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 4. september 2010</small> 
-            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+            <a href="/blog/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
           
-            <a href="/tags/ping-ring"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ping Ring</span></a>
+            <a href="/blog/tags/ping-ring"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ping Ring</span></a>
           
-            <a href="/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
+            <a href="/blog/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
           </p>
           <p>Dette er starten på en artikkelserie jeg har kalt <strong><em>Ping Ring</em></strong>. Jeg skal lage et program for å overvåke at et sett med servere er i live, og gjennom en rekke blogposter vil du få se det samme programmet implementert i et utall programmeringsspråk: C#, Ruby, Clojure, Erlang med flere.</p>
 <p>Målet er å studere og demonstrere ulikhetene mellom språkene. I hvilket språk er det enklest å implementere programmet? Hvilken implementasjon er lettest å forstå? Følg med over de neste par ukene, og du vil kanskje finne svaret.</p>
 <h4>Oppgaven: Overvåking av servere</h4>
 <p>Se for deg at du har en haug med servere som du ønsker å vite at er operative – at de kjører, og er tilgjengelige på nettverket. En mulig strategi er å installere et lite program på hver server som sende et lite <em>ping</em> i en ring, som i figuren nedenfor.</p>
-<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="pingring1" border="0" alt="pingring1" src="/uploads/2010/09/pingring1.png" width="492" height="301"> </p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="pingring1" border="0" alt="pingring1" src="/blog/uploads/2010/09/pingring1.png" width="492" height="301"> </p>
 <p>Om en server faller ut, vil ringen bli brutt. Dette vil man kunne oppdage to steder: Programmet som forsøker å pinge serveren som er ute vil ikke kunne opprette kontakt, og serveren <em>etter</em> den som er ute i ringen vil slutte å motta pings. Disse serverne kan da trigge en alarm og fortelle driftsteamet hvilken server som er nede.</p>
-<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="pingring2" border="0" alt="pingring2" src="/uploads/2010/09/pingring2.png" width="492" height="301"> </p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="pingring2" border="0" alt="pingring2" src="/blog/uploads/2010/09/pingring2.png" width="492" height="301"> </p>
 <p>Jeg har valgt denne oppgaven fordi den ikke er så veldig vanskelig å implementere, selv om jeg må bruke noen teknikker som ikke dukker opp så veldig ofte i vanlig applikasjonsutvikling. For å løse oppgaven vil jeg bruke <strong>tråding/samtidighet</strong>, og low-level <strong>socket/TCP-kommunikasjon</strong>. Dette vil kunne vise interessante ulikheter i de ulike språkene. Programmet krever derimot ingen komplekse algoritmer eller data-hierarkier, som ville kunne gjøre det spesielt fordelaktig å bruke en bestemt klasse programmeringsspråk (som OOP vs. FP).</p>
 <h4>Detaljert spesifikasjon</h4>
 <p>Først noen begrensninger: Jeg kommer bare til å <em>simulere</em> at jeg har mange servere, så alle vil kjøre på <em>localhost</em>. Hver instans vil dermed bli identifisert med en port, og kan anta at all komunikasjon går på IP 127.0.0.1. Programmet skal kjøres som en konsoll-applikasjon, og tar fire parametre: (1) egen port, (2) porten til den neste serveren i ringen, (3) hvor mange sekunder det kan gå uten en ping før alarmen skal aktiveres, og (4) en indikator for om programmet skal starte med en ping (én av serverne må starte opp ringen).</p>
 <p>Og for enkelhets skyld vil det å aktivere alarmen bare være å skrive en melding til konsoll-vinduet.</p>
 <p>Programmet vil bestå av følgende, funksjonelle deler:</p>
-<h5><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 0px; border-left-width: 0px; margin-right: 0px" title="design" border="0" alt="design" align="right" src="/uploads/2010/09/design.png" width="285" height="265"> Ping-sending:</h5>
+<h5><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 0px; border-left-width: 0px; margin-right: 0px" title="design" border="0" alt="design" align="right" src="/blog/uploads/2010/09/design.png" width="285" height="265"> Ping-sending:</h5>
 <p>Programmet må kunne sende en ping til en bestemt port (den neste serveren). Et ping består av teksten <em>"Ping from X"</em>, hvor X er porten det sendes fra. Sendingen skal skje fra en egen tråd, slik at det ikke påvirker programmets øvrige oppgaver. Programmet skal alltid vente <em>ett sekund</em> før ping sendes - vi må ikke overbelaste nettverket/serverne med pings.</p>
 <p>Hvis den neste serveren i rekken er nede skal pingen feile, og programmet skal da melde fra om dette til konsollet.</p>
 <h5>Ping-mottak:</h5>
@@ -116,7 +116,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

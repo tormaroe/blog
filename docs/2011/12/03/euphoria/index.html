@@ -11,15 +11,15 @@
     <title>Euphoria</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,20 +64,20 @@
           <h1>Euphoria</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 3. desember 2011</small> 
-            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+            <a href="/blog/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
           
-            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+            <a href="/blog/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
           
-            <a href="/tags/euphoria"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Euphoria</span></a>
+            <a href="/blog/tags/euphoria"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Euphoria</span></a>
           </p>
           <p><strong>Euphoria</strong> er et akronym for noe så spesielt som <em>End-User Programming with Hierarchical Objects for Robust Interpreted Applications</em>. Dette prosedyrebaserte språket ble orginalt utviklet for Atari, og første release kom i 1993. I 2006 ble det open source, og i dag er det et språk som kan kjøre på Windows, Linux, FreeBSD og OS X.</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="euphoria" border="0" alt="euphoria" src="/uploads/2011/12/euphoria.jpg" width="400" height="495"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="euphoria" border="0" alt="euphoria" src="/blog/uploads/2011/12/euphoria.jpg" width="400" height="495"></p>
 <p>Euphoria har en syntaks som skal være lett å både lære og lese. Engelske ord foretrekkes fremfor kryptiske tegn. Jeg får rett og slett litt BASIC-assosiasjoner. Det har også bare fire innebygde datatyper: <em>atom, sequence, integer og object</em>.</p>
 <p>I tillegg til enkelhet vektlegger språket rask utvikling. Det er i utgangspunktet et tolket språk, som f.eks. Python og Ruby, men kan også kompileres til C-kode. Du kan dessuten pakke kildekode sammen med en tolker for å lage selvstendige, kjørbare programmer.</p>
 <p>Euphoria har også en meget effektiv garbage collector, og det skrytes av at Euphoria er et av de raskeste tolkede språkene som finnes. Av andre ting som er verdt å nevne har Euphoria en debugger, enkel wrapping (eller tilgang til) C-bibloteker, og en enkel, innebygget database.</p>
-<p>Det er flere paraleller til <a href="/2011/12/01/lua/#comments">Lua</a> her, som jeg presenterte i går.</p>
+<p>Det er flere paraleller til <a href="/blog/2011/12/01/lua/#comments">Lua</a> her, som jeg presenterte i går.</p>
 <h4>Og så skal vi se hvordan koden ser ut</h4>
-<p>Som vanlig setter jeg igang med å implementere <a href="/2011/11/24/hello-world-euler-style/">et program som finner summen av alle multipler av 3 eller 5 under 1000</a>, uten å vite noe spesielt om språket på forhånd. API-dokumentasjonen var ganske bra, men det var litt problematisk likevel. Euphoria skal være god på sekvenser, og har et rikt sekvens-biblotek, men funksjonene har ikke de navnene jeg forventer.</p>
+<p>Som vanlig setter jeg igang med å implementere <a href="/blog/2011/11/24/hello-world-euler-style/">et program som finner summen av alle multipler av 3 eller 5 under 1000</a>, uten å vite noe spesielt om språket på forhånd. API-dokumentasjonen var ganske bra, men det var litt problematisk likevel. Euphoria skal være god på sekvenser, og har et rikt sekvens-biblotek, men funksjonene har ikke de navnene jeg forventer.</p>
 <p>Etter litt knoting frem og tilbake kommer jeg frem til følgende løsning:</p>
 <pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span>include std<span class="Operator">/</span>io<span class="Special">.</span>e
 <span class="lnr">11 </span>include std<span class="Operator">/</span>math<span class="Special">.</span>e
@@ -103,7 +103,7 @@
 <span class="lnr">31 </span>
 <span class="lnr">32 </span>main<span class="Special">()</span>
 </pre>
-<p>Med litt forklaring bør koden være grei å forstå: Jeg løser <a href="/2011/11/25/euler-1-som-et-sett-problem/">oppgaven som et sett-problem</a>, med algoritmen som summerer alle multipler av 3 og alle multipler av 5, for så å trekke fra snittet av disse to, som er alle multipler av 15.</p>
+<p>Med litt forklaring bør koden være grei å forstå: Jeg løser <a href="/blog/2011/11/25/euler-1-som-et-sett-problem/">oppgaven som et sett-problem</a>, med algoritmen som summerer alle multipler av 3 og alle multipler av 5, for så å trekke fra snittet av disse to, som er alle multipler av 15.</p>
 <p><strong><em>retain_all(a, b)</em></strong> gir meg en sekvens med alle tallene fra b som også er i a. <strong><em>apply(a, routine_id)</em></strong> sender alle elementene i sekvens a til rutinen, og gir meg en sekvens med resultatet – dette tilsvarer altså det som andre steder heter <em>map</em> eller eventuelt <em>select</em>.</p>
 <p>Til slutt bygger jeg en ny sekvens som består av de tre sekvensene jeg har laget, og sender denne til den innebygde <em>sum</em>-funksjonen, som summerer alt sammen. Spørsmålstegnet printer ut svaret.</p>
 <p>Det rareste er at jeg må bruke <em>routine_id</em> og en streng for å sende en funksjons-referanse til apply. Funksjoner er altså ikke førsterangs borgere i Euphoria. Språket har heller ikke anonyme funksjoner eller lambda-uttrykk såvidt jeg kan se.</p>
@@ -134,7 +134,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

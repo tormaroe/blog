@@ -11,15 +11,15 @@
     <title>En funksjonell state machine</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,22 +64,22 @@
           <h1>En funksjonell state machine</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 5. januar 2015</small> 
-            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+            <a href="/blog/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
           
-            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+            <a href="/blog/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
           </p>
-          <p class="text-center"><img src="/uploads/2014/12/fsm_happyangrysad.png"></p>
+          <p class="text-center"><img src="/blog/uploads/2014/12/fsm_happyangrysad.png"></p>
 
-<p>Einar, Bjørn Einar og Jonas fra Computas holdt en underholdende forelesning på NDC London i år som de kalte <em>The State of State</em>. Her snakket de mye om hvor nyttige <strong>endelige tilstandsmaskiner</strong> - eller <em>Finite State Machines</em> (FSM) - kan være. Dette er noe jeg også har skrevet om (se for eksempel <em><a href="/2009/06/06/en-generisk-state-machine/">En generisk state mashine</a></em> fra 2009).</p>
+<p>Einar, Bjørn Einar og Jonas fra Computas holdt en underholdende forelesning på NDC London i år som de kalte <em>The State of State</em>. Her snakket de mye om hvor nyttige <strong>endelige tilstandsmaskiner</strong> - eller <em>Finite State Machines</em> (FSM) - kan være. Dette er noe jeg også har skrevet om (se for eksempel <em><a href="/blog/2009/06/06/en-generisk-state-machine/">En generisk state mashine</a></em> fra 2009).</p>
 <p>Et annet sentralt tema på konferansen var funksjonell programmering. Dette fikk meg til å tenke: <em>Hvordan ser en funksjonell tilstandsmaskin ut?</em></p>
 <p>La oss eksperimentere litt og se om vi kan finne det ut. Disclamer: Jeg har <em>ikke</em> googlet dette, men ville i stedet se hva jeg selv kunne komme opp med.</p>
 <p>##Recap</p>
 <p>En FSM i den objektorienterte verden er en entitet som har en bestemt tilstand. Tilstanden kan for eksempel være <code>Happy</code>. Maskinen blir så påvirket av en hendelse. Dette kan endre tilstanden til for eksempel <code>Angry</code>. I tillegg kan overgangen fra en tilstand til en annen ha <em>sideeffects</em>.</p>
-<p class="text-center"><img src="/uploads/2014/12/fsm_oop.png"></p>
+<p class="text-center"><img src="/blog/uploads/2014/12/fsm_oop.png"></p>
 
 <p>Så hvordan skal vi gjøre dette i den funksjonelle programmeringsparadigmen? I FP løses alt med funksjoner, så da bør vel tilstandsmaskinen også være en funksjon. Funksjoner har ikke tilstand; i stedet kan vi lage en FSM-funksjon som tar inn en tilstand og en hendelse, og som returnerer en ny (potensiell) tilstand.</p>
 <p>Hva med bieffekten av tilstandsendringen? Funksjonen kunne jo ha utført denne, men jeg har en mere spennende idé: Vi kan la funksjonen returnere bieffekten også!</p>
-<p class="text-center"><img src="/uploads/2014/12/fsm_fp.png"></p>
+<p class="text-center"><img src="/blog/uploads/2014/12/fsm_fp.png"></p>
 
 <p>Å skyve bieffekter ut av funksjonene, og kun gjøre det i den &quot;ytterste&quot; delen av programmet, er en generell FP-teknikk. Resultatet blir kode som er enklere å teste og å forstå. </p>
 <p>##En FSM-funksjon</p>
@@ -115,7 +115,7 @@ let newState = transition Mock Happy
                |&gt; doEffect <span class="hljs-string">&quot;Bob&quot;</span></code></pre><p>Koden skriver ut <code>&quot;Bob has a long face :-(&quot;</code> og <code>newState</code> får verdien <code>Sad</code>.</p>
 <p>##En generisk FSM med overgangstabell</p>
 <p>Fremgangsmåten jeg nettopp brukte fungerer greit nok; den kommuniserer godt og er enkel å forstå. Men den er ikke spesielt dynamisk - alle tilstandsendringene må hardkodes i <code>transition</code>. </p>
-<p>En alternativ strategi kunne vært å lage en liste med overganger, og gi denne til en funksjon som genererte en ny tilstandsmaskin basert på dem. Dette er omtrent det jeg gjorde i <a href="/2009/06/06/en-generisk-state-machine/">min generiske FSM i C#</a>.</p>
+<p>En alternativ strategi kunne vært å lage en liste med overganger, og gi denne til en funksjon som genererte en ny tilstandsmaskin basert på dem. Dette er omtrent det jeg gjorde i <a href="/blog/2009/06/06/en-generisk-state-machine/">min generiske FSM i C#</a>.</p>
 <p>La oss ta i bruk F# generics og definere en overgang slik:</p>
 <pre><code class="hljs"><span class="hljs-keyword">type</span> <span class="hljs-type">Transition</span>&lt;<span class="hljs-symbol">&#x27;s</span>,<span class="hljs-symbol">&#x27;e</span>,<span class="hljs-symbol">&#x27;x</span>&gt; = {
     <span class="hljs-type">GivenState</span> : <span class="hljs-symbol">&#x27;s</span>
@@ -153,7 +153,7 @@ let newState = transition Mock Happy
                |<span class="hljs-type">&gt; doEffect</span> <span class="hljs-string">&quot;Bob&quot;</span></code></pre><p>##Komponere en FSM</p>
 <p>Jeg liker teknikken med en overgangstabell - den er fleksibel og gjenbrukbar. Men siden poenget var å utforske tilstandsmaskiner i et funksjonelt språk så vil jeg forsøke en ting til: <em>Å komponere FSM ved hjelp av rene funksjoner.</em></p>
 <p>Tenk at du har en funksjon <code>makeTransition</code> som kan ta inn en funksjonell tilstandsmaskin og informasjon om en overgang, og som gir deg en ny tilstandsmaskin hvor overgangen er lagt til.</p>
-<p class="text-center"><img src="/uploads/2014/12/makeTransition.png"></p>
+<p class="text-center"><img src="/blog/uploads/2014/12/makeTransition.png"></p>
 
 <p>I F# kan man definere funksjoner som kan brukes <em>infix</em>, og på grunn av måten jeg skal bruke <code>makeTransition</code> på så ønsker jeg at denne funksjonen skal være det. Derfor gir jeg den i stedet det litt snåle navnet <code>-?-&gt;</code>, som i mitt hode illustrerer en potensiell overgang.</p>
 <pre><code class="hljs">let (-?-&gt;) fsm t =
@@ -230,7 +230,7 @@ events
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

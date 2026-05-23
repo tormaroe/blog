@@ -11,15 +11,15 @@
     <title>Ferris gjør event-sourcing i UI [Luke 23, 2012]</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,14 +64,14 @@
           <h1>Ferris gjør event-sourcing i UI [Luke 23, 2012]</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 23. desember 2012</small> 
-            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+            <a href="/blog/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
           
-            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+            <a href="/blog/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
           
-            <a href="/tags/event-sourcing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Event sourcing</span></a>
+            <a href="/blog/tags/event-sourcing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Event sourcing</span></a>
           </p>
           <p><strong>Thomas Ferris Nicolaisen</strong> (<a href="https://twitter.com/tfnico">@tfnico</a>) har gjort noe spenende og lurt for å gjøre webapplikasjonen sin enklere å teste og å jobbe med – han har brukt event-sourcing! Gjennom illustrasjoner og videoer får du innblikk i hvordan dette fungerer.</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="2012-12-07 07.59.57" border="0" alt="2012-12-07 07.59.57" src="/uploads/2012/12/2012-12-07-07.59.57.jpg" width="514" height="468"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="2012-12-07 07.59.57" border="0" alt="2012-12-07 07.59.57" src="/blog/uploads/2012/12/2012-12-07-07.59.57.jpg" width="514" height="468"></p>
 <p><strong>Hvem er du?</strong><br>Gladlaks fra Mandal, deretter Java-konsulent i Oslo, deretter emigrant i Tyskland.</p>
 <p><strong>Hva er jobben din?</strong><br>Systemutvikler hos Viaboxx GmbH</p>
 <p><strong>Hva kan du?</strong><br>Mye forskjellig, med hovedvekt på Java, litt sånn DevOps-glad.</p>
@@ -80,20 +80,20 @@
 <h2>Event-sourcing i GUI-laget</h2>
 <p>I min luke tenkte jeg det kunne være artig å vise frem litt ekte “German Engineering”. Dette er første gang vi snakker høyt om våre siste oppfinnelse(r), og jeg kan tenke meg at i enkelte kretser vil det kunne sees på som en revolusjonerende idé, pattern eller arkitektur.
 <p>På jobben min så går en god del av arbeidet ut på å lage GUI for trykkskjermer, ala billettautomater og minibanker. Helt spesifikt så lager vi software for pakkepost-automater, men disse har ikke tatt helt av i Norge ennå visstnok. Lesere i Oslo tafser jo en del på Flexus-automater har jeg hørt, så de av dere kan jo prøve å tenke dere et slikt brukseksempel.
-<p>&nbsp;<img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Sketch2832222" border="0" alt="Sketch2832222" src="/uploads/2012/12/Sketch2832222.png" width="600" height="398">
+<p>&nbsp;<img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Sketch2832222" border="0" alt="Sketch2832222" src="/blog/uploads/2012/12/Sketch2832222.png" width="600" height="398">
 <p>Vi pleide å utvikle GUI-biten i Flash/Flex en årrekke, men slet en del med det. Flex var bra på å lage et pent og snappy grensesnitt som passet fint for berøringsskjermer, men var tungvint i drift og utvikling. Mye av brukerens tilstand og forretningslogikk ble liggende i Flash-laget, hvor det var vanskelig med automatiserte tester og debugging.
 <p>I denne omgang så tenkte vi å prøve å lage noe med HTML5 og JavaScript, en såkalt single-page application.
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="hSAbfAyD-fX6h5gFBL7yFJ_7eIm9udpv7T9KR8EjWvGqRkfwr2udSM8mRNd0gX6mpg=s2000" border="0" alt="hSAbfAyD-fX6h5gFBL7yFJ_7eIm9udpv7T9KR8EjWvGqRkfwr2udSM8mRNd0gX6mpg=s2000" src="/uploads/2012/12/hSAbfAyD-fX6h5gFBL7yFJ_7eIm9udpv7T9KR8EjWvGqRkfwr2udSM8mRNd0gX6mpgs2000.jpg" width="600" height="352">
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="hSAbfAyD-fX6h5gFBL7yFJ_7eIm9udpv7T9KR8EjWvGqRkfwr2udSM8mRNd0gX6mpg=s2000" border="0" alt="hSAbfAyD-fX6h5gFBL7yFJ_7eIm9udpv7T9KR8EjWvGqRkfwr2udSM8mRNd0gX6mpg=s2000" src="/blog/uploads/2012/12/hSAbfAyD-fX6h5gFBL7yFJ_7eIm9udpv7T9KR8EjWvGqRkfwr2udSM8mRNd0gX6mpgs2000.jpg" width="600" height="352">
 <p>Noe spesielt vi gjorde var å ha en event-basert, nær tilstandsløs browser, hvor eneste oppgave er å vise screens som kommer fra serveren. Jeg skal forklare hvordan dette foregår, men først vil jeg sette det i litt perspektiv:
 <p>Typiske web-applikasjoner er avhengige av å bygge opp en sesjon og følge en gitt navigasjons-sti for å havne i en gitt tilstand. Hvis du vil se hva “Mine bestillinger”-siden ser ut som, så må du logge inn og trykke på en lenke.
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="kdE-oLCeLLCG6AHuDuMmxsFX0vr_hbTtwt_fOLPHB0kzCflAddauvw0W4fyLShU7kg=s2000" border="0" alt="kdE-oLCeLLCG6AHuDuMmxsFX0vr_hbTtwt_fOLPHB0kzCflAddauvw0W4fyLShU7kg=s2000" src="/uploads/2012/12/kdE-oLCeLLCG6AHuDuMmxsFX0vr_hbTtwt_fOLPHB0kzCflAddauvw0W4fyLShU7kgs2000.jpg" width="600" height="352">
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="kdE-oLCeLLCG6AHuDuMmxsFX0vr_hbTtwt_fOLPHB0kzCflAddauvw0W4fyLShU7kg=s2000" border="0" alt="kdE-oLCeLLCG6AHuDuMmxsFX0vr_hbTtwt_fOLPHB0kzCflAddauvw0W4fyLShU7kg=s2000" src="/blog/uploads/2012/12/kdE-oLCeLLCG6AHuDuMmxsFX0vr_hbTtwt_fOLPHB0kzCflAddauvw0W4fyLShU7kgs2000.jpg" width="600" height="352">
 <p>Du er avhengig av riktig tilstand på både server og klient for i det hele tatt å kunne vise “Mine bestillinger” siden.</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="1DEsslgIvpDmavItDXlMJSDKye0NGMT46AyCg2dpR3nK2Cl1wZHPvVZajmKWVLs2VA=s2000" border="0" alt="1DEsslgIvpDmavItDXlMJSDKye0NGMT46AyCg2dpR3nK2Cl1wZHPvVZajmKWVLs2VA=s2000" src="/uploads/2012/12/1DEsslgIvpDmavItDXlMJSDKye0NGMT46AyCg2dpR3nK2Cl1wZHPvVZajmKWVLs2VAs2000.jpg" width="600" height="352"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="1DEsslgIvpDmavItDXlMJSDKye0NGMT46AyCg2dpR3nK2Cl1wZHPvVZajmKWVLs2VA=s2000" border="0" alt="1DEsslgIvpDmavItDXlMJSDKye0NGMT46AyCg2dpR3nK2Cl1wZHPvVZajmKWVLs2VA=s2000" src="/blog/uploads/2012/12/1DEsslgIvpDmavItDXlMJSDKye0NGMT46AyCg2dpR3nK2Cl1wZHPvVZajmKWVLs2VAs2000.jpg" width="600" height="352"></p>
 <p>Dette mønsteret har gitt oss (og sikkert mange andre også) mye hodesmerte opp i gjennom årene. For mye tilstand og logikk på klientsiden gir rom for GUI-bugs som er vanskelig å gjenskape. Teste- og debuggingsverktøy på klientsiden er også gjerne under par det vi har til rådighet for koden på server-siden.
 <p>Det vi har gjort er å fjerne så godt som all brukertilstand fra klienten. All logikk ligger på serversiden.
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="wkakPEZqhGObnR41bm-Ye2zEeJjsLr-uoBQDed2FWW-9CUDgqcyrVxwhSHR-s3yjDw=s2000" border="0" alt="wkakPEZqhGObnR41bm-Ye2zEeJjsLr-uoBQDed2FWW-9CUDgqcyrVxwhSHR-s3yjDw=s2000" src="/uploads/2012/12/wkakPEZqhGObnR41bm-Ye2zEeJjsLr-uoBQDed2FWW-9CUDgqcyrVxwhSHR-s3yjDws2000.jpg" width="600" height="352">
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="wkakPEZqhGObnR41bm-Ye2zEeJjsLr-uoBQDed2FWW-9CUDgqcyrVxwhSHR-s3yjDw=s2000" border="0" alt="wkakPEZqhGObnR41bm-Ye2zEeJjsLr-uoBQDed2FWW-9CUDgqcyrVxwhSHR-s3yjDw=s2000" src="/blog/uploads/2012/12/wkakPEZqhGObnR41bm-Ye2zEeJjsLr-uoBQDed2FWW-9CUDgqcyrVxwhSHR-s3yjDws2000.jpg" width="600" height="352">
 <p>Hvert eneste knappetrykk resulterer i en runde til serveren, hvor en tilstandsmaskin får beskjed om hva brukeren gjorde, for deretter å spytte tilbake en ny screen (logikken der inne er også veldig interessant, men det er ikke plass til dette teamet i denne bloggposten).</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="qczwS2hWWUTJAVrqOO99_detMl3xWPYJm1Kgwi-Bs9IybfAQpIVEph3Mw9WfR0FKOw=s2000" border="0" alt="qczwS2hWWUTJAVrqOO99_detMl3xWPYJm1Kgwi-Bs9IybfAQpIVEph3Mw9WfR0FKOw=s2000" src="/uploads/2012/12/qczwS2hWWUTJAVrqOO99_detMl3xWPYJm1Kgwi-Bs9IybfAQpIVEph3Mw9WfR0FKOws2000.jpg" width="600" height="352"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="qczwS2hWWUTJAVrqOO99_detMl3xWPYJm1Kgwi-Bs9IybfAQpIVEph3Mw9WfR0FKOw=s2000" border="0" alt="qczwS2hWWUTJAVrqOO99_detMl3xWPYJm1Kgwi-Bs9IybfAQpIVEph3Mw9WfR0FKOw=s2000" src="/blog/uploads/2012/12/qczwS2hWWUTJAVrqOO99_detMl3xWPYJm1Kgwi-Bs9IybfAQpIVEph3Mw9WfR0FKOws2000.jpg" width="600" height="352"></p>
 <p>Dette høres kanskje laggy ut for en berøringsskjerm som skal være kjapp og reaktiv, men vi får det til på grunn av fire ting:</p>
 <ol>
 <li>Server kjører i samme automat (PC) som klient/browser, så det er er en meget kort tur over nettverket.
@@ -120,7 +120,7 @@
             }
         }</pre>
 <p>Ren JSON som representerer absolutt alt av tilstand nødvendig for å vise en skjerm til brukeren. Dette sender vi til browseren, som kjører det gjennom en generator (Mustache) så det blir om til HTML (som vi “swapper” inn og erstatter den gamle DOM’en). Så styler vi det opp med CSS og vips så ser det slik ut:</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="VyjkcLUZVtMtntceg8EwzaYxSDYKmnuVXtPkKtLDHK-WwCJZTNcbw-qkjTUrnB6rHA=s2000" border="0" alt="VyjkcLUZVtMtntceg8EwzaYxSDYKmnuVXtPkKtLDHK-WwCJZTNcbw-qkjTUrnB6rHA=s2000" src="/uploads/2012/12/VyjkcLUZVtMtntceg8EwzaYxSDYKmnuVXtPkKtLDHK-WwCJZTNcbw-qkjTUrnB6rHAs2000.png" width="600" height="450"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="VyjkcLUZVtMtntceg8EwzaYxSDYKmnuVXtPkKtLDHK-WwCJZTNcbw-qkjTUrnB6rHA=s2000" border="0" alt="VyjkcLUZVtMtntceg8EwzaYxSDYKmnuVXtPkKtLDHK-WwCJZTNcbw-qkjTUrnB6rHA=s2000" src="/blog/uploads/2012/12/VyjkcLUZVtMtntceg8EwzaYxSDYKmnuVXtPkKtLDHK-WwCJZTNcbw-qkjTUrnB6rHAs2000.png" width="600" height="450"></p>
 <p>Det som er utrolig digg å ha denne løse koblingen mellom hva som skal vises, og hvordan det blir generert. </p>
 <h3>Fordeler med dette da?</h3>
 <h4>Fikse på webdesign uten å måtte trykke masse rundt i applikasjonen.</h4>
@@ -181,7 +181,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

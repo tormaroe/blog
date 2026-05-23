@@ -11,15 +11,15 @@
     <title>Rekursiv skattejakt</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,15 +64,15 @@
           <h1>Rekursiv skattejakt</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 16. desember 2015</small> 
-            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+            <a href="/blog/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
           
-            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+            <a href="/blog/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
           
-            <a href="/tags/perl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Perl</span></a>
+            <a href="/blog/tags/perl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Perl</span></a>
           
-            <a href="/tags/rekursjon"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rekursjon</span></a>
+            <a href="/blog/tags/rekursjon"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rekursjon</span></a>
           </p>
-          <img src="/uploads/2015/12/skattejakt.jpg" alt="Skattejakt" />
+          <img src="/blog/uploads/2015/12/skattejakt.jpg" alt="Skattejakt" />
 
 <p>Luke 15 i <a href="https://julekalender.knowit.no">Knowit sin julekalender</a> skulle ha oss med ut på skattejakt. Oppgaven var ikke vanskeligere enn at den kunne løses &quot;for hånd&quot; på et minutt eller to, men det er jo ikke gøy - her skulle det kodes!</p>
 <p>Oppgaven lød:</p>
@@ -131,7 +131,7 @@
           (<span class="hljs-name">find-path</span> <span class="hljs-string">&quot;11&quot;</span>))</code></pre><p>Merk at format-strengen jeg bruker faktisk itererer over alle verdiene i listen, og putter et komma mellom hvert element. Kryptisk men kraftig!</p>
 <p>Denne løsningen fungerer, men det er noe som ikke er så veldig tilfredstillende med den. Det er litt <em>knotete</em> å holde rede på forskjellen mellom koordinatverdiene i cellene og indeksene i den todimensjonale listen. La oss se om vi kan komme opp med noe bedre. </p>
 <h2>Andre iterasjon: Association list</h2>
-<p>I forrige blogpost, <a href="/2015/12/15/opp-ned-tall/">Opp-ned-tall</a>, fortalte jeg om <em>plist</em> (property list). En annen, listebasert datastruktur ofte brukt i Common Lisp kalles <strong>alist</strong>, eller <em>association list</em>. Også denne brukes til å mappe en nøkkel til en verdi, men hvert par av nøkkel og verdi ligger i listen som en cons-celle. <em>Alisten</em> er mere anvendelig enn <em>plisten</em>.</p>
+<p>I forrige blogpost, <a href="/blog/2015/12/15/opp-ned-tall/">Opp-ned-tall</a>, fortalte jeg om <em>plist</em> (property list). En annen, listebasert datastruktur ofte brukt i Common Lisp kalles <strong>alist</strong>, eller <em>association list</em>. Også denne brukes til å mappe en nøkkel til en verdi, men hvert par av nøkkel og verdi ligger i listen som en cons-celle. <em>Alisten</em> er mere anvendelig enn <em>plisten</em>.</p>
 <p>Hva om jeg bruker en slik liste til å representere kartet? Hver celle inneholder koordinatene til en annen celle, så da kan jo den første være nøkkelen og den andre være verdien...</p>
 <p>Jeg vil altså representere kartet på denne måten:</p>
 <pre><code class="hljs">((<span class="hljs-string">&quot;55&quot;</span> . <span class="hljs-string">&quot;23&quot;</span>) (<span class="hljs-string">&quot;54&quot;</span> . <span class="hljs-string">&quot;13&quot;</span>) (<span class="hljs-string">&quot;53&quot;</span> . <span class="hljs-string">&quot;33&quot;</span>)
@@ -202,12 +202,12 @@
 <h2>Trace</h2>
 <p>Når man jobber interaktivt i REPL, og kanskje særlig når man jobber med rekursive funksjoner, så får man av og til behov for å debugge litt; ofte skriver jeg ut tilstanden på ulike variabler for å se hva programmet gjør.</p>
 <p>En snedig ting du kan gjøre er å aktivere <strong>tracing</strong> for enkelte, utvalgte funksjoner. Om jeg for eksempel skrur på tracing i dette tilfellet, med <code>(trace find-path)</code>, og så kjører koden, så vil jeg få output lignende skjermdumpen nedenfor (hvor jeg har brent bort endel av det som skjer i midten).</p>
-<img src="/uploads/2015/12/trace.jpg" alt="Trace output" />
+<img src="/blog/uploads/2015/12/trace.jpg" alt="Trace output" />
 
 <p>For å skru av tracing evaluerer du <code>(untrace find-path)</code>.</p>
 <h2>Parsing i Perl</h2>
 <p>Nå er det på tide å være ærlig: Jeg kom ikke på trikset jeg brukte i andre iterasjon på egenhånd! Det trikset kom jeg på ved å lese en annen utviklers løsning på denne juleluken. Brukeren kaller seg <strong>argggh</strong>, og har løst oppgaven i Perl 6.</p>
-<p>Og løsningen er faktsk veldig interessant, for den viser hvordan man kan implementere en parser basert på en <em>grammar</em> i ren Perl-kode - ikke helt ulikt hva man kan gjøre i Rebol (jeg nevner det fordi jeg <a href="/2011/12/24/en-euler-dsl/">blogget om det på julaften i 2011</a>).</p>
+<p>Og løsningen er faktsk veldig interessant, for den viser hvordan man kan implementere en parser basert på en <em>grammar</em> i ren Perl-kode - ikke helt ulikt hva man kan gjøre i Rebol (jeg nevner det fordi jeg <a href="/blog/2011/12/24/en-euler-dsl/">blogget om det på julaften i 2011</a>).</p>
 <p>Jeg håper <em>argggh</em> synes det er greit at jeg gjengir koden hans/hennes i sin helhet her:</p>
 <pre><code class="hljs"><span class="hljs-comment">#!/usr/local/bin/perl6</span>
 
@@ -272,7 +272,7 @@ TreasureMapGrammar.parse(<span class="hljs-variable">$map</span>-text, :actions(
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

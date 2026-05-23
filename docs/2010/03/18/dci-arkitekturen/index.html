@@ -11,15 +11,15 @@
     <title>DCI arkitekturen</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,9 +64,9 @@
           <h1>DCI arkitekturen</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 18. mars 2010</small> 
-            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+            <a href="/blog/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
           
-            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+            <a href="/blog/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
           </p>
           <p><strong>Eller: <em>Hvordan jeg fikk sansen for multippel arv.</em></strong></p>
 <p>På QCon London fikk jeg ved en tilfeldighet med meg en halv forelesning med Jim O. Coplien, som snakket om noe han kalte <em>The DCI Architecture</em>. DCI står for <strong>Data-Context-Interaction</strong>, og er ifølge Coplien en <strong><em>bedre</em></strong> måte å designe systemer på enn dagens "normale" bruk av objektorientering.</p>
@@ -135,7 +135,7 @@ Specify amount to transfer: 1000
 </div>
 <p></font></div>
 <p>DCI er altså en reaksjon på det "oppfinnerne" ser på som en gal bruk av objektorientering. De hevder at måten vi begynte å bruke <em>polymorphism, coupling, cohesion, etc</em> da vi oppdaget OO på 80- og 90-tallet strider mot objektorienteringens mål, som var å gi et bedre samsvar mellom software og folks mentale modell av virkeligheten. De vil gjøre systemets adferd mer eksplisitt ved å gjøre roller til fullverdige entiteter – løsrevet fra objektene.</p>
-<p>Dette får meg til å tenke på <a href="/2009/09/27/greg-young-slapp-ls-domenet-sitt-p-nnug-i-bergen/"><strong><em>Command Query Responsibility Segregation (CQRS)</em></strong></a> som er så i skuddet for tiden – er ikke det også på en måte en reaksjon på det samme? Der gjør man i alle fall adferden eksplisitt gjennom command-objekter, og skreddersyr øvrig domenemodell i forhold til dem.</p>
+<p>Dette får meg til å tenke på <a href="/blog/2009/09/27/greg-young-slapp-ls-domenet-sitt-p-nnug-i-bergen/"><strong><em>Command Query Responsibility Segregation (CQRS)</em></strong></a> som er så i skuddet for tiden – er ikke det også på en måte en reaksjon på det samme? Der gjør man i alle fall adferden eksplisitt gjennom command-objekter, og skreddersyr øvrig domenemodell i forhold til dem.</p>
 <p>En siste tankevekker: Coplien og Reenskaug er to av dem som (såvidt jeg forstod) hardnakket hevder at språk som Java og C# ikke er orntlige, objektorienterte språk. I C# dreier egentlig alt seg om design av klasser, mens objekter har en mere sentral posisjon i språk som Ruby – hvor de f.eks. kan endre karakter fullstendig under kjøring av programmet. Man bryr seg sjelden om hvilken type et objekt har i Ruby, bare hvilke egenskaper det tilbyr. Jeg vet ikke om det er så fruktbart å stå på den barikaden, men det er interessant å diskutere forskjellen.</p>
 <p style="margin-left: 15px"><em>"Roles are about objects and how they interact to achieve some purpose. For thirty years I have tried to get them into the into the main stream, but haven't succeeded. I believe the reason is that our programming languages are class oriented rather than object oriented. So why model in terms of objects when you cannot code them? And why model at all when you cannot keep model and code synchronized?" –Trygve Reenskaug</em></p>
 <p>Til slutt må jeg få gjenta det jeg sa innledningsvis, ikke døm DCI ut fra det du har sett her. Dette har vært min tolkning, så gå til kildene for en dypere forståelse, som er: <a href="http://www.artima.com/articles/dci_vision.html">The DCI Architecture: A New Vision of Object-Oriented Programming</a> | <a href="http://folk.uio.no/trygver/2008/commonsense.pdf">The Common Sense of Object Oriented Programming (pdf)</a> | <a href="http://en.wikipedia.org/wiki/Data,_Context,_and_Interaction">DCI på wikipedia</a> | <a href="http://heim.ifi.uio.no/~trygver/">Trygve Reenskaug (UiO)</a></p>
@@ -159,7 +159,7 @@ Specify amount to transfer: 1000
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

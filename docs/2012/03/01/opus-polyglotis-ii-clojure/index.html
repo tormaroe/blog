@@ -11,15 +11,15 @@
     <title>Opus Polyglotis II: Clojure</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,18 +64,18 @@
           <h1>Opus Polyglotis II: Clojure</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 1. mars 2012</small> 
-            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+            <a href="/blog/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
           
-            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+            <a href="/blog/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
           
-            <a href="/tags/xml"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> XML</span></a>
+            <a href="/blog/tags/xml"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> XML</span></a>
           </p>
-          <p><a href="/uploads/2012/03/act4.png"><img style="background-image: none; border-right-width: 0px; margin: 0px 15px 6px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="act4" border="0" alt="act4" align="left" src="/uploads/2012/03/act4_thumb.png" width="164" height="164"></a></p>
+          <p><a href="/blog/uploads/2012/03/act4.png"><img style="background-image: none; border-right-width: 0px; margin: 0px 15px 6px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="act4" border="0" alt="act4" align="left" src="/blog/uploads/2012/03/act4_thumb.png" width="164" height="164"></a></p>
 <p style="line-height: 16px"><tt><strong>OPUS POLYGLOTIS II, Act 4<br></strong>Tagline: "Groteskt vakkert!"<br>På scenen: Clojure</tt></p>
-<p>Jeg har presentert 3 ulike programmer som gjør det samme - i <a href="/2012/02/21/opus-polyglotis-ii-python/">Python</a>, <a href="/2012/02/22/opus-polyglotis-ii-ruby/">Ruby</a> og <a href="/2012/02/27/opus-polyglotis-ii-rebol/">Rebol</a> – og her kommer den aller siste implementasjonen for denne gang. </p>
+<p>Jeg har presentert 3 ulike programmer som gjør det samme - i <a href="/blog/2012/02/21/opus-polyglotis-ii-python/">Python</a>, <a href="/blog/2012/02/22/opus-polyglotis-ii-ruby/">Ruby</a> og <a href="/blog/2012/02/27/opus-polyglotis-ii-rebol/">Rebol</a> – og her kommer den aller siste implementasjonen for denne gang. </p>
 <p>Clojure er et herlig språk, men det kan være vanskelig å lese koden – spesielt når man ikke har skrevet den selv. Jeg vil likevel anbefale deg som er interessert i programmeringsspråk å ta en titt, og kanskje forsøke å sammenligne fremgangsmåten med de andre løsningene. Men jeg kommer ikke til å forklare alle detaljene, så hvis du vil at jeg skal utdype noe av koden ytterligere får du legge igjen en kommentar.</p>
 <h4>Litt om løsningen</h4>
-<p>I denne løsningen har jeg valgt å bruke multimethods for dispatch, dvs. for å velge hvilken strategi jeg skal bruke (<a href="/2012/02/20/opus-polyglotis-ii/">les introduksjonen om du ikke vet hva programmet skal gjøre</a>). Multimethods brukte jeg også nylig i artikkelen <a href="/2012/02/02/template-method-del-4-multippel-arv/">Template Method del 4: Multippel arv</a>, og lengre tilbake i tid viste jeg teknikken i posten <a href="/2010/10/03/1-2-3-dispatch/">1-2-3 Dispatch</a>.</p>
+<p>I denne løsningen har jeg valgt å bruke multimethods for dispatch, dvs. for å velge hvilken strategi jeg skal bruke (<a href="/blog/2012/02/20/opus-polyglotis-ii/">les introduksjonen om du ikke vet hva programmet skal gjøre</a>). Multimethods brukte jeg også nylig i artikkelen <a href="/blog/2012/02/02/template-method-del-4-multippel-arv/">Template Method del 4: Multippel arv</a>, og lengre tilbake i tid viste jeg teknikken i posten <a href="/blog/2010/10/03/1-2-3-dispatch/">1-2-3 Dispatch</a>.</p>
 <p>Jeg definerer også et par datatyper med DEFRECORD, og det er en av disse datatypene multimetodene fungerer på. I prinsippet er denne formen for dispatch det samme som jeg implementerte i Ruby og Rebol, bare at det er innbakt i språket, og at jeg dermed slipper å gjøre så mye av jobben selv.</p>
 <p>Clojure-koden viser også litt interop med noen Java-klasser; jeg bruker java.util.Scanner til å sjekke om en streng er et tall (muligens overkill, men jeg hadde lyst til å teste dette objektet som jeg aldri før hadde benyttet).</p>
 <p>Og så har jeg laget en aldri så liten <em><strong><a href="http://martinfowler.com/dslCatalog/regexTableLexer.html">regex table lexer</a></strong></em> til å parse CSV-filen. Geeks synes det er gøy med lexing!</p>
@@ -210,7 +210,7 @@
 <p>Og det var det :P</p>
 <h4>Oppsummering</h4>
 <p>Multimetoder er ideelt for denne typen dispatch mellom ulike strategier, men bortsett fra det kan jeg ikke peke på noen andre fordeler med Clojure. Annet enn at det er veldig gøy å kode Clojure da!</p>
-<p>Da jeg implementerte dette her gikk forresten koden gjennom ganske mange refaktureringer. Selv den enkleste Clojure-funksjonen kan skrives på hundrevis av ulike måter, og det er vanskelig å bestemme seg for hva man liker best, hva som kommuniserer godt, hva som er enklest å vedlikeholde og så videre. Jeg skrev litt mer om dette problemet i <a href="/2012/01/03/er-lisps-fleksibilitet-et-problem/">Er Lisp's fleksibilitet et problem?</a> tidligere i år.</p>
+<p>Da jeg implementerte dette her gikk forresten koden gjennom ganske mange refaktureringer. Selv den enkleste Clojure-funksjonen kan skrives på hundrevis av ulike måter, og det er vanskelig å bestemme seg for hva man liker best, hva som kommuniserer godt, hva som er enklest å vedlikeholde og så videre. Jeg skrev litt mer om dette problemet i <a href="/blog/2012/01/03/er-lisps-fleksibilitet-et-problem/">Er Lisp's fleksibilitet et problem?</a> tidligere i år.</p>
 <p>Nå tror jeg vi lar dette polyglotiske opuset ligge. Det har sansynligvis vært mer interessant for meg selv enn for mine lesere, men jeg håper(?) noen har satt pris på å få se noen tilnærmet fullverdige men likevel små program skrevet i diverse språk.</p>
 <p>Hei då!</p>
 
@@ -233,7 +233,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

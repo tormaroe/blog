@@ -11,15 +11,15 @@
     <title>Byggestener i et .NET-prosjekt</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,14 +64,14 @@
           <h1>Byggestener i et .NET-prosjekt</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 23. mai 2015</small> 
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           </p>
-          <p>Jeg sitter og leker meg med et lite prosjekt i C# hvor jeg lager en databaseserver. Ikke noe som skal brukes, dette er bare for å <a href="/2012/12/20/brodwall-finner-opp-hjulet-luke-20-2012/"><em>&quot;finne opp hjulet&quot;</em> som Brodwall sier</a> (jeg satt egentlig å gjorde research på ulike typer databaser, men så kom inspirasjonen). Du finner prosjektet - LavaFlow - <a href="https://github.com/tormaroe/lavaflow">på Github om du er interessert</a>.</p>
+          <p>Jeg sitter og leker meg med et lite prosjekt i C# hvor jeg lager en databaseserver. Ikke noe som skal brukes, dette er bare for å <a href="/blog/2012/12/20/brodwall-finner-opp-hjulet-luke-20-2012/"><em>&quot;finne opp hjulet&quot;</em> som Brodwall sier</a> (jeg satt egentlig å gjorde research på ulike typer databaser, men så kom inspirasjonen). Du finner prosjektet - LavaFlow - <a href="https://github.com/tormaroe/lavaflow">på Github om du er interessert</a>.</p>
 <p>Vi står alle på skuldrene til kjemper, og i LavaFlow bruker jeg en rekke open source bibliotek som tilbyr meg nyttig funksjonalitet. Noen av dem har jeg brukt i årevis, andre er det første gang jeg prøver ut.</p>
 <p>Så jeg tenkte at jeg skulle presentere dem her, i tilfelle det er .NET-utviklere der ute som er ukjente med noen av dem.</p>
 <h2>Apache log4net</h2>
 <p>Det finnes mange logging-bibliotek, men jeg bruker alltid <strong><a href="https://logging.apache.org/log4net/">log4net</a></strong>, og har gjort det nesten like lenge som jeg har kodet i C#. Ingen grunn til å bytte ut noe som fungerer så bra. </p>
-<img src="/uploads/2015/05/ColoredConsoleAppender.jpg" alt="ColoredConsoleAppender" />
+<img src="/blog/uploads/2015/05/ColoredConsoleAppender.jpg" alt="ColoredConsoleAppender" />
 
 <p>log4net har mange ulike adaptere, og denne gangen bruker jeg <code>ColoredConsoleAppender</code>, som gir meg fin output i terminalvinduet.</p>
 <h2>Nancy</h2>
@@ -113,12 +113,12 @@
     }
 }</code></pre><p>Finnes det enklere måter å lage RESTfulle APIer på i C#?</p>
 <h2>Ninject</h2>
-<img src="/uploads/2015/05/ninject.png" alt="Ninject" />
+<img src="/blog/uploads/2015/05/ninject.png" alt="Ninject" />
 
 <p><strong><a href="http://www.ninject.org/">Ninject</a></strong> er en IoC-container jeg forelsket meg i for omtrent fem år siden, og biblioteket er det første jeg inkluderer når jeg trenger noe som skal holde orden på alle avhengighetene i prosjektene mine. </p>
 <p>I dette tilfellet derimot hadde jeg allerede TineIoC, ettersom det følger med Nancy. Så akkurat nå har jeg to ting som gjør det samme i prosjektet mitt, bare for to ulike deler. Dette ble bare tull, så Ninject må nok ut - men i skrivende stund er biblioteket i alle fall en del av løsningen. </p>
 <h2>Topshelf</h2>
-<img src="/uploads/2015/05/topshelf.png" alt="Topshelf" />
+<img src="/blog/uploads/2015/05/topshelf.png" alt="Topshelf" />
 
 <p>Dette er noe jeg har hatt lyst til å bruke lenge, men dette er første gang jeg gjør det. <strong><a href="http://topshelf-project.com/">Topshelf</a></strong> er et rammeverk for å lage windows servicer. For det første gir det en <em>fluent DSL</em> for å definere tjenesten - hva den skal hete, hva den skal gjøre når den starter opp, hva den skal gjøre når det stoppes, hvilke rettigheter den skal ha, hvordan den skal oppføre seg når den kræsjer, og andre slike ting.</p>
 <p>Når du så har gjort det, og bygger prosjektet, så ender du opp med en exe-fil med noen spesielle egenskaper. Den kan kjøres som et vanlig konsollprogram, og det er jo kjekt for testing. Men den er også klargjort for å ta imot en rekke opsjoner, som lar deg for eksempel installere tjenesten (én eller flere instanser), starte, stoppe og avinstallere den. Jeg behøver altså ikke lage noen egen windows service installer, takket være Topshelf.</p>
@@ -128,10 +128,10 @@
 <p>Jeg har ikke brukt dette før, og har ikke kommet så veldig langt i å skrive tester som bruker det her heller. Men jeg synes ideen er svært spennende, så jeg håper biblioteket innfrir.</p>
 <p>Jeg merket derimot at filoperasjonene tok <em>bitte litt</em> lengre tid da jeg byttet ut System.IO med System.IO.Abstractions. Det var så lite at det i de fleste tilfeller nok ikke vil være noe problem, og dessuten kan jeg sikkert gjøre litt ytelsesprofilering og kanskje finne noen problemområder jeg kan fikse på, men litt skuffet ble jeg jo :)</p>
 <h2>Json.NET (fra Newtonsoft)</h2>
-<img src="/uploads/2015/05/json.net.jpg" alt="Json.NET" />
+<img src="/blog/uploads/2015/05/json.net.jpg" alt="Json.NET" />
 
 <p><strong><a href="http://www.newtonsoft.com/json">Json.NET</a></strong> er det mest nedlastede biblioteket fra NuGet, og brukes til å serialisere .NET-objekter til/fra JSON. Ikke så mye mer å si egentlig :)</p>
-<p><em>PS: Er du interessert i serialisering kan du også lese min <a href="/2015/05/12/kompakt-serialisering-med-messagepack/">blogpost om kompakt serialisering med MessagePack</a>.</em></p>
+<p><em>PS: Er du interessert i serialisering kan du også lese min <a href="/blog/2015/05/12/kompakt-serialisering-med-messagepack/">blogpost om kompakt serialisering med MessagePack</a>.</em></p>
 <h2>NUnit</h2>
 <p>Når jeg skal skrive tester i C# bruker jeg nesten alltid <strong><a href="http://www.nunit.org/">NUnit</a></strong>. Det finnes noen nokså like alternativer, som for eksempel <a href="http://xunit.github.io/">xUnit.net</a>, men jeg ser ingen grunn til å bytte ut det biblioteket jeg har brukt i så mange år.</p>
 <p><em>(Derimot har jeg av og til brukt <a href="https://github.com/machine/machine.specifications">machine.specifications</a> (a.k.a. MSpec) og <a href="http://www.specflow.org/">specflow</a>, men det er når jeg føler den typen spesifikasjoner passer bedre til å dokumentere funksjonaliteten. NUnit er verktøyet jeg strekker meg etter først.)</em></p>
@@ -144,7 +144,7 @@ db_keys.Should().Contain(<span class="hljs-string">&quot;key_one&quot;</span>)<s
 <p><strong><a href="http://www.appveyor.com/">AppVeyor</a></strong> er ikke et bibliotek eller rammeverk, men en tjeneste - <em>en byggemotor</em> - som jeg benytter for første gang i dette prosjektet. AppVeyor bygger LavaFlow hver gang jeg pusher endringer til Github, og gir meg en fin liten badge som sier om siste bygg er ok eller ikke:</p>
 <p><a href="https://ci.appveyor.com/project/tormaroe/lavaflow/branch/master"><img src="https://ci.appveyor.com/api/projects/status/v9tlafdwjb3hu2n9/branch/master?svg=true" alt="Build status" /></a></p>
 <h2>.. til slutt</h2>
-<p>LavaFlow er ment å være en lekegrind hvor jeg kan eksperimentere, og etterhvert kan det tenkes jeg legger til avhengigheter til enda flere bibliotek. Blant annet inneholder det en hjemmesnekret <a href="/tags/actor-model/">Actor</a>, og jeg har tenkt på å bytte dette ut med <a href="http://getakka.net/">Akka.NET</a>. </p>
+<p>LavaFlow er ment å være en lekegrind hvor jeg kan eksperimentere, og etterhvert kan det tenkes jeg legger til avhengigheter til enda flere bibliotek. Blant annet inneholder det en hjemmesnekret <a href="/blog/tags/actor-model/">Actor</a>, og jeg har tenkt på å bytte dette ut med <a href="http://getakka.net/">Akka.NET</a>. </p>
 <p>Men det får bli en egen blogpost...</p>
 
 
@@ -166,7 +166,7 @@ db_keys.Should().Contain(<span class="hljs-string">&quot;key_one&quot;</span>)<s
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

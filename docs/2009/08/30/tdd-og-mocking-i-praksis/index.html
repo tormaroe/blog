@@ -11,15 +11,15 @@
     <title>TDD og mocking i praksis</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,11 +64,11 @@
           <h1>TDD og mocking i praksis</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 30. august 2009</small> 
-            <a href="/tags/testing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing</span></a>
+            <a href="/blog/tags/testing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing</span></a>
           
-            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+            <a href="/blog/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
           </p>
-          <p>I de to forrige postene, <a href="/2009/08/25/utenfra-og-inn-programmering/">Utenfra-og-inn programmering</a> og <a href="/2009/08/27/avhengighetsisolering-aka-mocking-i-net/">Avhengigetsisolering (a.k.a Mocking)</a>, har jeg forklart hvordan jeg praktiserer testdreven utvikling. Denne gangen gjør jeg et forsøk på å vise det i praksis, en slags "tutorial" om du vil. Det er selvfølgelig en overhengende fare for at jeg produserer en svært lang blogpost, men om du har lyst til å bli med meg og oppleve <em>"<a href="http://www.infoq.com/news/2009/01/classic-mockist-tdd" target="_blank">Mockist TDD</a>"</em> i praksis så er du i alle fall svært velkommen.</p>
+          <p>I de to forrige postene, <a href="/blog/2009/08/25/utenfra-og-inn-programmering/">Utenfra-og-inn programmering</a> og <a href="/blog/2009/08/27/avhengighetsisolering-aka-mocking-i-net/">Avhengigetsisolering (a.k.a Mocking)</a>, har jeg forklart hvordan jeg praktiserer testdreven utvikling. Denne gangen gjør jeg et forsøk på å vise det i praksis, en slags "tutorial" om du vil. Det er selvfølgelig en overhengende fare for at jeg produserer en svært lang blogpost, men om du har lyst til å bli med meg og oppleve <em>"<a href="http://www.infoq.com/news/2009/01/classic-mockist-tdd" target="_blank">Mockist TDD</a>"</em> i praksis så er du i alle fall svært velkommen.</p>
 <p>Jeg dokumenterer steg for steg hva jeg gjør, og om du vil må du gjerne kode oppgaven parallelt med meg – det vil du nok lære mest av. I så fall trenger du <a href="http://www.nunit.org/" target="_blank">NUnit</a> og <a href="http://code.google.com/p/moq/" target="_blank">Moq</a> (eller annet testrammeverk og mockingrammeverk du er komfortabel med), <a href="http://www.db4o.com/" target="_blank">db4objects</a>, samt Visual Studio. Jeg har ikke lagt ved den ferdige løsningen, det er <em>selve prosessen</em> som er poenget her.</p>
 <p>Når jeg gjør testdreven utvikling forsøker jeg å utvikle i så små steg som mulig, og jeg hopper mye frem og tilbake mellom test og produksjonskode. Jeg har også en tendens til å foretrekke mange, små klasser som jobber sammen for å løse oppgaver, til fordel for større klasser med mer kompleks logikk. Noen vil kalle det <em>overkill</em>, jeg kaller det et fleksibelt design. Du kan gjøre deg opp din egen mening.</p>
 <h4>Oppgaven</h4>
@@ -174,7 +174,7 @@
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 48</span> }</p>
 </div>
 <p>Jeg lager en ny mock som skal representere en repository, og sender den også inn til controlleren. I linje 47 kontrollerer jeg at Insert har blitt kalt, og at det ble sendt inn et User objekt. Hverken UserRepository eller User eksisterer enda.</p>
-<p>Det meste av testen ligner på den forrige testen, så <a href="/2009/03/11/dry-dont-repeat-yourself/">DRY</a>-prinsippet (kanskje det aller viktigste prinsippet innen softwareutvikling) tvinger meg til å trekke ut det som er felles. Jeg ender opp med denne testklassen:</p>
+<p>Det meste av testen ligner på den forrige testen, så <a href="/blog/2009/03/11/dry-dont-repeat-yourself/">DRY</a>-prinsippet (kanskje det aller viktigste prinsippet innen softwareutvikling) tvinger meg til å trekke ut det som er felles. Jeg ender opp med denne testklassen:</p>
 <div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 29</span> [<span style="color: yellow">TestFixture</span>]</p>
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 30</span>&nbsp;<span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">When_registering_a_new_user</span></p>
@@ -374,7 +374,7 @@
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 71</span> }</p>
 </div>
 <p>Jeg vil ha en konkret UserRepository som jeg vil kalle Db4oUserRepository. Jeg vil sende en instans av en objektdatabase inn via konstruktøren (IObjectContainer er et db4objects interface). I setup-metoden oppretter jeg en ny filbasert database og selve repositorien, og i teardown disposer jeg databasen og sletter filen.</p>
-<p>Selve testen lagrer en ny bruker i repositorien, og så bruker jeg <em>Linq 2 Db4o</em> for å hente ut alle brukere fra basen, sjekke at det finnes én-og-bare-én bruker (ved å kalle Single()), og kontrollere at brukernavnet er riktig. Vær oppmerksom på at du må legge til "using Db4objects.Db4o.Linq" for å få Linq-spørringen i linje 69 til å kompilere. Vil du vite mer om Db4objects kan du lese <a href="/2009/02/27/objekt-orienterte-databaser-del2-db4objects/">min blogpost om dette fantastiske rammeverket</a>.</p>
+<p>Selve testen lagrer en ny bruker i repositorien, og så bruker jeg <em>Linq 2 Db4o</em> for å hente ut alle brukere fra basen, sjekke at det finnes én-og-bare-én bruker (ved å kalle Single()), og kontrollere at brukernavnet er riktig. Vær oppmerksom på at du må legge til "using Db4objects.Db4o.Linq" for å få Linq-spørringen i linje 69 til å kompilere. Vil du vite mer om Db4objects kan du lese <a href="/blog/2009/02/27/objekt-orienterte-databaser-del2-db4objects/">min blogpost om dette fantastiske rammeverket</a>.</p>
 <p>Følgende enkle implementasjon tilfredstiller testen over:</p>
 <div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
 <p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 27</span>&nbsp;<span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">Db4oUserRepository</span> : <span style="color: #2b91af">UserRepository</span></p>
@@ -457,7 +457,7 @@
 <p>For å implementere innlogging går jeg frem som jeg gjorde da jeg startet på brukerregistrering. Innlogging er et eget ansvar som trenger egne tester, eget view og egen controller. Controlleren vil bruke UserRepository, som man gjennom testene må utvide med logikk for å hente opp en bruker basert på navn. Den vil også gjenbruke PasswordHashService, fordi passordet må hashes før man kan sammenligne med det lagrede passordet.</p>
 <p>Gjennom denne blogposten har du allerede sett og lært alt du trenger for å fullføre oppgaven, så jeg stopper her. Om du har lyst til å øve deg litt selv så anbefaler jeg at du fortsetter på egenhånd. Skriv tester først, og ikke lag en eneste klasse eller metode før du har kode (test eller annen kode) som allerede refererer klassen/metoden.</p>
 <p>Jeg håper du likte denne TDD-tutorialen. I en ny blogpost som kommer veldig snart vil jeg analysere designet jeg har kommet opp med, og snakke litt om best practises rundt smidig arkitektur. På gjensyn!</p>
-<p><strong>Knagger:</strong> <a href="/index.php?s=Asp.Net" rel="tag">Asp.Net</a>, <a href="/index.php?s=CodeRush" rel="tag">CodeRush</a>, <a href="/index.php?s=Db4objects" rel="tag">Db4objects</a>, <a href="/index.php?s=DRY" rel="tag">DRY</a>, <a href="/index.php?s=Mocking" rel="tag">Mocking</a>, <a href="/index.php?s=Moq" rel="tag">Moq</a>, <a href="/index.php?s=NUnit" rel="tag">NUnit</a>, <a href="/index.php?s=Phil+Haack" rel="tag">Phil Haack</a>, <a href="/index.php?s=Repository" rel="tag">Repository</a>, <a href="/index.php?s=TDD" rel="tag">TDD</a>, <a href="/index.php?s=Utenfra-og-inn" rel="tag">Utenfra-og-inn</a></p>
+<p><strong>Knagger:</strong> <a href="/blog/index.php?s=Asp.Net" rel="tag">Asp.Net</a>, <a href="/blog/index.php?s=CodeRush" rel="tag">CodeRush</a>, <a href="/blog/index.php?s=Db4objects" rel="tag">Db4objects</a>, <a href="/blog/index.php?s=DRY" rel="tag">DRY</a>, <a href="/blog/index.php?s=Mocking" rel="tag">Mocking</a>, <a href="/blog/index.php?s=Moq" rel="tag">Moq</a>, <a href="/blog/index.php?s=NUnit" rel="tag">NUnit</a>, <a href="/blog/index.php?s=Phil+Haack" rel="tag">Phil Haack</a>, <a href="/blog/index.php?s=Repository" rel="tag">Repository</a>, <a href="/blog/index.php?s=TDD" rel="tag">TDD</a>, <a href="/blog/index.php?s=Utenfra-og-inn" rel="tag">Utenfra-og-inn</a></p>
 
 
         </div>
@@ -478,7 +478,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

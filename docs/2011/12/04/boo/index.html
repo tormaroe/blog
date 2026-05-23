@@ -11,15 +11,15 @@
     <title>Boo</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,21 +64,21 @@
           <h1>Boo</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 4. desember 2011</small> 
-            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+            <a href="/blog/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
           
-            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+            <a href="/blog/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
           
-            <a href="/tags/boo"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Boo</span></a>
+            <a href="/blog/tags/boo"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Boo</span></a>
           </p>
           <p>Er du interessert i å lære et .NET-språk som er mer elegant og enklere å skrive enn C# og VB.NET, og som i tillegg gir deg samme mulighet for å utvide selve språket som det Lisp gjør? Da kan <strong><em>Boo</em></strong> være et bra valg!</p>
 <p>Boo er et objektorientert, statisk typet språk med en syntaks inspirert av Python. Det så dagens lys i 2003, og har vært under aktiv utvikling siden det. Gjeldene release ble sluppet i januar 2011.</p>
 <p>Boo kjører altså på .NET-plattformen (og Mono), og man har tilgang til det meste av hva man er vandt til i rammeverket, som generics, linq osv, og man kan benytte alt man har av eksisterende .NET-biblotek. Ofte bruker man Boo til deler av prosjekt – der hvor Boo's styrker kommer til sin rett.</p>
 <p>Disse styrkene er blant annet en behagelig syntaks (selv om ikke alle vil være enige i det), og kraftig <em>type inference</em> og automatisk <em>type casting</em> som gjør at den sterke typingen ikke går i veien for deg, og er mer behagelig å jobbe med. Dessuten får du <em>literals</em> (enklere syntaks) for lister, arrays og dictionaries, du trenger bare bruke klasser når du trenger det (funksjoner lever fint for seg selv), og du kan bruke duck-typing (en form for dynamisk typing) når du måtte ha behov for det.</p>
-<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="boo" border="0" alt="boo" src="/uploads/2011/12/boo.jpg" width="500" height="189"></p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="boo" border="0" alt="boo" src="/blog/uploads/2011/12/boo.jpg" width="500" height="189"></p>
 <p>Alt dette er vel og bra, men Boo har mer! Fokuset under utviklingen av Boo har vært på å lage en <strong>fleksibel og utvidebar kompilator</strong>. Dette gjør at man kan utvide selve språket gjennom å lage ting som meta-metoder og makroer som kjører under selve kompileringsprosessen. Disse teknikkene gjør blant annet at man kan unngå det vi ofte kaller for <a href="http://en.wikipedia.org/wiki/Boilerplate_code">boilderplate code</a>. Det gjør også Boo til et glimrende verktøy for å lage domenespesifike språk, noe Ayende Rahien beskrev i boken <em><a href="http://www.manning.com/rahien/">DSLs in Boo: Domain-Specific Languages in .NET</a></em>.</p>
 <p>Jeg har selv fått benyttet Boo på denne måten i et par prosjekter, og synes det fungerer ganske bra.</p>
 <h4>På tide med litt kode</h4>
-<p>Som vanlig har jeg implementert en løsning (eller rettere sagt flere løsninger) på <a href="/2011/11/24/hello-world-euler-style/">Project Euler problem nummer 1</a> – <em>hvordan man summerer opp alle tall opp til 1000 som er delelige på 3 eller 5</em>. Dette vil ikke demonstrere noen makro eller meta-features, men gi et første inntrykk av hvordan Boo-kode ser ut, og hva man kan gjøre.</p>
+<p>Som vanlig har jeg implementert en løsning (eller rettere sagt flere løsninger) på <a href="/blog/2011/11/24/hello-world-euler-style/">Project Euler problem nummer 1</a> – <em>hvordan man summerer opp alle tall opp til 1000 som er delelige på 3 eller 5</em>. Dette vil ikke demonstrere noen makro eller meta-features, men gi et første inntrykk av hvordan Boo-kode ser ut, og hva man kan gjøre.</p>
 <pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="String">"""A simple, imperative Boo solution to Euler problem #1"""</span>
 <span class="lnr"> 2 </span>
 <span class="lnr"> 3 </span><span class="Statement">class</span> <span class="Function">Euler1</span>:
@@ -143,7 +143,7 @@
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

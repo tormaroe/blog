@@ -11,15 +11,15 @@
     <title>Luke 8, 9, 10, 11 og 12</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="/blog/assets/css/bootstrap.css" rel="stylesheet">
 
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/highlight/default.css">
-    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/blog/assets/css/highlight/default.css">
+    <link href="/blog/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/blog/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,14 +38,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+          <a class="navbar-brand" href="/blog/"><img src="/assets/images/logo-sm.png"></a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
-          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
-          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
-          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+          <li class=""><a href="/blog/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/blog/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/blog/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/blog/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
         </ul>
         <form class="navbar-form navbar-right" role="search">
           <div class="form-group">
@@ -64,15 +64,15 @@
           <h1>Luke 8, 9, 10, 11 og 12</h1>
           <hr style="margin:5px;">
           <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 12. desember 2015</small> 
-            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+            <a href="/blog/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
           
-            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+            <a href="/blog/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
           </p>
-          <img src="/uploads/2015/12/vlad.jpg" alt="Vlad" />
+          <img src="/blog/uploads/2015/12/vlad.jpg" alt="Vlad" />
 
 <p>Julekalenderen har ikke gått helt som planlagt. Virkeligheten innhentet meg, og jeg har ikke funnet tid til å kode opp og poste så mye av det jeg hadde håpet. Ikke veeeeldig overraskende, men det var jo lov å være optimistisk.</p>
 <p>Jeg støtte også på et problem med SMS-løsningen jeg jobber med som jeg sålangt ikke har klart å løse. Jeg hadde noe som fungerte, men så noen dager senere så fungerte det ikke. Oppdaterte tredjepartsbibloteker? En av de mange Windows-oppgraderingene som skaper problemer? Jeg vet ikke, men avlusing tar tid. Og sist men ikke minst så er det ikke <em>så</em> motiverende å skrive så mye om et tema - Common Lisp - som svært få (forståelig nok) viser noen interesse for.</p>
-<p>Derimot har jeg hatt det veldig gøy i desember med å løse oppgavene i Knowit sin julekalender, og det har det jo også blitt noen blogposter av: <a href="/2015/12/02/knowit-split-secuence-cl-ppcre/">1</a>, <a href="/2015/12/03/cl-arrow/">2</a>, <a href="/2015/12/04/sirkulaere-lister/">3</a>, <a href="/2015/12/05/dna-analyse/">4</a> og <a href="/2015/12/06/compose/">5</a>.</p>
+<p>Derimot har jeg hatt det veldig gøy i desember med å løse oppgavene i Knowit sin julekalender, og det har det jo også blitt noen blogposter av: <a href="/blog/2015/12/02/knowit-split-secuence-cl-ppcre/">1</a>, <a href="/blog/2015/12/03/cl-arrow/">2</a>, <a href="/blog/2015/12/04/sirkulaere-lister/">3</a>, <a href="/blog/2015/12/05/dna-analyse/">4</a> og <a href="/blog/2015/12/06/compose/">5</a>.</p>
 <p>Her følger løsningene mine på resten av lukene som har blitt åpnet...</p>
 <h2>Luke 6</h2>
 <p>Oppgaveteksten lød:</p>
@@ -164,7 +164,7 @@ Altså fem ulike måter.</p>
 <blockquote>
 <p>Gitt et positivt heltall, finn den tilsvarende kolonnetittelen som vises fram i et Excel ark. Finn kolonnetittelen til 142453146368</p>
 </blockquote>
-<p>Her rotet jeg mye! Jeg trodde først jeg skulle klare å løse oppgaven med noe kode jeg hadde skrevet før, og blogget om i posten <a href="/2015/01/18/komprimere-tall/">Komprimere tall</a>. Men nummereringen av kolonner er en litt spesiell måte å telle på, og jeg fikk det ikke til. Med litt Google-hjelp kom jeg opp med denne løsningen:</p>
+<p>Her rotet jeg mye! Jeg trodde først jeg skulle klare å løse oppgaven med noe kode jeg hadde skrevet før, og blogget om i posten <a href="/blog/2015/01/18/komprimere-tall/">Komprimere tall</a>. Men nummereringen av kolonner er en litt spesiell måte å telle på, og jeg fikk det ikke til. Med litt Google-hjelp kom jeg opp med denne løsningen:</p>
 <pre><code class="hljs">(<span class="hljs-name">defvar</span> *BASE* <span class="hljs-number">26</span>)
 
 (<span class="hljs-name">defun</span> excelify (<span class="hljs-name">col</span>)
@@ -257,7 +257,7 @@ Elementene kan være romertall, binærtall eller heltall. Hva er mediantallet i 
 
 
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="/assets/js/kjempekjekt.js"></script>
+    <script src="/blog/assets/js/bootstrap.min.js"></script>
+    <script src="/blog/assets/js/kjempekjekt.js"></script>
   </body>
 </html>

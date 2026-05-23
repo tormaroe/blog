@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node build.js",
-    "start": "npx -y http-server docs"
+    "build": "node build.js --prefix=/blog",
+    "build:local": "node build.js --prefix=",
+    "start": "npm run build:local && npx -y http-server docs"
   },
   "dependencies": {
     "ejs": "^3.1.10",
