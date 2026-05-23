@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Scheme,Lisp">
+
+    <title>Hello, Scheme</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hello, Scheme</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 20. mars 2014</small> 
+            <a href="/tags/scheme"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Scheme</span></a>
+          
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          </p>
+          <p>I går hadde vi et par utviklere på besøk på kontoret, og det viste seg at de var <em>lispere</em>; de utviklet i både Clojure og Scheme (som altså er to Lisp-dialekter - er du ikke kjent med Lisp kan du ta en titt på posten <a href="/2010/08/02/lisp-for-dummies/">Lisp for Dummies</a>). Jeg ante ikke at vi hadde folk som skrev produksjonskode i Clojure i Bergen, men det har vi altså.</p>
+<p>Dette minte meg på hvor mye jeg savner å bruke Lisp. Og så kom jeg på at selv om jeg har eksperimentert endel med både Clojure og Common Lisp så har jeg <strong>faktisk aldri forsøkt Scheme</strong>.</p>
+<p>Mer inspirasjon behøvde jeg ikke :)</p>
+<p class="text-center"><img src="/uploads/2014/03/chicken-small.png"></p>
+
+<p>Nå har jeg installert <a href="http://www.call-cc.org/">Chicken Scheme</a> og lekt meg med det noen timer. Jeg har gjort akkurat de samme øvelsene som <a href="/tags/nimrod">da jeg eksperimenterte med Nimrod</a>:</p>
+<ol>
+<li>Jeg har løst oppgave #1 fra Project Euler</li>
+<li>Jeg har brukt Scheme til å sende SMS</li>
+<li>Jeg har implementert en stack-basert kalkulator</li>
+</ol>
+<p>All denne koden presenterer jeg her..</p>
+<p>##Euler 1
+For dem som ikke husker det: I denne oppgaven skal vi finne summen av alle multipler av 3 eller 5 under 1000.</p>
+<p>Først importerer jeg et par moduler. <code>srfi-1</code> gir meg tilgang til listefunksjoner som <code>filter</code> og <code>fold</code>, mens <code>extras</code> gir meg en <code>printf</code>-funksjon.</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">use</span></span> srfi-1 extras)</code></pre><p>En enkel funksjon for å lage en serie med tall fant jeg derimot ikke, så jeg lagde min egen rekursive <code>range</code>:</p>
+<pre><code class="hljs">(define (range <span class="hljs-keyword">from</span> <span class="hljs-keyword">to</span>)
+  (define (<span class="hljs-keyword">range</span>-<span class="hljs-keyword">inner</span> <span class="hljs-keyword">from</span> <span class="hljs-keyword">to</span> acc) 
+    (<span class="hljs-keyword">if</span> (&lt;= <span class="hljs-keyword">from</span> <span class="hljs-keyword">to</span>)
+      (<span class="hljs-keyword">range</span>-<span class="hljs-keyword">inner</span> <span class="hljs-keyword">from</span> (- <span class="hljs-keyword">to</span> <span class="hljs-number">1</span>) (cons <span class="hljs-keyword">to</span> acc))
+      acc))
+  (<span class="hljs-keyword">range</span>-<span class="hljs-keyword">inner</span> <span class="hljs-keyword">from</span> <span class="hljs-keyword">to</span> <span class="hljs-string">&#x27;()))</span></code></pre><p>Så lagde jeg en funksjon for å sjekke om et tall var en multippel av 3 eller 5. Her tok jeg litt av, men det er greit når man eksperimenterer...</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">multiple-of</span> n)
+  (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (a)
+    (<span class="hljs-name"><span class="hljs-built_in">zero?</span></span> (<span class="hljs-name"><span class="hljs-built_in">modulo</span></span> a n))))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> multiple-of-3 (<span class="hljs-name">multiple-of</span> <span class="hljs-number">3</span>))
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> multiple-of-5 (<span class="hljs-name">multiple-of</span> <span class="hljs-number">5</span>))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">multiple-of-3-or-5</span> a)
+  (<span class="hljs-name"><span class="hljs-built_in">or</span></span> (<span class="hljs-name">multiple-of-3</span> a)
+      (<span class="hljs-name">multiple-of-5</span> a)))</code></pre><p>Og så kommer selve løsningen, som lager en <em>range</em>, filtrerer ut multiplene, og summerer tallene sammen ved bruk av <code>fold</code>.</p>
+<pre><code class="hljs">(<span class="hljs-name">define</span> (<span class="hljs-name">euler-1</span>)
+  (<span class="hljs-name">fold</span> + <span class="hljs-number">0</span>
+        (<span class="hljs-name"><span class="hljs-built_in">filter</span></span> multiple-of-3-or-5 
+                (<span class="hljs-name"><span class="hljs-built_in">range</span></span> <span class="hljs-number">1</span> <span class="hljs-number">999</span>))))</code></pre><p>Nå gjenstår det bare å kalle <code>euler-1</code> og skrive ut resultatet:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">printf</span></span> <span class="hljs-string">&quot;~A~%&quot;</span> (<span class="hljs-name">euler-1</span>))</code></pre><p>###Scheme kan bli til Clojure
+Clojure har noen veldig fine makroer som ikke er så vanlige i andre Lisper, men Chicken Scheme har en modul som heter <code>clojurian</code> som inneholder noen av dem, blant annet den jeg bruker her som kalles <em>thrush-kombinatoren</em>:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">use</span></span> clojurian-syntax)
+
+(<span class="hljs-name"><span class="hljs-built_in">-&gt;&gt;</span></span> (<span class="hljs-name"><span class="hljs-built_in">range</span></span> <span class="hljs-number">1</span> <span class="hljs-number">999</span>)
+     (<span class="hljs-name"><span class="hljs-built_in">filter</span></span> multiple-of-3-or-5)
+     (<span class="hljs-name">fold</span> + <span class="hljs-number">0</span>)
+     (<span class="hljs-name"><span class="hljs-built_in">printf</span></span> <span class="hljs-string">&quot;~A~%&quot;</span>))</code></pre><p>Her gjør jeg altså det samme som i løsningen over, men denne varianten er mye enklere å lese.</p>
+<p>###Scheme kan bli til Common Lisp
+Chicken Scheme har også moduler som er inspirert av Common Lisp, og her løser jeg oppgaven ved hjelp av den fantastiske loop-makroen:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">use</span></span> loop) <span class="hljs-comment">; the greatest macro ever!</span>
+
+(<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for x from <span class="hljs-number">1</span> below <span class="hljs-number">1000</span>
+      when (<span class="hljs-name">multiple-of-3-or-5</span> x)
+        sum x into acc
+      finally (<span class="hljs-name"><span class="hljs-built_in">printf</span></span> <span class="hljs-string">&quot;~A~%&quot;</span> acc))</code></pre><p>##Sende SMS
+Siden det liksom er <a href="http://pswin.com">SMS jeg jobber med til daglig</a> så liker jeg å vise hvor enkelt <em>det</em> kan gjøres. Og ved å gjøre det lærer jeg meg hvordan jeg kan konstruere XML i språket jeg jobber med, og hvordan jeg gjør HTTP-requests.</p>
+<p>Først laster jeg noen moduler, definerer en global variabel som holder adressen til SMS gatewayen, og noen funksjoner for å konstruere XML&#39;en:</p>
+<pre><code class="hljs">(<span class="hljs-name">use</span> sxml-serializer
+     http-client)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> gateway <span class="hljs-string">&quot;http://gw2-fro.pswin.com:81/&quot;</span>)
+
+<span class="hljs-comment">;;; Create sxml for a message</span>
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">sms-msg</span> id snd rcv text)
+  `(MSG (ID ,id)
+        (SND ,snd)
+        (RCV ,rcv)
+        (TEXT ,text)))
+
+<span class="hljs-comment">;;; Create sxml for a sms session</span>
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">sms-session</span> user pass msglst)
+  `(SESSION (CLIENT ,user)
+            (PW ,pass)
+            (MSGLST ,msglst)))
+
+<span class="hljs-comment">;;; Create xml for a sms request</span>
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">sms-xml</span> session)
+  (<span class="hljs-name">sprintf</span> <span class="hljs-string">&quot;&lt;?xml version=\&quot;1.0\&quot;?&gt;~%~A~%&quot;</span> 
+           (<span class="hljs-name">serialize-sxml</span> session)))</code></pre><p>Deretter lager jeg funksjoner for å sende via HTTP POST, og å skrive ut resultatet (også XML):</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">post-request</span> session)
+    (<span class="hljs-name">with-input-from-request</span>
+      gateway 
+      (<span class="hljs-name">sms-xml</span> session) 
+      read-string))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">send-sms</span> session)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">result</span> (<span class="hljs-name">post-request</span> session)))
+    (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;Result XML: ~A~%&quot;</span> result)))</code></pre><p>Til slutt kan jeg sende en SMS på denne måten:</p>
+<pre><code class="hljs">(<span class="hljs-name">send-sms</span>
+ (<span class="hljs-name">sms-session</span> <span class="hljs-string">&quot;minbruker&quot;</span> <span class="hljs-string">&quot;mittpassord&quot;</span>
+   (<span class="hljs-name"><span class="hljs-built_in">list</span></span> (<span class="hljs-name">sms-msg</span> <span class="hljs-number">1</span> <span class="hljs-string">&quot;Chicken&quot;</span> <span class="hljs-string">&quot;4790696698&quot;</span> 
+                  <span class="hljs-string">&quot;Hei fra kyllingen!&quot;</span>))))</code></pre><p>##Kalkulator-kata
+Til slutt skal du få se min stack-baserte kalkulator. Den er strukturert som en REPL (<em>read eval print loop</em>), og har ingen muterende state; stacken sendes bare fra funksjon til funksjon slik <em>funksjonelle programmerere liker det</em> ;)</p>
+<pre><code class="hljs"><span class="hljs-comment">;;;</span>
+<span class="hljs-comment">;;; An interactive stack-based calculator</span>
+<span class="hljs-comment">;;;</span>
+
+(<span class="hljs-name">use</span> matchable extras)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">calc-repl</span>)
+  
+  <span class="hljs-comment">;; READ user input</span>
+  (<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">calc-read</span> stack)
+    (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;? &quot;</span>)
+    (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> (<span class="hljs-name">read-line</span>) stack))
+
+  (<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">stack-op</span> op stack)
+    (<span class="hljs-name">match</span> stack
+      ((<span class="hljs-name">a</span> b . rest) (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> (<span class="hljs-name">op</span> a b) rest))
+      ((<span class="hljs-name">x</span> . &#x27;()) (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> (<span class="hljs-name">op</span> x x) &#x27;()))))
+
+  <span class="hljs-comment">;; EVAL operation</span>
+  (<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">calc-eval</span> stack)
+    (<span class="hljs-name"><span class="hljs-built_in">let*</span></span> ((<span class="hljs-name">input</span> (<span class="hljs-name"><span class="hljs-built_in">car</span></span> stack))
+           (<span class="hljs-name">input-number</span> (<span class="hljs-name"><span class="hljs-built_in">string-&gt;number</span></span> input))
+           (<span class="hljs-name">stack</span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> stack)))
+      (<span class="hljs-name"><span class="hljs-built_in">cond</span></span> ((<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> input <span class="hljs-string">&quot;q&quot;</span>) &#x27;()) <span class="hljs-comment">; QUIT</span>
+            (<span class="hljs-name">input-number</span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> input-number stack))
+            ((<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> input <span class="hljs-string">&quot;+&quot;</span>) (<span class="hljs-name">stack-op</span> + stack))
+            ((<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> input <span class="hljs-string">&quot;-&quot;</span>) (<span class="hljs-name">stack-op</span> - stack))
+            ((<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> input <span class="hljs-string">&quot;*&quot;</span>) (<span class="hljs-name">stack-op</span> * stack))
+            ((<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> input <span class="hljs-string">&quot;/&quot;</span>) (<span class="hljs-name">stack-op</span> / stack))
+            (<span class="hljs-name"><span class="hljs-built_in">else</span></span> stack)))) <span class="hljs-comment">; DISCARD INPUT</span>
+
+  <span class="hljs-comment">;; PRINT stack</span>
+  (<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">calc-print</span> stack)
+    (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;STACK: ~A~%&quot;</span> stack)
+    stack)
+
+  <span class="hljs-comment">;; LOOP around Read Eval Print</span>
+  <span class="hljs-comment">;; until empty stack</span>
+  (<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">calc-loop</span> stack)
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">pair?</span></span> stack) 
+      (<span class="hljs-name">calc-loop</span> 
+        (<span class="hljs-name">-&gt;&gt;</span> stack
+          (<span class="hljs-name">calc-read</span>)
+          (<span class="hljs-name">calc-eval</span>)
+          (<span class="hljs-name">calc-print</span>)))
+      <span class="hljs-symbol">&#x27;done</span>))
+
+  <span class="hljs-comment">;; Start with &#x27;0&#x27; on the stack</span>
+  (<span class="hljs-name">calc-loop</span> &#x27;(<span class="hljs-number">0</span>)))
+
+<span class="hljs-comment">;; Start calculator</span>
+(<span class="hljs-name">calc-repl</span>)</code></pre><p>##Konklusjon
+Så, hvordan likte jeg Scheme? Det som er fint med språket er at det er minimalistisk, og mye enklere å forholde seg til enn Common Lisp. Samtidig har det endel tilleggsmoduler som sålangt har gitt meg alt jeg har hatt behov for.</p>
+<p>I forhold til Clojure blir det litt mye paranteser når jeg bruker <code>let</code> og <code>cond</code>, men det går det an å vende seg til. Samtidig slipper jeg å forholde meg til JVM&#39;en som Clojure kjører på; Chicken Scheme kompilerer til C og er lynrask!</p>
+<p>Det var litt vanskelig <em>(overraskende vanskelig)</em> å finne gode oppslagsressurser på Scheme. Etterhvert fant jeg ut at min beste ressurs var <a href="http://api.call-cc.org/doc/">Chicken Scheme-dokumentasjonens søkefunsjon</a>. Det hjalp at jeg har lest et par bøker som bruker språket (<a href="http://en.wikipedia.org/wiki/Structure_and_Interpretation_of_Computer_Programs">SICP</a>), sånn at jeg visste hva jeg kunne søke etter.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

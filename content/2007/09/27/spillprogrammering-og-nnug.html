@@ -1,0 +1,27 @@
+---
+title: Spillprogrammering og NNUG
+link: http://blog.kjempekjekt.com/2007/09/27/spillprogrammering-og-nnug/
+layout: post
+date: 2007-09-27 10:20:56Z
+tags:
+  - NNUG
+---
+<img id="image265" style="padding-right: 4px; padding-left: 4px; margin-bottom: 8px; padding-bottom: 4px; margin-right: 15px; padding-top: 4px; border: silver 1px solid" alt="RuneZ.jpg" src="/uploads/2007/09/RuneZ.jpg" align="left" /><a href="http://www.microsoft.com/norge/msdn/runez.mspx" target="_blank">Rune Zakariassen</a> jobber i det norske utvikler- og plattformteamet til Microsoft, og er ansvarlig for faglige relasjoner mellom utdannings- og forskningsmiljøene og Microsoft-ressurser som forskning, kompetanse, kunnskapsnettverk og software. Han er en engasjerende fyr med veldig mye kunnskap. Det er ikke lett å sette ham fast på fagfeltet .net.
+
+I går stilte Rune opp på det månedlige møtet til <a href="http://nnug.no/Avdelinger/Bergen/" target="_blank">NNUG i Bergen</a>, og det var i utgangspunktet opp til oss hva han skulle snakke om. Det ble tid til følgende tre tema:
+
+1) Rune fortalte om <strong>Software Factories</strong>, og om Microsofts strategi for å industrialisere software-utvikling. Dette er fremtiden for oss utviklere, og ting som domenespesifike språk (DSL) og deklerativ programmering står sentralt. Runes budskap er at for å møte fremtidens krav til effektivitet må vi tenke som andre industrier som har gått fra håndtverkt til industri, og konsekvensen av dette er en todeling av utvikling.
+
+Se for deg at du splitter den tradisjonelle utviklingsavdelingen i to: én Software Factory (SF) avdeling som lager generelle komponenter som kan brukes i mange lignende produkter - med tilhørende tools, DSL'er og dokumentasjon - og én Produktutviklingsavdeling, som først og fremst setter sammen moduler fra SF-avdelingen, konfigurerer og gjør den <em>plumbingen</em> som er nødvendig for å få ting til å fungere sammen.
+
+Dette er den veien .net utvikler seg med WF, TFS, VS codename "Rosario" osv. Sammenligner du med f.eks. bilindustrien så ser du kanskje sammenhengen. De har en avdeling som hele tiden jobber med å lage generelle komponenter som gir, forgasser, antispinn-system etc, og så har du en produktavdeling som bruker dette til å lage selve bilene. Jo mindre tilpassning produktavdelingen må gjøre, jo mer effektive er de, og kan rulle ut en mengde lignende produkter.
+
+I dag er Microsoft i praksis vår SF-avdeling, og vi må gjøre veldig mye plumbing. Vi må bevege oss mot å gjøre mer av dette arbeidet selv...
+
+2) Runes neste budskap var kort fortalt at <em><strong>structs</strong></em> er undervurdert. Oppretter du mange objekter og trenger god ytelse, vurder å benytte struct i stedet.
+
+Og til slutt...
+
+<img id="image266" style="padding-right: 4px; padding-left: 4px; margin-bottom: 8px; padding-bottom: 4px; margin-left: 15px; padding-top: 4px; border: silver 1px solid" alt="xna.jpg" src="/uploads/2007/09/xna.jpg" align="right" />3) Rune skal i dag reise videre til NTNU i Trondheim, hvor han skal holde en gjesteforelesning på doktorgradsstudie for <strong>spillprogrammering</strong>. Og siden han hadde med seg en XBox 360 så demonstrerte han hvordan man kan benytte <a href="http://msdn2.microsoft.com/en-us/xna/default.aspx" target="_blank">XNA</a> til å raskt komme igang med å utvikle høy-ytelsesspill for XBox i Visual Studio med managed .net kode. Å kjøre bilspill i debug mode på XBox med breakpoints i Visual Studio var kuult å se på.
+
+Spillindustrien er ifølge Rune større enn Hollywood, og XNA-teknologien gir den nødvendige plattformen som gjør at også vi .net programmerere kan delta. 350 tusen utviklere har allerede lastet ned bibliotekene og begynt å utvikle - ti ganger så mange som det finnes profesjonelle spillutviklere. Dette var veldig inspirerende, og gitt litt fritid er dette noe jeg helt klart skal teste ut.

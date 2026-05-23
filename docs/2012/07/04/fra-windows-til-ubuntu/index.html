@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Linux,Laptop">
+
+    <title>Fra Windows til Ubuntu</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Fra Windows til Ubuntu</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 4. juli 2012</small> 
+            <a href="/tags/linux"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Linux</span></a>
+          
+            <a href="/tags/laptop"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Laptop</span></a>
+          </p>
+          <p>Som jeg "annonserte" <a href="/2012/06/18/hvilken-laptop/">for et par uker siden</a> var det nå på tide å bytte ut min tre år gamle laptop, og jeg endte etter mye frem og tilbake opp med å bestille en <b><a href="http://www.lenovo.com/products/us/laptop/thinkpad/w-series/w530/">Lenovo W530</a></b>. Denne blogposten handler litt om den nye laptop'en, men først og fremst handler det om at jeg har valgt å forsøke å bytte til Linux som mitt primære OS, og hvordan jeg som Windows/.NET-utvikler har tenkt å få det til å fungere.</p>
+<h3>Min nye Lenovo</h3>
+<p>Laptopen ankom på mandag. Docking og SSD ankom på tirsdag. Jeg venter fortsatt på 8 av de 16 Gigabytene med minne jeg har tenkt å bruke.</p>
+<p>Førsteinntrykket er gjevnt over bra. Den er ikke like sexy som en Sony Vaio eller Asus ZenBook, men en kraftmaskin av høy kvalitet. Den er også lettere enn min gamle Dell. Den har en bra touchpad, og HD-skjermen er super - en 16:9-skjerm føles også mye "riktigere" enn 16:10.</p>
+<p>Tastaturet er litt uvandt, men det tror jeg nok jeg venner meg til ganske raskt. Lyset i tastaturet er desverre ikke like bra som i Dell'en, men godt nok. Det eneste jeg irriterer meg over er at Lenovoen's funksjonstast har tatt plassen til venstre Ctrl - kontroll-tasten er ikke under shift som jeg er vandt med, og det er unødvendig knotete å treffe den.</p>
+<p><img width="600" height="435" src="/uploads/2012/07/lenovo.jpg"></p>
+<h3>Ubuntu</h3>
+<p>Å installere Ubuntu 12.04 (64 bit) var smertefritt og gikk raskt. På få minutter koblet jeg opp mine dropbox-, twitter-, facebook- og google-kontoer, og følte meg raskt hjemme. Å installere nye programmer i Linux er utrolig <i>smooth</i>, og Ubuntu har virkelig tatt steget opp og blitt et bra, pent og ikke minst brukervennlig operativsystem. Det nye menysystemet er godt gjennomtenkt, og de virtuelle desktopene fungerer bedre enn alt jeg har forsøkt å få til i Windows.</p>
+<p>Det største problemet sålangt dukket opp da jeg forsøkte å koble mine to eksterne skjermer til Lenovoen via dockingstasjonen. Ubuntu klarte ikke å finne dem! Jeg har ikke gjort noe enda for å forsøke å fikse problemet - NVIDIA-skjermkort er et typisk problemområde i Linux-verden, men det skal la seg løse.</p>
+<h3>Linux i et Windows-miljø</h3>
+<p>Som utvikler i en bedrift og på et team som bruker Microsoft-teknologi til det aller meste er det en del ting jeg må få til å virke for at Linux ikke skal bli et problem.</p>
+<p>For eksempel må jeg kunne "remote" inn til en Windows box. Til dette kommer Ubuntu med <b>Remmina Remote Desktop Client</b>, og den fungerte utmerket. Men jeg må også kunne logge meg inn på vårt Citrix-miljø, og det har jeg ikke fått til enda. Det finnes heldigvis Citrix-klienter for Linux, men så langt jeg har sett er det litt komplisert å få installert dette, så jeg har ikke gjort noe forsøk på dette enda (tips mottas med takk).</p>
+<p>En annen ting jeg har installert er <b>Wine</b>. Det er et program som lar deg kjøre Windows-programmer på Linux. Jeg brukte det til å kjøre Windows-klienten til <b>Spotify</b>, og det fungerte utmerket på første forsøk.</p>
+<p>Jeg kommer ikke til å slippe helt unna Windows. På sikt håper jeg å kunne fase ut Visual Studio, men inntil videre er det et nødvendig verktøy. Derfor planlegger jeg å kjøre en Windows virtuelt i Linux vha. <b>VirtualBox</b>. Det er derfor jeg vil ha 16 GB RAM. Første forsøk på å installere 64bits Win7 i VirtualBox ble misslykket, men jeg trenger bare litt mer tid!</p>
+<h3>Andre ting jeg har installert</h3>
+<p>Ubuntu kommer installert med Firefox, men som Google fanboy har jeg selvfølgelig byttet til <b>Chromium</b>, open-source utgaven av Chrome. Etter å ha logget på med google-brukeren min fikk den tak i mitt vanlige Chrome-tema, bokmerkene og historikken min, og da var det lett å glemme at jeg faktisk befant meg på et ny-installert OS.</p>
+<p>Paint.NET erstattet jeg med <b>Gimp</b>, som jo er mye kraftigere - nesten en fullgod erstatning av PhotoShop. Og <b>InkScape</b>, som jeg er en flittig bruker av, finnes også for Linux, så den har jeg også installert.</p>
+<p>Jeg benyttet også sjangsen til å teste ut en ny twitter-klient, og fant en som heter <b>Hotot</b> som virker lovende. For annen chat'ing, først og fremst en erstatning for Live Messenger, har jeg installert <b>Pidgin</b>.</p>
+<p>Jeg har vært en flittig bruker av Windows Live Writer - jeg har brukt programmet til å skrive blogpostene mine, og håpte jeg kunne finne noe like bra til Linux. Denne blogposten skriver jeg i et program som heter <b>Blogilo</b>, og det ser ut til å ha omtrent den samme funksjonaliteten som Live Writer. Og hvis du leser dette nå så virket Wordpress-integrasjonen også som den skulle :)</p>
+<p><b>Git</b> hører jo hjemme i Linux, og kommandolinjen fungerer bedre her enn hva jeg har fått til i Windows. I tillegg har jeg testet ut noen grafiske klienter: <b>gitk</b> og <b>giggle</b>. Jeg kan ikke gi dem noen dom enda...</p>
+<p>Ellers har jeg selvsagt installer GVim, og har allerede gjort endel "tweaks" i terminalvinduet. UNIX-kunnskapen fra Universitetstiden begynner å komme tilbake. Jeg har ikke hentet ned Clojure, Ruby, Erlang, Mono eller noen andre utviklingsmiljø enda, men det kommer nok raskt skal du se.</p>
+<h3>Konklusjon</h3>
+<p>Den nye laptopen fra Lenovo virker lovende, og Ubuntu er herlig! Jeg har hatt enkelte problemer, men jeg har bare ikke hatt tid til å løse dem enda. Jeg er optimist, og tror alt lar seg løse i Linux :)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,129 @@
+---
+title: Avhengighetsisolering (a.k.a. Mocking) i .NET
+link: http://blog.kjempekjekt.com/2009/08/27/avhengighetsisolering-aka-mocking-i-net/
+layout: post
+date: 2009-08-27 08:56:37Z
+tags:
+  - Software/verktøy
+  - Testing / TDD
+---
+<img width="154" height="240" title="mocking_frameworks" align="right" style="margin: 0px 0px 10px 15px; display: inline; border-width: 0px" alt="mocking_frameworks" src="/uploads/2009/08/mocking_frameworks.png" border="0" /> I min forrige blogpost, om <a href="http://blog.kjempekjekt.com/2009/08/25/utenfra-og-inn-programmering/">utenfra-og-inn programmering</a>, snakket jeg om at <em><strong>mocking</strong></em> er en teknikk vi bruker når vi praktiserer testdreven utvikling. For å kunne utvikle én og én enhet om gangen er det fordelaktig å kunne erstatte enhetens avhengigheter med "jukseobjekter".
+
+<img width="64" height="72" title="Roy_Pic_BW_Small" align="left" style="margin: 0px 15px 0px 0px; display: inline; border-width: 0px" alt="Roy_Pic_BW_Small" src="/uploads/2009/08/Roy_Pic_BW_Small.jpg" border="0" /> Enhetstest-guru <a href="http://weblogs.asp.net/ROsherove/" target="_blank">Roy Osherove</a> (som jobber for TypeMock) påpeker at vi ofte <em>misbruker</em> begrepet mocking. <a href="http://martinfowler.com/" target="_blank">Martin Fowler</a> har også skrevet en mye lest artikkel kalt <a href="http://martinfowler.com/articles/mocksArentStubs.html" target="_blank">Mocks Aren't Stubs</a> om dette: En <strong style="background-color: orange">MOCK</strong> er ifølge dem et objekt som brukes til å registrere og validere forventninger, mens en <strong style="background-color: lightgreen">STUB</strong> er et objekt som inneholer predefinerte svar. <strong style="background-color: lightblue">FAKE</strong> er et objekt med en faktisk implementasjon, som for eksempel en in-memory database som erstatter en faktisk database. Vi bruker normalt en blanding av disse i testene våre, og jeg ser ikke noen spesiell grunn til å kunne skille mellom dem.
+
+Roy anbefaler å bruke begrepet <strong><em>avhengighetsisolering</em></strong> for å samle disse teknikkene, og kaller TypeMock for et <em>avhengighetsisoleringsrammeverk</em> (det ble veldig fint på norsk gitt). Jeg bruker likevel mocking-begrepet, siden det er mest kjent – alle forstår hva jeg mener da.
+
+Uansett hva man kaller dem – fordelen med disse falske objektene er at de er til å stole på. Mens faktiske implementasjoner kan gi ulike svar (basert på eksterne data, randomness etc.) kan vi fullstendig kontrollere hvordan en fake skal oppføre seg i enhver situasjon. For eksempel kan vi simulere ulike unntasksituasjoner ved å få dem til å kaste exceptions på kommando.
+
+Testene blir i mange tilfeller også enklere å skrive, gitt at du behersker et godt mockingrammeverk. Testene kan dessuten eksekvere raskere, fordi avhengighetene blir "lettere" enn de faktiske avhengighetene.
+<h4>Litt kontroverielt</h4>
+Jeg føler meg forpliktet til å nevne at det er en viss diskusjon rundt bruk av mocking. Det er mange som hevder at mocking er unødvendig, og kanskje til og med uønsket, om man designer systemet sitt "riktig". Jeg var selv av den oppfatning for ikke så alt for lenge siden. Men etter å ha forsøkt det en stund endret jeg mening.
+
+Likevel innser jeg at mocking <em>kan</em> missbrukes – spesielt de kraftigste rammeverkene. Når man skriver tester er det viktig å teste adferd, ikke implementasjon – knytter man dem for hardt mot implementasjonen blir testene sårbare for endringer i systemet. Du kan få en grei oversikt over denne debatten ved for eksempel å lese et par sentrale spørsmål på stackoverflow: <a href="http://stackoverflow.com/questions/300177/why-do-i-need-a-mocking-framework-for-my-unittests" target="_blank">Why do I need a mocking framework for my unittests?</a> | <a href="http://stackoverflow.com/questions/1090521/the-value-of-high-level-unit-tests-and-mock-objects" target="_blank">The value of high level unit tests and mock objects</a> | <a href="http://stackoverflow.com/questions/856115/should-one-test-internal-implementation-or-only-test-public-behaviour" target="_blank">Should one test internal implementation, or only test public behaviour?</a>
+
+Resten av denne blogposten er ment å gi en oversikt over hvilke muligheter du som utvikler på .NET-plattformen har for å praktisere avhengighetsisolering.
+<h4>Manuell mocking</h4>
+La oss først se på hvordan manuell <em>gjør-det-selv-mocking</em> fungerer. Det kan være lurt å starte der, for å få en grunnleggende forståelse for hvordan og hvorfor man mocker. La oss si at jeg skal teste en LoginController-klasse. Den har to avhengigheter; et LoginView og en UserRepository.
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    1</span> [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    2</span> <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_login_user_successfully()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    3</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    4</span>     <span style="color: #ff8000">var</span> view = <span style="color: #ff8000">new</span> <span style="color: yellow">FakeLoginView</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    5</span>     <span style="color: #ff8000">new</span> <span style="color: yellow">LoginController</span>(view, <span style="color: #ff8000">new</span> <span style="color: yellow">FakeUserRepository</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    6</span>     view.TriggerAuthenticationRequested();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    7</span>     <span style="color: yellow">Assert</span>.IsTrue(view.hidden);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    8</span>     <span style="color: yellow">Assert</span>.IsTrue(view.Result == <span style="color: #2b91af">AuthenticationResult</span>.Ok);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    9</span> }</p>
+</div>
+Etter best practises injectes avhengighetene inn gjennom konstruktøren til kontrolleren – dette gjør det mulig for oss å mocke avhengighetene gjennom arv. I testen oppretter jeg stubs som jeg bruker til å simulere at en bruker trigger en authentiserings-request, og til å sjekke at resultatet av authentiseringen er at viewet skjules og Result-propertien settes til OK.
+
+De to stub-klassene, som jeg koder spesifikt for denne testen, ser slik ut:
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    1</span> <span style="color: #ff8000">class</span> <span style="color: yellow">FakeLoginView</span> : <span style="color: #2b91af">LoginView</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    2</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    3</span>     <span style="color: lime">// LoginView Members</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    4</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">event</span> <span style="color: #2b91af">EventHandler</span> AuthenticationRequested;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    5</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">string</span> Username { <span style="color: #ff8000">get</span> { <span style="color: #ff8000">return</span> <span style="color: lime">"torbjorn"</span>; } }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    6</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">string</span> Password { <span style="color: #ff8000">get</span> { <span style="color: #ff8000">return</span> <span style="color: lime">"passw0rd"</span>; } }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    7</span>     <span style="color: #ff8000">public</span> <span style="color: #2b91af">AuthenticationResult</span> Result { <span style="color: #ff8000">get</span>; <span style="color: #ff8000">set</span>; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    8</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Hide() { hidden = <span style="color: #ff8000">true</span>; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    9</span>     <span style="color: lime">// end LoginView Members</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   10</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   11</span>     <span style="color: #ff8000">public</span> FakeLoginView() { Result = <span style="color: #2b91af">AuthenticationResult</span>.Pending; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   12</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">virtual</span> <span style="color: #ff8000">void</span> TriggerAuthenticationRequested()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   13</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   14</span>         <span style="color: #ff8000">if</span> (AuthenticationRequested != <span style="color: #ff8000">null</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   15</span>             AuthenticationRequested(<span style="color: #ff8000">null</span>, <span style="color: yellow">EventArgs</span>.Empty);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   16</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   17</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">bool</span> hidden;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   18</span> }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   19</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   20</span> <span style="color: #ff8000">class</span> <span style="color: yellow">FakeUserRepository</span> : <span style="color: #2b91af">UserRepository</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   21</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   22</span>     <span style="color: #ff8000">public</span> <span style="color: yellow">User</span> FindByName(<span style="color: #ff8000">string</span> username)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   23</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   24</span>         <span style="color: #ff8000">return</span> <span style="color: #ff8000">new</span> <span style="color: yellow">User</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   25</span>             PasswordHash = <span style="color: lime">"BED128365216C019988915ED3ADD75FB"</span> };</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   26</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   27</span> }</p>
+</div>
+Stub'ene er spesialdesignet for å gi den adferden jeg trenger i testen; FakeLoginView returnerer et predefinert brukenavn og passord, og har en variabel jeg kan sjekke mot for å finne ut om Hide-metoden har blitt kalt. FakeUserRepository vil uansett input returnere en bruker med et passord-hash som korresponderer med det predefinerte passordet.
+
+Det er endel arbeid å lage disse stub'ene, men det er ikke så vanskelig. Problemet er at slik de er nå er de bare anvendelige for et fåtall tester – for andre tester som skal simulere andre ting må jeg skrive nye stubs (eller utvide disse med mer logikk). Jo flere stubs man må lage, jo mer kompleksitet innfører man i test-suiten.
+<h4>Moq</h4>
+<a href="http://code.google.com/p/moq/" target="_blank">Moq</a> er et relativt nytt, open source mockingrammeverk for .NET, utviklet av Daniel Cazzulino (<a href="http://twitter.com/kzu" target="_blank">@kzu</a>). Rammeverket er designet med tanke på enkelhet, er basert på <em><a href="http://www.castleproject.org/dynamicproxy/index.html" target="_blank">Castle DynamicProxy</a></em>, og er min klare favoritt. Jeg har nylig innført Moq på jobben, og det virket ikke som om utviklerne hadde store problemer med å ta det i bruk.
+
+Moq bruker ikke Record/Replay-semantikken som flere andre rammeverk er kjent for, det har en mere intuitiv Arrange-Act-Assert approach. Eneste potensielle ulempen med rammeverket er at du må bruke .NET 3.5 (eller høyere).
+
+Tilsvarende test som den over blir som følger ved bruk av moq:
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    1</span> [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    2</span> <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_login_user_successfully()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    3</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    4</span>     <span style="color: #ff8000">var</span> view = <span style="color: #ff8000">new</span> <span style="color: yellow">Mock</span>&lt;<span style="color: #2b91af">LoginView</span>&gt;();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    5</span>     view</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    6</span>         .Setup(v =&gt; v.Password)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    7</span>         .Returns(<span style="color: lime">"passw0rd"</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    8</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">    9</span>     <span style="color: #ff8000">var</span> repository = <span style="color: #ff8000">new</span> <span style="color: yellow">Mock</span>&lt;<span style="color: #2b91af">UserRepository</span>&gt;();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   10</span>     repository</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   11</span>         .Setup(r =&gt; r.FindByName(<span style="color: yellow">It</span>.IsAny&lt;<span style="color: #ff8000">string</span>&gt;()))</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   12</span>         .Returns(<span style="color: #ff8000">new</span> <span style="color: yellow">User</span> { PasswordHash = <span style="color: lime">"BED128365216C019988915ED3ADD75FB"</span> });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   13</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   14</span>     <span style="color: #ff8000">new</span> <span style="color: yellow">LoginController</span>(view.Object, repository.Object);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   15</span>     view.Raise(v =&gt; v.AuthenticationRequested += <span style="color: #ff8000">null</span>, <span style="color: yellow">EventArgs</span>.Empty);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   16</span>     view.Verify(v =&gt; v.Hide());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   17</span>     view.VerifySet(v =&gt; v.Result = <span style="color: #2b91af">AuthenticationResult</span>.Ok);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   18</span> }</p>
+</div>
+I linje 4 til 12 setter jeg opp mockene (<em>Arrange</em>): Jeg lager et view som skal returnere et predefinert passord, og en repository som skal returnere et predefinert passord-hash. I linje 14 sender jeg inn mockene til controlleren, og i linje 15 trigger jeg autentiseringforespørselen (<em>Act</em>). I linje 16 verifiserer jeg at Hide-metoden har blitt kalt, og linje 17 sjekker at Result har blitt satt til OK (<em>Assert</em>).
+
+Moq er under stadig utvikling, og virker ganske populært for tiden. Daniel lanserte for eksempel nettopp <a href="http://www.clariusconsulting.net/blogs/kzu/archive/2009/08/13/164978.aspx" target="_blank">Linq to Mocks</a> – en helt ny approach for å opprette mock-objekter i form av en spørring. Det eksisterer også et <a href="http://code.google.com/p/moq-contrib/" target="_blank">moq-contrib prosjekt</a> hvor du finner støtte for <a href="http://www.lostechies.com/blogs/joshuaflanagan/archive/2009/02/03/auto-mocking-explained.aspx" target="_blank">Automocking</a> (rekursiv oppretting av mocks – innebærer mindre Arrange-kode i testene). <em><strong>OPPDATERING:</strong> Rekursiv mocking har blitt flyttet fra moq-contrib til å bli del av moq i versjon 2.6.</em>
+<h4>TypeMock Isolator</h4>
+<a href="http://www.typemock.com/" target="_blank">TypeMock Isolator</a> er det aller kraftigste mockingrammeverket vi har tilgjengelig – det kan gjøre ting ingen av de andre kan, som å mocke ikke-virtuelle metoder, statiske klasser og klasser merket som <em>sealed</em>. Ulempen er at det koster penger.., Ganske Mange Penger!
+
+Mange hevder også at styrken dette rammeverket tilbyr lett kan føre til dårligere design, og det er jeg enig i. Vi tok i bruk TypeMock i min forrige jobb, og der førte det til at vi lagde dårlige og komplekse tester som var mer eller mindre umulige å vedlikeholde. Når man derimot allerede har et dårlig design som utgangspunkt – kanskje man har behov for å mocke deler av selve .net-rammeverket – så kan nok TypeMock være verdt sin vekt i gull. (Men hvor mye veier software egentlig?)
+<h4>Rhino Mocks</h4>
+<a href="http://ayende.com/projects/rhino-mocks.aspx" target="_blank">Rhino Mocks</a> er et open source rammeverk utviklet av Oren Eini (også kalt <a href="http://twitter.com/ayende" target="_blank">Ayende Rahien</a>). Mens TypeMock er det kommersielle storebror med de kraftigste featurene, er Rhino Mocks det mest brukte mockingrammeverket blant .NET-utviklere. Tidligere hadde Rhino en lite intuitiv Record/Replay-syntax, men støtter nå Arrange-Act-Assert, og da ligner det i grunnen svært mye på Moq.
+
+Rhino Mocks må sies å være et svært modent og fleksibelt rammeverk, og som Moq bygger det på Castle DynamicProxy. Den store fleksibiliteten kan være forvirrende, og dokumentasjonen kan være mangelfull. Dette veies opp ved at det har svært mange brukere, så noen andre har alltid gjort det du skal gjøre, og sansynligvis blogget om det.
+
+Flere har utvidet Rhino Mocks til også å støtte automocking, bl.a. Jeremy D. Miller i sitt <a href="http://structuremap.sourceforge.net/Default.htm" target="_blank">StructureMap</a>-prosjekt. For det jeg vet kan det hende Ayende også har implementert dette i Rhino Mocks direkte <em>by now</em>.., man vet aldri hva den fyren får til på en ettermiddag.
+<h4>Stubs</h4>
+Microsoft Research har sluppet et rammeverk de kaller <a href="http://research.microsoft.com/en-us/projects/stubs/" target="_blank">Stubs</a>, som ble utviklet for deres nye testautomatiserings-verktøy <a href="http://research.microsoft.com/en-us/projects/pex/" target="_blank">Pex</a>. Dette skiller seg ut fra de andre ved at det bruker kodegenerering. Det er alltid interessant å se hva som kommer ut av MS Research, og selv om jeg ikke vet om dette er interessant som en erstatning for Rhino eller Moq, så er det i alle fall en ny og spennende approach. Sjekk ut <a href="http://research.microsoft.com/en-us/projects/stubs/gettingstarted.aspx" target="_blank">Getting Started with Stubs</a> for en lynrask introduksjon.
+
+Merk forøvrig at current versjonsnummer er 0.15.40714.1, så jeg vet ikke om dette er "produksjonsklart" for å si det sånn :)
+<h4>NMock / Nmock2</h4>
+Så vidt jeg vet var <a href="http://www.nmock.org/" target="_blank">NMock</a> det første mockingrammeverket på .NET plattformen, laget som en port av DynaMock fra Java. Versjon 2 av NMock ble utviklet av et annet team, og er implementert etter designet fra jMock. Interessen for disse rammeverkene har vært dalende, og det har flere svakheter i forhold til de mer moderne konkurrentene: Den viktigste forskjellen er at mockene ikke er typet ved compile time – man bruker "magiske strenger" for referanser, noe som kan være skummelt og vanskelig å vedlikeholde når ting i designet endres.
+
+Er du interessert i å se nærmere på forskjellene på de fem rammeverkene jeg har nevnt sålangt – moq, TypeMock Isolator, Rhino Mocks, Stubs og NMock2 – så finnes det et prosjekt på Google Code du kan laste ned som heter <a href="http://code.google.com/p/mocking-frameworks-compare/" target="_blank">Mocking Frameworks Compare</a>. Her har du eksempeltester implementert vha. alle rammeverkene, i tillegg til en performance test som sammenligner dem.
+<h4>Andre rammeverk</h4>
+EasyMock er et mockingrammeverk fra Java, men det har blitt portet til .NET-plattformen under navnet <a href="http://sourceforge.net/projects/easymocknet/" target="_blank">EasyMock.NET</a>. Det er egentlig alt jeg vet om dette rammeverket, jeg har ikke hørt om noen som bruker det, og det virker som om det ikke har blitt videreutviklet siden 2004, så det er neppe noe å satse på.
+
+<a href="http://www.nunit.org/" target="_blank">NUnit</a>, "alles favorittrammeverk" for enhetstester, har også støtte for mocking – i NUnit-nedlastingen finner du nemlig en lite kjent dll som heter <em>NUnit.Mocks</em>. Jeg har lest at den har begrensede muligheter i forhold til andre rammeverk, men den kan kanskje være aktuell om man ikke skal ta i bruk avhengighetsisolering fullt ut, men har bruk for det i et par tilfeller, og i tillegg allerede bruker NUnit.
+
+Så det var min oversikt over mockingrammeverk i .NET. Min neste blogpost er en praktisk toturial i <em>utenfra-og-inn programmering</em> hvor jeg kommer til å bruke mye mocking.., så følg med om du er interessert i det!
+
+<em>Til slutt:</em> Har du erfaring med noen av disse rammeverkene er det veldig hyggelig om du legger igjen en kommentar med eventuelle mangler i blogposten. Jeg har ikke brukt alle disse vektøyene selv, og har ikke vært en aktiv "mocker" så veldig lenge. Sett meg på plass om du kan!
+
+<strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=Ayende+Rahien" rel="tag">Ayende Rahien</a>, <a href="http://blog.kjempekjekt.com/?s=Martin+Fowler" rel="tag">Martin Fowler</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Mocking" rel="tag">Mocking</a>, <a href="http://blog.kjempekjekt.com/index.php?s=NUnit" rel="tag">NUnit</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Roy+Osherove" rel="tag">Roy Osherove</a>

@@ -1,0 +1,52 @@
+---
+title: AutoIt
+link: http://blog.kjempekjekt.com/2011/12/02/autoit/
+layout: post
+date: 2011-12-02 08:14:22Z
+tags:
+  - Julekalender
+  - Polyglot
+  - AutoIt
+---
+<p>Er du lat, og vil at noen gjør alle de kjedelige og repetetive oppgavene for deg? Hvis du i tillegg befinner deg på Microsoft's Windows-plattform bør du i såfall ta en titt på automasjonsspråket <strong>AutoIt</strong>!</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="autoit" border="0" alt="autoit" src="/uploads/2011/12/autoit.jpg" width="500" height="344"></p> <p>AutoIt er et BASIC-lignende språk med bibloteker og verktøy for å lage makroer. Gjennom kode kan du enkelt bevege og klikke med musen, starte programmer, sende tastetrykk fra tastaturet, og generelt simulere og automatisere alt det du kan gjøre som en bruker i Windows.</p> <p>AutoIt-kodefiler kan normalt kjøres ved dobbeltklikk på maskiner som har AutoIt installert. I tillegg kan skriptene kompileres til en komprimert, frittstående, eksekverbar fil som kan kjøres på andre maskiner.</p> <h4>La oss se på litt kode</h4> <p>La oss igjen lage en løsning på <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">Eulerproblem nummer 1</a>, hvor vi skal finne summen av alle tall under 1000 som er multipler av enten 3 eller 5. Jeg bruker den imperative løsningsmodellen, og har valgt å splitte det opp i to separate funksjoner – en for å finne ut om et tall skal inkluderes, og en funksjon med en løkke som summerer opp tallene.</p><pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Statement">Func</span> MultipleOf3Or5<span class="Comment">(</span><span class="Operator">$</span><span class="Identifier">value</span><span class="Comment">)</span>
+<span class="lnr">11 </span>    <span class="Statement">Return</span> <span class="Statement">Mod</span><span class="Comment">(</span><span class="Operator">$</span><span class="Identifier">value</span><span class="Comment">,</span> <span class="Constant">3</span><span class="Comment">)</span> <span class="Operator">==</span> <span class="Constant">0</span>
+<span class="lnr">12 </span>        <span class="Operator">OR</span> <span class="Statement">Mod</span><span class="Comment">(</span><span class="Operator">$</span><span class="Identifier">value</span><span class="Comment">,</span> <span class="Constant">5</span><span class="Comment">)</span> <span class="Operator">==</span> <span class="Constant">0</span>
+<span class="lnr">13 </span><span class="Statement">EndFunc</span>
+<span class="lnr">14 </span>
+<span class="lnr">15 </span><span class="Statement">Func</span> SolveEuler1<span class="Comment">()</span>
+<span class="lnr">16 </span>    <span class="Statement">Dim</span> <span class="Operator">$</span><span class="Identifier">sum</span> <span class="Operator">=</span> <span class="Constant">0</span>
+<span class="lnr">17 </span>    <span class="Statement">For</span> <span class="Operator">$</span><span class="Identifier">i</span> <span class="Operator">=</span> <span class="Constant">1</span> <span class="Statement">to</span> <span class="Constant">999</span>
+<span class="lnr">18 </span>        <span class="Statement">If</span> MultipleOf3Or5<span class="Comment">(</span><span class="Operator">$</span><span class="Identifier">i</span><span class="Comment">)</span> <span class="Statement">Then</span>
+<span class="lnr">19 </span>            <span class="Operator">$</span><span class="Identifier">sum</span> <span class="Operator">+=</span> <span class="Operator">$</span><span class="Identifier">i</span>
+<span class="lnr">20 </span>        <span class="Statement">EndIf</span>
+<span class="lnr">21 </span>    <span class="Statement">Next</span>
+<span class="lnr">22 </span>    <span class="Statement">Return</span> <span class="Operator">$</span><span class="Identifier">sum</span>
+<span class="lnr">23 </span><span class="Statement">EndFunc</span>
+</pre>
+<p>Ikke spesielt spennende dette her. Men nå kommer rosinen i pølsa..</p>
+<p>For å skrive ut resultatet vil jeg benytte noen av de tingene som AutoIt egner seg best til, nemlig å manipulere vinduer. I koden nedenfor åpner jeg først Notepad, skriver ut svaret i vinduet, og lukker så programmet. </p>
+<p>Når Notepad lukkes vil det dukke opp en advarsel om at jeg har endringer som ikke er lagret. Det er jeg forberedt på, og sender tastekombinasjonen Alt+S, som trigger lagre-dialogen. Der skriver jeg inn stien jeg ønsker å lagre svaret mitt til, og sender igjen Alt+S som fullfører lagringen, og Notepad avsluttes.</p><pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">25 </span><span class="Statement">Run</span><span class="Comment">(</span><span class="Constant">"</span><span class="Constant">notepad</span><span class="Constant">"</span><span class="Comment">)</span>
+<span class="lnr">26 </span><span class="Statement">Dim</span> <span class="Operator">$</span><span class="Identifier">answer</span> <span class="Operator">=</span> SolveEuler1<span class="Comment">()</span>
+<span class="lnr">27 </span><span class="Statement">WinWaitActive</span><span class="Comment">(</span><span class="Constant">"</span><span class="Constant">Untitled - Notepad</span><span class="Constant">"</span><span class="Comment">)</span>
+<span class="lnr">28 </span><span class="Statement">Send</span><span class="Comment">(</span><span class="Constant">"</span><span class="Constant">The answer is </span><span class="Constant">"</span> <span class="Operator">&amp;</span> <span class="Operator">$</span><span class="Identifier">answer</span> <span class="Operator">&amp;</span> <span class="Constant">"</span><span class="Type">{ENTER}</span><span class="Constant">"</span><span class="Comment">)</span>
+<span class="lnr">29 </span>
+<span class="lnr">30 </span><span class="Comment">; Provoke unsaved changes dialog, click "Save"</span>
+<span class="lnr">31 </span><span class="Statement">WinClose</span><span class="Comment">(</span><span class="Constant">"</span><span class="Constant">Untitled - Notepad</span><span class="Constant">"</span><span class="Comment">)</span>
+<span class="lnr">32 </span><span class="Statement">WinWaitActive</span><span class="Comment">(</span><span class="Constant">"</span><span class="Constant">Notepad</span><span class="Constant">"</span><span class="Comment">,</span> <span class="Constant">"</span><span class="Constant">Save</span><span class="Constant">"</span><span class="Comment">)</span>
+<span class="lnr">33 </span><span class="Statement">Send</span><span class="Comment">(</span><span class="Constant">"</span><span class="Constant">!s</span><span class="Constant">"</span><span class="Comment">)</span> <span class="Comment">; Alt+S for "Save"</span>
+<span class="lnr">34 </span>
+<span class="lnr">35 </span><span class="Comment">; Enter save location in file dialog, click "Save"</span>
+<span class="lnr">36 </span><span class="Statement">WinWaitActive</span><span class="Comment">(</span><span class="Constant">"</span><span class="Constant">Save As</span><span class="Constant">"</span><span class="Comment">)</span>
+<span class="lnr">37 </span><span class="Statement">Send</span><span class="Comment">(</span><span class="Type">@MyDocumentsDir</span> <span class="Operator">&amp;</span> <span class="Constant">"</span><span class="Constant">\EulerProblem1_Answer.txt</span><span class="Constant">"</span><span class="Comment">)</span>
+<span class="lnr">38 </span><span class="Statement">Send</span><span class="Comment">(</span><span class="Constant">"</span><span class="Constant">!s</span><span class="Constant">"</span><span class="Comment">)</span> <span class="Comment">; Alt+S</span>
+</pre>
+<p>Når jeg kjører dette skriptet vil jeg se at Notepad dukker opp, at svaret tastes inn, og at skriptet går gjennom lagre-dialogene. Til slutt er svaret lagret i <em>My Documents</em>-katalogen min.</p>
+<h4>Hvorfor bruke tid på AutoIt?</h4>
+<p>AutoIt er ikke et interessant språk i seg selv. Men for automatisering av Windows er det perfekt, og et slikt verktøy burde alle utviklere på den plattformen beherske.</p>
+<p>Mange anbefaler også AutoIt som et bra sted å begynne å lære seg programmering. BASIC-syntaksen er enkel å forholde seg til, og den direkte interaksjonen mot brukergrensesnittet kan være motiverende og inspirerende i starten.</p>
+<h4>Svakheter</h4>
+<p>AutoIt er en-trået. Dette gjør det vanskelig (men ikke umulig) å programmere asynkrone og paralelle ting.</p>
+<p>Personlig synes jeg dessuten at BASIC-lignende språk er veldig slitsomme – dette til tross for at jeg først og fremst var en Visual Basic-programmerer for noen år tilbake, <em>og </em>til tross for at mitt aller første språk var en BASIC-dialekt, nemlig <a href="http://en.wikipedia.org/wiki/AMOS_(programming_language)">AMOS</a> på Amiga.</p>
+<p>Et annet språk/verktøy du kan vurdere er <a href="http://en.wikipedia.org/wiki/AutoHotkey">AutoHotKey</a>. I stedet for å fokusere på å simulere brukere og automatisere vinduer er AutoHotKey først og fremst laget for å knytte makroer til spesielle tastekombinasjoner. Selve AutoHotKey-språket er litt mer kryptisk enn AutoIt.</p>
+<h4>Hvordan komme i gang?</h4>
+<p>Du finner AutoIt på <a href="http://www.autoitscript.com/">autoitscript.com</a>. Når du installerer det får du i tillegg et utviklingsmiljø basert på <a href="http://en.wikipedia.org/wiki/SciTE">SciTE</a>-editoren. Her er kompilatoren integrert, og man har tilgang til hjelpefiler med den informasjon man trenger for å begynne å lære språket og verktøyet, og for å lage scrips som utfører de aller fleste oppgaver.</p>

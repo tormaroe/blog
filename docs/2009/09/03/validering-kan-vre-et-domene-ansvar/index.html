@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Testing,OO Patterns,C#">
+
+    <title>Validering kan være et domene-ansvar</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Validering kan være et domene-ansvar</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 3. september 2009</small> 
+            <a href="/tags/testing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing</span></a>
+          
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p>Hvis du skummet gjennom min forrige post, <a href="/2009/08/30/tdd-og-mocking-i-praksis/">TDD i praksis</a>, så observerte du meg implementere <em>registrering av ny bruker</em>. Selv om det var en lang artikkel var det (minst) en ting jeg utelot der – det var nemlig ingen validering av input. Alle registreringer ville blitt en suksess uansett hva man tastet inn. </p>
+<p>Validering kan gjøres på mange måter, men for meg er det for det første et eget ansvar som fortjener å bli implementert som egne tjenester/moduler, og for det andre er det et domene-ansvar, og bør ikke knyttes til infrastrukturen eller brukergrensesnittet (denne påstanden gjelder ikke for de mest banale valideringene, og igjen vil noen kunne kalle denne approachen for <em>overkill</em>).</p>
+<p>Merk at dette er en konklusjon jeg mer eller mindre har funnet på av meg selv - en fremgangsmåte som gir mening for <em>meg</em> – så hvis du har noen kommentarer og innvendinger så er de som alltid hjertelig velkomne!</p>
+<p>Jeg vil benytte anledningen til å implementere validering ved hjelp av <a href="/2009/03/20/t-man-tipser-om-specification-pattern/">specification pattern</a>. Jeg har blogget om dette før, så jeg vil ikke ta med alle detaljene, men jeg vil spesielt vise hvilke tester jeg har skrevet for validering av input. Jeg skrev en og en test, og sørget for at hver test ble grønn før jeg gikk videre, men her har du hele testklassen i <em>one go.</em> Bruk litt tid på å lese gjennom dem..</p>
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 103</span> [<span style="color: yellow">TestFixture</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 104</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">When_validating_a_registration</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 105</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 106</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">Mock</span>&lt;<span style="color: #2b91af">UserRepository</span>&gt; mockRepository;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 107</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #2b91af">Specification</span>&lt;<span style="color: yellow">User</span>&gt; validator;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 108</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">User</span> user;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 109</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 110</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span style="color: yellow">SetUp</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 111</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> SetUp()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 112</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 113</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mockRepository = <span style="color: #ff8000">new</span> <span style="color: yellow">Mock</span>&lt;<span style="color: #2b91af">UserRepository</span>&gt;();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 114</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; validator = <span style="color: #ff8000">new</span> <span style="color: yellow">ValidRegistrationSpecification</span>(mockRepository.Object);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 115</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: lime">// Default valid user registration</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 116</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user = <span style="color: #ff8000">new</span> <span style="color: yellow">User</span>() { Username = <span style="color: lime">"T-Man"</span>, Password = <span style="color: lime">"abcd1234#"</span> };</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 117</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 118</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 119</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_validate_a_strong_password() {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 120</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">Assert</span>.That(validator.IsSatisfiedBy(user));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 121</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 122</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 123</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_not_validate_password_without_letters() {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 124</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user.Password = <span style="color: lime">"12345678#"</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 125</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">Assert</span>.IsFalse(validator.IsSatisfiedBy(user));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 126</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 127</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 128</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_not_validate_password_without_digits()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 129</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 130</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user.Password = <span style="color: lime">"abcdefgh#"</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 131</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">Assert</span>.IsFalse(validator.IsSatisfiedBy(user));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 132</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 133</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 134</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_not_validate_password_without_special_character()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 135</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 136</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user.Password = <span style="color: lime">"abcd12345"</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 137</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">Assert</span>.IsFalse(validator.IsSatisfiedBy(user));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 138</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 139</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 140</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_not_validate_password_with_less_than_8_characters()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 141</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 142</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user.Password = <span style="color: lime">"abc123#"</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 143</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">Assert</span>.IsFalse(validator.IsSatisfiedBy(user));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 144</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 145</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 146</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_not_validate_usernames_with_less_than_4_characters()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 147</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 148</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user.Username = <span style="color: lime">"MrT"</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 149</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">Assert</span>.IsFalse(validator.IsSatisfiedBy(user));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 150</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 151</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 152</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Username_can_not_be_accepted_if_it_already_exist()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 153</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 154</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">var</span> mockRepository = <span style="color: #ff8000">new</span> <span style="color: yellow">Mock</span>&lt;<span style="color: #2b91af">UserRepository</span>&gt;();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 155</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mockRepository</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 156</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Setup(rep =&gt; rep.Find(<span style="color: yellow">It</span>.IsAny&lt;<span style="color: #2b91af">Predicate</span>&lt;<span style="color: yellow">User</span>&gt;&gt;()))</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 157</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Returns(<span style="color: #ff8000">new</span>[] { <span style="color: #ff8000">new</span> <span style="color: yellow">User</span>() });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 158</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: yellow">Assert</span>.IsFalse(validator.IsSatisfiedBy(user));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 159</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 160</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+</div>
+<p>Metodenavnene i testklassen gir en perfekt oppsummering av reglene for hva en som er en gyldig brukerregistrering. Et passord må inneholde bokstaver, tall, spesialtegn – totalt minst 8 stykker, og brukernavnet må være minst 4 tegn, og ikke eksistere fra før. Nå kunne jeg ha implementert denne valideringen med noen ganske få linjer kode, men jeg vil at designet skal reflektere kunnskapen om reglene, og at det skal være veldig enkelt å endre en og en regel, og å legge til eller fjerne regler. ValidRegistrationSpecification ser derfor slik ut:</p>
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 78</span>&nbsp;<span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">ValidRegistrationSpecification</span> : <span style="color: #2b91af">Specification</span>&lt;<span style="color: yellow">User</span>&gt;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 79</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 80</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">private</span> <span style="color: yellow">List</span>&lt;<span style="color: #2b91af">Specification</span>&lt;<span style="color: yellow">User</span>&gt;&gt; _specifications;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 81</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> ValidRegistrationSpecification(<span style="color: #2b91af">UserRepository</span> repository)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 82</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 83</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _specifications = <span style="color: #ff8000">new</span> <span style="color: yellow">List</span>&lt;<span style="color: #2b91af">Specification</span>&lt;<span style="color: yellow">User</span>&gt;&gt;();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 84</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _specifications.Add(<span style="color: #ff8000">new</span> <span style="color: yellow">UsernameShouldBeAtLeastFourCharacters</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 85</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _specifications.Add(<span style="color: #ff8000">new</span> <span style="color: yellow">UsernameMustBeAvailable</span>(repository));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 86</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _specifications.Add(<span style="color: #ff8000">new</span> <span style="color: yellow">PasswordMustHaveLetter</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 87</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _specifications.Add(<span style="color: #ff8000">new</span> <span style="color: yellow">PasswordMustHaveDigit</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 88</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _specifications.Add(<span style="color: #ff8000">new</span> <span style="color: yellow">PasswordMustHaveSpecialCharacter</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 89</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _specifications.Add(<span style="color: #ff8000">new</span> <span style="color: yellow">PasswordMustHaveAtLeastEightCharacters</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 90</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 91</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">bool</span> IsSatisfiedBy(<span style="color: yellow">User</span> candidate)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 92</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 93</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">try</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 94</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 95</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">foreach</span> (<span style="color: #ff8000">var</span> specification <span style="color: #ff8000">in</span> _specifications)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 96</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">if</span> (!specification.IsSatisfiedBy(candidate))</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 97</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">return</span> <span style="color: #ff8000">false</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 98</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 99</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">catch</span> (<span style="color: yellow">Exception</span>) { }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 100</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">return</span> <span style="color: #ff8000">true</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 101</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp; 102</span> }</p>
+</div>
+<p>Klassen arver fra <strong><em>Specification (for User)</em></strong> – et enkelt interface som bare inneholder én metode: <em><strong>IsSatisfiedBy(T candidate)</strong></em>. Hvis IsSatifiedBy returnerer true for en gitt bruker, så kan registreringen gjennomføres. </p>
+<p>ValidRegistrationSpecification er videre egentlig en liste med med mer detaljerte spesifikasjoner, én for hver test jeg har skrevet, og IsSatifiedBy spoler gjennom alle disse. La oss se nærmere på én av dem, som spesifiserer at et passord må inneholde bokstaver:</p>
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 19</span>&nbsp;<span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">PasswordMustHaveLetter</span> : <span style="color: #2b91af">Specification</span>&lt;<span style="color: yellow">User</span>&gt;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 20</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 21</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">bool</span> IsSatisfiedBy(<span style="color: yellow">User</span> candidate)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 22</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 23</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">for</span> (<span style="color: #ff8000">int</span> i = 0; i &lt; candidate.Password.Length; i++)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 24</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">if</span> (<span style="color: #2b91af">Char</span>.IsLetter(candidate.Password[i]))</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 25</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">return</span> <span style="color: #ff8000">true</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 26</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">return</span> <span style="color: #ff8000">false</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 27</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 28</span> }</p>
+</div>
+<p>Du er kanskje ikke vandt til klasser på bare 10 linjer (inkludert klammene)? Det er ingenting galt i det skal jeg si deg.</p>
+<p>Her følger den mest avanserte spesifikasjonen (med en <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity" target="_blank">Cyclomatic Complexity</a> på hele 3) som kontrollerer at brukernavnet ikke er opptatt. Den er avhengig av en UserRepository som den benytter til å se om den finner en match på brukernavnet.</p>
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 64</span>&nbsp;<span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">UsernameMustBeAvailable</span> : <span style="color: #2b91af">Specification</span>&lt;<span style="color: yellow">User</span>&gt;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 65</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 66</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">private</span> <span style="color: #2b91af">UserRepository</span> _repository;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 67</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> UsernameMustBeAvailable(<span style="color: #2b91af">UserRepository</span> repository)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 68</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 69</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _repository = repository;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 70</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 71</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">public</span> <span style="color: #ff8000">bool</span> IsSatisfiedBy(<span style="color: yellow">User</span> candidate)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 72</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 73</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #ff8000">return</span> _repository.Find((user) </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 74</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; =&gt; user.Username == candidate.Username)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 75</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Count() == 0;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 76</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 77</span> }</p>
+</div>
+<p>Jeg har ikke lest Eric Evans bok, så jeg vet ikke om denne løsningen er helt i tråd med Domain-Driven Design. Men jeg vet han spesifikt snakker om Specification pattern (excuse the pun). Og i sommer lærte <a href="http://twitter.com/bellware" target="_blank">Bellware</a> meg at entiteter aldri skal referere domenetjenester (som repositories), så valideringen kunne <em>ikke</em> vært plassert i User-klassen.</p>
+<p>For ordens skyld – jeg sier ikke at det jeg driver med er Domain-Driven Design. Jeg vil heller, som Bellware, kalle det DDD-light: Jeg bruker mønstrene og ideene fra DDD der det gir verdi og mening i det systemet jeg til enhver tid utvikler.</p>
+<p>I neste blogpost skal jeg samle trådene fra <a href="/2009/08/25/utenfra-og-inn-programmering/">utenfra-og-inn programmering</a>, <a href="/2009/08/30/tdd-og-mocking-i-praksis/">TDD og mocking i praksis</a> og denne posten, og analysere designet jeg har kommet opp med.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=Bellware" rel="tag">Bellware</a>, <a href="/index.php?s=DDD" rel="tag">DDD</a>, <a href="/index.php?s=Mocking" rel="tag">Mocking</a>, <a href="/index.php?s=Moq" rel="tag">Moq</a>, <a href="/index.php?s=NUnit" rel="tag">NUnit</a>, <a href="/index.php?s=Specification+pattern" rel="tag">Specification pattern</a>, <a href="/index.php?s=TDD" rel="tag">TDD</a>, <a href="/index.php?s=Utenfra-og-inn" rel="tag">Utenfra-og-inn</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

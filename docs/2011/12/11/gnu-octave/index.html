@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Polyglot,Octave">
+
+    <title>GNU Octave</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>GNU Octave</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 11. desember 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/octave"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Octave</span></a>
+          </p>
+          <p>De fleste språkene jeg presenterer her på bloggen er såkalte <em>"general purpose"</em> språk som kan brukes til hva som helst. Men av og til kan det være greit å kjenne til språk som er skreddersydd for en spesifik oppgave; som for eksempel <strong>matematiske beregninger</strong>.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="octave" border="0" alt="octave" src="/uploads/2011/12/octave.jpg" width="500" height="342"></p>
+<p>Med et slikt verktøy kan man løse enkelte oppgaver mye raskere enn man kan i de "vanlige" språkene. De kan f.eks. egne seg godt til å prototype ulike algoritmer, og brukes blant annet til dette innenfor felt som maskinlæring. </p>
+<p>Det finnes mange språk og verktøy å velge blant, men noen av de mest kjente er:</p>
+<p><strong><a href="http://en.wikipedia.org/wiki/MATLAB">MATLAB</a></strong> (Matrix Laboratory) betegnes som et fjerdegenerasjons programmeringsspråk. I MATLAB kan man manipulere matriser, plotte funksjoner og data i flotte grafer, implementere algoritmer, lage brukergrensesnitt, og bruke moduler skrevet i andre språk som for ekssempel C++ eller Java. Språket brukes mye innenfor utdanning.</p>
+<p><a href="http://en.wikipedia.org/wiki/Mathematica"><strong>Mathematica</strong></a><strong>&nbsp;</strong>er en programvare for matematiske beregninger (duh!). Det er mye brukt av vitenskapsfolk, ingeniører og matematikere. Mathematica inkluderer et programmeringsspråk som støtter både den funksjonelle og den objektorienterte paradigmen, har et hav av verktøy for visualisering, datamining, bildeprosessering, og mye annet rart, og koster skjorta og en halv arm!</p>
+<p><strong><a href="http://en.wikipedia.org/wiki/R_(programming_language)">R</a></strong> er et annet programmeringsspråk og miljø for å utføre statistisk analyse, og for å utvikle programvare for slik analyse. I motsetning til MATLAB og Mathematica er R gratis, og kildekoden er tilgjengelig.</p>
+<p>Og så har du <strong><a href="http://en.wikipedia.org/wiki/GNU_Octave">GNU Octave</a></strong>, det programmeringsspråket ment for numeriske beregninger som denne artikkelen egentlig handler om. Det er også gratis, og har blitt laget for å være kompatibelt med MATLAB; er man <em>"litt forsiktig"</em> når man koder skripts for Octave, så kan de fint kjøres på MATLAB også.</p>
+<h4>Euler-oppgaven løst i Octave</h4>
+<p><a href="/2011/11/24/hello-world-euler-style/">Denne oppgaven som jeg nå driver og implementerer i ulike språk</a> egner seg selvsagt godt til å løses i GNU Octave. I skjermbildet nedenfor kan du se at jeg har laget et lite skript på fem, seks linjer. Jeg har så kjørt dette fra Octave's kommandolinje, og programmet har skrevet ut svaret (markert med rød ring).</p>
+<p>I tillegg har skriptet plottet hvordan summen vokser etterhvert som vi legger til tall opp mot 1000.</p>
+<p><a href="/uploads/2011/12/octave.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="octave" border="0" alt="octave" src="/uploads/2011/12/octave_thumb.png" width="500" height="409"></a></p>
+<p>Jeg lar bildet og koden tale for seg selv. Jeg er langt fra noen ekspert på verktøy som dette, og måtte "grave litt" i dokumentasjonen for å løse oppgaven. </p>
+<p>Jeg skulle derimot ønsket at jeg kunne det bedre, og håper jeg får muligheten til å lære mer. For jeg havner rett som det er i situasjoner hvor jeg skulle ønske at jeg enkelt kunne analysere og visualisere en funksjon eller et datasett, men hvor jeg føler det blir litt for tungvindt med et vanlig programmeringsspråk.</p>
+<p>Octave laster du ned fra <a href="http://www.gnu.org/software/octave/">gnu.org</a>. Der finner du også en svær manual, en wiki med mange tutorials, og mye annet snacks.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

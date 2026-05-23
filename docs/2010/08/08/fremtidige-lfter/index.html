@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Clojure,C#">
+
+    <title>Fremtidige løfter</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Fremtidige løfter</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 9. august 2010</small> 
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p><strong>Nei, denne blogposten handler ikke om nyttårsforsetter, og heller ikke om politiske valgløfter. Den handler om to concurrency-relaterte features i Clojure som heter <tt>future</tt> og <tt>promise</tt>. Tilsvarende abstraksjoner har jeg ikke vært borti i andre språk, men til slutt i denne blogposten vil jeg implementere lignende funksjonalitet i C#.</strong></p>
+<p>Future er en liten makro som vil kjøre koden du gir den i en ny tråd. Resultatet av koden vil bli cachet, slik at man ikke behøver å re-kalkulere verdien hver gang man refererer den. Her er et lite eksempel:</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><font color="#cda869">(</font>def radius <font color="#cf6a4c">5.8</font><font color="#cda869">)</font><br><br><font color="#cda869">(</font>def x <font color="#cda869">(</font>future<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>Thread/sleep <font color="#cf6a4c">1000</font><font color="#cda869">)</font>&nbsp;<font color="#665f57">; simulerer at dette tar litt tid</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>*</b></font>&nbsp;<font color="#cf6a4c">3.141592</font> radius radius<font color="#cda869">)))</font><br><br><font color="#cda869">(</font><font color="#cda869"><b>time</b></font>&nbsp;<font color="#cda869">(</font>println <font color="#8f9d6a">"Arealet er"</font> @x<font color="#cda869">))</font><br><font color="#cda869">(</font><font color="#cda869"><b>time</b></font>&nbsp;<font color="#cda869">(</font>println <font color="#8f9d6a">"Arealet er"</font> @x<font color="#cda869">))</font><br></font></div>
+<div style="margin-bottom: 18px"><b>Output:</b><br />
+<div style="padding-bottom: 6px; background-color: #ffe97f; padding-left: 6px; padding-right: 6px; color: black; padding-top: 6px"><font face="monospace">Arealet er 105.68315488<br>"Elapsed time: 1000.634298 msecs"<br>Arealet er 105.68315488<br>"Elapsed time: 1.096718 msecs"<br></font></div>
+</div>
+<p>Future er glimrende når man skal opprette en verdi som det tar litt tid å beregne, og man ikke nødvendigvis trenger verdien med en gang. Når man trenger verdien og den ikke er ferdig beregnet vil man måtte vente til den er ferdig. Men man kan også bruke future til samtidighet generelt, for å kjøre kode i en annen tråd, uten å bry seg om returverdien.</p>
+<p>Promise er et løfte om at vi skal beregne en verdi på et eller annet tidspunkt. Her er et <em>Hello World</em>-eksempel som bruker både promise og future:</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><font color="#cda869">(</font>comment <font color="#8f9d6a">"Promise that there at some point will be a</font><br><font color="#8f9d6a">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name to greet.."</font><font color="#cda869">)</font><br><font color="#cda869">(</font>def name-to-greet <font color="#cda869">(</font>promise<font color="#cda869">))</font><br><br><font color="#cda869">(</font>comment <font color="#8f9d6a">"At some point in the future, when there is</font><br><font color="#8f9d6a">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a name to greet, say hello"</font><font color="#cda869">)</font><br><font color="#cda869">(</font>future <font color="#cda869">(</font>println <font color="#8f9d6a">"Hello,"</font> @name-to-greet<font color="#cda869">))</font><br><br><font color="#cda869">(</font>comment <font color="#8f9d6a">"Ask for the user's name, and deliver on the</font><br><font color="#8f9d6a">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; promise made earlier."</font><font color="#cda869">)</font><br><font color="#cda869">(</font><font color="#cda869"><b>print</b></font>&nbsp;<font color="#8f9d6a">"What is your name? "</font><font color="#cda869">)</font>&nbsp;<font color="#cda869">(</font>flush<font color="#cda869">)</font><br><font color="#cda869">(</font>deliver name-to-greet <font color="#cda869">(</font><font color="#cda869"><b>read-line</b></font><font color="#cda869">))</font><br><br><font color="#cda869">(</font>shutdown-agents<font color="#cda869">)</font>&nbsp;<font color="#665f57">; Just some thread cleanup</font><br></font></div>
+<p>Future brukes til å opprette en tråd hvor man trenger verdien som er lovet. Den vil stå og vente på at verdien er tilgjengelig. Når vi leverer det vi har lovet kan futuren fullføres.</p>
+<div style="margin-bottom: 18px"><b>Eksempelkjøring:</b><br />
+<div style="padding-bottom: 6px; background-color: #ffe97f; padding-left: 6px; padding-right: 6px; color: black; padding-top: 6px"><font face="monospace">What is your name? <span style="color: darkgreen">Billy Bob</span><br>Hello, Billy Bob<br></font></div>
+</div>
+<p><strong>Advarsel:</strong> Promise er merket med <em style="color: darkred">"Alpha – subject to change"</em> i API-dokumentasjonen. Bruk den derfor med varsomhet.</p>
+<p>Som nevt i innledningen vil jeg nå vise én mulig C#-implementasjon av det jeg har vist. Det er godt mulig det finnes bedre måter, og at for eksempel <a href="http://msdn.microsoft.com/en-us/library/dd460717.aspx">Task Parallel Library</a> i .NET 4.0 kan brukes på samme måte (har ikke lekt med det enda), men jeg synes følgende abstraksjoner ble ganske så fine. Først begynner vi med en C#-variant av den første Clojure-demoen:</p>
+<pre>
+static void Main(string[] args)
+{
+    const double radius = 5.8;
+    var x = Future.Create(() =&gt;
+    {
+        Thread.Sleep(1000);
+        return 3.141592 * radius * radius;
+    });
+ 
+    Benchmark.Measure(() =&gt; Console.WriteLine(x.Value));
+    Benchmark.Measure(() =&gt; Console.WriteLine(x.Value));
+}
+</pre>
+<p>Her brukte jeg <strong><a href="/2010/01/25/quickbencher-beta/">QuickBencher</a></strong> (et open source prosjekt <a href="http://quickbencher.codeplex.com/">jeg har liggende på CodePlex</a>) til å måle forbrukt tid, og verifiserte samme oppførsel som Clojure-varianten.</p>
+<p>Før jeg viser implementasjonen av Future-klassen tar vi også med en C#-variant av promise-eksempelet:</p>
+<pre>
+class Program
+{
+    static void Main(string[] args)
+    {
+        var nameToGreet = new Promise&lt;string&gt;();
+ 
+        Future.Create(() =&gt; Console.WriteLine("Hello {0}", nameToGreet.Value));
+ 
+        Console.Write("What is your name? ");
+        nameToGreet.Deliver(Console.ReadLine());
+    }
+}
+</pre>
+<p>Ser ganske greit ut, ikke sant? Denne koden fungerer også som den skal. Her følger til slutt implementasjonen av Promise og Future. Legg merke til at Future egentlig er to ulike klasser, hvor den ene representerer en Future som har en returverdi. Create-metodene i den ikke-generiske klassen brukes til å opprette riktig type basert på lambda-argumentet.</p>
+<pre>
+public class Promise&lt;T&gt;
+{
+    private T _value;
+    private bool _delivered;
+    public T Value
+    {
+        get
+        {
+            while (!_delivered) Thread.Sleep(10);
+            return _value;
+        }
+    }
+    public void Deliver(T value)
+    {
+        _value = value;
+        _delivered = true;
+    }
+}
+ 
+public class Future&lt;T&gt;
+{
+    private Thread _producerThread;
+    private T _value;
+    public T Value 
+    { 
+        get 
+        {
+            _producerThread.Join();
+            return _value;
+        } 
+    }
+    public Future(Func&lt;T&gt; producer)
+    {
+        _producerThread = new Thread(() =&gt; _value = producer());
+        _producerThread.Start();
+    }
+}
+ 
+public class Future
+{
+    public static Future&lt;T&gt; Create&lt;T&gt;(Func&lt;T&gt; producer)
+    {
+        return new Future&lt;T&gt;(producer);
+    }
+    public static Future Create(Action action)
+    {
+        return new Future(action);
+    }
+    public Future(Action action)
+    {
+        new Thread(() =&gt; action()).Start();    
+    }
+}
+</pre>
+<p>Promise fungerer rett og slett slik at om man forsøker å aksessere verdien før den er satt så vil den vente til den har en verdi å levere (med en optimistisk og kanskje litt naiv loop). Future fungerer ved at den eksekverer jobben den har fått i en ny tråd. Versjonen som har en returverdi er nokså lik Promise; om man forsøker å aksessere verdien sørger jeg for at tråden er ferdig med det den skal gjøre (altså produsere verdien) før jeg returnerer ved å kalle Join() på tråden.</p>
+<p>I eksempelet hvor jeg kombinerte Promise og Future vil altså futuren stå og vente på at løftet leveres. Og løftet står og venter på at jeg taster inn navnet mitt, som jeg gjør i hovedtråden.</p>
+<p>Spørsmål?</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

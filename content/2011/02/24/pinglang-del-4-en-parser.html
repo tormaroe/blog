@@ -1,0 +1,125 @@
+---
+title: "PingLang del 4: En parser"
+link: http://blog.kjempekjekt.com/2011/02/24/pinglang-del-4-en-parser/
+layout: post
+date: 2011-02-24 12:57:07Z
+tags:
+  - DSL
+  - PingLang
+  - C#
+---
+<p>Dette er del 4 i en dokumentarserie hvor jeg går gjennom hvordan man implementerer et såkalt domenespesifikt språk (DSL). Vil du se språket i aksjon kan du ta en titt på <a href="http://vimeo.com/19406560" target="_blank"><strong>teaseren</strong></a>.</p> <p>I <a href="http://blog.kjempekjekt.com/2011/02/03/pinglang-del-1-la-oss-bygge-et-sprk/">del 1</a> ble du introdusert for mitt nye språk <em>PingLang</em>. I <a href="http://blog.kjempekjekt.com/2011/02/04/pinglang-del-2-en-lexer/">del 2</a> utviklet jeg en lexer, som tok som innput en PingLang-fil og returnerte en liste med token-objekter. Og i <a href="http://blog.kjempekjekt.com/2011/02/17/pinglang-del-3-litt-gramatikk/">del 3</a> tok vi et lite steg tilbake og du fikk se en formell definisjon av syntaksen i PingLang. Nå er det på tide å implementere <strong>parseren</strong>, som tar token-listen fra del 2 og produserer det vi kaller for et <strong><a href="http://en.wikipedia.org/wiki/Abstract_syntax_tree" target="_blank">abstrakt syntakstre (AST)</a></strong>.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="parser" border="0" alt="parser" src="/uploads/2011/02/parser.png" width="499" height="474"></p> <h4>Formålet med en parser</h4> <p>En parser har to oppgaver. For det første skal den <u>validere koden</u> den parser, og melde fra om eventuelle syntaks-feil. Om syntaksen er ok må parseren i tillegg <u>produsere en representasjon av koden som det er lett å jobbe videre med</u>. Denne strukturen kalles et abstrakt syntakstre (AST). Studer illustrasjonen ovenfor for å forstå hva en AST inneholder, det sier mer enn jeg kan gjøre med tusen ord.</p> <p>Selve implementasjonen av AST er en veldig enkel, rekursiv klasse som inneholder en referanse til den tokenen den representerer, samt en liste med undernoder.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span>    <span class="Type">public</span> <span class="Type">class</span> AST
+<span class="lnr">11 </span>    {
+<span class="lnr">12 </span>        <span class="Type">public</span> Token Token {get; <span class="Type">private</span> set;}
+<span class="lnr">13 </span>        <span class="Type">public</span> List&lt;AST&gt; Children {get; <span class="Type">private</span> set;}
+<span class="lnr">14 </span>
+<span class="lnr">15 </span>        <span class="Type">public</span> AST(Token token)
+<span class="lnr">16 </span>        {
+<span class="lnr">17 </span>            Token = token;
+<span class="lnr">18 </span>            Children = <span class="Statement">new</span> List&lt;AST&gt;();
+<span class="lnr">19 </span>        }
+<span class="lnr">20 </span>    }</pre>
+<h4>Parser-implementasjonen er basert på grammaren</h4>
+<p>Parseren er en såkalt <strong><em><a href="http://en.wikipedia.org/wiki/Recursive_descent_parser" target="_blank">Recursive Descent Parser</a></em></strong>. Implementasjonen har jeg delt i to: En baseklasse som inneholder generelle metoder som kan gjenbrukes i andre parsere, og en konkret PingLang-parser. Baseklassen har jeg ikke gjengitt her, men <a href="https://github.com/tormaroe/Ping-Ring/blob/master/PingLang/src/PingLang.Core/Parsing/BaseParser.cs" target="_blank">du kan ta en titt på den på GitHub om du vil</a>.</p>
+<p>Den konkrete parseren er mer interessant. Den inneholder metoder som direkte mapper mot reglene fra <a href="https://github.com/tormaroe/Ping-Ring/blob/master/PingLang/src/Grammar.g" target="_blank">grammar</a>’en i del 3. Ta for eksempel regelen som sier at et PingLang-program består av null eller flere actors, muligens etterfulgt av det jeg kalte for en T (ett eller flere linjeskift eller semikolon), og avsluttet med et EOF-token.</p>
+<p>Denne regelen er implementert i parseren i form av metoden Program:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 11 </span>        <span class="Comment">///</span><span class="Comment"> </span><span class="Keyword">&lt;</span><span class="Keyword">summary</span><span class="Keyword">&gt;</span>
+<span class="lnr"> 12 </span>        <span class="Comment">///</span><span class="Comment"> program      : actor* T? EOF                         ;</span>
+<span class="lnr"> 13 </span>        <span class="Comment">///</span><span class="Comment"> </span><span class="Identifier">&lt;/</span><span class="Keyword">summary</span><span class="Identifier">&gt;</span>
+<span class="lnr"> 14 </span>        <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> Program()
+<span class="lnr"> 15 </span>        {
+<span class="lnr"> 16 </span>            SetRoot(<span class="Statement">new</span> Token(Tokens.PROGRAM, <span class="String">""</span>));
+<span class="lnr"> 17 </span>
+<span class="lnr"> 18 </span>            UntilToken(Tokens.EOF, () =&gt;
+<span class="lnr"> 19 </span>            {
+<span class="lnr"> 20 </span>                Actor();
+<span class="lnr"> 21 </span>                Consume_T();
+<span class="lnr"> 22 </span>            });
+<span class="lnr"> 23 </span>        }
+</pre>
+<p>SetRoot og UntilToken er hjelpemetoder fra baseklassen, men det som skjer her er at AST’ens rot-node settes til å være et PROGRAM-token, og så looper jeg over det jeg forventer å være actors inntil jeg finner en EOF-token.</p>
+<p>La oss ta en regel til; her er koden for actorBody, og regelen er dokumentert i BNF-form i metodens kommentar:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 41 </span>        <span class="Comment">///</span><span class="Comment"> </span><span class="Keyword">&lt;</span><span class="Keyword">summary</span><span class="Keyword">&gt;</span>
+<span class="lnr"> 42 </span>        <span class="Comment">///</span><span class="Comment"> actorBody    : T? (listenStmt|countStmt|whenBlock)* . ; </span>
+<span class="lnr"> 43 </span>        <span class="Comment">///</span><span class="Comment"> </span><span class="Identifier">&lt;/</span><span class="Keyword">summary</span><span class="Identifier">&gt;</span>
+<span class="lnr"> 44 </span>        <span class="Type">private</span> <span class="Type">void</span> ActorBody()
+<span class="lnr"> 45 </span>        {
+<span class="lnr"> 46 </span>            Consume_T();
+<span class="lnr"> 47 </span>            DoUntilToken(Tokens.ACTOR_END, () =&gt;
+<span class="lnr"> 48 </span>            {
+<span class="lnr"> 49 </span>                PreserveCurrentNode(() =&gt;
+<span class="lnr"> 50 </span>                {
+<span class="lnr"> 51 </span>                    <span class="Conditional">switch</span> (CurrentToken.Type)
+<span class="lnr"> 52 </span>                    {
+<span class="lnr"> 53 </span>                        <span class="Statement">case</span> Tokens.LISTEN: ListenStmt(); <span class="Statement">break</span>;
+<span class="lnr"> 54 </span>                        <span class="Statement">case</span> Tokens.COUNT: CountStmt(); <span class="Statement">break</span>;
+<span class="lnr"> 55 </span>                        <span class="Statement">case</span> Tokens.WHEN: WhenBlock(); <span class="Statement">break</span>;
+<span class="lnr"> 56 </span><span class="Statement">                        default:</span> ThrowParseException(<span class="String">"Unexpected actor body"</span>); <span class="Statement">break</span>;
+<span class="lnr"> 57 </span>                    }
+<span class="lnr"> 58 </span>                });
+<span class="lnr"> 59 </span>            });
+<span class="lnr"> 60 </span>        }
+</pre>
+<p>Det er ikke nødvendig at du skjønner detaljene her før du får behov for å implementere din egen parser. Min bruk av lambda-uttrykk bør gjøre koden leser-vennlig, men detaljene er godt skjult. Prinsippet er at enhver regel fra grammaren har en tilsvarende metode i parseren. Dette er den beste måten å implementere en ryddig parser på.</p>
+<p>Legg også merke til at ActorBody vil validere input i form av at den vil kaste en exception om den støter på en token-type den ikke forventer.</p>
+<p>La oss se på en av undernodene til ActorBody også, f.eks. CountStmt:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 72 </span>        <span class="Comment">///</span><span class="Comment"> </span><span class="Keyword">&lt;</span><span class="Keyword">summary</span><span class="Keyword">&gt;</span>
+<span class="lnr"> 73 </span>        <span class="Comment">///</span><span class="Comment"> countStmt    : COUNT INT unit T?                     ;</span>
+<span class="lnr"> 74 </span>        <span class="Comment">///</span><span class="Comment"> </span><span class="Identifier">&lt;/</span><span class="Keyword">summary</span><span class="Identifier">&gt;</span>
+<span class="lnr"> 75 </span>        <span class="Type">private</span> <span class="Type">void</span> CountStmt()
+<span class="lnr"> 76 </span>        {
+<span class="lnr"> 77 </span>            AddCurrentTokenAndSetAsCurrentNode(Tokens.COUNT);
+<span class="lnr"> 78 </span>            AddCurrentToken(Tokens.INT);
+<span class="lnr"> 79 </span>            Unit();
+<span class="lnr"> 80 </span>            Consume_T();
+<span class="lnr"> 81 </span>        }
+</pre>
+<p>CountStmt består av to eller tre terminals (angitt med store bokstaver) og én underregel (unit). La oss dykke ned i implementasjonen av unit også:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 83 </span>        <span class="Comment">///</span><span class="Comment"> </span><span class="Keyword">&lt;</span><span class="Keyword">summary</span><span class="Keyword">&gt;</span>
+<span class="lnr"> 84 </span>        <span class="Comment">///</span><span class="Comment"> unit         : 'second'|'seconds'                    ;</span>
+<span class="lnr"> 85 </span>        <span class="Comment">///</span><span class="Comment"> </span><span class="Identifier">&lt;/</span><span class="Keyword">summary</span><span class="Identifier">&gt;</span>
+<span class="lnr"> 86 </span>        <span class="Type">private</span> <span class="Type">void</span> Unit()
+<span class="lnr"> 87 </span>        {
+<span class="lnr"> 88 </span>            <span class="Conditional">if</span> (IsCurrentOneOf(<span class="String">"second"</span>, <span class="String">"seconds"</span>))
+<span class="lnr"> 89 </span>                AddCurrentToken(Tokens.ID);
+<span class="lnr"> 90 </span>            <span class="Conditional">else</span>
+<span class="lnr"> 91 </span>                ThrowParseException(<span class="String">"Unexpected unit literal"</span>);
+<span class="lnr"> 92 </span>        }
+</pre>
+<p>Her ser du hvordan parseren validerer at en av de gyldige beskrivelsene av en unit er brukt.</p>
+<p>Jeg håper dette var en ok smakebit på en parserimplementasjon. Jeg har ikke forklart særlig nøye hvordan parseren fungerer, men en slik beskrivelse kan du finne mange andre steder. Og velger du å benytte en parser generator vil du ikke måtte implementere din egen engang – den vil da bare basere seg på grammaren du definerer.</p>
+<p>Det viktige er at parseren validerer kildekoden, og at den produserer et tre som vi kan jobbe videre med når vi skal kjøre programmet.</p>
+<p><a href="https://github.com/tormaroe/Ping-Ring/blob/master/PingLang/src/PingLang.Core/Parsing/Parser.cs" target="_blank">Den fullstendige parseren kan du se her</a>.</p>
+<h4>Testing av parseren</h4>
+<p>For ordens skyld vil jeg ta med et par tester også. En parser er svært godt egnet for enhetstesting, og jeg ville aldri forsøkt å implementere en uten.</p>
+<p>I det første eksempelet kontrollerer jeg at parseren klarer å finne en syntaks-feil i en liten PingLang-kodesnutt.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 78 </span>        [Test]
+<span class="lnr"> 79 </span>        <span class="Type">public</span> <span class="Type">void</span> Test_unexpected_event()
+<span class="lnr"> 80 </span>        {
+<span class="lnr"> 81 </span>            <span class="Statement">typeof</span>(Exception).ShouldBeThrownBy(() =&gt;
+<span class="lnr"> 82 </span>            {
+<span class="lnr"> 83 </span>                var parser = <span class="Statement">new</span> Parser(<span class="Statement">new</span> Lexer(Tokens.All));
+<span class="lnr"> 84 </span>                parser.ConstructTree(
+<span class="lnr"> 85 </span>                    <span class="Special">@</span><span class="String">"Pinger</span>
+<span class="lnr"> 86 </span><span class="String">                            listen on port 9876</span>
+<span class="lnr"> 87 </span><span class="String">                            when earthquake print ""Foo""."</span>
+<span class="lnr"> 88 </span>                    );
+<span class="lnr"> 89 </span>            },
+<span class="lnr"> 90 </span>            ex =&gt; ex.Message.Equals(<span class="String">"Unexpected event spec &lt;ID,</span><span class="Special">\"</span><span class="String">earthquake</span><span class="Special">\"</span><span class="String">&gt;"</span>));
+<span class="lnr"> 91 </span>        }
+</pre>
+<p>Den neste testen parser et gyldig PingLang-program, og her kontrollerer jeg den resulterende AST’en.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">14 </span>        [Test]
+<span class="lnr">15 </span>        <span class="Type">public</span> <span class="Type">void</span> Tiny()
+<span class="lnr">16 </span>        {
+<span class="lnr">17 </span>            var parser = <span class="Statement">new</span> Parser(<span class="Statement">new</span> Lexer(Tokens.All));
+<span class="lnr">18 </span>            parser.ConstructTree(
+<span class="lnr">19 </span>                <span class="Special">@</span><span class="String">"Ponger when pinged print ""Pong""."</span>
+<span class="lnr">20 </span>                );
+<span class="lnr">21 </span>            parser.AST.Children.Count.ShouldEqual(<span class="Number">1</span>);
+<span class="lnr">22 </span>            var actor = parser.AST.Children[<span class="Number">0</span>];
+<span class="lnr">23 </span>            actor.Token.Type.ShouldEqual(Tokens.ID);
+<span class="lnr">24 </span>            actor.Token.Text.ShouldEqual(<span class="String">"Ponger"</span>);
+<span class="lnr">25 </span>
+<span class="lnr">26 </span>            var eventHandler = actor.Children[<span class="Number">0</span>];
+<span class="lnr">27 </span>            eventHandler.Token.Type.ShouldEqual(Tokens.WHEN);
+<span class="lnr">28 </span>            eventHandler.Children[<span class="Number">0</span>].Token.Type.ShouldEqual(Tokens.PINGED);
+<span class="lnr">29 </span>            eventHandler.Children[<span class="Number">1</span>].Token.Type.ShouldEqual(Tokens.PRINT);
+<span class="lnr">30 </span>            eventHandler.Children[<span class="Number">1</span>].Children[<span class="Number">0</span>].Token.Text.ShouldEqual(<span class="String">"</span><span class="Special">\"</span><span class="String">Pong</span><span class="Special">\"</span><span class="String">"</span>);
+<span class="lnr">31 </span>        }
+</pre>
+<p>Parseren er nå ferdig, men foreløpig har vi kun brydd oss med <em>syntaksen</em> i PingLang, og ikke snakket så mye om <em>semantikk</em> – dvs. hva syntaksen <u>betyr</u>. Videre i denne serien vil jeg fortelle deg hva en <em>semantisk modell</em> er for noe, hvordan vi kan lage en slik basert på AST’en, og hvordan den kan brukes til å utføre programmererens intensjon.</p>

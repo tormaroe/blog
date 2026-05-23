@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="JavaScript,Polyglot">
+
+    <title>Komprimere tall</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Komprimere tall</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 18. januar 2015</small> 
+            <a href="/tags/javascript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> JavaScript</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          </p>
+          <p>I dag skal vi se litt på tallsystemer, og hvordan vi kan <strong>komprimere</strong> et tall ved å bruke mer enn bare de vanlige ti sifrene. Vi koder først i JavaScript - det universelle språket som &quot;alle&quot; skjønner - men mot slutten skal vi også se noen implementasjoner i andre programmeringsspråk.</p>
+<p>Artikkelen er skrevet for dem som kanskje ikke har tenkt så mye på dette før. Jeg tror det er mange utviklere som trenger litt bedre forståelse av tallsystemer, og da er dette et forsøk på å forklare det på en lettfattelig og uformell måte.</p>
+<h2>dit.ly</h2>
+<p>Jeg jobber med mobilkommunikasjon. Her om dagen <em>(eh, det er faktisk snart et år siden nå..)</em> fikk jeg behov for å lage en liten URL-redirecttjeneste ala <a href="https://bitly.com/">bit.ly</a>. Utfordringen var at vi trengte adresser som representerte ulike mobilnumre. Gitt et telefonnummer måtte jeg kunne generere en kort og fin URL (som ikke så ut som om den inneholdt et nummer), og gitt en URL måtte jeg kunne utlede hvilket nummer den representerte.</p>
+<p class="text-center"><img src="/uploads/2015/01/ditly.png"></p>
+
+<h2>Grunntall og tallsystemer</h2>
+<blockquote>
+<p><strong>Grunntallet</strong> (også kalt <em>radiks</em> eller <em>basetall</em>) er antallet unike siffer inkludert null, som brukes i et posisjonsbasert tallsystem. For eksempel har titallsystemet grunntallet ti, derfor kan én enkelt posisjon i tallet ikke få en større verdi enn ni før det blir nødvendig å øke verdien på neste posisjon. <small>Wikipedia</small></p>
+</blockquote>
+<p>Når jeg sier at telefonnummeret mitt er <strong>4790696698</strong> så er det nummerets representasjon i <em>titallsystemet</em>. I <em>to</em>tallsystemet ville vi derimot skrive <strong>100011101100011000011101011111010</strong>. Det tar litt lengre tid å taste inn, men til gjengjeld slipper vi unna med å lage telefoner med kun to taster :)</p>
+<p>Vi kan lage mange tallsystemer med ulike grunntall. La oss si at vi var tegneseriefigurer og født med fire fingre på hver hånd. Da hadde vi brukt åttetallsystemet som har sifrene <code>0 1 2 3 4 5 6 7</code>, og nummeret mitt ville blitt <strong>43543035372</strong>.</p>
+<p>Hva om vi har flere enn 10 fingre? Da må bruke andre tegn til å representere noen av sifrene. Og slik oppstår den vanlige representasjonen av 16-tallsystemet - såkalte hexadesimaler. Telefonnummeret mitt i <em>hex</em> er <strong>11D8C3AFA</strong>.</p>
+<h2>Konvertere til grunntall X</h2>
+<p>Så hvordan har jeg kommet frem til disse ulike representasjonen av telefonnummeret mitt? La oss se på en liten funksjon jeg har laget som jeg kaller <code>toDigits</code>.</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> toDigits = function(<span class="hljs-built_in">num</span>, <span class="hljs-keyword">base</span>) {
+  <span class="hljs-keyword">var</span> digits = [];
+  <span class="hljs-keyword">while</span>(<span class="hljs-built_in">num</span> &gt; <span class="hljs-number">0</span>) {
+    digits.unshift(<span class="hljs-built_in">num</span> % <span class="hljs-keyword">base</span>);
+    <span class="hljs-built_in">num</span> = Math.floor(<span class="hljs-built_in">num</span> / <span class="hljs-keyword">base</span>); 
+  }
+  <span class="hljs-keyword">return</span> digits;
+};</code></pre><p>Parameter <code>num</code> er et tall som skal konverteres til et annet tallsystem (enn titallsystemet), og <code>base</code> er grunntallet som sier hvilket tallsystem vi skal konvertere til. </p>
+<p>La oss teste funksjonen:</p>
+<pre><code class="hljs"><span class="hljs-attribute">toDigits</span>(<span class="hljs-number">123</span>, <span class="hljs-number">10</span>)  ; ===&gt;<span class="hljs-meta"> [ 1, 2, 3 ]</span></code></pre><p>Her sa jeg at jeg vil konvertere tallet 123 til 10-tallsystemet. Og siden vi går ut fra at vi allerede er i 10-tallsystemet så får vi ut et array med de samme sifrene.</p>
+<p>Tenk deg at det første sifferet er <em>antall hundre</em> (10*10), andre tallet er <em>antall tiere</em>, og siste tallet er <em>antall enere</em>.</p>
+<p>La oss forsøke et lavere grunntall:</p>
+<pre><code class="hljs"><span class="hljs-attribute">toDigits</span>(<span class="hljs-number">123</span>, <span class="hljs-number">5</span>)  ; ===&gt;<span class="hljs-meta"> [ 4, 4, 3 ]</span></code></pre><p>Kult! Hvordan overbeviser vi oss selv om at dette er riktig? Siden vi er i femtallsystemet er første siffer nå <em>antall 25-ere</em> (5*5), andre siffer er <em>antall 5-ere</em> og siste siffer er fortsatt antall enere:</p>
+<pre><code class="hljs"><span class="hljs-attribute">4</span>*<span class="hljs-number">25</span> + <span class="hljs-number">4</span>*<span class="hljs-number">5</span> + <span class="hljs-number">3</span>*<span class="hljs-number">1</span> = <span class="hljs-number">100</span> + <span class="hljs-number">20</span> + <span class="hljs-number">3</span> = <span class="hljs-number">123</span></code></pre><h2>&gt; 10</h2>
+<p>Hva med grunntall større enn 10? La oss forsøke 12...</p>
+<pre><code class="hljs"><span class="hljs-attribute">toDigits</span>(<span class="hljs-number">123</span>, <span class="hljs-number">12</span>)  ; ===&gt;<span class="hljs-meta"> [10, 3]</span></code></pre><p>Denne gangen endte vi opp med bare to siffer (hvis du går med på å kalle &quot;10&quot; et siffer. I normal hexadesimal-representasjon ville vi byttet ut 10 med <code>A</code>). Representasjonen vår av tallet har blitt komprimert fordi vi bruker et &quot;rikere alfabet&quot;.</p>
+<p>Her er regnestykket for å komme tilbake til titallsystemet:</p>
+<pre><code class="hljs"><span class="hljs-attribute">0</span>*<span class="hljs-number">12</span>*<span class="hljs-number">12</span> + <span class="hljs-number">10</span>*<span class="hljs-number">12</span> + <span class="hljs-number">3</span>*<span class="hljs-number">1</span> = <span class="hljs-number">0</span> + <span class="hljs-number">120</span> + <span class="hljs-number">3</span> = <span class="hljs-number">123</span></code></pre><p>Vi kan også lage en liten funksjon som konverterer resultatet av <code>toDigits</code> tilbake til &quot;normale&quot; tall. La oss kalle den <code>fromDigits</code>:</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> <span class="hljs-variable">fromDigits</span> <span class="hljs-operator">=</span> <span class="hljs-title function_">function</span>(<span class="hljs-params">digits</span>, <span class="hljs-params">base</span>) {
+    <span class="hljs-keyword">return</span> <span class="hljs-variable">digits</span>.<span class="hljs-property">reduce</span>(<span class="hljs-title function_">function</span>(<span class="hljs-params">acc</span>, <span class="hljs-params">d</span>) {
+        <span class="hljs-keyword">return</span> <span class="hljs-variable">base</span> <span class="hljs-operator">*</span> <span class="hljs-variable">acc</span> <span class="hljs-operator">+</span> <span class="hljs-variable">d</span>;
+    }, <span class="hljs-number">0</span>);
+};</code></pre><p>Siden jeg bruker <code>reduce</code> er det kanskje litt vanskelig å forstå hvordan den virker. La oss forsøke å analysere steg for steg hva som skjer når vi kaller <code>fromDigits([10, 3], 12)</code>, som vi forventer skal gi oss tilbake tallet 123.</p>
+<table class="table">
+<thead>
+<tr>
+<th>Steg</th>
+<th>acc</th>
+<th>d</th>
+<th>`base * acc + d`</th>
+<th style="text-align:right">return</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#1</td>
+<td>0</td>
+<td>10</td>
+<td>`12 * 0 + 10`</td>
+<td style="text-align:right">10</td>
+</tr>
+<tr>
+<td>#2</td>
+<td>10</td>
+<td>3</td>
+<td>`12 * 10 + 3`</td>
+<td style="text-align:right">123</td>
+</tr>
+</tbody>
+</table>
+
+<h2>ditlyify og <em>un</em>-ditlyify</h2>
+<p>Nå er vi ikke langt unna funksjonene jeg trengte får å komprimere et telefonnummer til en kort streng. Det jeg nemlig valgte å gjøre var som du har skjønt å konvertere tallet med et <em>høyt</em> grunntall: <strong>62</strong>. Det er antall normale siffer + antall bokstaver i det engelske alfabetet ganger to (store og små bokstaver):</p>
+<pre><code class="hljs">var alphabet <span class="hljs-operator">=</span> <span class="hljs-string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;</span><span class="hljs-comment">;</span></code></pre><p>For å konvertere telefonnummeret trenger jeg da bare å kalle <code>toDigits</code> med base 62, og så mappe sifferlisten jeg får ut med tegnet i riktig posisjon i alfabetet:</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> ditlyify = <span class="hljs-keyword">function</span>(<span class="hljs-params">number</span>) {
+    <span class="hljs-keyword">return</span> toDigits(<span class="hljs-built_in">number</span>, alphabet.<span class="hljs-built_in">length</span>).<span class="hljs-built_in">map</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">x</span>) {
+        <span class="hljs-keyword">return</span> alphabet[x];
+    }).join(<span class="hljs-string">&quot;&quot;</span>);
+};</code></pre><p>Legg merke til at det er <code>A</code> som er første siffer i min representasjon, ikke <code>0</code>. Dette gjorde jeg for å få færrest mulig tall i URL&#39;en.</p>
+<p>For å konvertere tilbake må vi mappe andre veien - fra <em>tegn</em> til <em>posisjon</em> - og så kalle <code>fromDigits</code>:</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> unditlyify = <span class="hljs-keyword">function</span>(<span class="hljs-params">encoded</span>) {
+    <span class="hljs-keyword">var</span> digits = encoded.<span class="hljs-built_in">split</span>(<span class="hljs-string">&quot;&quot;</span>).<span class="hljs-built_in">map</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">x</span>) {
+        <span class="hljs-keyword">return</span> alphabet.<span class="hljs-built_in">indexOf</span>(x);
+    });
+    <span class="hljs-keyword">return</span> fromDigits(digits, alphabet.<span class="hljs-built_in">length</span>);
+};</code></pre><p>Og sånn lagde jeg vår interne URL-redirecttjeneste <em>dit.ly</em>.</p>
+<h2>Ditlyify i andre språk</h2>
+<p>Jeg synes alltid det er interessant å sammenligne implementasjoner i ulike programmeirngsspråk. La oss se hvordan <code>ditlyify</code> vil kunne se ut i språkene C#, F# og Clojure.</p>
+<h3>CSharp</h3>
+<p>Først ser vi på C#. Hovedforskjellen fra JavaScript er at vi må forholde oss til statisk typing, og må konvertere endel mellom <code>int</code>, <code>long</code> og <code>double</code>.</p>
+<pre><code class="hljs">public <span class="hljs-keyword">static</span> string Ditlyify(string msisdn)
+{
+    <span class="hljs-keyword">const</span> string ALPHABET = 
+        <span class="hljs-string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;</span>;
+    <span class="hljs-built_in">int</span> BASE = ALPHABET.Length;
+    <span class="hljs-keyword">var</span> digits = <span class="hljs-keyword">new</span> Stack&lt;<span class="hljs-built_in">int</span>&gt;();
+    <span class="hljs-keyword">var</span> <span class="hljs-built_in">num</span> = Int64.Parse(msisdn);
+    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">num</span> &gt; <span class="hljs-number">0</span>)
+    {
+        digits.Push((<span class="hljs-built_in">int</span>)(<span class="hljs-built_in">num</span> % BASE));
+        <span class="hljs-built_in">num</span> = Convert.ToInt32(Math.Floor((<span class="hljs-built_in">double</span>) (<span class="hljs-built_in">num</span> / BASE)));
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">String</span>.Join(<span class="hljs-built_in">String</span>.Empty, digits.Select(x =&gt; ALPHABET[x]));
+}</code></pre><h3>FSharp</h3>
+<p>La oss se på en mere funksjonell tilnærming. Vi kan konverte while-løkken fra JavaScript og C# til en rekursiv funksjon som bygger opp en liste. Deretter kan vi bruke <em>pipelining</em> i slutten av <code>ditlyify</code> til å konvertere <code>msisdn</code> til en liste siffer i <em>base62</em>, mappe listen til alfabetet vårt, og så konkatenere bokstavene.</p>
+<pre><code class="hljs"><span class="hljs-keyword">let</span> <span class="hljs-keyword">private</span> alphabet = 
+    <span class="hljs-string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;</span>
+
+<span class="hljs-keyword">let</span> <span class="hljs-keyword">private</span> dBase = <span class="hljs-built_in">int64</span> alphabet.<span class="hljs-type">Length</span>
+
+<span class="hljs-keyword">let</span> ditlyify msisdn =
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">rec</span> baseEncode digits = <span class="hljs-keyword">function</span>
+        | <span class="hljs-number">0L</span>  -&gt; digits
+        | num -&gt; baseEncode ((num % dBase |&gt; <span class="hljs-built_in">int</span>) :: digits) 
+                            (num / dBase)
+    msisdn
+    |&gt; baseEncode <span class="hljs-type">List</span>.empty&lt;<span class="hljs-built_in">int</span>&gt;
+    |&gt; <span class="hljs-type">List</span>.map (<span class="hljs-keyword">fun</span> x -&gt; <span class="hljs-built_in">string</span> alphabet.[x])
+    |&gt; <span class="hljs-type">String</span>.concat <span class="hljs-string">&quot;&quot;</span></code></pre><p>Jeg synes også F#-koden inneholder noe mindre bråkete type-konverteringer enn C#.</p>
+<h3>Clojure</h3>
+<p>For å lage en Clojure-implementasjon av <code>ditlyify</code> velger jeg nøyaktig samme fremgangsmåte som i F#. Clojure er derimot et dynamisk språk, så her er type-konverteringene fraværende.</p>
+<pre><code class="hljs">(<span class="hljs-keyword">def</span> <span class="hljs-title">ALPHABET</span> 
+  <span class="hljs-string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;</span>)
+
+(<span class="hljs-keyword">def</span> <span class="hljs-title">BASE</span> (<span class="hljs-name"><span class="hljs-built_in">count</span></span> ALPHABET))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">ditlyify</span> [msisdn]
+  (<span class="hljs-name"><span class="hljs-built_in">letfn</span></span> [(<span class="hljs-name">base-encode</span> [digits n]
+            (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">zero?</span></span> n)
+              digits
+              (<span class="hljs-name"><span class="hljs-built_in">recur</span></span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> n BASE) digits)
+                     (<span class="hljs-name"><span class="hljs-built_in">quot</span></span> n BASE))))]
+    (<span class="hljs-name"><span class="hljs-built_in">-&gt;&gt;</span></span> msisdn
+         read-string
+         (<span class="hljs-name">base-encode</span> ())
+         (<span class="hljs-name"><span class="hljs-built_in">map</span></span> (<span class="hljs-name"><span class="hljs-built_in">partial</span></span> nth ALPHABET))
+         (<span class="hljs-name"><span class="hljs-built_in">apply</span></span> str))))</code></pre><h2>Oppsummering</h2>
+<p>Det var en nokså lang blogpost om egentlig noe ganske lite. Men jeg tror det er endel som har bruk for denne kunnskapen; å kunne konvertere tall mellom ulike tallsystemer bør være et grunnleggende verktøy i utviklerens verktøybelte. Og å bruke dette til å komprimere og tilsynelatende også kryptere data er jo litt kult.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

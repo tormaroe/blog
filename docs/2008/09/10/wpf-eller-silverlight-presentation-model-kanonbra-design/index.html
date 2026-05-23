@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="MSDN Live">
+
+    <title>WPF eller Silverlight + Presentation Model = KANONBRA DESIGN</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>WPF eller Silverlight + Presentation Model = KANONBRA DESIGN</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 10. september 2008</small> 
+            <a href="/tags/msdn-live"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> MSDN Live</span></a>
+          </p>
+          <p><a href="http://blog.goeran.no/">Gøran Hansen</a> holdt hele tre foredrag på gårsdagens MSDN Live i Bergen. Det første var en slags introduksjon til Silverlight, men jeg har allerede brukt en del tid på å sette meg inn i denne teknologien, så her var det ikke noe nytt for meg.</p>
+<p>Deretter snakket han om noe som heter <strong>ASP.NET Dynamic Data</strong> som kom i SP1 for .NET 3.5. Det dreier seg om et rammeverk for å automatisk generere en web app basert på et databaseskjema. En komplett site med view og edit muligheter av alle tabeller i basen får man vha. et project template + én linje kode. Deretter kan man gå igang og modifisere de delene man ønsker for å lage en mere skreddersydd løsning.</p>
+<p>Hele greia minner faktisk mye om <a href="http://www.rubyonrails.org/">Ruby on Rails</a>. Gøran gav en veldig bra demo av teknologien, og argumenterte godt for hvorfor vi ønsker å gjøre det sånn (DRY.., Don't Repeat Yourself). Han kom også med en prediksjon; han tror at scaffolding-implementasjonen som muligjør Dynamic Data om ikke så alt for lenge også vil dukke opp i WPF og Silverlight. Det høres flott ut. <a href="http://weblogs.asp.net/scottgu/archive/2007/12/14/new-asp-net-dynamic-data-support.aspx">ScottGu har en bra blogpost som går mer i detalj om bruk av Dynamic Data</a>.</p>
+<p><strong>Men skulle ikke denne artikkelen handle om Presentation Model?</strong></p>
+<p>Jo, det skulle den, for Gjørans siste foredrag var nok det mest interessante. Her demonstrerte han nemlig praktisk GUI programmering i WPF, men med fokus på hvordan koden bør struktureres.</p>
+<p>Gjøran koder etter to kjente prinsipper</p>
+<ol>
+<li>Programmer mot et interface, ikke en implementasjon</li>
+<li>Separation of Concerns</li>
+</ol>
+<p>Jeg har utallige ganger hørt om disse, og jeg har utallige ganger hørt og lest om patterns som MVC, MVP og Presenter Model, men aldri før har jeg fått en så konkret og illustrerende kodedemo som jeg fikk i går. Det gikk opp et aldri så lite lys for meg. Med Gjørans kode får man skilt ut GUI logikken fra selve presentasjonen, slik at den både kan gjenbrukes mellom ulike views (Silverlight, ASP.NET, WinForms etc.) og slik at den kan enhetstestes! Faktisk!</p>
+<p>Gjørans Presentation Model er et objekt som abstraherer et brukerinterface. Det er <em>et UI uten UI</em> som han sa. Det inneholder UI'ets state og operasjoner, og i WPF eller Silverlight er det koblet til et view gjennom toveis databinding. Toveis databinding er ekstremt bra i disse nye GUI teknologiene, og det er det som gjør at Presnetation Model patternet fungerer ekstra bra her.</p>
+<p>Det ble også poengtert at Presentation Model objektene alltid forholdt seg til data modellen gjennom interface - nødvendig for å få til enhetstesting, men også slik kan gjøre endringer enklere etc.</p>
+<p>Koden Gjøran viste var fra hans SPRINT Board prosjekt, som han sa han skulle legge ut på Codeplex - men han lovet også å legge den + presentasjonene ut på bloggen sin, <a href="http://blog.goeran.no/">du finner den her</a>. Koden, også fra Silverlight demone, er absolutt verdt en titt.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

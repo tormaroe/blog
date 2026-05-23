@@ -1,0 +1,112 @@
+---
+title: Litt F#-kode for å måle kjøretid
+link: http://blog.kjempekjekt.com/2013/04/09/litt-f-kode-for-mle-kjretid/
+layout: post
+date: 2013-04-09 23:50:26Z
+tags:
+  - F#
+  - Testing
+  - Ytelse
+  - QuickBencher
+---
+<p>I forrige blogpost (<a href="http://blog.kjempekjekt.com/2013/03/28/telle-ord-forekomster-med-f/">Telle ord-forekomster med F#</a>) brukte jeg en funksjon som het <code><strong>benchmark</strong></code> til å måle hvor lang tid det tok å kjøre programet mitt. Nå vil jeg "avsløre" hva som skjuler seg bak denne funksjonen. </p> <p>Da jeg eksperimenterte med ulike algoritmer i F# for å prosessere større datamengder hadde jeg behov for å enkelt kunne måle og sammenligne kjøretider på ulike funksjoner. Dette behovet har jeg hatt før, og i 2010 førte det til <a href="http://blog.kjempekjekt.com/2010/01/25/quickbencher-beta/">at jeg lagde biblioteket QuickBencher</a> (<a href="http://quickbencher.codeplex.com/">tilgjengelig på CodePlex</a>). Bibloteket var kraftig inspirert av tilsvarende funksjonalitet som er å finne i Ruby.</p> <p>Jeg kunne selvfølgelig ha brukt QuickBencher fra F# også. Men det jeg i stedet gjorde var å røske ut den sentrale innmaten fra bibloteket, og kode det om til et par hendige F#-funksjoner. Her følger en gjennomgang av koden.</p> <h2>Noen typer som holder på data</h2> <p>Først importerer jeg noen navnerom jeg kommer til å bruke mye:</p><pre>open System
+open System.Diagnostics</pre>
+<p>Deretter lager jeg min første datatype, som er en record jeg kaller <code>ProcessorTime</code>. Formålet med denne er å holde på informasjon om forbrukt tid. Disse tidene kommer fra en prosess (<code>System.Diagnostics.Process</code>), og jeg inkluderer en statisk metode på typen min for å opprette en ProcessorTime-instans basert på en prosess. Dette ser slik ut:</p><pre>type ProcessorTimes = 
+    { User   : TimeSpan
+      System : TimeSpan
+      Total  : TimeSpan }
+    static member get (p : Process) =
+        { User   = p.UserProcessorTime
+          System = p.PrivilegedProcessorTime
+          Total  = p.TotalProcessorTime }</pre>
+<p>Videre trenger jeg en liten hjelpefunksjon får å få tak i forskjellen mellom to Timespan (i sekunder):</p><pre>let getDuration start stop =
+    let duration : TimeSpan = stop - start
+    duration.TotalMilliseconds / 1000.0</pre>
+<p>Og da kan jeg lage min andre datatype, som heter <code>ProcessorDuration</code>. Denne holder tidsinformasjon fra en prosess for to ulike tidspunkt – et starttidspunkt og et stopptidspunkt. Den har også et felt for å holde på forløpt klokketid. <code>ProcessorDuration</code> representerer rett og slett en benchmark-måling.</p>
+<p>I tillegg har jeg overstyrt typens ToString-metode til å gi en printbar representasjon av målingen. Tekstformateringen som er brukt er den samme som du finner både i QuickBencher og i Ruby sin benchmark-funksjonalitet.</p><pre>type ProcessorDuration = 
+    { Start     : ProcessorTimes
+      Stop      : ProcessorTimes
+      ClockTime : int64 }
+    override x.ToString () = 
+        sprintf "%f user, %f system, %f total (%f)" 
+            (getDuration x.Start.User x.Stop.User)
+            (getDuration x.Start.System x.Stop.System)
+            (getDuration x.Start.Total x.Stop.Total)
+            (float x.ClockTime / 1000.0)</pre>
+<h2>Start og stopp</h2>
+<p>Funksjonen <code>startBenchmark</code> gjør det du antar at den gjør – den begynner å måle tiden. Men den gjør en ting til: Den oppretter og returnerer en <em><a href="http://en.wikipedia.org/wiki/Closure_(computer_science)">lexical closure</a> </em>(altså en funksjon som har referanser til frie variabler fra det scopet hvor den ble opprettet). Denne closuren skal så brukes til å stoppe målingen, og den vil returnere resultatet i form av en ProcessorDuration-instans.</p>
+<p>Slik er funksjonen implementert:</p><pre>let startBenchmark ()=
+    let proc = Process.GetCurrentProcess()
+    let startTimes = ProcessorTimes.get proc
+    let stopwatch = Stopwatch.StartNew()
+    (fun () -&gt;
+        stopwatch.Stop()
+        { Start = startTimes
+          Stop = ProcessorTimes.get proc
+          ClockTime = stopwatch.ElapsedMilliseconds })</pre>
+<h2>Benchmark</h2>
+<p>Vi har kommet frem til selve rosinen – benchmark-funksjonen som måler forbrukt tid for en vilkårlig funksjon. Ta først en titt på koden, som ser slik ut:</p><pre>let benchmark label thunk callback =
+    let getResult = startBenchmark()
+    let temp = thunk()
+    callback label (getResult().ToString())
+    temp</pre>
+<p>benchmark har altså tre parametre. Nummer én er en <code>label</code> som skal identifisere akkurat denne målingen. Typen er ikke gitt – det er typisk tenkt at det skal være en streng, men det kan være hva som helst.</p>
+<p>Parameter nummer to heter <code>thunk</code>. I funksjonell programmering er <a href="http://en.wikipedia.org/wiki/Thunk_(functional_programming)">thunk enkelt fortalt betegnelsen på en parameterløs closure</a>. Dette er rett og slett funksjonen som skal måles.</p>
+<p>Det tredje parameteret er en <code>callback</code> som vil bli evaluert etter at målingen er foretatt. Argumentene til callbacken vil være labelen og resultatet av målingen. Dermed er det altså signaturen til callbacken som avgjør hvilken type label'en må være.</p>
+<p>Etter å ha startet en måling, eksekvert thunken, og gitt resultatet til callbacken, vil benchmark returnere resulatet fra thunken. Dette vil gjøre det enklere å snike inn benchmarking uten for mye endringer i eksisterende kode.</p>
+<h2>Benchmark til konsollet</h2>
+<p>I 99% av tilfellene ønsker du sansynligvis bare å printe ut målingen til konsollvinduet, så jeg lagde en enklere versjon av benchmark for akkurat det. Den er selvsagt enkel, men jeg tar den med for kompletthets skyld:</p><pre>let benchmarkPrintn label thunk = 
+    benchmark label thunk (printfn "%s: %s")</pre>
+<h2>En interessant demonstrasjon</h2>
+<p>For å vise hvordan benchmark virker vil jeg løse <em>Project Euler-oppgaven nummer 1</em>, en gjenganger på denne bloggen. Jeg skal finne summer av alle multipler av 3 og 5. Men denne gangen inkluderer jeg multipler helt opp til og med 1'000'000 – for det tar såpass lang tid at det blir noe å måle.</p>
+<p>Jeg designer fire ulike løsninger på problemet, og er veldig spent på hva målingene vil vise.</p><pre>let test1 ()=
+    let mutable result = 0L
+    for i in 1L..1000000L do
+        if i % 3L = 0L || i % 5L = 0L
+        then result &lt;- result + i
+    printfn "\nResult by for loop and mutation: %s" 
+            (string result)
+    
+let test2 ()=
+    {1L..1000000L}
+    |&gt; Seq.filter (fun x -&gt; x % 3L = 0L || x % 5L = 0L)
+    |&gt; Seq.fold (fun acc x -&gt; acc + x) 0L
+    |&gt; string
+    |&gt; printfn "\nResult by range, filter and fold: %s"  
+    
+let test3 ()=
+    let result = ref 0L
+    {1L..1000000L}
+    |&gt; Seq.iter (fun x -&gt; if x % 3L = 0L || x % 5L = 0L 
+                          then result := !result + x)
+    printfn "\nResult by iter and reference cell: %s"  
+            (string !result)
+            
+let test4 ()=
+    let rec inner acc n = 
+        match n with
+        | 1000001L -&gt; acc
+        | n when n % 3L = 0L -&gt; inner (acc + n) (n + 1L)
+        | n when n % 5L = 0L -&gt; inner (acc + n) (n + 1L)
+        | _                  -&gt; inner  acc      (n + 1L)
+    printfn "\nResult by recursion: %s"
+            (string (inner 0L 1L))</pre>
+<p>Når jeg så benchmarker de fire testene...</p><pre>do
+    benchmarkPrintn "For and mutation" test1
+    benchmarkPrintn "Range, filter, fold" test2
+    benchmarkPrintn "Iter and referece cell" test3
+    benchmarkPrintn "Recursion" test4</pre>
+<p>...får jeg følgende output:</p><pre>Result by for loop and mutation: 233334166668
+For and mutation: <strong>0.249602</strong> user, 0.000000 system, 0.249602 total (0.250000)
+
+Result by range, filter and fold: 233334166668
+Range, filter, fold: <strong>0.405603</strong> user, 0.000000 system, 0.405603 total (0.417000)
+
+Result by iter and reference cell: 233334166668
+Iter and referece cell: <strong>0.265202</strong> user, 0.000000 system, 0.265202 total (0.260000)
+
+Result by recursion: 233334166668
+Recursion: <strong>0.031200</strong> user, 0.000000 system, 0.031200 total (0.033000)</pre>
+<p>At sekvensoperasjoner som filter og fold (test2) gir svakere kjøretid enn for-løkker og mutering av data (test1 og test3) er skuffende men ikke overraskende i et språk som F#. <strong>Men resultatet fra test4 veltet meg nesten av stolen!</strong> Rundt 85% reduksjon i kjøretid sammenlignet med forløkke-varianten ved bruk av rekursjon var totalt uventet, og viser at F# er blodtrimmet og optimalisert for algoritmer som bruker halerekursjon.</p>
+<h2>Til slutt</h2>
+<p>Hvis ytelse er viktig for deg så er det viktig å faktisk måle hvor lang tid ting tar. Å anta er skummelt, og å endre/optimalisere kode uten å holde track på kjøretid er ikke å anbefale. Da trenger du verktøy som det jeg har laget og vist frem i denne bloggposten, som er enkle å bruke, og som gjør én ting og gjør den godt.</p>

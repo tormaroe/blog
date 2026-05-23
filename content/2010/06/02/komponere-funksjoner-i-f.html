@@ -1,0 +1,61 @@
+---
+title: Komponere funksjoner i F#
+link: http://blog.kjempekjekt.com/2010/06/02/komponere-funksjoner-i-f/
+layout: post
+date: 2010-06-02 20:23:33Z
+tags:
+  - F#
+---
+<p>Jeg sitter og leser <a href="http://www.manning.com/petricek/"><em>Real-World Functional Programming</em></a> for tiden, og leker meg litt med F#. Boken går (alt for) sakte fremover, men rundt side 160 fikk jeg endelig en <em>a-ha</em> opplevelse. Det dreide seg om noe som kalles <strong>partial function application</strong>, også kalt <a href="http://en.wikipedia.org/wiki/Currying">currying</a>. Kort fortalt betyr det å ta en funksjon som tar to eller flere parametre, for så å kalle den med noen av parametrene spesifisert – men ikke alle. Man får da tilbake en ny funksjon man kan kalle med resten av parametrene.</p> <p>Denne teknikken har noen interessante bruksområder, sikkert mange flere enn dem jeg har sett til nå. Det fikk virkelig hjernen min til å begynne å jobbe, og drømmen jeg hadde i natt var følgelig veldig spesiell. En av ideene jeg fikk var at jeg ganske enkelt kan kombinere flere funksjoner, for å oppnå omtrent det samme som <a href="http://blog.kjempekjekt.com/2009/03/20/t-man-tipser-om-specification-pattern/">composable specification pattern</a> i objektorientert programmering.</p> <p>La oss for eksempel si at vi har endel regler for validering av et tall. Vi kan implementere disse reglene som forskjellige funksjoner: </p> 
+<pre>
+// some validation rules
+ 
+let larger_than_ten      n = n &gt; 10
+let smaller_than_hundred n = n &lt; 100
+let dividable_by_ten     n = n % 10 = 0    
+let keep_away_from_fifty n = n &lt;&gt; 50
+</pre>
+<p>Disse fire funksjonene tar altså inn en integer <em>n</em> og returnerer en boolean som sier om <em>n</em> tilfredstiller regelen. F# har sterk, statisk typing, men det er sjelden vi må spesifisere typen selv, kompilatoren er nemlig ganske smart, og finner ut av dette på egen hånd.</p>
+<p>Nå ønsker jeg å komponere disse reglene sammen til én valideringsfunksjon. Jeg kan da definere en operator for å kombinere funksjoner, og det er her magien ligger. Input til operatoren <em>(funksjonen '+')</em> er to generiske funskjoner og en verdi. Signaturen for operatoren, om jeg lagde den i C#, ville vært noe sånt som <tt>bool ComposeOperator(Func&lt;T,bool&gt; f, Func&lt;T,bool&gt; g, T x)</tt>. Nok en gang slipper jeg å fortelle kompilatoren dette.</p>
+<p>Deretter kan jeg opprette funksjonen <em>validate</em> ved å kombinere de fire reglene med min nye + operator:</p>
+<pre>
+// compose complex validation rules
+ 
+let (+) f g x = f(x) && g(x)
+ 
+let validate = // the complete validator function 
+    larger_than_ten 
+    + smaller_than_hundred 
+    + dividable_by_ten
+    + keep_away_from_fifty
+</pre>
+<p><em>Did that blow your mind?</em> Dette føles ganske så genialt, om jeg må få si det selv. Nå gjenstår det bare å vise hvordan jeg kan bruke valideringsfunksjonen, og da kan jeg bruke partial application igjen i F#'s støtte for <strong><em>pipelining</em></strong>.</p>
+<p>Først definerer jeg en liten funksjon for å konvertere en boolsk verdi til en streng ("valid" / "NOT valid"). Deretter lager jeg funksjonen check som først validerer tallet <em>n</em>, for deretter å sende resultatet til <em>valid_as_string</em>, som igjen sender resultatet til en print-funksjon. Pipelining minner om <em>method chaining</em> i objektorientert kode.</p>
+<p>Legg spesielt merke til funksjonen printfn. Her har jeg spesifisert to parametre; et format-pattern og tallet <em>n</em>. Verdien som sendes gjennom pipelinen (som nå er streng-representasjonen av valideringsresultatet) legges til som en tredje parameter.</p>
+<pre>
+// use validation rule and report
+ 
+let valid_as_string v =
+    if v then "valid" else "NOT valid"
+ 
+let check n = // illustrates pipelining (and partial application)
+    validate n                 // validate
+    |&gt; valid_as_string         // convert result to string
+    |&gt; printfn "%d is %s" n    // print result
+ 
+let some_numbers = [ 1; 10; 13; 20; 40; 50; 60; 90; 99; 100; 200 ]
+for n in some_numbers do 
+    check n
+</pre>
+<p>Til slutt lager jeg en liste med tall som jeg itererer over og validerer. Her er output:</p><pre style="background-color: #ffeeee; padding-left: 15px; margin-bottom: 15px">1 is NOT valid
+10 is NOT valid
+13 is NOT valid
+20 is valid
+40 is valid
+50 is NOT valid
+60 is valid
+90 is valid
+99 is NOT valid
+100 is NOT valid
+200 is NOT valid</pre>
+<p>So there you have it, min første blogpost om F#. Jeg har såvidt begynt å lære meg språket, og selv om det er en god del som er mer eller mindre direkte overførbart fra Erlang (som touples, lister og pattern matching), så er det mye nytt også, og jeg gleder meg til å blogge mer om funksjonell programmering på .NET-rammeverket.</p>

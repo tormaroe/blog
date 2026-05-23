@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Clojure,Polyglot,XML">
+
+    <title>Opus Polyglotis II: Clojure</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Opus Polyglotis II: Clojure</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 1. mars 2012</small> 
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/xml"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> XML</span></a>
+          </p>
+          <p><a href="/uploads/2012/03/act4.png"><img style="background-image: none; border-right-width: 0px; margin: 0px 15px 6px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="act4" border="0" alt="act4" align="left" src="/uploads/2012/03/act4_thumb.png" width="164" height="164"></a></p>
+<p style="line-height: 16px"><tt><strong>OPUS POLYGLOTIS II, Act 4<br></strong>Tagline: "Groteskt vakkert!"<br>På scenen: Clojure</tt></p>
+<p>Jeg har presentert 3 ulike programmer som gjør det samme - i <a href="/2012/02/21/opus-polyglotis-ii-python/">Python</a>, <a href="/2012/02/22/opus-polyglotis-ii-ruby/">Ruby</a> og <a href="/2012/02/27/opus-polyglotis-ii-rebol/">Rebol</a> – og her kommer den aller siste implementasjonen for denne gang. </p>
+<p>Clojure er et herlig språk, men det kan være vanskelig å lese koden – spesielt når man ikke har skrevet den selv. Jeg vil likevel anbefale deg som er interessert i programmeringsspråk å ta en titt, og kanskje forsøke å sammenligne fremgangsmåten med de andre løsningene. Men jeg kommer ikke til å forklare alle detaljene, så hvis du vil at jeg skal utdype noe av koden ytterligere får du legge igjen en kommentar.</p>
+<h4>Litt om løsningen</h4>
+<p>I denne løsningen har jeg valgt å bruke multimethods for dispatch, dvs. for å velge hvilken strategi jeg skal bruke (<a href="/2012/02/20/opus-polyglotis-ii/">les introduksjonen om du ikke vet hva programmet skal gjøre</a>). Multimethods brukte jeg også nylig i artikkelen <a href="/2012/02/02/template-method-del-4-multippel-arv/">Template Method del 4: Multippel arv</a>, og lengre tilbake i tid viste jeg teknikken i posten <a href="/2010/10/03/1-2-3-dispatch/">1-2-3 Dispatch</a>.</p>
+<p>Jeg definerer også et par datatyper med DEFRECORD, og det er en av disse datatypene multimetodene fungerer på. I prinsippet er denne formen for dispatch det samme som jeg implementerte i Ruby og Rebol, bare at det er innbakt i språket, og at jeg dermed slipper å gjøre så mye av jobben selv.</p>
+<p>Clojure-koden viser også litt interop med noen Java-klasser; jeg bruker java.util.Scanner til å sjekke om en streng er et tall (muligens overkill, men jeg hadde lyst til å teste dette objektet som jeg aldri før hadde benyttet).</p>
+<p>Og så har jeg laget en aldri så liten <em><strong><a href="http://martinfowler.com/dslCatalog/regexTableLexer.html">regex table lexer</a></strong></em> til å parse CSV-filen. Geeks synes det er gøy med lexing!</p>
+<h4>Koden: Parsing av CSV-fil</h4>
+<p>Først deklarerer jeg et namespace, og inkluderer bibloteker jeg trenger i programmet:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 22 </span><span class="Delimiter">(</span>ns polyglotis
+<span class="lnr"> 23 </span>    <span class="Delimiter">(</span><span class="Type">:use</span> clojure.contrib.json<span class="Delimiter">)</span>
+<span class="lnr"> 24 </span>    <span class="Delimiter">(</span>:require clojure.string<span class="Delimiter">)</span>
+<span class="lnr"> 25 </span>    <span class="Delimiter">(</span>:require [clojure.xml :as xml]<span class="Delimiter">)</span>
+<span class="lnr"> 26 </span>    <span class="Delimiter">(</span>:import [java.util Scanner Locale]<span class="Delimiter">))</span>
+</pre>
+<p>Og så definerer jeg datatypene jeg skal jobbe med:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 28 </span><span class="Delimiter">(</span>defrecord OpusData [headers records]<span class="Delimiter">)</span>
+<span class="lnr"> 29 </span>
+<span class="lnr"> 30 </span><span class="Delimiter">(</span>defrecord OpusFormatResult [format data output]<span class="Delimiter">)</span>
+</pre>
+<p>Så kommer lexeren. Og dette er ganske vakkert, synes jeg selv. TOKENIZE splitter opp en semikolonseparert tekststreng ved hjelp av tre regulære uttrykk:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 32 </span><span class="Delimiter">(</span>defn get-first-token [s]
+<span class="lnr"> 33 </span>  <span class="Delimiter">(</span><span class="Statement">first</span> <span class="Delimiter">(</span><span class="Statement">or</span> <span class="Delimiter">(</span>re-seq #<span class="String">"^([^;\"]+)"</span> s<span class="Delimiter">)</span>    <span class="Comment">; unqouted</span>
+<span class="lnr"> 34 </span>             <span class="Delimiter">(</span>re-seq #<span class="String">"^\"([^\"]*)\""</span> s<span class="Delimiter">)</span> <span class="Comment">; quoted</span>
+<span class="lnr"> 35 </span>             <span class="Delimiter">(</span>re-seq #<span class="String">"^;"</span> s<span class="Delimiter">))))</span>         <span class="Comment">; separator</span>
+<span class="lnr"> 36 </span>
+<span class="lnr"> 37 </span><span class="Delimiter">(</span>defn tokenize
+<span class="lnr"> 38 </span>  <span class="Delimiter">(</span>[input] <span class="Delimiter">(</span>tokenize input []<span class="Delimiter">))</span>
+<span class="lnr"> 39 </span>  <span class="Delimiter">(</span>[input tokens]
+<span class="lnr"> 40 </span>    <span class="Delimiter">(</span>if-let [token <span class="Delimiter">(</span>get-first-token input<span class="Delimiter">)</span>]
+<span class="lnr"> 41 </span>      <span class="Delimiter">(</span><span class="Statement">if</span> <span class="Delimiter">(</span><span class="Statement">=</span> token <span class="String">";"</span><span class="Delimiter">)</span>
+<span class="lnr"> 42 </span>        <span class="Delimiter">(</span>recur <span class="Delimiter">(</span>subs input <span class="Number">1</span><span class="Delimiter">)</span>
+<span class="lnr"> 43 </span>               tokens<span class="Delimiter">)</span>
+<span class="lnr"> 44 </span>        <span class="Delimiter">(</span>recur <span class="Delimiter">(</span>subs input <span class="Delimiter">(</span>-&gt; token <span class="Statement">first</span> <span class="Statement">count</span><span class="Delimiter">))</span>
+<span class="lnr"> 45 </span>               <span class="Delimiter">(</span>conj tokens <span class="Delimiter">(</span><span class="Statement">second</span> token<span class="Delimiter">))))</span>
+<span class="lnr"> 46 </span>      tokens<span class="Delimiter">)))</span>
+</pre>
+<p>Jeg trenger også en liten funksjon som kan splitte linjer; igjen bruker jeg regex, og sørger for å håndtere både unix og windows-format:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 48 </span><span class="Delimiter">(</span>defn split-lines [text]
+<span class="lnr"> 49 </span>      <span class="Delimiter">(</span>clojure.string/split text #<span class="String">"\r?\n"</span><span class="Delimiter">))</span>
+</pre>
+<p>Nå bruker jeg alt det jeg har laget til å definere en funksjon som tar inn et filnavn, leser filen, splitter den opp i linjer, splitter linjene opp i tokens, og returnerer en OpusData-instans:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 51 </span><span class="Delimiter">(</span>defn get-csv-data [filename]
+<span class="lnr"> 52 </span>  <span class="Delimiter">(</span><span class="Statement">let</span> [data <span class="Delimiter">(</span>-&gt;&gt; filename          <span class="Comment">; filename</span>
+<span class="lnr"> 53 </span>                  slurp             <span class="Comment">; Read the file content</span>
+<span class="lnr"> 54 </span>                  split-lines       <span class="Comment">; Split on rows/newline</span>
+<span class="lnr"> 55 </span>                  <span class="Delimiter">(</span><span class="Statement">map</span> tokenize<span class="Delimiter">))</span>]  <span class="Comment">; Split on fields</span>
+<span class="lnr"> 56 </span>
+<span class="lnr"> 57 </span>    <span class="Comment">; Create record of headers and rows</span>
+<span class="lnr"> 58 </span>    <span class="Delimiter">(</span>OpusData. <span class="Delimiter">(</span><span class="Statement">first</span> data<span class="Delimiter">)</span> <span class="Delimiter">(</span><span class="Statement">rest</span> data<span class="Delimiter">))))</span>
+</pre>
+<p>Hvis jeg nå evaluerer (get-csv-data "data.csv") i REPL'en, vil det gi følgende output (data.csv er den testfilen jeg har brukt gjennom hele denne bloggserien):</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 60 </span><span class="Comment">; (get-csv-data "data.csv")</span>
+<span class="lnr"> 61 </span> <span class="Type">#:polyglotis.OpusData{</span> :headers [<span class="String">"Field 1"</span> <span class="String">"Field 2"</span> <span class="String">"Field 3"</span>],
+<span class="lnr"> 62 </span>                        :records <span class="Delimiter">(</span>[<span class="String">"Value 1"</span> <span class="String">"Value 2"</span> <span class="String">"123"</span>]
+<span class="lnr"> 63 </span>                                  [<span class="String">"Value A"</span> <span class="String">"Value B"</span> <span class="String">"456"</span>]
+<span class="lnr"> 64 </span>                                  [<span class="String">"Value x"</span> <span class="String">"Value y;;"</span> <span class="String">"789.45"</span>]<span class="Delimiter">)</span>}
+</pre>
+<h4>Koden: Dispatch</h4>
+<p>Nå har vi kommet til multimetodene. Først definerer jeg APPLY-FORMAT. Når denne blir kalt så vil den velge en funksjon basert på :format-verdien til argumentet sitt (argumentet kommer til å være av typen OpusFormatRecord, definert tidligere):</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 69 </span><span class="Delimiter">(</span>defmulti apply-format :format<span class="Delimiter">)</span>
+</pre>
+<p>Implementasjonen av det første konkrete formatet ser slik ut:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 71 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> apply-format :yaml [csv]
+<span class="lnr"> 72 </span>  <span class="Delimiter">(</span><span class="Statement">assoc</span> csv <span class="Type">:output</span> <span class="String">"YAML not yet supported!"</span><span class="Delimiter">))</span>
+</pre>
+<p>YAML-metoden setter :output-feltet i csv-objektet til "YAML not yet supported".</p>
+<p>Da er vi klare for litt mere funky greier – her er definisjonen av XML-formatet. Begynn med å lese kommentarlinjene mot slutten av methode, og se om du kan nøste deg bakover og forstå hvordan det fungerer:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 75 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> apply-format :xml [csv]
+<span class="lnr"> 76 </span>  <span class="Delimiter">(</span><span class="Statement">let</span> [headers <span class="Delimiter">(</span>-&gt;&gt; csv :data :headers
+<span class="lnr"> 77 </span>                     <span class="Delimiter">(</span><span class="Statement">map</span> #<span class="Delimiter">(</span>.replace % \space \_<span class="Delimiter">)))</span>
+<span class="lnr"> 78 </span>
+<span class="lnr"> 79 </span>        xml-str #<span class="Delimiter">(</span>with-out-str <span class="Delimiter">(</span>xml/emit-element %<span class="Delimiter">))</span>
+<span class="lnr"> 80 </span>
+<span class="lnr"> 81 </span>        &lt;tag&gt; <span class="Delimiter">(</span>fn [k v]
+<span class="lnr"> 82 </span>                {:tag <span class="Delimiter">(</span><span class="Statement">if</span> <span class="Delimiter">(</span><span class="Statement">keyword</span>? k<span class="Delimiter">)</span> k <span class="Delimiter">(</span><span class="Statement">keyword</span> k<span class="Delimiter">))</span>
+<span class="lnr"> 83 </span>                 :content <span class="Delimiter">(</span><span class="Statement">if</span> <span class="Delimiter">(</span>seq? v<span class="Delimiter">)</span> <span class="Delimiter">(</span>vec v<span class="Delimiter">)</span> [v]<span class="Delimiter">)</span>}<span class="Delimiter">)</span>
+<span class="lnr"> 84 </span>
+<span class="lnr"> 85 </span>        row-&lt;tag&gt; #<span class="Delimiter">(</span>-&gt;&gt; % <span class="Delimiter">(</span><span class="Statement">map</span> &lt;tag&gt; headers<span class="Delimiter">)</span>
+<span class="lnr"> 86 </span>                          <span class="Delimiter">(</span>&lt;tag&gt; :record<span class="Delimiter">))</span>]
+<span class="lnr"> 87 </span>
+<span class="lnr"> 88 </span>    <span class="Delimiter">(</span>-&gt;&gt; csv :data :records      <span class="Comment">; Pluck rows from CSV</span>
+<span class="lnr"> 89 </span>         <span class="Delimiter">(</span><span class="Statement">map</span> row-&lt;tag&gt;<span class="Delimiter">)</span>         <span class="Comment">; Create tags from them</span>
+<span class="lnr"> 90 </span>         <span class="Delimiter">(</span>&lt;tag&gt; :records<span class="Delimiter">)</span>        <span class="Comment">; Wrap in a &lt;records&gt; tag</span>
+<span class="lnr"> 91 </span>         xml-str                 <span class="Comment">; Convert to a string</span>
+<span class="lnr"> 92 </span>         <span class="Delimiter">(</span><span class="Statement">assoc</span> csv <span class="Type">:output</span><span class="Delimiter">))))</span>  <span class="Comment">; Update output field</span>
+</pre>
+<p>Clojure har ganske grei støtte for å konvertere hash-maps (disctionaries, om du foretrekker det navnet) til XML, og dette benytter jeg her.</p>
+<p>Og da har vi bare ett format igjen, nemlig JSON:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">100 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> apply-format :json [csv]
+<span class="lnr">101 </span>  <span class="Delimiter">(</span><span class="Statement">let</span> [headers <span class="Delimiter">(</span>-&gt; csv :data :headers <span class="Statement">reverse</span><span class="Delimiter">)</span>
+<span class="lnr">102 </span>
+<span class="lnr">103 </span>        <span class="Comment">; Fn: Coerse to Int or Float if possible</span>
+<span class="lnr">104 </span>        coerse-num #<span class="Delimiter">(</span><span class="Statement">let</span> [s <span class="Delimiter">(</span>Scanner. %<span class="Delimiter">)</span>]
+<span class="lnr">105 </span>                      <span class="Delimiter">(</span>.useLocale s <span class="Delimiter">(</span>Locale. <span class="String">"en"</span> <span class="String">"US"</span><span class="Delimiter">))</span>
+<span class="lnr">106 </span>                      <span class="Delimiter">(</span><span class="Statement">cond</span>
+<span class="lnr">107 </span>                        <span class="Delimiter">(</span>.hasNextInt s<span class="Delimiter">)</span> <span class="Delimiter">(</span>.nextInt s<span class="Delimiter">)</span>
+<span class="lnr">108 </span>                        <span class="Delimiter">(</span>.hasNextFloat s<span class="Delimiter">)</span> <span class="Delimiter">(</span>.nextFloat s<span class="Delimiter">)</span>
+<span class="lnr">109 </span>                        <span class="Type">:else</span> %<span class="Delimiter">))</span>
+<span class="lnr">110 </span>
+<span class="lnr">111 </span>        <span class="Comment">; Fn: For all rows, for all fields, coerse num</span>
+<span class="lnr">112 </span>        coerse-num-all <span class="Delimiter">(</span>partial <span class="Statement">map</span>
+<span class="lnr">113 </span>                         <span class="Delimiter">(</span>partial <span class="Statement">map</span> coerse-num<span class="Delimiter">))</span>
+<span class="lnr">114 </span>
+<span class="lnr">115 </span>        <span class="Comment">; Fn: Convert seq into map with headers as keys</span>
+<span class="lnr">116 </span>        mapify-row <span class="Delimiter">(</span>comp <span class="Delimiter">(</span>partial zipmap headers<span class="Delimiter">)</span> <span class="Statement">reverse</span><span class="Delimiter">)</span>
+<span class="lnr">117 </span>
+<span class="lnr">118 </span>        <span class="Comment">; Fn: Convert all seqs to maps</span>
+<span class="lnr">119 </span>        mapify-row-all <span class="Delimiter">(</span>partial <span class="Statement">map</span> mapify-row<span class="Delimiter">)</span>]
+<span class="lnr">120 </span>
+<span class="lnr">121 </span>    <span class="Delimiter">(</span>-&gt;&gt; csv :data :records     <span class="Comment">; take the rows</span>
+<span class="lnr">122 </span>         coerse-num-all         <span class="Comment">; coerse the numbers</span>
+<span class="lnr">123 </span>         mapify-row-all         <span class="Comment">; make maps</span>
+<span class="lnr">124 </span>         json-str               <span class="Comment">; convert maps to json</span>
+<span class="lnr">125 </span>         <span class="Delimiter">(</span><span class="Statement">assoc</span> csv <span class="Type">:output</span><span class="Delimiter">))))</span> <span class="Comment">; update output field</span>
+</pre>
+<p>Clojure har enda bedre støtte for JSON enn for XML. Igjen konverterer jeg dataene mine til hash-maps, og funksjone JSON-STR konverterer hash-maps til JSON. Dette er en generell teknikk innen funksjonell programmering: Omstrukturer dataene dine til noe som passer for det du skal løse, og så blir selve løsningen ganske enkel.</p>
+<h4>Koden: Main</h4>
+<p>Den siste funksjonen jeg definerer knytter sammen alt jeg har laget til nå. Den oppretter et OpusFormatRecord-objekt hvor dataene fra en CSV-fil mates inn vha. GET-CSV-DATA funksjonen. Jeg kaller APPLY-FORMAT, som vil kalle den riktige format-metoden, plukker resultatet og skriver det ut.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">129 </span><span class="Delimiter">(</span>defn main [out-format csv-file]
+<span class="lnr">130 </span>  <span class="Delimiter">(</span>-&gt;&gt;
+<span class="lnr">131 </span>      <span class="Comment">; Create a record with CSV data and format info</span>
+<span class="lnr">132 </span>      <span class="Delimiter">(</span>OpusFormatResult. <span class="Delimiter">(</span><span class="Statement">keyword</span> out-format<span class="Delimiter">)</span>
+<span class="lnr">133 </span>                          <span class="Delimiter">(</span>get-csv-data csv-file<span class="Delimiter">)</span>
+<span class="lnr">134 </span>                          <span class="Statement">nil</span><span class="Delimiter">)</span>
+<span class="lnr">135 </span>
+<span class="lnr">136 </span>       apply-format   <span class="Comment">; Dispatch to correct format def.</span>
+<span class="lnr">137 </span>       <span class="Type">:output</span>        <span class="Comment">; Pluck the output string</span>
+<span class="lnr">138 </span>       println<span class="Delimiter">))</span>      <span class="Comment">; Print it</span>
+</pre>
+<p>Til slutt kaller jeg MAIN og sender inn kommandolinje-argumentene.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">141 </span><span class="Comment">; Kick it all off !!!</span>
+<span class="lnr">142 </span><span class="Delimiter">(</span>main <span class="Delimiter">(</span><span class="Statement">first</span> <span class="Type">*command-line-args*</span><span class="Delimiter">)</span>
+<span class="lnr">143 </span>      <span class="Delimiter">(</span><span class="Statement">second</span> <span class="Type">*command-line-args*</span><span class="Delimiter">))</span>
+</pre>
+<p>Og det var det :P</p>
+<h4>Oppsummering</h4>
+<p>Multimetoder er ideelt for denne typen dispatch mellom ulike strategier, men bortsett fra det kan jeg ikke peke på noen andre fordeler med Clojure. Annet enn at det er veldig gøy å kode Clojure da!</p>
+<p>Da jeg implementerte dette her gikk forresten koden gjennom ganske mange refaktureringer. Selv den enkleste Clojure-funksjonen kan skrives på hundrevis av ulike måter, og det er vanskelig å bestemme seg for hva man liker best, hva som kommuniserer godt, hva som er enklest å vedlikeholde og så videre. Jeg skrev litt mer om dette problemet i <a href="/2012/01/03/er-lisps-fleksibilitet-et-problem/">Er Lisp's fleksibilitet et problem?</a> tidligere i år.</p>
+<p>Nå tror jeg vi lar dette polyglotiske opuset ligge. Det har sansynligvis vært mer interessant for meg selv enn for mine lesere, men jeg håper(?) noen har satt pris på å få se noen tilnærmet fullverdige men likevel små program skrevet i diverse språk.</p>
+<p>Hei då!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

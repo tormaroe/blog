@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="C#,Software/verktøy,Ytelse">
+
+    <title>Kompakt serialisering med MessagePack</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kompakt serialisering med MessagePack</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 13. mai 2015</small> 
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/software-verktøy"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Software/verktøy</span></a>
+          
+            <a href="/tags/ytelse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ytelse</span></a>
+          </p>
+          <p><strong>MessagePack</strong> er et binært serialiseringsformat. Omtrent som JSON, bare raskere og mer kompakt (..er slagordet på <a href="http://msgpack.org/">msgpack.org</a>).</p>
+<p>Et bilde på internett indikerer at dette kan være noe jeg bør se nærmere på: </p>
+<img src="/uploads/2015/05/speedtest.png" alt="Et random bilde fra internett" />
+
+<p>JSON er normalt veldig greit å bruke i mange sammenhenger, men når antall bytes er viktig blir JSON unødvendig stort. For eksempel om du skal lagre en masse data i memcached eller Redis, eller sende mange meldinger gjennom beanstalkd eller RabbitMQ. Da er MessagePack er bra alternativ.</p>
+<p>Ikke nødvendigvis fordi man ikke har plass til å lagre mye data, men fordi ting går raskere når det er <em>mindre data som skal sendes over nettverket eller skrives til disk</em>.</p>
+<p>Det finnes MessagePack-bibliotek til alle populære programmeringsspråk. I denne artikkelen vil jeg vise hvordan man bruker ett av dem - i C#. Jeg vil også sammenligne dette med alternativer som JSON-serialisering og .NET binærserialisering, og se hvor mye bedre MessagePack er.</p>
+<h2>MsgPack.Cli</h2>
+<p>Det finnes flere MessagePack-bibliotek for .NET, men jeg valgte <a href="http://www.nuget.org/packages/MsgPack.Cli/">MsgPack.Cli</a> fordi det har et enkelt API som tilbyr serialisering av vilkårlige objekter.</p>
+<p>Installer med NuGet:</p>
+<pre><code class="hljs">PM&gt; Install-<span class="hljs-keyword">Package</span> <span class="hljs-title">MsgPack.Cli</span></code></pre><p>Først trenger jeg noe data å lagre. Jeg lager meg en datamodell for å beskrive TV-serier med tilhørende sitater:</p>
+<pre><code class="hljs">[<span class="hljs-meta">Serializable</span>]
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">TvSeries</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Title { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> NoOfEpisodes { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> IEnumerable&lt;<span class="hljs-built_in">string</span>&gt; Genres { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> IEnumerable&lt;Quote&gt; Quotes { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+}
+
+[<span class="hljs-meta">Serializable</span>]
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Quote</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> By { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> Season { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span> Episode { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-built_in">string</span> Text { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+}</code></pre><p><code>Serializable</code>-attributtet er ikke nødvendig for å bruke MsgPack, men blir nødvendig når jeg senere skal bruke vanlig .NET-serialisering. Det er også uansett en god konvensjon å markere typer som skal kunne serialiseres med dette attributtet.</p>
+<p>La oss så instansiere et objekt:</p>
+<pre><code class="hljs">var doctorWho = <span class="hljs-built_in">new</span> TvSeries
+{
+    Title = &quot;Doctor Who&quot;,
+    NoOfEpisodes = <span class="hljs-number">813</span>,
+    Genres = <span class="hljs-built_in">new</span>[] { &quot;Drama&quot;, &quot;Adventure&quot;, &quot;Sci-Fi&quot; },
+    Quotes = <span class="hljs-built_in">new</span>[] {
+        <span class="hljs-built_in">new</span> <span class="hljs-keyword">Quote</span> 
+        { 
+            <span class="hljs-keyword">By</span> = &quot;The Doctor&quot;, 
+            Season = <span class="hljs-number">5</span>,
+            Episode = <span class="hljs-number">13</span>,
+            <span class="hljs-type">Text</span> = &quot;We’re all stories, in the end. &quot;
+                + &quot;Just make it a good one, eh?&quot; 
+        },
+        <span class="hljs-built_in">new</span> <span class="hljs-keyword">Quote</span> 
+        { 
+            <span class="hljs-keyword">By</span> = &quot;The Doctor&quot;, 
+            Season = <span class="hljs-number">5</span>,
+            Episode = <span class="hljs-number">12</span>,
+            <span class="hljs-type">Text</span> = &quot;The universe is big. It’s vast and complicated &quot;
+                + &quot;and ridiculous. And sometimes, very rarely, &quot;
+                + &quot;impossible things just happen and we call them &quot;
+                + &quot;miracles.&quot; 
+        },
+    }
+};</code></pre><p>Og så er det på tide å serialisere. Jeg vil lagre en serialisert versjon av objektet <code>doctorWho</code> til en fil. Jeg trenger et par usings...</p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> System.IO;
+<span class="hljs-keyword">using</span> MsgPack.Serialization;</code></pre><p>.. og så serialiserer jeg:</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> serializer <span class="hljs-operator">=</span> <span class="hljs-type">SerializationContext</span>.<span class="hljs-type">Default</span>
+    .<span class="hljs-type">GetSerializer</span>&lt;<span class="hljs-type">TvSeries</span>&gt;();
+
+using (<span class="hljs-keyword">var</span> stream <span class="hljs-operator">=</span> <span class="hljs-type">File</span>.<span class="hljs-type">OpenWrite</span>(@<span class="hljs-string">&quot;c:<span class="hljs-subst">\t</span>emp\packtest&quot;</span>))
+    serializer.<span class="hljs-type">Pack</span>(stream, doctorWho);</code></pre><p>Det var jo enkelt. Tar jeg nå en titt i <code>c:\test</code> finner jeg filen <code>packtest</code> som er på 284 bytes. Åpner jeg den i Sublime Text ser det slik ut:</p>
+<pre><code class="hljs"><span class="hljs-attribute">9493</span> a544 <span class="hljs-number">7261</span> <span class="hljs-number">6</span>d61 a941 <span class="hljs-number">6476</span> <span class="hljs-number">656</span>e <span class="hljs-number">7475</span>
+<span class="hljs-attribute">7265</span> a653 <span class="hljs-number">6369</span> <span class="hljs-number">2</span>d46 <span class="hljs-number">69</span>d1 <span class="hljs-number">032</span>d <span class="hljs-number">9294</span> aa54
+<span class="hljs-attribute">6865</span> <span class="hljs-number">2044</span> <span class="hljs-number">6</span>f63 <span class="hljs-number">746</span>f <span class="hljs-number">720</span>d <span class="hljs-number">05</span>da <span class="hljs-number">003</span>d <span class="hljs-number">5765</span>
+<span class="hljs-attribute">e280</span> <span class="hljs-number">9972</span> <span class="hljs-number">6520</span> <span class="hljs-number">616</span>c <span class="hljs-number">6</span>c20 <span class="hljs-number">7374</span> <span class="hljs-number">6</span>f72 <span class="hljs-number">6965</span>
+<span class="hljs-attribute">732c</span> <span class="hljs-number">2069</span> <span class="hljs-number">6</span>e20 <span class="hljs-number">7468</span> <span class="hljs-number">6520</span> <span class="hljs-number">656</span>e <span class="hljs-number">642</span>e <span class="hljs-number">204</span>a
+<span class="hljs-attribute">7573</span> <span class="hljs-number">7420</span> <span class="hljs-number">6</span>d61 <span class="hljs-number">6</span>b65 <span class="hljs-number">2069</span> <span class="hljs-number">7420</span> <span class="hljs-number">6120</span> <span class="hljs-number">676</span>f
+<span class="hljs-attribute">6f64</span> <span class="hljs-number">206</span>f <span class="hljs-number">6</span>e65 <span class="hljs-number">2</span>c20 <span class="hljs-number">6568</span> <span class="hljs-number">3</span>f94 aa54 <span class="hljs-number">6865</span>
+<span class="hljs-attribute">2044</span> <span class="hljs-number">6</span>f63 <span class="hljs-number">746</span>f <span class="hljs-number">720</span>c <span class="hljs-number">05</span>da <span class="hljs-number">0095</span> <span class="hljs-number">5468</span> <span class="hljs-number">6520</span>
+<span class="hljs-attribute">756e</span> <span class="hljs-number">6976</span> <span class="hljs-number">6572</span> <span class="hljs-number">7365</span> <span class="hljs-number">2069</span> <span class="hljs-number">7320</span> <span class="hljs-number">6269</span> <span class="hljs-number">672</span>e
+<span class="hljs-attribute">2049</span> <span class="hljs-number">74</span>e2 <span class="hljs-number">8099</span> <span class="hljs-number">7320</span> <span class="hljs-number">7661</span> <span class="hljs-number">7374</span> <span class="hljs-number">2061</span> <span class="hljs-number">6</span>e64
+<span class="hljs-attribute">2063</span> <span class="hljs-number">6</span>f6d <span class="hljs-number">706</span>c <span class="hljs-number">6963</span> <span class="hljs-number">6174</span> <span class="hljs-number">6564</span> <span class="hljs-number">2061</span> <span class="hljs-number">6</span>e64
+<span class="hljs-attribute">2072</span> <span class="hljs-number">6964</span> <span class="hljs-number">6963</span> <span class="hljs-number">756</span>c <span class="hljs-number">6</span>f75 <span class="hljs-number">732</span>e <span class="hljs-number">2041</span> <span class="hljs-number">6</span>e64
+<span class="hljs-attribute">2073</span> <span class="hljs-number">6</span>f6d <span class="hljs-number">6574</span> <span class="hljs-number">696</span>d <span class="hljs-number">6573</span> <span class="hljs-number">2</span>c20 <span class="hljs-number">7665</span> <span class="hljs-number">7279</span>
+<span class="hljs-attribute">2072</span> <span class="hljs-number">6172</span> <span class="hljs-number">656</span>c <span class="hljs-number">792</span>c <span class="hljs-number">2069</span> <span class="hljs-number">6</span>d70 <span class="hljs-number">6</span>f73 <span class="hljs-number">7369</span>
+<span class="hljs-attribute">626c</span> <span class="hljs-number">6520</span> <span class="hljs-number">7468</span> <span class="hljs-number">696</span>e <span class="hljs-number">6773</span> <span class="hljs-number">206</span>a <span class="hljs-number">7573</span> <span class="hljs-number">7420</span>
+<span class="hljs-attribute">6861</span> <span class="hljs-number">7070</span> <span class="hljs-number">656</span>e <span class="hljs-number">2061</span> <span class="hljs-number">6</span>e64 <span class="hljs-number">2077</span> <span class="hljs-number">6520</span> <span class="hljs-number">6361</span>
+<span class="hljs-attribute">6c6c</span> <span class="hljs-number">2074</span> <span class="hljs-number">6865</span> <span class="hljs-number">6</span>d20 <span class="hljs-number">6</span>d69 <span class="hljs-number">7261</span> <span class="hljs-number">636</span>c <span class="hljs-number">6573</span>
+<span class="hljs-attribute">2eaa</span> <span class="hljs-number">446</span>f <span class="hljs-number">6374</span> <span class="hljs-number">6</span>f72 <span class="hljs-number">2057</span> <span class="hljs-number">686</span>f </code></pre><p>En binærfil altså. Bruker jeg en Hex-editor til å tolke <em>bytes&#39;ene</em> ser jeg at det aller meste er strengene fra <code>doctorWho</code>-objektet. Resten er bytes utenfor normal ASCII-range.</p>
+<pre><code class="hljs">...Drama.Adventure.<span class="hljs-keyword">Sci-Fi..-...T
+</span>he Doctor....=We...re all storie
+s, in the end. <span class="hljs-keyword">Just </span>make it a go
+od one, eh?..The Doctor.....The 
+universe is <span class="hljs-keyword">big. </span>It...s vast <span class="hljs-keyword">and
+</span> complicated <span class="hljs-keyword">and </span>ridiculous. <span class="hljs-keyword">And
+</span> sometimes, very rarely, impossi
+<span class="hljs-keyword">ble </span>things <span class="hljs-keyword">just </span>happen <span class="hljs-keyword">and </span>we ca
+<span class="hljs-keyword">ll </span>them miracles..Doctor Who</code></pre><p>La oss se hvordan vi så leser inn igjen objektet fra filen og skriver ut et av sitatene:</p>
+<pre><code class="hljs"><span class="hljs-variable">using</span> <span class="hljs-punctuation">(</span><span class="hljs-variable">var</span> <span class="hljs-variable">stream</span> <span class="hljs-operator">=</span> <span class="hljs-built_in">File</span><span class="hljs-operator">.</span><span class="hljs-built_in">OpenRead</span><span class="hljs-punctuation">(</span><span class="hljs-operator">@</span><span class="hljs-string">&quot;c:\temp\packtest&quot;</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span>
+<span class="hljs-punctuation">{</span>
+    <span class="hljs-variable">TvSeries</span> <span class="hljs-variable">series</span> <span class="hljs-operator">=</span> <span class="hljs-variable">serializer</span><span class="hljs-operator">.</span><span class="hljs-variable">Unpack</span><span class="hljs-punctuation">(</span><span class="hljs-variable">stream</span><span class="hljs-punctuation">)</span><span class="hljs-operator">;</span>
+    <span class="hljs-variable">Console</span><span class="hljs-operator">.</span><span class="hljs-built_in">WriteLine</span><span class="hljs-punctuation">(</span><span class="hljs-variable">series</span><span class="hljs-operator">.</span><span class="hljs-variable">Quotes</span><span class="hljs-operator">.</span><span class="hljs-built_in">First</span><span class="hljs-punctuation">(</span><span class="hljs-punctuation">)</span><span class="hljs-operator">.</span><span class="hljs-built_in">Text</span><span class="hljs-punctuation">)</span><span class="hljs-operator">;</span>
+<span class="hljs-punctuation">}</span></code></pre><p>Enklere blir det ikke, og takket være <em>generics</em> jobber jeg kun med statiske typer.</p>
+<h2>..sammenlignet med JSON</h2>
+<p>Det jeg normalt gjør - fordi det er enkelt å gjøre og enkelt å forholde seg til - er å bruke JSON. Så la oss bruke <a href="http://www.nuget.org/packages/Newtonsoft.Json/">Json.NET</a> (som forresten er det aller mest populære prosjektet på NuGet):</p>
+<pre><code class="hljs">PM&gt; Install-<span class="hljs-keyword">Package</span> <span class="hljs-title">Newtonsoft.Json</span></code></pre><p>Og ikke glem usings...</p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> Newtonsoft.Json;</code></pre><p>Serialiser og skriv til fil:</p>
+<pre><code class="hljs">File.WriteAllText(@<span class="hljs-string">&quot;C:<span class="hljs-subst">\t</span>emp<span class="hljs-subst">\t</span>est.json&quot;</span>, 
+    JsonConvert.SerializeObject(doctorWho), 
+    Encoding.UTF8);</code></pre><p>Veldig enkelt. Men selv om JSON-strengen som lagres er så kompakt som man får den så blir dette dokumentet på 413 bytes, som er endel mer enn med MessagePack-formatet.</p>
+<p>La oss for kompletthets skyld også vise deserialisering:</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> json = File.ReadAllText(@<span class="hljs-string">&quot;C:\temp\test.json&quot;</span>, Encoding.UTF8);
+TvSeries <span class="hljs-built_in">fromJson</span> = JsonConvert.DeserializeObject&lt;TvSeries&gt;(json);
+<span class="hljs-built_in">Console</span>.WriteLine(<span class="hljs-built_in">fromJson</span>.Quotes.<span class="hljs-built_in">First</span>().<span class="hljs-built_in">Text</span>);</code></pre><h2>..sammenlignet med BSON</h2>
+<p>Hva med <a href="http://en.wikipedia.org/wiki/BSON">BSON</a> da? Binær-JSON er designet for å være et mere effektivt lagringsformat, og brukes for eksempel av mongoDB. Json.NET støtter også BSON, </p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> Newtonsoft.Json.Bson;</code></pre><p>.. så la oss teste dette:</p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> (<span class="hljs-built_in">var</span> stream = File.OpenWrite(@<span class="hljs-string">&quot;c:\temp\bsontest&quot;</span>))
+<span class="hljs-keyword">using</span> (<span class="hljs-built_in">var</span> writer = <span class="hljs-keyword">new</span> BsonWriter(stream))
+    <span class="hljs-keyword">new</span> JsonSerializer().Serialize(writer, doctorWho);</code></pre><p>Hva tror du - ble dette bedre? Neida, i dette tilfellet bruker BSON-serialisering mer plass enn JSON: 451 bytes. Wikipedia sier:</p>
+<blockquote>
+<p>In some cases, BSON will use more space than JSON..</p>
+</blockquote>
+<p>Deserialisering:</p>
+<pre><code class="hljs">using (<span class="hljs-keyword">var</span> stream = File.OpenRead(@<span class="hljs-string">&quot;c:\temp\bsontest&quot;</span>))
+using (<span class="hljs-keyword">var</span> reader = <span class="hljs-keyword">new</span> BsonReader(stream))
+{
+    <span class="hljs-keyword">var</span> fromBson = <span class="hljs-keyword">new</span> JsonSerializer()
+        .Deserialize&lt;TvSeries&gt;(reader);
+    <span class="hljs-built_in">Console</span>.WriteLine(fromBson.Quotes.<span class="hljs-built_in">First</span>().<span class="hljs-built_in">Text</span>);
+}</code></pre><h2>..sammenlignet med BinaryFormatter</h2>
+<p>.NET har en <em>ut-av-boksen</em> løsning for binærserialiseringen, som jeg har brukt for leeeeenge siden når jeg hadde behov for kompakt serialisering. Mer kompakt enn XML-serialisering vel å merke. For å bruke dette må vi først inkludere..</p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> <span class="hljs-keyword">System</span>.Runtime.Serialization.Formatters.<span class="hljs-keyword">Binary</span>;</code></pre><p>Og så kan vi bruke <code>BinaryFormatter</code> til å serialisere rett til en stream:</p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> (<span class="hljs-built_in">var</span> stream = File.OpenWrite(@<span class="hljs-string">&quot;c:\temp\binarytest&quot;</span>))
+    <span class="hljs-keyword">new</span> BinaryFormatter().Serialize(stream, doctorWho);</code></pre><p>Like enkelt som de andre eksemplene, men hva med resultatet? <code>binarytest</code>-filen ender på 816 bytes, nesten dobbelt så mye som for JSON. Grunnen er at halvparten av filen inneholder metadata om typen som er serialisert - blant annet hvilken assembly den kommer fra.</p>
+<p>En annen ulempe med å bruke dette er at formatet er proprietært - det kan i praksis kun brukes fra .NET, mens JSON og MessagePack er universelle formater.</p>
+<p>Men før vi går videre, la oss ta med hvordan vi deserialiserer:</p>
+<pre><code class="hljs">using (<span class="hljs-keyword">var</span> stream = File.OpenRead(@<span class="hljs-string">&quot;c:\temp\binarytest&quot;</span>))
+{
+    <span class="hljs-keyword">var</span> fromBinary = <span class="hljs-keyword">new</span> BinaryFormatter()
+        .Deserialize(stream) as TvSeries;
+    <span class="hljs-built_in">Console</span>.WriteLine(fromBinary.Quotes.<span class="hljs-built_in">First</span>().<span class="hljs-built_in">Text</span>);
+}</code></pre><p>Dette API&#39;et stammer fra før vi fikk generics i .NET, så her må jeg kaste objektet til typen <code>TvSeries</code>.</p>
+<h2>..sammenlignet med GZip</h2>
+<p>For et par år siden brukte jeg et open source prosjekt som heter <a href="https://github.com/mchidk/BinaryRage">BinaryRage</a>. Ja faktisk bidro jeg med et par commits også. BinaryRage er en <em>key/value-database</em> designet for å være <strong>ultrarask</strong>. Og en teknikk som brukes er å binærserialisere, men så <em>gzippe</em> bytes&#39;ene før de lagres til disk.</p>
+<p>Navnerommet du trenger er:</p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> <span class="hljs-keyword">System</span>.IO.Compression;</code></pre><p>Og så gjør du noe sånt som dette:</p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> (<span class="hljs-built_in">var</span> stream = File.OpenWrite(@<span class="hljs-string">&quot;c:\temp\compresstest&quot;</span>))
+<span class="hljs-keyword">using</span> (<span class="hljs-built_in">var</span> zip = <span class="hljs-keyword">new</span> GZipStream(stream, CompressionLevel.Optimal))
+    <span class="hljs-keyword">new</span> BinaryFormatter().Serialize(zip, doctorWho);</code></pre><p>Jeg wrapper altså en filstrøm med en gzipstrøm, og så serialiserer jeg til denne. Så hvor mye bedre blir dette?</p>
+<p>For eksempel-objektet mitt ender vi opp med en fil på 484 bytes. Det er jo mye bedre enn uten komprimering, men kanskje overraskende nok dårligere enn JSON!</p>
+<p>Ja, ja. Vi må likevel se hvordan vi deserialiserer:</p>
+<pre><code class="hljs"><span class="hljs-keyword">using</span> (<span class="hljs-built_in">var</span> stream = File.OpenRead(@<span class="hljs-string">&quot;c:\temp\compresstest&quot;</span>))
+<span class="hljs-keyword">using</span> (<span class="hljs-built_in">var</span> zip = <span class="hljs-keyword">new</span> GZipStream(stream, CompressionMode.Decompress))
+{
+    <span class="hljs-built_in">var</span> fromBinary = <span class="hljs-keyword">new</span> BinaryFormatter()
+        .Deserialize(zip) <span class="hljs-keyword">as</span> TvSeries;
+    Console.WriteLine(fromBinary.Quotes.First().Text);
+}</code></pre><p>De ulike formatene, side ved side:</p>
+<img src="/uploads/2015/05/msgpack_bytes.png" alt="Sammenligning av serialiseringsformater" />
+
+<h2>Andre alternativ</h2>
+<p>Det finnes noen andre, populære serialiseringsformat med samme bruksområde som MessagePack, men som jeg ikke har noe særlig erfaring med. Jeg tenker på <strong><a href="https://developers.google.com/protocol-buffers/">Protocol Buffers</a></strong> utviklet av Google, og <strong><a href="http://thrift.apache.org/">Apache Thrift</a></strong>.</p>
+<p>Det jeg ikke liker med disse er at de (såvidt jeg har forstått) baserer seg på en skjema-definisjon og kodegenerering. Dette gir sikkert god kontroll og fleksibilitet på formatet, men tilfører også kompleksitet. MessagePack derimot virker nesten like enkelt å bruke som JSON, med unntak av at resultatet ikke er særlig lesbart for mennesker.</p>
+<h2>Konsumere objektet med et annet språk</h2>
+<p>En del av lovnaden med MessagePack er at dataene skal kunne brukes på tvers av ulike platformer og språk. Så la meg til slutt teste det. Jeg velger Ruby denne gangen, og installerer en MessagePack gem:</p>
+<pre><code class="hljs">$ gem <span class="hljs-keyword">install</span> msgpack</code></pre><p>Nå kan jeg lese filen jeg serialiserte til fra C#, pakke den opp, og se hva jeg får ut:</p>
+<pre><code class="hljs"><span class="hljs-built_in">require</span> <span class="hljs-string">&#x27;msgpack&#x27;</span>
+msg = File.<span class="hljs-built_in">read</span> <span class="hljs-string">&#x27;c:\\temp\\packtest&#x27;</span>
+obj = MessagePack.<span class="hljs-built_in">unpack</span> msg</code></pre><p>Jeg har her ikke noe objekttype jeg deserialiserer til - og såvidt jeg kan se støtter ikke dette biblioteket deserialisering til definerte typer heller. I stedet får jeg ut et array med alle verdiene, omtrent som dette:</p>
+<pre><code class="hljs">[[<span class="hljs-string">&quot;Drama&quot;</span>, <span class="hljs-string">&quot;Adventure&quot;</span>, <span class="hljs-string">&quot;Sci-Fi&quot;</span>],
+<span class="hljs-built_in"> 813,</span>
+ [[<span class="hljs-string">&quot;The Doctor&quot;</span>,
+<span class="hljs-built_in">   13,</span>
+<span class="hljs-built_in">   5,</span>
+   <span class="hljs-string">&quot;We\u2019re all stories, in the end. Just make it a good one, eh?&quot;</span>],
+  [<span class="hljs-string">&quot;The Doctor&quot;</span>,
+<span class="hljs-built_in">   12,</span>
+<span class="hljs-built_in">   5,</span>
+   <span class="hljs-string">&quot;The universe is big. It\u2019s vast and complicated and .......&quot;</span>]],
+ <span class="hljs-string">&quot;Doctor Who&quot;</span>]</code></pre><p>Her må jeg ha kjennskap til hvordan MsgPack.Cli serialiserte objektmodellen min for å vite hvordan jeg skal bruke resultatet. Det er her Protocol Buffers er bedre, fordi man definerer et skjema som kan brukes til å generere kode i både C# og Ruby. JSON er også bedre fordi skjemaet (feltnavn) følger med dataene. Men i mange tilfeller - hvor antall bytes er essensielt - vil MessagePack være helt greit å forholde seg til... tenker jeg...</p>
+<p>Eksempelet mitt er selvfølgelig alt for banalt til å gi et bastant svar på hva som er best i en hvilken som helst kontekst. Når man står overfor en reell case hvor ytelse er viktig så bør man eksperimentere og måle hva som er best i det konkrete tilfellet.</p>
+<p>Men neste gang <em>jeg</em> skal cache data i for eksempel Redis, eller sende mange meldinger raskt over en meldingskø, så kommer jeg nok sikkert til å forsøke MessagePack - for dette likte jeg :)</p>
+<p>Gjorde du?</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

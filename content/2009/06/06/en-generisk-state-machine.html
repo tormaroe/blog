@@ -1,0 +1,211 @@
+---
+title: En generisk state machine
+link: http://blog.kjempekjekt.com/2009/06/06/en-generisk-state-machine/
+layout: post
+date: 2009-06-06 23:46:47Z
+tags:
+  - OO Patterns
+  - C#
+---
+<a title="Turnstile by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3600035253/"><img style="margin-bottom: 10px; margin-left: 15px" height="168" alt="Turnstile" src="http://farm4.static.flickr.com/3599/3600035253_63876c36f6_o.jpg" width="160" align="right" border="0" /></a><strong><a href="http://en.wikipedia.org/wiki/Finite_state_machine">Finite state machines (FSM)</a></strong>, tilstandsmaskiner på norsk, er blant de mest kraftige abstraksjonene vi programmerere har tilgjengelig, og har et stort og variert bruksområde. FSM gir oss en enkel og elegant måte å utforske og definere oppførselen til komplekse systemer, og implementasjonen er både enkel å fortså og enkel å modifisere. I boken sin <em>Agile Principles, Patterns, and Practises in C#</em> sier Robert C. Martin følgende om dette:
+<p style="margin-left: 20px"><em><strong>"Finite state machines are underutilized. In many scenarios their use would help to create cleaner, simpler, more flexible, and more accurate code."</strong></em></p>
+I den enkleste formen er en state machine gjerne implementert som en eller flere switch/case statements - i mer komplekse løsninger kan man bruke <a href="http://en.wikipedia.org/wiki/State_pattern">STATE pattern</a>. I .NET 3.0 fikk vi også <a href="http://msdn.microsoft.com/en-us/netframework/aa663328.aspx">Windows Workflow Foundation</a>, hvor vi kan designe <em>State Machine Workflows</em>.
+
+Men alle disse alternativene er mere komplekse enn å lage en FSM basert på en <em>overgangstabell</em>. I denne artikkelen designer jeg en generisk FSM-motor som kan gjenbrukes i mange scenarier. For å illustrere hvordan den virker vil jeg implementere tilstandsmaskinen som finnes i en typisk passeringsautomat - slike som man finner på T-banestasjoner, flytoget osv.
+
+I diagrammet under ser du tilstandene (states), overgangene (transitions), hendelsene som kan inntreffe (transition conditions) og det systemet skal utføre når det går fra en tilstand til en annen (actions) i en slik passeringsautomat.
+<p style="text-align: center"><a title="FSM_turnstile by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3600110655/"><img height="302" alt="FSM_turnstile" src="http://farm4.static.flickr.com/3372/3600110655_869b20d212_o.png" width="479" border="0" /></a></p>
+Ta for eksempel en automat som i utgangspunktet er <em>låst</em>. Hvis noen putter en mynt på automaten, vil systemet kalle en rutine for å låse opp porten, og endre statusen til å være <em>ulåst</em>. Når den så registrerer at noen passerer porten, vil den kalle rutinen for å låse porten, og returnere til den låste tilstanden. Hvis noen passerer mens systemet er i låst tilstand, vil automaten kalle alarm-rutinen og forbli i låst tilstand.
+
+Skulle noen finne på å putte på penger mens systemet er ulåst, vil automaten si "tusen takk", og forbli i ulåst tilstand.
+
+Det første jeg vil gjøre er å opprette et par enumerasjoner som beskriver systemets tilstander og hendelser:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">    9</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">enum</span> <span style="color: #2b91af">State</span> { <span style="color: #f8ffc6">LOCKED</span>, <span style="color: #f8ffc6">UNLOCKED</span> }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   10</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">enum</span> <span style="color: #2b91af">Event</span> { <span style="color: #f8ffc6">COIN</span>, <span style="color: #f8ffc6">PASS</span> }</p>
+</div>
+Jeg utviklet selvsagt automaten vha. TDD, og her følger oppsettet av testklassen, som viser hvordan en <em>StateMashine</em> opprettes og konfigureres:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">    9</span> <span style="font-weight: bold; color: #eaeaac">using</span> <span style="color: #f0dfaf">StateMachine</span> = <span style="color: #f8ffc6">Marosoft</span>.<span style="color: #f8ffc6">Generics</span>.<span style="color: #f0dfaf">StateMachine</span><<span style="color: #2b91af">State</span>, <span style="color: #2b91af">Event</span>>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   10</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   11</span> [<span style="color: #f0dfaf">TestFixture</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   12</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: #f0dfaf">TestGenericStateMachine</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   13</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   14</span>     <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #f0dfaf">StateMachine</span> <span style="color: #f8ffc6">_stateMachine</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   15</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   16</span>     <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">_unlockCalled</span> = <span style="font-weight: bold; color: #eaeaac">false</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   17</span>     <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">_alarmCalled</span> = <span style="font-weight: bold; color: #eaeaac">false</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   18</span>     <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">_thankYouCalled</span> = <span style="font-weight: bold; color: #eaeaac">false</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   19</span>     <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">_lockActionCalled</span> = <span style="font-weight: bold; color: #eaeaac">false</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   20</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   21</span>     <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">Action</span> <span style="color: #f8ffc6">unlock</span> = () => <span style="color: #f8ffc6">_unlockCalled</span> = <span style="font-weight: bold; color: #eaeaac">true</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   22</span>     <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">Action</span> <span style="color: #f8ffc6">alarm</span> = () => <span style="color: #f8ffc6">_alarmCalled</span> = <span style="font-weight: bold; color: #eaeaac">true</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   23</span>     <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">Action</span> <span style="color: #f8ffc6">thankYou</span> = () => <span style="color: #f8ffc6">_thankYouCalled</span> = <span style="font-weight: bold; color: #eaeaac">true</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   24</span>     <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">Action</span> <span style="color: #f8ffc6">lockAction</span> = () => <span style="color: #f8ffc6">_lockActionCalled</span> = <span style="font-weight: bold; color: #eaeaac">true</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   25</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   26</span>     [<span style="color: #f0dfaf">SetUp</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   27</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">SetUp</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   28</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   29</span>         <span style="color: #f8ffc6">_stateMachine</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">StateMachine</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   30</span>         <span style="color: lime">// Equivalent to generic specification due to using statement</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   31</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   32</span>         <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">AddTransition</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>, <span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">COIN</span>, <span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>, <span style="color: #f8ffc6">unlock</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   33</span>         <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">AddTransition</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>, <span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">PASS</span>, <span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>, <span style="color: #f8ffc6">alarm</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   34</span>         <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">AddTransition</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>, <span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">COIN</span>, <span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>, <span style="color: #f8ffc6">thankYou</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   35</span>         <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">AddTransition</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>, <span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">PASS</span>, <span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>, <span style="color: #f8ffc6">lockAction</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   36</span>     }</p>
+</div>
+Legg merke til det spesielle <em>using</em> direktivet på linje 9. Dette er ikke et krav, men lar meg definere en StateMachine-variabel på linje 14 og initiere den på linje 29 uten å spesifisere hvilke enumerasjoner som skal brukes. Dette er et generelt tips om hvordan man kan gjøre kode som bruker mye <em>generics</em> mer lesbar.
+
+Linje 16 til 24 setter opp fire dummy-actions som skal brukes når jeg tester tilstandsmaskinen. Det mest interessante kommer først på linje 32, hvor jeg begynner å definere tilstandsovergangene.
+
+Du kan lese linje 32 på følgende måte: <em>Hvis nåværende tilstand er LOCKED, og noen putter på en COIN, så skal tilstanden endres til UNLOCKED, og "unlock" skal kjøres.</em>
+
+Den første testen jeg trenger sjekker bare den initielle tilstanden, som jeg satte i konstruktøren. Testen er ikke mer enn én linje:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">   40</span> [<span style="color: #f0dfaf">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   41</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">InitialConditions</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   42</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   43</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">AreEqual</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>, <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   44</span> }</p>
+</div>
+Deretter skriver jeg tester for hver av de fire mulige overgangene. I hver test setter jeg først gjeldende status, noe som bare er aktuelt i enhetstestene - i virkelig bruk vil man ikke overstyre status på den måten. Deretter sender jeg inn et event til tilstandsmaskinen, før jeg sjekker ny status og om riktig action har blitt kalt (ref oppsettet av test-klassen). Her er testene:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">   46</span> [<span style="color: #f0dfaf">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   47</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">CoinInLockedState</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   48</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   49</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span> = <span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   50</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">HandleEvent</span>(<span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">COIN</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   51</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">AreEqual</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>, <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   52</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">IsTrue</span>(<span style="color: #f8ffc6">_unlockCalled</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   53</span> }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   54</span> [<span style="color: #f0dfaf">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   55</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">CoinInUnlockedState</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   56</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   57</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span> = <span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   58</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">HandleEvent</span>(<span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">COIN</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   59</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">AreEqual</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>, <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   60</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">IsTrue</span>(<span style="color: #f8ffc6">_thankYouCalled</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   61</span> }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   62</span> [<span style="color: #f0dfaf">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   63</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">PassInLockedState</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   64</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   65</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span> = <span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   66</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">HandleEvent</span>(<span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">PASS</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   67</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">AreEqual</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>, <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   68</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">IsTrue</span>(<span style="color: #f8ffc6">_alarmCalled</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   69</span> }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   70</span> [<span style="color: #f0dfaf">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   71</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">PassInUnlockedState</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   72</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   73</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span> = <span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   74</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">HandleEvent</span>(<span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">PASS</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   75</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">AreEqual</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>, <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">State</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   76</span>     <span style="color: #f0dfaf">Assert</span>.<span style="color: #f8ffc6">IsTrue</span>(<span style="color: #f8ffc6">_lockActionCalled</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   77</span> }</p>
+</div>
+Nå bør du skjønne hvordan StateMachine skal brukes, og jeg er klar for å vise hvordan den er implementert. Her er første bit; StateMachine har en generisk definisjon som forventer to typer som skal representere henholdsvis statuser og eventer: Jeg har kalt dem TState og TEvent. Construktøren tar inn initiell status:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">    9</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: #f0dfaf">StateMachine</span><<span style="color: #f8ffc6">TState</span>, <span style="color: #f8ffc6">TEvent</span>></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   10</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   11</span>     <span style="color: gray">///</span><span style="color: #7a987a"> </span><span style="color: gray" /></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   12</span>     <span style="color: gray">///</span><span style="color: #7a987a"> Setter is left internal for testing purposes</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   13</span>     <span style="color: gray">///</span><span style="color: #7a987a"> </span><span style="color: gray" /></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   14</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">TState</span> <span style="color: #f8ffc6">State</span> { <span style="font-weight: bold; color: #eaeaac">get</span>; <span style="font-weight: bold; color: #eaeaac">internal</span> <span style="font-weight: bold; color: #eaeaac">set</span>; }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   15</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   16</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">StateMachine</span>(<span style="color: #f8ffc6">TState</span> <span style="color: #f8ffc6">initialState</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   17</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   18</span>         <span style="color: #f8ffc6">State</span> = <span style="color: #f8ffc6">initialState</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   19</span>     }</p>
+</div>
+Videre inneholder klassen en liste med overganger (linje 21). En overgang - <em>Transition</em> - er en intern klasse i StateMachine (linje 23). Det er ikke så ofte jeg bruker private klasser i andre klasser, men her passet det fint. AddTransition-metoden (linje 31) som jeg brukte i SetUp i testklassen oppretter en ny Transition og legger den til i listen.
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">   21</span> <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #f0dfaf">List</span><<span style="color: #f0dfaf">Transition</span>> <span style="color: #f8ffc6">_transitions</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">List</span><<span style="color: #f0dfaf">Transition</span>>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   22</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   23</span> <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: #f0dfaf">Transition</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   24</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   25</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">TState</span> <span style="color: #f8ffc6">StartState</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   26</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">TEvent</span> <span style="color: #f8ffc6">Trigger</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   27</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">TState</span> <span style="color: #f8ffc6">EndState</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   28</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #2b91af">Action</span> <span style="color: #f8ffc6">Action</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   29</span> }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   30</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   31</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">AddTransition</span>( <span style="color: #f8ffc6">TState</span> <span style="color: #f8ffc6">startState</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   32</span>                             <span style="color: #f8ffc6">TEvent</span> <span style="color: #f8ffc6">trigger</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   33</span>                             <span style="color: #f8ffc6">TState</span> <span style="color: #f8ffc6">endState</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   34</span>                             <span style="color: #2b91af">Action</span> <span style="color: #f8ffc6">action</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   35</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   36</span>     <span style="color: #f8ffc6">_transitions</span>.<span style="color: #f8ffc6">Add</span>(<span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">Transition</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   37</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   38</span>         <span style="color: #f8ffc6">StartState</span> = <span style="color: #f8ffc6">startState</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   39</span>         <span style="color: #f8ffc6">Trigger</span> = <span style="color: #f8ffc6">trigger</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   40</span>         <span style="color: #f8ffc6">EndState</span> = <span style="color: #f8ffc6">endState</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   41</span>         <span style="color: #f8ffc6">Action</span> = <span style="color: #f8ffc6">action</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   42</span>     });</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   43</span> }</p>
+</div>
+Og da gjenstår bare <em>HandleEvent</em>-metoden, som er gjengitt nedenfor. Den finner riktig overgang basert på event-parameteren og gjenldende status. Til dette bruker jeg <em>Find</em>-metoden til List. Hvis en overgang finnes, brukes den til å sette ny status, og riktig action kalles (linje 55 og 56).
+
+Hvis et ugyldig event sendes inn for gitt status (ikke mulig for denne passeringsautomaten, men kan tenkes for andre tilstandsmaskiner), så kaster jeg et ArgumentException.
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">   45</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">HandleEvent</span>(<span style="color: #f8ffc6">TEvent</span> <span style="color: #f8ffc6">e</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   46</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   47</span>     <span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">transitionToPerform</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   48</span>         = <span style="color: #f8ffc6">_transitions</span>.<span style="color: #f8ffc6">Find</span>((<span style="color: #f8ffc6">transition</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   49</span>         => <span style="color: #f8ffc6">transition</span>.<span style="color: #f8ffc6">StartState</span>.<span style="color: #f8ffc6">Equals</span>(<span style="color: #f8ffc6">State</span>) && <span style="color: #f8ffc6">transition</span>.<span style="color: #f8ffc6">Trigger</span>.<span style="color: #f8ffc6">Equals</span>(<span style="color: #f8ffc6">e</span>));</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   50</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   51</span>     <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">transitionToPerform</span> == <span style="font-weight: bold; color: #eaeaac">null</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   52</span>         <span style="font-weight: bold; color: #eaeaac">throw</span> <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">ArgumentException</span>(</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   53</span>             <span style="font-weight: bold; color: #eaeaac">string</span>.<span style="color: #f8ffc6">Format</span>(<span style="color: #c89191">"Can not handle event {0} in state {1}."</span>, <span style="color: #f8ffc6">e</span>, <span style="color: #f8ffc6">State</span>));</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   54</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   55</span>     <span style="color: #f8ffc6">State</span> = <span style="color: #f8ffc6">transitionToPerform</span>.<span style="color: #f8ffc6">EndState</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   56</span>     <span style="color: #f8ffc6">transitionToPerform</span>.<span style="color: #f8ffc6">Action</span>.<span style="color: #f8ffc6">Invoke</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   57</span> }</p>
+</div>
+Min StateMachine er en forbedring av Robert C. Martins <em>Transition Tables</em>-eksempel fra boken jeg refererte. Ved å bruke <em>generics</em> har jeg gjort den gjenbrukbar. Når du trenger en tilstandsmaskin behøver du bare definere tilstandene og eventene, og konfigurere StateMachine med de riktige overgangene.
+
+<strong>Det er også verdt å merke seg</strong> at du ikke er begrenset til å bruke enumerasjoner til å definere tilstander og/eller eventer; du kan like gjenre bruke klasser, slik som jeg har gjort her:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">   12</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">abstract</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: #f0dfaf">TurnstileState</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   13</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   14</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">override</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">Equals</span>(<span style="font-weight: bold; color: #eaeaac">object</span> <span style="color: #f8ffc6">obj</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   15</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   16</span>         <span style="font-weight: bold; color: #eaeaac">return</span> <span style="font-weight: bold; color: #eaeaac">base</span>.<span style="color: #f8ffc6">GetType</span>().<span style="color: #f8ffc6">Equals</span>(<span style="color: #f8ffc6">obj</span>.<span style="color: #f8ffc6">GetType</span>());</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   17</span>     }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   18</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">override</span> <span style="font-weight: bold; color: #eaeaac">int</span> <span style="color: #f8ffc6">GetHashCode</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   19</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   20</span>         <span style="font-weight: bold; color: #eaeaac">return</span> <span style="font-weight: bold; color: #eaeaac">base</span>.<span style="color: #f8ffc6">GetType</span>().<span style="color: #f8ffc6">GetHashCode</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   21</span>     }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   22</span> }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   23</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: #f0dfaf">LockedState</span> : <span style="color: #f0dfaf">TurnstileState</span> { }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   24</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: #f0dfaf">UnlockedState</span> : <span style="color: #f0dfaf">TurnstileState</span> { }</p>
+</div>
+Den abstrakte klassen <em>TurnstileState</em> (turnstile er engelsk for passeringsautomat) definerer et interface (et tomt et sådan) for en tilstand. LockedState og UnlockedState arver fra TurnstileState, og erstatter Event.LOCKED og Event.UNLOCKED. Jeg har overstyrt Equals fordi HandleEvent bruker Equals til å finne riktig overgang (merk at man også alltid skal overstyre GetHashCode når man overstyrer Equals).
+
+<strong>Flytende konfigurering..</strong>
+
+Til slutt gjorde jeg en liten forbedring i hvordan jeg oppretter overgangene. Flytende interfacer er veldig populært for tiden, og kan gjøre kode mer lesbar. Sammenlign SetUp-metoden nedenfor med den jeg presenterte tidligere, og se om du er enig i at dette er bedre.
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">   24</span> [<span style="color: #f0dfaf">SetUp</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   25</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">SetUp</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   26</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   27</span>     <span style="color: #f8ffc6">_stateMachine</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">StateMachine</span><<span style="color: #2b91af">State</span>, <span style="color: #2b91af">Event</span>>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   28</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   29</span>     <span style="color: #f8ffc6">_stateMachine</span>.<span style="color: #f8ffc6">Configure</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   30</span>         .<span style="color: #f8ffc6">Given</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   31</span>             .<span style="color: #f8ffc6">When</span>(<span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">COIN</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   32</span>                 .<span style="color: #f8ffc6">ThenSetState</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>).<span style="color: #f8ffc6">AndRun</span>(<span style="color: #f8ffc6">unlock</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   33</span>             .<span style="color: #f8ffc6">When</span>(<span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">PASS</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   34</span>                 .<span style="color: #f8ffc6">ThenSetState</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>).<span style="color: #f8ffc6">AndRun</span>(<span style="color: #f8ffc6">alarm</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   35</span>         .<span style="color: #f8ffc6">Given</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   36</span>             .<span style="color: #f8ffc6">When</span>(<span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">COIN</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   37</span>                 .<span style="color: #f8ffc6">ThenSetState</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">UNLOCKED</span>).<span style="color: #f8ffc6">AndRun</span>(<span style="color: #f8ffc6">thankYou</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   38</span>             .<span style="color: #f8ffc6">When</span>(<span style="color: #2b91af">Event</span>.<span style="color: #f8ffc6">PASS</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   39</span>                 .<span style="color: #f8ffc6">ThenSetState</span>(<span style="color: #2b91af">State</span>.<span style="color: #f8ffc6">LOCKED</span>).<span style="color: #f8ffc6">AndRun</span>(<span style="color: #f8ffc6">lockAction</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   40</span> }</p>
+</div>
+Da jeg implementerte det som trengtes for å få denne setup-metoden til å kjøre oppdaget jeg noe ganske morsomt. Konfigurerings-objektet jeg opprettet er faktisk en tilstandmaskin - en Finite State Machine. Begynner du først å tenke på denne måten så oppdager du stadig nye tilfeller hvor FSM-teknikken kan benyttes.
+
+Tilstandsmaskiner kan gjøre koden din enklere å forstå, vedlikeholde og endre, og bør ikke undervurderes. De fjerner "spagetti", og lar dine øvrige klasser konsentrere seg om sine primære ansvar. Tenk gjennom hvilke tilstander koden din kan ha neste gang du programmerer, og vurder å bruk en tilstandsmaskin for å forenkle koden.
+
+<strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=Fluent" rel="tag">Fluent</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Patterns" rel="tag">Patterns</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Robert+C.+Martin" rel="tag">Robert C. Martin</a>

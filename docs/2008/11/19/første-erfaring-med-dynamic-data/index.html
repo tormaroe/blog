@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Databaser,Webutvikling">
+
+    <title>Første erfaring med Dynamic Data</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Første erfaring med Dynamic Data</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 19. november 2008</small> 
+            <a href="/tags/databaser"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Databaser</span></a>
+          
+            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+          </p>
+          <p>I Contiki bruker vi en velprøv metode tuftet på velkjent teknologi for å holde rede på våre kunder og deres installasjoner av vårt produkt - nemlig en flatfil i Excel.</p>
+<p>Nå har endelig noen blitt så trøtte av denne løsningen at man har bestem at noe må gjøres. Jon Arild kom da i dag med den lure ideen at vi kunne bruke Dynamic Data (<a href="/2008/09/10/wpf-eller-silverlight-presentation-model-kanonbra-design/">tidligere omtalt her</a>) til å smelle opp en rask webløsning som publisere rdataene og gir editeringsmuligheter til dem som trenger dem. Så her er hva vi gjorde, og hvor lang tid det tok:</p>
+<ol>
+<li>Analyserte Excel-filen, og identifiserte hvordan den burde brytes opp i databasetabeller. <strong>15 minutter</strong>.</li>
+<li>Forbedringer av Excel-filen for å gjøre det enklere å generere en database fra den. Omtrent <strong>60 minutter</strong>.</li>
+<li>Importerte Excel-filen til en Access database. Et tungvindt grensesnitt og merkelig oppførsel gjorde at dette tok omtrent <strong>45 minutter</strong>.</li>
+<li>Exporterte Access-basen til SQL server. <strong>30 sekunder</strong>.</li>
+<li>Fikset opp i rare avgjørelser utført av eksporten. <strong>2 minutter</strong>.</li>
+<li>Opprettet en ASP.NET DybamicData Web Site. Nesten <strong>10 sekunder</strong>.</li>
+<li>Opprettet en LINQ to SQL modell basert på basen. <strong>12 sekunder</strong>.</li>
+<li>Konfigurasjon av DynamicData-løsningen. Omtrent <strong>ett minutt</strong>. (Måtte lete litt nemlig. Trodde den ene linjen som skulle endres befant seg i web.config, men den var i stedet i global.asax.)</li>
+<li>Konfigurere siten til å bruke Forms based authentication. La til bruker, roller og tilgangsrettigheter. <strong>2 minutter</strong>.</li>
+<li>Opprettet en spliter ny påloggings-side. "Add new item" + drag'n'drop av login-kontroll tok kanskje <strong>15 sekunder</strong>.</li>
+</ol>
+<p>Vi hadde egentlig en fungerende løsning etter punkt 8, men vi ønsket også en uathentiseringsløsning, så da måtte vi jobbe litt til. Men det som tok tid var altså å massere dataene våre for å få en fornuftig base. Selve løsningen, med fullstendig CRUD GUI for hele basen, tok under fire minutter å sette opp.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

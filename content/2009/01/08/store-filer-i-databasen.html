@@ -1,0 +1,21 @@
+---
+title: Store filer i databasen
+link: http://blog.kjempekjekt.com/2009/01/08/store-filer-i-databasen/
+layout: post
+date: 2009-01-08 08:53:35Z
+tags:
+  - Jobb
+  - Databaser
+  - WTF
+---
+<p>For tiden er jeg opptatt med å løse noen problemer vi har i produktet vårt relatert til dokumenthåndtering. Vi lagrer dokumentene som <em>blobber</em> i databasen, og de siste dagene har jeg kommet over flere eksempler på hvor lett det er å gjøre ting feil i slike senarier.</p>
+<p><strong>WTF 1:<br />
+</strong></p>
+<p>For å håndtere store filer er vi nødt til å splitte dem opp - vi kan <em>ikke </em>behandle de komplette filene i minne. Før vi splitter opp ønsker vi å finne størrelsen på filen. Og hva gjør vi da? Jo, vi laster hele filen i minne og sjekker lengden!</p>
+<p>Det verste er at filstørrelsen allerede finnes lagret i et eget felt i basen, men av en eller annen grunn stoler vi ikke helt på denne, og velger å gjøre det på den kostbare måten som får serveren til å knele for store filer.</p>
+<p><strong>WTF 2:<br />
+</strong></p>
+<p>Et annet, morsomt eksempel vi kom over i går var koden for å slettemarkere en fil. Alt som skal gjøres er å <em>flippe</em> en bit fra true til false (eller var det muligens motsatt?). Men for å gjøre det laster vi først hele raden fra databasen, som desverre også inkluderer fil-blobben. Så hvis noen for eksempel vil slettemarkere en fil på 100MB, så leser vi først 100MB fra databasen før vi endrer vår bit fra 1 til 0 og oppdaterer.</p>
+<p>Nå må ingen føle seg <em>støtt</em> av disse historiene. Alle kan gjøre slike ting fra tid til annen - de fleste, om ikke alle, gjør slike ting fra tid til annen. Men i et stort prosjekt i stadig utvikling er det viktig å sette av tid til å fange opp og jobbe med problemer som disse - spesielt når det dreier seg om produktets absolutte kjernefunksjonalitet.</p>
+<p>Jeg garanterer en stor forbedring i neste patch!
+</p>

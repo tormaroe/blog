@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Polyglot">
+
+    <title>Programmeringsparadigmer – ulike måter å tenke på</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Programmeringsparadigmer – ulike måter å tenke på</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 25. mars 2010</small> 
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          </p>
+          <p>Jeg har tidligere snakket om betydningen av å <a href="/2010/03/03/du-m-beherske-et-dynamisk-sprk/">beherske både statiske og dynamiske språk</a>. En annen akse blivende <a href="/2010/03/02/jeg-polyglot/">polygloter</a> er nødt til å se nærmere på er det vi kaller ulike programmeringsparadigmer.</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="paradigme_tre" border="0" alt="paradigme_tre" src="/uploads/2010/03/paradigme_tre.png" width="502" height="374"> </p>
+<p align="left"><em>(Språk-treet er selvfølgelig ikke komplett, og kategoriseringen er åpen for diskusjon.)</em></p>
+<p>Om du har omtrent samme bakgrunn som meg er du mest kjent med de imperative språkene, som dominerer software-bransjen. Imperativ (eller <em>befalende</em> om du vil) betyr at vi forteller datamaskinen detaljert hva den skal gjøre - vi manipulerer variabler for å oppnå ønsker resultat. </p>
+<p>Jeg tror det er veldig viktig at vi også studerer og lærer oss å beherske de mere deklerative (eller <em>beskrivende</em>) språkene. De tvinger oss til å tenke ganske anderledes når vi skal løse problemer. Om vi til syvende og sist likevel benytter oss av et imperativt språk så vil det vi lærer gi oss nye perspektiv som hjelpe oss til å løse oppgavene våre bedre. Dessuten er det mange språk som befinner seg i flere kategorier samtidig, som støtter f.eks. både objektorientering <em>og</em> funksjonsorientering (som alltid er det glidende overganger).</p>
+<p>For å illustrere forskjellene mellom et utvalg paradigmer skal vi se på ulike løsninger for å finne den <strong>største, felles divisoren</strong> mellom to tall (heretter kalt <strong>gcd</strong> - <a href="http://en.wikipedia.org/wiki/Greatest_common_divisor">Greatest common divisor</a>). Og vi begynner med det vi kjenner best…</p>
+<h4>Imperativ programmering</h4>
+<div style="background-color: #141414; padding-left: 10px; margin-bottom: 20px; color: #f8f8f8"><font face="monospace"><span style="background-color: #141414"><font color="#665f57">1 </font></span><font color="#665f57">// GCD implementert i C</font><br><span style="background-color: #141414"><font color="#665f57">2 </font></span><font color="#9b859d"><b>int</b></font> gcd(<font color="#9b859d"><b>int</b></font> a, <font color="#9b859d"><b>int</b></font> b) {<br><span style="background-color: #141414"><font color="#665f57">3 </font></span>&nbsp; <font color="#cda869"><b>while</b></font> (a != b) {<br><span style="background-color: #141414"><font color="#665f57">4 </font></span>&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>if</b></font> (a &gt; b) a = a - b;<br><span style="background-color: #141414"><font color="#665f57">5 </font></span>&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>else</b></font> b = b - a;<br><span style="background-color: #141414"><font color="#665f57">6 </font></span>&nbsp; }<br><span style="background-color: #141414"><font color="#665f57">7 </font></span>&nbsp; <font color="#cda869"><b>return</b></font> a;<br><span style="background-color: #141414"><font color="#665f57">8 </font></span>}<br></font></div>
+<p>Den imperative algoritmen er for anledningen implementert i C, og illustrerer hvordan befalende kode fungerer: </p>
+<p style="margin-left: 20px"><em>For å beregne gcd av a og b, undersøk om a og b er like. Hvis så er tilfelle, returner en av dem. Hvis ikke, bytt den største av dem med forskjellen mellom dem og repeter.</em></p>
+<h4>Funksjonsbasert programmering</h4>
+<div style="background-color: #141414; padding-left: 10px; margin-bottom: 20px; color: #f8f8f8"><font face="monospace"><span style="background-color: #141414"><font color="#665f57">1 </font></span><font color="#665f57">; GCD implementert i Scheme</font><br><span style="background-color: #141414"><font color="#665f57">2 </font></span><font color="#cda869">(</font><font color="#cda869"><b>define</b></font>&nbsp;<font color="#7587a6">gcd</font><br><span style="background-color: #141414"><font color="#665f57">3 </font></span>&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>lambda</b></font>&nbsp;<font color="#cda869">(</font>a b<font color="#cda869">)</font><br><span style="background-color: #141414"><font color="#665f57">4 </font></span>&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>cond</b></font>&nbsp;<font color="#cda869">((</font><font color="#7587a6">=</font> a b<font color="#cda869">)</font> a<font color="#cda869">)</font><br><span style="background-color: #141414"><font color="#665f57">5 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">((</font><font color="#7587a6">&gt;</font> a b<font color="#cda869">)</font>&nbsp;<font color="#cda869">(</font><font color="#7587a6">gcd</font>&nbsp;<font color="#cda869">(</font><font color="#7587a6">-</font> a b<font color="#cda869">)</font> b<font color="#cda869">))</font><br><span style="background-color: #141414"><font color="#665f57">6 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>else</b></font>&nbsp;<font color="#cda869">(</font><font color="#7587a6">gcd</font>&nbsp;<font color="#cda869">(</font><font color="#7587a6">-</font> b a<font color="#cda869">)</font> a<font color="#cda869">)))))</font><br></font></div>
+<p>I et funksjonelt språk som Scheme legger man vekt på det matematiske forholdet mellom input og output. Lambda-nøkkelordet introduserer en definisjon av en funksjon, og (a b) er funksjonens argumentliste. "cond" er en slags switch/case-konstruksjon. (- a b) er et kall til metoden "-" (minus) med a og b som argumenter. Her er metoden i pseudokode:</p>
+<p style="margin-left: 20px"><em>Gcd av a og b er definert til å være (1) a når a og b er like, (2) gcd av b og a – b når a er større enn b, og (3) gcd av a og b – a når b er større enn a. For å beregne gcd for to numre, ekspander og forenkle denne definisjonen til avslutning.</em></p>
+</p>
+<p>Rekursjon er en av hovedvirkemidlene i funksjonsbasert programmering. Samme algoritme kunne man selvsagt ha fått til i imperative språk også, selv om det er vanligere å se den første varianten. Det er derimot mye fra imperativ programmering man ikke gjør i funksjonsbasert. Fraværet av (det vi for enkelhets skyld kan kalle) variabel-manipuleringen gjør at funksjonsbasert kildekode i større grad kan analyseres for korrekthet. Det er også enklere å automatisere enkelte optimaliseringer, som å parallellisere programmer.</p>
+<h4>Logisk programmering</h4>
+<div style="background-color: #141414; padding-left: 10px; margin-bottom: 20px; color: #f8f8f8"><font face="monospace"><span style="background-color: #141414"><font color="#665f57">1 </font></span><font color="#665f57">% GCD implementert i Prolog</font><br><span style="background-color: #141414"><font color="#665f57">2 </font></span><font color="#7587a6">gcd(A,B,G) :-</font> A <font color="#cda869"><b>=</b></font> B, G <font color="#cda869"><b>=</b></font> A.<br><span style="background-color: #141414"><font color="#665f57">3 </font></span><font color="#7587a6">gcd(A,B,G) :-</font> A <font color="#cda869"><b>&gt;</b></font> B, C <font color="#cda869">is</font> A-B, gcd(C,B,G).<br><span style="background-color: #141414"><font color="#665f57">4 </font></span><font color="#7587a6">gcd(A,B,G) :-</font> B <font color="#cda869"><b>&gt;</b></font> A, C <font color="#cda869">is</font> B-A, gcd(C,A,G).<br></font></div>
+<p>I et logisk språk spesifiserer vi et sett med axiomer og regler som lar systemet finne løsningen. Det kan være enklere å forstå Prolog-koden om du leser ":-" som "hvis" og "," som "og". Her er det samme i pseudokode:</p>
+<p style="margin-left: 20px"><em>Proposisjonen gcd(a, b, g) er sann om (1) a, b og g er alle like, (2) a er større enn b og det eksisterer et nummer c slik at c er lik a – b og gcd(c, b, g) er sant, eller (3) a er mindre enn b og det eksisterer et nummer c slik at c er lik b – a og gcd(c, a, g) er sant. For å beregne gcd av to numre, søk etter et nummer g (og ulike numre c) slik at man kan bevise at gcd(a, b, g) er sant.</em></p>
+<h4>Konklusjon</h4>
+<p>Valget av <em>imperativ</em>, <em>funksjonell </em>eller <em>logisk </em>programmering får som sagt ikke bare betydning for hvordan koden blir seende ut, men også hvordan utvikleren tenker for å komme opp med en løsning. Å beherske disse måtene å tenke på vil gjøre deg til en <strong>bedre problemløser</strong>. I tillegg vil du ha flere verktøy å velge blant – noen problemer vil alltid være enklere å løse deklerativt enn imperativt.</p>
+<p>En annen ting som er interessant med de deklerative språkene er at vi ikke tvinger datamaskinen til å jobbe på en bestemt måte. Det muligjør implementasjon av forbedringer uten å røre program-koden, f.eks. gjennom å utvikle bedre kompilatorer. Den samme effekten har vi f.eks. når vi benytter LINQ i .net; LINQ er et deklerativt subset av C#/VB.net.</p>
+<h4>Tips til Java og .Net-utviklere</h4>
+<p>Om du er Java-utvikler, eller C#-utvikler som meg, så skal du være klar over at du har tilgang til funksjonsbaserte språk på favorittplattformen din også. <a href="http://en.wikipedia.org/wiki/Scala_(programming_language)" target="_blank">Scala</a> på Java-plattformen er et språk som kombinerer objektorientering og funksjonsbasert programmering. Fra Microsoft har vi fått <a href="http://en.wikipedia.org/wiki/F_Sharp_(programming_language)" target="_blank">F#</a>, en variant av ML som støttes fullt ut i Visual Studio 2010 – på samme måte som Scala kombinerer også F# den funksjonelle og den objektorienterte paradigmen.</p>
+<p>Hvis du vil ha et språk som er "renere" kan du velge <a href="http://en.wikipedia.org/wiki/Clojure" target="_blank">Clojure</a> - en moderne (2007) Lisp-dialekt som kjører på både .Net og Java-plattformen. Er du interessert i logiske språk kan du ta en titt på <a href="http://en.wikipedia.org/wiki/P_Sharp" target="_blank">P#</a>, som gir deg Prolog i .net. <a href="http://kaminari.scitec.kobe-u.ac.jp/PrologCafe/" target="_blank">Prolog Cafe</a> er tilsvarende for Java.</p>
+<p>For komplette lister over språk på <em>Java Virtual Machine</em> og <em>Common Language Infrastructure</em>, se <a href="http://en.wikipedia.org/wiki/List_of_JVM_languages" target="_blank">her</a> og <a href="http://en.wikipedia.org/wiki/List_of_CLI_languages" target="_blank">her</a>.</p>
+<p>Denne blogposten var inspirert av boken <a href="http://www.cs.rochester.edu/~scott/pragmatics/" target="_blank"><em>Programming Language Pragmatics</em></a>, hvor kodesnuttene også er sakset fra.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

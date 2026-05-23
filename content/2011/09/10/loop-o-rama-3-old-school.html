@@ -1,0 +1,27 @@
+---
+title: "Loop-o-rama 3: Old School"
+link: http://blog.kjempekjekt.com/2011/09/10/loop-o-rama-3-old-school/
+layout: post
+date: 2011-09-10 19:48:13Z
+tags:
+  - Polyglot
+---
+<p>Min lille serie om løkker og iterering fortsetter, og i dag tar vi en nærmere titt på løkker basert på det utskjelte og fryktede taboo-ordet <strong><a href="http://en.wikipedia.org/wiki/Goto"><em>GOTO</em></a></strong>.</p> <h4>Loop med Goto</h4> <p>Føler man seg skikkelig vill og gal, eller befinner seg i et mindre sofistikert språk, eller i assembly, så kan man lage løkker ved hjelp av goto-instruksjonen (eller en variant av denne kommandoen). Når man kompilerer eller tolker <em>for-</em> og <em>while-</em>løkker i høyerenivåspråk blir de også redusert til goto-lignende-strukturer. Man kan se på goto som en grunnleggende instruksjon man kan bruke til å lage mere avanserte løkke-abstraksjoner.</p> <p>Her en en goto-løkke i C# som skriver ut tallene 1 til og med 5 (ja, man har goto i C#, men den brukes ytterst sjelden):</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">    int i = 1;
+    goto Test;
+LoopStart:
+    Console.WriteLine(i);
+    i++;
+Test:
+    if (i &lt;= 5)
+        goto LoopStart;
+</pre>
+<p>Eventuelt kan den samme løkken skrives slik:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">    int i = 1;
+Test:
+    if (i &gt; 5)
+        goto LoopEnd;
+    Console.WriteLine(i);
+    i++;
+    goto Test;
+LoopEnd: ;
+</pre>
+<p>Som du forhåpentligvis ser er for og while mye mere elegant – goto uttrykker ikke utviklerens intensjoner på samme måte. </p>

@@ -1,0 +1,38 @@
+---
+title: "loop-o-rama 1: Nybegynner"
+link: http://blog.kjempekjekt.com/2011/09/08/loop-o-rama-1-nybegynner/
+layout: post
+date: 2011-09-08 11:06:47Z
+tags:
+  - Polyglot
+---
+<p><img style="background-image: none; border-right-width: 0px; margin: 0px 10px 0px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="Thomas &amp; Friends Loop The Loop Thomas" border="0" alt="Thomas &amp; Friends Loop The Loop Thomas" align="left" src="/uploads/2011/09/Thomas--Friends-Loop-The-Loop-Thomas.jpg" width="160" height="160">Først lærer vi <em>variabler</em>. Så lærer vi å velge mellom to ting med <em>if-else</em>, og det tredje en fersk utvikler lærer er å gjøre ting <em>mange ganger</em>. Denne blogposten er den første i en serie dedikert til <em><strong>løkken!</strong></em> </p> <h4>To grunntyper</h4> <p>I den kategorien med høynivå språk som vi kaller de <em>imperative</em> finner vi hovedsakelig to typer løkker (og en rekke varianter av disse). Vi kaller dem <em><u>while-løkker</u></em> og <em><u>for-løkker</u></em>. <em>While</em> brukes når man skal gjøre noe inntil noe bestemt inntreffer, men ikke vet på forhånd hvor lenge/mange ganger det vil si at løkken må kjøre. <em>For</em> bruker vi derimot når vi vet hvor mange ganger vi skal gjøre noe.</p> <h4>While</h4> <p>En while-løkke ser typisk slik ut:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">while(some_boolean_condition) {
+    do_something;
+}
+</pre>
+<p>Løkken vil utføre do_something sålenge some_boolean_condition er true. I noen språk finnes det også varianter med motsatt funksjon, som utfører innholdet i løkken helt til testet <em>blir</em> true. I f.eks. Ruby heter denne <em>until</em>. Det finnes også <em>do-while</em> og <em>do-until</em> løkker som alltid utfører innholdet i løkken minst én gang før testen kjøres.</p>
+<h4>For</h4>
+<p>I motsetning til while-løkken er for-løkken knyttet til en variabel. Den enkleste variantent er <em>løkker over en sekvens</em>. Her er et eksempel fra Ruby:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">for i in 1..5
+    puts i
+end
+</pre>
+<p>Variabelen i knyttes i tur og orden til tallene i sekvensen, og denne løkken skriver dermed ut tallene 1, 2, 3, 4 og 5.</p>
+<p>Den vanligste formen for-løkker er likevel den vi finner i programmeringsspråket C (og alle språk som har arvet syntaks derfra, f.eks. C++, Java, C# eller PHP). Den ser (i forklarende pseudokode) slik ut:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">for(initializer ; test ; step) {
+    doSomething;
+}
+</pre>
+<p>Initialiser utføres aller først. Test kjøres i forkant av hver iterasjon for å undersøke om vi skal fortsette – tilsvarer altså testen i while-løkken. Og step utføres en gang <em>etter</em> hver iterasjon. For å skrive ut tallene 1 til 5 i C# kan vi bruke denne for-løkken:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">for(int i = 1; i &lt;= 5; i++)
+{
+    Console.WriteLine(i);
+}
+</pre>
+<p>Man kan i mange språk la være å spesifisere en eller flere av delene i for-løkken. En uendelig løkke som ikke vil ha noen annen effekt enn å gjøre CPU'en din varm vil se slik ut:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">for(;;){}
+</pre>
+<h4>foreach</h4>
+<p>Mange språk støtter også en type løkke som itererer over et array, en liste eller en annen type kolleksjon. Et typisk navn på denne er <em>foreach</em>, og minner om den første for-løkken jeg viste som itererte over en sekvens. Et eksempel i C#:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">var list = new[] {-1, 2, 3, 50, 99, 101};
+foreach (var item in list)
+{
+    Console.WriteLine(item);
+}
+</pre>
+<p>Fordelen med denne typen løkker i forhold til den vanlige C-baserte for-løkken er at man unngår muligheten for å glemme siste element, eller kjøre løkken ett element for lagt – dette er nemlig en ganske vanlig feil ved bruk av for-løkker, og ikke bare blant nybegynnere.</p>

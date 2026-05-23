@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="F#,Julekalender">
+
+    <title>Follesø utforsker med F#</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Follesø utforsker med F#</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 8. desember 2012</small> 
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p><strong>Jonas Follesø</strong> (<a href="https://twitter.com/follesoe">@follesoe</a>) er en velkjent utvikler i .NET-miljøet. Han har forelest på blant annet TechEd, REMIX, MSDN Live, JavaZone, Smidig, ROOTS og NDC, og kan smykke seg med titler som Microsoft Most Valued Professional, Microsoft Regional Director, MSDN Guru og MSDN Honor Avard. Han har også mye erfaring fra mobilutvikling – både for Windows Phone og for iPhone via MonoTouch.</p>
+<p>Jonas kaller seg forsker, og dykker derfor ned i mye forskjellig. I dag blogger han om F#.</p>
+<p><a href="/uploads/2012/12/jonasbilde.jpg"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="jonasbilde" border="0" alt="jonasbilde" src="/uploads/2012/12/jonasbilde_thumb.jpg" width="571" height="633"></a></p>
+<p><b>Hvem er du?<br></b>En som er lidenskapelig opptatt av programmering.
+<p><b>Hva er jobben din?<br></b>Scientist i BEKK - noe som innebærer å holde selskapet oppdatert på faglige trender og bidra til det Norske fagmiljøet, i tillegg til å være utvikler/arkitekt i prosjekter.
+<p><b>Hva kan du?<br></b>Har jobbet med .NET-plattformen siden v1.0 var i beta. Elsker å lære programmeringsspråk - særlig funksjonelle. Glad i mobilutvikling - både på iOS og Windows Phone.
+<p><b>Hva liker du best med yrket ditt?<br></b>Å skape noe nytt og spennende fra enkle bestanddeler. Den store variasjonen, både innen teknologi og domene - og ikke minst at jeg får betalt for å jobbe med hobbyen min; programmering.</p>
+<hr>
+<h2>Utforskende programmering med F# Type Providers</h2>
+<p>F# er et open source, funksjonelt først, statisk typet programmeringsspråk fra Micosoft. Språket er tilgjengelig både for Microsoft .NET og Mono. Versjon 3.0 ble lansert sammen med Visual Studio 2012 tidligere i høst.</p>
+<p>F# er et utrolig spennende språk, som kanskje ikke har fått den oppmerksomheten det fortjener. I denne bloggposten vil jeg vise hvordan man kan gjøre utforskende programmering mot strukturerte data ved hjelp av F# 3.0 Type Providers. Forhåpentligvis kan dette være med på å inspirere deg til å ta en nærmere titt på språket og noen av de spennende mulighetene som finnes i F# 3.0.</p>
+<p><a href="http://en.wikipedia.org/wiki/Exploratory_programming">Utforskende programmering</a> er et begrep som eksempelvis brukes om det å utforske hvordan en algoritme skal implementeres, hvilke datastrukturer man har behov for, eller hvordan man skal kommunisere med et eksternt system eller datakilde. Noen språk har bedre støtte for denne typen programmering enn andre. Dynamiske språk som Ruby, Python og Clojure er alle kjent for å ha en <a href="http://en.wikipedia.org/wiki/REPL">REPL</a> (en kommandolinje interpreter) som kan brukes til interaktiv programmering, dvs man kan skrive inn kode og få den eksekvert umiddelbart. Man kan så definere nye klasser, funksjoner eller metoder, og så teste disse direkte fra REPL-vinduet.</p>
+<p>C# og VB.NET, som er hovedspråkene på .NET plattformen, har ikke god støtte for denne typen programmering. F# derimot har utmerket støtte for interaktiv programmering. I F# Interactive kan man skrive kode og få denne eksekvert umiddelbart. Man kan også skrive kode i Visual Studio, og deretter markere de kodelinjene man vil ha eksekvert via verktøyet F# Interactive. På denne måten kan man gradvis utforske et problemområde, eksekvere deler av koden, og så teste dette ut. F# kan også brukes som et script-språk, dvs man kan distribuere skript-filer som ikke må kompileres på forhånd.</p>
+<p>Ett av de viktigste fokusområdene for F#-teamet under utviklingen av F# 3.0 var å gjøre den enorme mengden av strukturerte data vi omgir oss med tilgjengelig som en integrert del av F#-utviklingsmiljøet. Tradisjonelt har det vært en utfordring å integrere eksterne data i statisk typede programmeringsspråk siden de som regel ikke deler noen felles representasjon av dataene. Måten dette har vært løst på har i hovedsak vært via kodegenerering. Hvis du ønsker å konsumere en SOAP-tjeneste fra Java eller C# er må du som regel bruke et eksternt verktøy som leser WSDL-filen og generer C#- eller Java-klasser med samme struktur som typene eksponert av tjenesten, og en klientklasse med metoder for hver av operasjonene du kan kalle på tjenesten. Et annet vanlig scenario er å konsumere data fra en relasjonsdatabase. Her finnes det verktøy som kan lese databasestrukturen og generere klasser som har samme form som tabellene i databasen, med metoder som genererer SQL-spørringer.</p>
+<p>Ulempen med kodegenerering er at du får flere store, og gjerne lite lesbare, kodefiler i kodebasen din.&nbsp; Disse må sjekkes inn i versjonskontrollsystemet og bygges som en del av løsningen din. Dersom webtjenesten får en ny operasjon eller en tabell i databasen skulle endre navn får du ikke kompileringsfeil før du eventuelt regenererer koden for å oppdatere integrasjonen med disse kildene. Kodegenerering er også en forholdsvis tung prosess som hindrer utforskende programmering.</p>
+<h3>Type Providers</h3>
+<p>F# teamet har introdusert en ny og innovativ løsning på denne problemstillingen: Type Providers.
+<p>En Type Provider i er i hovedsak tre ting:
+<ul>
+<li>En design-time komponent som kan lage nye typer ved behov
+<li>En kompilator- og IDE-utvidelse
+<li>Et statisk motstykke til dynamiske programmeringsspråk og teknikker</li>
+</ul>
+<p>I eksempelet nedenfor bruker jeg en WsdlService Type Provider for å konsumere en tjeneste for å konvertere temperaturer mellom Celsius og Fahrenheit. Det viktige her er at jeg ikke har generert masse kode for å kalle tjenesten. Jeg bruker kun et F#-bibliotek. Idet jeg bruker WsdlService-typen går Type Provideren ut på nettet, leser WSDL-en til tjenesten og lager en ny F#-type med de metodene jeg trenger for å kalle den. Dette skjer umiddelbart, og jeg får full IntelliSense/statement completion som forteller meg hvilke metoder som er tilgjengelig på tjenesten. Dersom en av operasjonene på tjenesten skulle bytte navn vil jeg få en kompileringsfeil. Type Provideren kjører altså som et del av F# sin type-checker/kompilator (som også Visual Studio bruker for å gi meg IntelliSense). Det blir ikke generert F#-kildefiler eller annen kode som må legges til. Jeg har heller ingen prosjektfil – kun et enkelt F# skript. Type Providere kan sees på som en form for “compile time meta programming”.</p>
+<p><a href="/uploads/2012/12/WsdlTypeProviderMiniDemo.gif"><img style="display: inline" title="WsdlTypeProviderMiniDemo" alt="WsdlTypeProviderMiniDemo" src="/uploads/2012/12/WsdlTypeProviderMiniDemo_thumb.gif" width="748" height="428"></a></p>
+<p>F# 3.0 kommer med flere innebygde Type Providere. I det neste eksempelet konsumerer jeg OData-tjenesten som eksponerer <a href="http://odata.netflix.com/Catalog/">Netflix sin videokatalog</a>. Her ønsker jeg å lage en liste over de 5 beste julefilmene gitt ut siden år 2000. Igjen slipper jeg bruke et eget verktøy for å generere masse kode for å representere datatypene til Netflix. Så snart jeg har tar i bruk ODataService Type Provideren går den ut på nettet, leser metadataen OData tjenesten og gir meg de nødvendige typene for å kalle tjenesten. Jeg får full IntelliSense når jeg gjør LINQ-spørringer og får også forslag til hvilke felter som er tilgjengelige når jeg skal filtrere hvilke filmer jeg er interessert i.</p>
+<p><a href="/uploads/2012/12/ODataTypeProviderMiniDemo.gif"><img style="display: inline" title="ODataTypeProviderMiniDemo" alt="ODataTypeProviderMiniDemo" src="/uploads/2012/12/ODataTypeProviderMiniDemo_thumb.gif" width="748" height="428"></a></p>
+<p>F# 3.0 kommer med Type Providere for WSDL-tjenester, OData-tjenester og SQL-databaser. Viktigst av alt er at Type Provider-mekanismen er utvidbar. Det finnes allerede en rekke tredjeparts Type Providere tilgjengelig på NuGet.&nbsp; Det finnes også Type Providere for datakilder som Excel, Freebase, Xaml, Regex og en rekke andre. </p>
+<p><a href="http://www.freebase.com/">Freebase</a> er en online, Creative Commons-lisensiert grafdatabase med mer enn 23 millioner entiteter,&nbsp; og flere hundre millioner fakta om disse entitetene. Dataene er strukturerte og det finnes definerte skjema for alt fra grunnstoffene og kjemiske sammensetninger, til skuespillere, fotballag, bøker og TV-serier. Freebase er et av de største eksemplene på bruk av semantisk web. Google, som eier Freebase, har blant annet integrert informasjon fra Freebase inn i sine søkeresultater.
+<p>Siden antallet tilgjengelige typer (skjema) er så stort, og i konstant vekst, ville det vært upraktisk å brukt tradisjonell kodegenerering til å lage et statisk typet API. Freebase baserer seg på JSON for datautveksling, noe de og påpeker i <a href="http://code.google.com/p/freebase-java/wiki/GettingStarted">dokumentasjonen</a> for det offisielle Java API-et:<br />
+<blockquote>Unfortunately, Java's strongly typed nature and unlike other languages like Javascript and Python where it belongs as a first class citizen, makes it very unnatural to use JSON as a data format with the API. <br><br>This is why this library is built around the concept of a telescopic JSON API that is designed to make it easier not only to parse and serialize data in JSON formats, but also to construct, modify and manipulate JSON data directly inside code with as little syntax overhead as possible</p></blockquote>
+<p>I praksis mister du statisk typing når du benytter deg av Java (eller C#) API-et til Freebase. I F# derimot kan du utforske Freebase og fortsatt beholde statisk typing. Dersom nye skjema blir lagt til vil disse automatisk bli tilgjengelige fra F#. Eksempelet nedenfor viser hvordan det ser ut når man utforsker Freebase for å skrive ut grunnstoffene sortert etter vekt.</p>
+<p><a href="/uploads/2012/12/FreebaseTypeProviderMiniDemo.gif"><img style="display: inline" title="FreebaseTypeProviderMiniDemo" alt="FreebaseTypeProviderMiniDemo" src="/uploads/2012/12/FreebaseTypeProviderMiniDemo_thumb.gif" width="748" height="428"></a></p>
+<p>Jeg håper denne introduksjonen til utforskende programmering ved hjelp av F# Type Providers har vært spennende. Type Providers åpner for en rekke nye muligheter. Selv om dataaksess er det F#-teamet har fokusert på så er jeg sikker på at man vil se andre spennende bruksområder nå som vi har muligheten til å koble oss på kompilatoren og selv generere nye typer som umiddelbart blir tilgjengelige i utviklingsmiljøet. F# har mange andre spennende egenskaper – og om du har lyst til en introduksjon til språket vil jeg anbefale Try F# som lar deg programmere F# i nettleseren.</p>
+<p>Jeg vil også oppfordre alle C#- og .NET-utviklere til å se nærmere på F#. Har du Visual Studio 2012 har du allerede F# tilgjengelig. Selv om du ikke skriver selve produksjonskoden din i F# er det ingenting i veien for å åpne F# Interactive og gjøre litt utforskende programmering på CLR-en. Det er og viktig å poengetere at F# ikke er begrenset til utforskende programmering. Du kan lage vanlige prosjekter i, og F# er også designet for å kunne integreres sømløst med .NET-kode skrevet i andre språk. Det er for eksempel ingen ting i veien for å skrive dataaksesskoden for din neste applikasjon i F#. Da kan du bruke Type Providers og så konsumere denne koden fra en C# front-end. F# er også tilgjengelig for en rekke plattformer, og du kan skrive alt fra webapps til Windows Phone- og Windows 8-applikasjoner i F#. Det ryktes også at neste versjon av MonoTouch vil få støtte for F# i tillegg til C#, for utvikling av iOS-applikasjoner.</p>
+<p>Dersom du har lyst å lære mer om Type Providers vil jeg anbefale å lese&nbsp; Microsoft Research sin publikasjon “<a href="http://research.microsoft.com/apps/pubs/?id=173076">F#3.0 - Strongly-Typed Language Support for Internet-Scale Information Sources</a>”.</p>
+<p>Om du har lyst å lære mer om funksjonell programmering, og få en introduksjon til språkene Clojure, Scala, Erlang, JavaScript og F# vil jeg oppfordre deg til å <strong>delta på «</strong><a href="http://www.programutvikling.no/kurskalenderoversikt.aspx?mid_1=1352&amp;mid=1535&amp;id=1614891"><strong>Functional Programming Day</strong></a><strong>» i Oslo 17. desember.</strong></p>
+<hr>
+<p>PS: Jonas har bursdag <i>i dag</i>, så gratuler ham med dagen!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+---
+title: loggfil-hacking med Ruby
+link: http://blog.kjempekjekt.com/2011/09/20/loggfil-hacking-med-ruby/
+layout: post
+date: 2011-09-20 20:09:02Z
+tags:
+  - Ruby
+---
+<p><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="loggfilhacking" border="0" alt="loggfilhacking" src="/uploads/2011/09/loggfilhacking.png" width="443" height="102"></p> <p>Ruby er et perfekt språk til å lage små verktøy for å automatisere ting man som gode utviklere uansett bør være for late til å gjøre manuelt. Jeg bruker først og fremst Ruby til å lage små scripts som hjelper meg i bygging og/eller deployment av prosjekter, men jeg lager endel andre scripts også. Tenkte nå jeg skulle vise frem ett av dem. </p> <p>I denne blogposten vil du se et enkelt script som leser loggfiler fra en webapplikasjon, og presenterer en rapport med oversikt over aggregerte data fra loggene. Målet er ikke å vise noe som helst revolusjonerende eller fantastisk – jeg vil bare dele litt kode, og kanskje inspirere flere til å automatisere slike ting.</p> <h4>Loggfilene</h4> <p>Filene jeg skal rapportere på er hentet fra en ASP.NET app som bruker log4net til logging. Her er en liten eksempelfil:</p><pre style="padding-bottom: 6px; background-color: black; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: yellow; font-size: 11px; padding-top: 6px"><tt>
+2011-09-06 00:33:43,821 [1] INFO  APPLICATION STARTED
+2011-09-06 00:33:45,075 [5] DEBUG Default.aspx (loading..) | 4666/acme/PROD1
+2011-09-06 00:33:50,043 [6] DEBUG Report.aspx (loading..) | 4666/acme/PROD1
+2011-09-06 00:33:57,680 [5] DEBUG Report.aspx (loading..) | 4666/acme/PROD1
+2011-09-06 00:33:57,726 [5] INFO  Loading report "Traffic report (monthly)" | 4666/acme/PROD1
+2011-09-06 01:01:07,555 [5] DEBUG Default.aspx (loading..) | 1233/foobar/PROD1
+2011-09-06 01:01:41,472 [6] DEBUG Report.aspx (loading..) | 1233/foobar/PROD1
+2011-09-06 01:01:57,638 [9] DEBUG Report.aspx (loading..) | 1233/foobar/PROD1
+2011-09-06 01:01:57,681 [9] INFO  Loading report "Incoming traffic report (weekly)" | 1233/foobar/PROD1
+2011-09-06 01:02:18,194 [6] INFO  Loading report "Keyword period statistics" | 1233/foobar/PROD1
+</tt></pre>
+<p>Her er det mye nyttig informasjon jeg gjerne vil rapportere på. Hver gang en side lastes logges det en debug-linje med sidens navn, og på slutten av linjen legges det på informasjon om brukeren. Og hver gang en bruker kjører en rapport logges det en info-linje med rapportens navn.</p>
+<p>Webapplikasjonen genererer én ny logfil hver dag. De har et fast navn, med datoen lagt på som et suffix. Dagens logg heter <em>MyWebApp.log</em>, loggen for i går heter <em>MyWebApp.log20110910</em>, osv. Skriptet som analyserere filene må kunne slå sammen data fra et vilkårlig antall logfiler.</p>
+<h4>Resultatet</h4>
+<p>Jeg ønsker en tredelt rapport basert på disse logfilene. For det første ønsker jeg å vite hvor mange ganger de ulike sidene har blitt lastet. Deretter vil jeg vite hvilke brukere som er mest aktive, og til slutt vil jeg vite hvilke rapporter som kjøres flest ganger.</p>
+<p>Scriptet mitt skal printe ut rapporten til konsollet. Ønsker jeg å lagre rapporten kan jeg da enkelt "pipe" output til en fil i stedet. Her er output basert på filen ovenfor: </p><pre style="padding-bottom: 6px; background-color: black; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: yellow; font-size: 12px; padding-top: 6px"><tt>Analysing file MyWebApp.log
+
+Page                                                    Hits
+------------------------------------------------------------
+Report                                                     4
+Default                                                    2
+
+User                                                    Hits
+------------------------------------------------------------
+foobar              PROD1  ID:1233                         5
+acme                PROD1  ID:4666                         4
+
+Report                                                  Hits
+------------------------------------------------------------
+Keyword period statistics                                  1
+Incoming traffic report (weekly)                           1
+Traffic report (monthly)                                   1
+</tt></pre>
+<h4>Scriptet</h4>
+<p>Jeg skal ikke si så alt for mye om koden – håper den klarer å stå på egne ben. Men jeg har delt den opp litt for å forenkle lesingen. Her er første <em>chunk</em>, som i hovedsak består av en main-metode som først validerer parametrene, deretter parser log-filene (linje 35) og til slutt skriver ut rapporten (37). </p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Conditional">unless</span> <span class="Identifier">ARGV</span>.length == <span class="Number">2</span>
+<span class="lnr">11 </span>  <span class="Statement">raise</span> &lt;&lt;<span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">12 </span>
+<span class="lnr">13 </span>
+<span class="lnr">14 </span><span class="String">Usage:   mywebapp_stats.rb folder filepattern</span>
+<span class="lnr">15 </span>
+<span class="lnr">16 </span><span class="String">Example: mywebapp_stats.rb . AccountWeb.log*</span>
+<span class="lnr">17 </span>
+<span class="lnr">18 </span><span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">19 </span><span class="Conditional">end</span>
+<span class="lnr">20 </span>
+<span class="lnr">21 </span><span class="Identifier">$user_hash</span> = {}
+<span class="lnr">22 </span><span class="Identifier">$page_hash</span> = {}
+<span class="lnr">23 </span><span class="Identifier">$report_hash</span> = {}
+<span class="lnr">24 </span>
+<span class="lnr">25 </span><span class="PreProc">def</span> <span class="Function">main</span>
+<span class="lnr">26 </span>  log_dir = <span class="Identifier">ARGV</span>[<span class="Number">0</span>]
+<span class="lnr">27 </span>  files_pattern = <span class="Identifier">ARGV</span>[<span class="Number">1</span>]
+<span class="lnr">28 </span>
+<span class="lnr">29 </span>  <span class="Conditional">if</span> <span class="Type">File</span>.directory?(log_dir)
+<span class="lnr">30 </span>    <span class="Type">Dir</span>.chdir log_dir
+<span class="lnr">31 </span>  <span class="Conditional">else</span>
+<span class="lnr">32 </span>    <span class="Statement">raise</span> <span class="rubyStringDelimiter">"</span><span class="rubyInterpolationDelimiter">#{</span>log_dir<span class="rubyInterpolationDelimiter">}</span><span class="String"> is not a directory</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">33 </span>  <span class="Conditional">end</span>
+<span class="lnr">34 </span>
+<span class="lnr">35 </span>  <span class="Type">Dir</span>.glob(files_pattern).each { |<span class="Identifier">f</span>| parse_file f }
+<span class="lnr">36 </span>
+<span class="lnr">37 </span>  report
+<span class="lnr">38 </span><span class="PreProc">end</span>
+</pre>
+<p>Og så følger koden som parser selve logfilene. Parsingen er basert på regulære uttrykk, så det kan se litt kryptisk ut. Magien ligger i reg_count, som inkrementerer en teller i en hashtabell hvis det regulære uttrykket matcher linjen. inc_hash! gjør selve teller-inkrementeringen.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">40 </span><span class="Comment">### ANALYSE FILE STUFF ###############################################</span>
+<span class="lnr">41 </span>
+<span class="lnr">42 </span><span class="PreProc">def</span> <span class="Function">parse_file</span> filepath
+<span class="lnr">43 </span>  puts <span class="rubyStringDelimiter">"</span><span class="String">Analysing file </span><span class="rubyInterpolationDelimiter">#{</span>filepath<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">44 </span>  <span class="Type">File</span>.open(filepath, <span class="rubyStringDelimiter">"</span><span class="String">r</span><span class="rubyStringDelimiter">"</span>) <span class="rubyControl">do</span> |<span class="Identifier">f</span>|
+<span class="lnr">45 </span>    <span class="Statement">while</span> (line = f.gets)
+<span class="lnr">46 </span>      reg_count(<span class="rubyRegexpDelimiter">/</span><span class="rubyRegexp">Loading report "</span><span class="Special">(</span><span class="Special">.</span><span class="Special">*</span><span class="Special">)</span><span class="rubyRegexp">"</span><span class="rubyRegexpDelimiter">/</span>, line, <span class="Identifier">$report_hash</span>)
+<span class="lnr">47 </span>      reg_count(<span class="rubyRegexpDelimiter">/</span><span class="Special">\|</span><span class="rubyRegexp"> </span><span class="Special">(</span><span class="Special">\d</span><span class="Special">+</span><span class="Special">)</span><span class="Special">\/</span><span class="Special">(</span><span class="Special">.</span><span class="Special">*</span><span class="Special">)</span><span class="Special">\/</span><span class="Special">(</span><span class="rubyRegexp">PROD</span><span class="Special">[</span><span class="rubyRegexp">123</span><span class="Special">]</span><span class="Special">)</span><span class="rubyRegexpDelimiter">/</span>, line, <span class="Identifier">$user_hash</span>) <span class="rubyControl">do</span> |<span class="Identifier">m</span>|
+<span class="lnr">48 </span>        m[<span class="Number">0</span>][<span class="Number">1</span>].ljust(<span class="Number">20</span>) + m[<span class="Number">0</span>][<span class="Number">2</span>] + <span class="rubyStringDelimiter">"</span><span class="String">  ID:</span><span class="rubyStringDelimiter">"</span> + m[<span class="Number">0</span>][<span class="Number">0</span>]
+<span class="lnr">49 </span>      <span class="rubyControl">end</span>
+<span class="lnr">50 </span>      reg_count(<span class="rubyRegexpDelimiter">/</span><span class="rubyRegexp"> </span><span class="Special">(</span><span class="Special">[</span><span class="rubyRegexp">A-Za-z</span><span class="Special">]</span><span class="Special">+</span><span class="Special">)</span><span class="Special">\.</span><span class="rubyRegexp">aspx </span><span class="Special">\(</span><span class="rubyRegexp">loading</span><span class="Special">\.\.\)</span><span class="rubyRegexpDelimiter">/</span>, line, <span class="Identifier">$page_hash</span>)
+<span class="lnr">51 </span>    <span class="Statement">end</span>
+<span class="lnr">52 </span>  <span class="rubyControl">end</span>
+<span class="lnr">53 </span><span class="PreProc">end</span>
+<span class="lnr">54 </span>
+<span class="lnr">55 </span><span class="PreProc">def</span> <span class="Function">reg_count</span> pattern, line, hash, &amp;block
+<span class="lnr">56 </span>  match = line.scan pattern
+<span class="lnr">57 </span>  <span class="Conditional">if</span> match.length &gt; <span class="Number">0</span>
+<span class="lnr">58 </span>    key = block.call(match) <span class="Conditional">if</span> block
+<span class="lnr">59 </span>    inc_hash! key || match[<span class="Number">0</span>][<span class="Number">0</span>], hash
+<span class="lnr">60 </span>  <span class="Conditional">end</span>
+<span class="lnr">61 </span><span class="PreProc">end</span>
+<span class="lnr">62 </span>
+<span class="lnr">63 </span><span class="PreProc">def</span> <span class="Function">inc_hash!</span> k, h
+<span class="lnr">64 </span>  n = h[k] || <span class="Number">0</span>
+<span class="lnr">65 </span>  h[k] = n + <span class="Number">1</span>
+<span class="lnr">66 </span><span class="PreProc">end</span>
+</pre>
+<p>Det eneste som gjenstår da er å skrive ut rapporten.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">68 </span><span class="Comment">### REPORT OUTPUT STUFF ###############################################</span>
+<span class="lnr">69 </span>
+<span class="lnr">70 </span><span class="PreProc">def</span> <span class="Function">report</span>
+<span class="lnr">71 </span>  report_hash <span class="rubyStringDelimiter">"</span><span class="String">Page</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">Hits</span><span class="rubyStringDelimiter">"</span>, <span class="Identifier">$page_hash</span>
+<span class="lnr">72 </span>  report_hash <span class="rubyStringDelimiter">"</span><span class="String">User</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">Hits</span><span class="rubyStringDelimiter">"</span>, <span class="Identifier">$user_hash</span>
+<span class="lnr">73 </span>  report_hash <span class="rubyStringDelimiter">"</span><span class="String">Report</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">Hits</span><span class="rubyStringDelimiter">"</span>, <span class="Identifier">$report_hash</span>
+<span class="lnr">74 </span><span class="PreProc">end</span>
+<span class="lnr">75 </span>
+<span class="lnr">76 </span><span class="PreProc">def</span> <span class="Function">report_hash</span> col_a, col_b, h
+<span class="lnr">77 </span>  report_header col_a, col_b
+<span class="lnr">78 </span>  h.
+<span class="lnr">79 </span>    sort{|<span class="Identifier">a</span>,<span class="Identifier">b</span>| a[<span class="Number">1</span>] &lt;=&gt; b[<span class="Number">1</span>]}.
+<span class="lnr">80 </span>    reverse.
+<span class="lnr">81 </span>    each { |<span class="Identifier">key</span>, <span class="Identifier">value</span>| report_line(key, value) }
+<span class="lnr">82 </span><span class="PreProc">end</span>
+<span class="lnr">83 </span>
+<span class="lnr">84 </span><span class="PreProc">def</span> <span class="Function">report_header</span> col_a, col_b
+<span class="lnr">85 </span>  puts
+<span class="lnr">86 </span>  report_line col_a, col_b
+<span class="lnr">87 </span>  puts <span class="rubyStringDelimiter">"</span><span class="String">-</span><span class="rubyStringDelimiter">"</span> * <span class="Number">60</span>
+<span class="lnr">88 </span><span class="PreProc">end</span>
+<span class="lnr">89 </span>
+<span class="lnr">90 </span><span class="PreProc">def</span> <span class="Function">report_line</span> a, b
+<span class="lnr">91 </span>  puts a.ljust(<span class="Number">50</span>) + b.to_s.rjust(<span class="Number">10</span>)
+<span class="lnr">92 </span><span class="PreProc">end</span>
+<span class="lnr">93 </span>
+<span class="lnr">94 </span>main <span class="Comment"># run the program</span>
+</pre>
+<p>Spørsmål? Uforståelig? Elementært?</p>
+<p>Her er noen andre eksempler på hva jeg bruker Ruby til: <a href="http://blog.kjempekjekt.com/2011/03/23/script-iis-manager-med-ironruby/">Script IIS Manager med IronRuby</a> | <a href="http://blog.kjempekjekt.com/2010/07/08/litt-adonet-i-ironruby/">Litt ADO.NET i IronRuby</a> | <a href="http://blog.kjempekjekt.com/2010/03/07/slettetmme-msmq-ker-med-ironruby/">Slette/tømme MSMQ-køer med IronRuby</a> | <a href="http://blog.kjempekjekt.com/2010/02/22/en-minimal-http-server-i-ruby/">En minimal HTTP-server i Ruby</a></p>

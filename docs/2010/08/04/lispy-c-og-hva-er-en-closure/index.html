@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Lisp,C#">
+
+    <title>Lispy C# (og hva er en closure)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Lispy C# (og hva er en closure)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 4. august 2010</small> 
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p>I et forsøk på å gi et bedre innblikk i hva Lisp er for noe har jeg skrevet litt lisp-inspirert C#-kode. Jeg snakker ikke om Lisp-syntaks, men mer programmering i et Lisp-tankemønster. Koden illustrerer hvordan jeg tenker når jeg programmerer i Lisp (og til dels funksjonelle språk generelt). Eksperimentet er mest for gøy, men om det kan gi noen en <em>a-ha</em>-opplevelse hadde det også vært kjekt.</p>
+<p>Programmet nedenfor kalkulerer og skriver ut <em><a href="http://en.wikipedia.org/wiki/Power_of_two">power of 2</a></em> for tallene 1 til 10. For å gjøre dette har jeg definert endel lambda-uttrykk, og kombinerer dem for å oppnå ønsket resultat.&nbsp; </p>
+<pre>
+static void Main(string[] args)
+{
+    Action&lt;int, Action&gt; Times = (n, action) =&gt;
+    {
+        for (int i = 0; i &lt; n; i++)
+            action();
+    };
+ 
+    Action&lt;IEnumerable&lt;string&gt;&gt; Output = (s) =&gt;
+    {
+        foreach (var item in s)
+            Console.Write("{0} ", item);
+        Console.WriteLine();
+    };
+ 
+    Func&lt;int, Func&lt;IEnumerable&lt;string&gt;&gt;&gt; PowerStringIterator = (powerbase) =&gt;
+    {
+        int x = 0;
+        return () =&gt;
+        {
+            x++;
+            return new[]
+            {
+                powerbase.ToString(), "to the power of", 
+                x.ToString(), "is", 
+                Math.Pow(powerbase, x).ToString()
+            };
+        };
+    };
+ 
+    var iterator = PowerStringIterator(2);
+ 
+    Times(10, () =&gt; Output(iterator()));
+}
+</pre>
+<div style="margin-bottom: 18px"><p><b>Output:</b> </p>
+<div style="padding-bottom: 6px; background-color: #ffe97f; padding-left: 6px; padding-right: 6px; color: black; padding-top: 6px"><font face="monospace">2 to the power of 1 is 2<br>2 to the power of 2 is 4<br>2 to the power of 3 is 8<br>2 to the power of 4 is 16<br>2 to the power of 5 is 32<br>2 to the power of 6 is 64<br>2 to the power of 7 is 128<br>2 to the power of 8 is 256<br>2 to the power of 9 is 512<br>2 to the power of 10 is 1024<br></font></div>
+</div>
+<p>Legg spesielt merke til høyereordens-funskjonen <b><tt>PowerStringIterator</tt></b>: Den er en slags <em>factory</em> som returnerer en ny funksjon som er en <strong><em>closure</em></strong> rundt variabelen x, og som dermed kan brukes som en iterator som gir meg en <em><strong>uendelig rekke</strong></em> med output (hvorav jeg skriver ut de 10 første). Variabelen x er "ute av scope" når PowerStringIterator returnerer, og det er ingen måte å få tak på den igjen på. Men den er like vel ikke borte – den nye iterator-funksjonen bruker den som sin state-variabel, og x blir derfor ikke borte sålenge funksjonen er der og "lukker seg rundt den".</p>
+<p style="padding-bottom: 15px; background-color: #f2f2f2; padding-left: 15px; padding-right: 15px; font-size: 105%; padding-top: 15px"><em><a href="http://en.wikipedia.org/wiki/Closure_(computer_science)">Wikipedia:</a> A <b>closure</b> is a </em><em>first-class function</em><em> with </em><em>free variables</em><em> that are </em><em>bound</em><em> in the </em><em>lexical environment</em><em>. Such a function is said to be "closed over" its free variables. A closure is defined within the scope of its free variables, and </em><em>the extent of those variables</em><em> is at least as long as the lifetime of the closure itself. The explicit use of closures is associated with </em><em>functional programming</em><em> and with languages such as </em><em>ML</em><em> and </em><em>Lisp</em><em>. Closures are used to implement </em><em>continuation passing style</em><em>, and in this manner, </em><em>hide state</em><em>.</em></p>
+<p>Vær obs på at closures ofte brukes feilaktig som et annet ord for anonyme funksjoner (jeg kan selv dokumentere å ha <a href="/2010/03/09/events-i-ruby/">gjort det for ikke så lenge siden</a>). Anonyme funksjoner <em>kan danne</em> closures (i mange språk), men det er likevel to separate begrep.</p>
+<p>.NET-rammeverket støtter forresten egentlig ikke <em>"ekte"</em> closures, men simulerer det ved å opprette en klasse som holder på state (variabelen x). Action og Func, lambdaer i .NET, er jo egentlig klasser/objekter. Tar vi en titt på den kompilerte assemblien med <a href="http://www.red-gate.com/products/reflector/">Reflector</a> finner vi klassen som er gjengitt nedenfor. Kompilatoren har generert denne for å representere iterator-funksjonen som PowerStringIterator returnerer:</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace">[CompilerGenerated]<br><font color="#9b859d"><b>private</b></font>&nbsp;<font color="#9b859d"><b>sealed</b></font>&nbsp;<font color="#9b859d"><b>class</b></font> &lt;&gt;c__DisplayClassa<br>{<br>&nbsp;&nbsp;&nbsp; <font color="#665f57">// Fields</font><br>&nbsp;&nbsp;&nbsp; <font color="#9b859d"><b>public</b></font>&nbsp;<font color="#9b859d"><b>int</b></font> powerbase;<br>&nbsp;&nbsp;&nbsp; <font color="#9b859d"><b>public</b></font>&nbsp;<font color="#9b859d"><b>int</b></font> x;<br><br>&nbsp;&nbsp;&nbsp; <font color="#665f57">// Methods</font><br>&nbsp;&nbsp;&nbsp; <font color="#9b859d"><b>public</b></font> IEnumerable&lt;<font color="#9b859d"><b>string</b></font>&gt; &lt;Main&gt;b__3()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>this</b></font>.x++;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>return</b></font>&nbsp;<font color="#cda869"><b>new</b></font>&nbsp;<font color="#9b859d"><b>string</b></font>[] { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>this</b></font>.powerbase.ToString(), <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"to the power of"</font>, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>this</b></font>.x.ToString(), <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"is"</font>, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Math.Pow((<font color="#9b859d"><b>double</b></font>) <font color="#cda869"><b>this</b></font>.powerbase, (<font color="#9b859d"><b>double</b></font>) <font color="#cda869"><b>this</b></font>.x).ToString() <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>&nbsp;&nbsp;&nbsp; }<br>}<br></font></div>
+<p>Men nok om closures, og over til Clojure (som faktisk uttales <em>closure!</em>). Nedenfor har jeg implementert det samme programmet – strukturelt sett er det identisk med C#-varianten, så sammenlign dem gjerne for å lære litt mer om Clojure/Lisp.</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><font color="#cda869">(</font>defn times [n action]<br>&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>dotimes</b></font> [_ n] <font color="#cda869">(</font>action<font color="#cda869">)))</font><br><br><font color="#cda869">(</font>defn output [args]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>doseq [s args]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>print</b></font> s <font color="#8f9d6a">""</font><font color="#cda869">))</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>newline<font color="#cda869">))</font><br><br><font color="#cda869">(</font>defn power-string-iterator [powerbase]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>let</b></font> [x <font color="#cda869">(</font><font color="#cda869"><b>atom</b></font>&nbsp;<font color="#cf6a4c">0</font><font color="#cda869">)</font>]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>fn []<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>reset! x <font color="#cda869">(</font>inc @x<font color="#cda869">))</font>&nbsp;<font color="#665f57">; mutate x</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>list</b></font> powerbase <font color="#8f9d6a">"to the power of"</font> @x <font color="#8f9d6a">"is"</font>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>int <font color="#cda869">(</font>Math/pow powerbase @x<font color="#cda869">))))))</font><br><br><font color="#cda869">(</font>def iterator <font color="#cda869">(</font>power-string-iterator <font color="#cf6a4c">2</font><font color="#cda869">))</font><br><br><font color="#cda869">(</font>times <font color="#cf6a4c">10</font>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>comp output iterator<font color="#cda869">))</font><br></font></div>
+<p>Merk at jeg normalt ikke ville ha definert funksjonene <tt>times</tt> og <tt>output</tt> – disse er her for å gjøre eksempelet likt C#-varianten, og tilsvarende funksjoner finnes allerede i Clojure-språket.</p>
+<p>Fordi jeg ønsker å mutere <em>(endre verdien på..)</em> x har jeg valgt å opprette det som et <strong><em>atom</em></strong>. <a href="http://clojure.org/atoms">Du kan lese mer om det her.</a></p>
+<p>Spesielt interesserte kan også merke seg funksjonen <tt>comp</tt> på siste linje. Dette er en funksjon som komponerer to eller flere funksjoner, og tilsvarer på en elegant måte hvordan jeg i C# lagde en ny lambda som kombinerte to andre lambdaer. Se gjerne <a href="/2010/06/02/komponere-funksjoner-i-f/">Komponere funksjoner i F#</a>, som også omhandler komposisjon av funksjoner i funskjonelle språk.</p>
+<p>Jeg vet ikke.., inspirerte dette til noen nye tanker? Ser du at C#-koden er "lispy"? Om du ikke skjønte noe mer Lisp av dette så fikk jeg i alle fall endelig snakket litt om hva closures er for noe, så jeg er fornøyd :P</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

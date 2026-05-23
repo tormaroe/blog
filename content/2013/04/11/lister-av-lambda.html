@@ -1,0 +1,169 @@
+---
+title: Lister av Lambda
+link: http://blog.kjempekjekt.com/2013/04/11/lister-av-lambda/
+layout: post
+date: 2013-04-11 08:56:43Z
+tags:
+  - Polyglot
+  - Lister
+  - Lambda
+  - JavaScript
+  - CoffeeScript
+  - Lisp
+  - Macro
+---
+<p>Vet du hva dette er?</p><pre>function(callback) {
+    return callback(1,function(callback) {
+        return callback(2,function(callback) {
+            return callback(3,function(callback) {
+                return callback(undefined,undefined,true);
+            },false);
+        },false);
+    },false);
+};</pre>
+<p>For det første; dette er JavaScript. Koden er et eksempel på hvordan du kan representere lister i et språk som ikke har stort annet enn funksjoner. Funksjonene i dette eksempelet representerer listen bestående av elementene 1, 2 og 3. Jeg kommer tilbake til denne koden i slutten av artikkelen.</p>
+<p>I forrige uke kom jeg over bloggposten <a href="http://stevelosh.com/blog/2013/03/list-out-of-lambda/"><strong>List Out of Lambda</strong></a>. Bloggeren Steve Losh leker der med tanken: <em>"Hva trenger man fra et programmeringsspråk egentlig?"</em>. Steg for steg forklarer han hvordan man kan lage lister av enkle byggestener, noe jeg selv også forsøkte i <a href="http://blog.kjempekjekt.com/2013/02/14/funksjonell-lek-med-lister-i-f/">Funksjonell lek med lister i F#</a> for en måned siden. Steve gjør det bedre, og går også lengre i å bygge ulike liste-operasjoner og også tall og regneoperasjoner basert på funksjons-listene.</p>
+<p>Jeg tenker blant annet at måten blogposten gjør det på er et bra utgangspunkt for å innøve grunnleggende forståelse for funksjonell programmering, og at det kan være en grei kata-lignende øvelse å gjøre fra tid til annen. Jeg foreslår først og fremst <a href="http://stevelosh.com/blog/2013/03/list-out-of-lambda/">at du leser bloggposten til Steve</a> – det jeg vil gjøre <em>her</em> er bare å gjengi kjernen i eksempelet hans. Jeg vil også sammenligne med en implementasjon i <strong>CoffeeScript</strong> og en i <strong>LispyScript</strong> (to språk som kompilerer til JavaScript).</p>
+<h2>Lister av funksjoner i JavaScript</h2>
+<p>Her følger koden som trengs for å definere og jobbe med lister: funksjonene <code>cons</code>, <code>head</code>, <code>tail</code> og <code>isEmpty</code> samt en funksjon <code>emptyList</code> som representerer den tomme listen. Steve bruker navnet prepend i stedet for cons, men jeg er såpass farget av Lisp at jeg synes cons er bedre.</p><pre>(function() {
+
+  var emptyList = function(callback) {
+    return callback(undefined, undefined, true);    
+  };
+
+  var cons = function(head, tail) {
+    return function(callback) {
+      return callback(head, tail, false);
+    };
+  };
+
+  var head = function(lst) {
+    return lst(function(head, tail){ 
+      return head; 
+    });
+  };
+  var tail = function(lst) {
+    return lst(function(head, tail){ 
+      return tail; 
+    });
+  };
+  var isEmpty = function(lst) {
+    return lst(function(head, tail, empty){ 
+      return empty; 
+    });
+  };
+
+  var list1 = cons(1, cons(2, emptyList));
+
+  console.log(head(list1));
+  console.log(head(tail(list1)));
+  console.log(isEmpty(tail(list1)));
+  console.log(isEmpty(tail(tail(list1))));
+
+})();
+</pre>
+<p>Sliter du med å forstå dette må du altså lese <a href="http://stevelosh.com/blog/2013/03/list-out-of-lambda/">List Out of Lambda</a>, som forklarer det veldig bra!</p>
+<p>I slutten av koden ser du at jeg oppretter en liste jeg kaller list1 som i prinsippet består av elementene 1 og 2. Output fra scriptet blir "1", "2", "false" og "true".</p>
+<h2>Lister av funksjoner i CoffeeScript</h2>
+<p>Siden det er mye funksjoner her tenkte jeg det ville være interessant å se hvordan koden ble seende ut i CoffeeScript.</p><pre>empty_list = (callback) -&gt;
+  callback undefined, undefined, true
+
+cons = (head, tail) -&gt;
+  (callback) -&gt; callback head, tail, false
+
+head = (lst) -&gt;
+  lst ((head) -&gt; head)
+
+tail = (lst) -&gt;
+  lst ((_, tail) -&gt; tail)
+
+is_empty = (lst) -&gt;
+  lst ((_, __, empty) -&gt; empty)
+
+list1 = cons 1, (cons 2, empty_list)
+
+console.log (head list1)
+console.log (head (tail list1))
+console.log (is_empty (tail list1))
+console.log (is_empty (tail (tail list1)))
+</pre>
+<p>Som du ser er koden mye mer kompakt, og den produserer nøyaktig den samme JavaScript-koden.</p>
+<p>Men for en gangs skyld synes jeg det blir litt vel kompakt. Disse funksjonene som returnerer funksjoner blir rett og slett litt vanskelige å få tak på i CoffeeScript. Det er så få faste holdepunkter i koden, som stort sett bare består av piler, paranteser og variabelnavn. I dette tilfellet savner jeg faktisk strukturen som krøllklammer, <code>function</code> og <code>return</code> gir meg i JavaScript.</p>
+<p>Kanskje det er en vanesak, men det er i alle fall en observasjon.</p>
+<h2>Lister av funksjoner i LispyScript</h2>
+<p>Jeg introduserte mine lesere for LispyScript første gang i posten <a href="http://blog.kjempekjekt.com/2012/09/23/javacoffeelispypogoscript/">JavaCoffeeLispyPogoScript</a> i fjor høst. LispyScript er en Lisp-variant som kan brukes sammen med node.js, og som produserer JavaScript-kode. Her er koden vi jobber med oversatt til LispyScript:</p><pre>((function ()
+
+  (var empty_list 
+    (function (callback)
+      (callback undefined undefined true)))
+
+  (var cons 
+    (function (head tail)
+      (function (callback)
+        (callback head tail false))))
+
+  (var head 
+    (function (lst)
+      (lst (function (head tail empty) head))))
+
+  (var tail 
+    (function (lst)
+      (lst (function (head tail empty) tail))))
+
+  (var is_empty 
+    (function (lst)
+      (lst (function (head tail empty) empty))))
+
+  (var list1 (cons 1 (cons 2 empty_list)))
+
+  (console.log (head list1))
+  (console.log (head (tail list1)))
+  (console.log (is_empty (tail list1)))
+  (console.log (is_empty (tail (tail list1))))))
+</pre>
+<p>Som vanlig synes jeg Lisp gir ganske vakker kode, og i alle fall for meg er den enklere å lese enn både JavaScript og CoffeeScript-variantene.</p>
+<h2>Lisp-makroer avslører hva som skjer</h2>
+<p>Og så fikk jeg en ide. Hva om jeg endret LispyScript-versjonen til å bruke makroer i stedet for funksjoner for cons, head, tail, is_empty og empty_list? Da vil det som skjer i runtime i den første versjonen i stedet skje i compile time. La oss teste det...</p><pre>((function ()
+
+  (macro empty_list ()
+    (function (callback)
+      (callback undefined undefined true)))
+
+  (macro cons (head tail)
+    (function (callback)
+      (callback ~head ~tail false)))
+
+  (macro head (lst)
+    (~lst (function (head tail empty) head)))
+
+  (macro tail (lst)
+    (~lst (function (head tail empty) tail)))
+
+  (macro is_empty (lst)
+    (~lst (function (head tail empty) empty)))
+
+  (var list1 (cons 1 (cons 2 (empty_list))))
+
+  (console.log (is_empty (tail (tail list1))))))
+</pre>
+<p>Merk: Jeg har fjernet tre av console.log-kallene, kun for enkelhets skyld.</p>
+<p>Hvis jeg nå kompilerer denne koden, og tar en titt på det resulterende JavaScriptet, vil lambda-listene avsløre hvordan de virker. Det du til nå har måttet forestille deg i ditt eget hode (eller som du så en preview av i starten av denne blogposten) blir nå mer eller mindre klart og tydelig:</p><pre>// Generated by LispyScript v0.2.5
+(function() {
+    var list1 = function(callback) {
+        return callback(1,function(callback) {
+            return callback(2,function(callback) {
+                return callback(undefined,undefined,true);
+            },false);
+        },false);
+    };
+    return console.log(list1(function(head,tail,empty) {
+        return tail;
+    })(function(head,tail,empty) {
+        return tail;
+    })(function(head,tail,empty) {
+        return empty;
+    }));
+})();
+</pre>
+<p>Her er altså alle liste-operasjonene <em>inlinet</em> der de trengs i form av anonyme funksjoner – cons, head, tail osv. eksisterer ikke lengre som navngitte funksjoner.</p>
+<p>Interessert i mer? Hva med å lese posten <a href="http://blog.kjempekjekt.com/2011/08/20/message-passing-style/">Message Passing Style</a> som jeg skrev i 2011, hvor jeg snakker om <strong>objektorientert programmering basert på funksjoner</strong> (også med eksempel i JavaScript)?</p>

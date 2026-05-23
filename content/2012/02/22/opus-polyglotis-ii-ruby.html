@@ -1,0 +1,130 @@
+---
+title: "Opus Polyglotis II: Ruby"
+link: http://blog.kjempekjekt.com/2012/02/22/opus-polyglotis-ii-ruby/
+layout: post
+date: 2012-02-22 13:32:18Z
+tags:
+  - Polyglot
+  - Ruby
+---
+<p><img style="background-image: none; border-right-width: 0px; margin: 0px 15px 17px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="act2" border="0" alt="act2" align="left" src="/uploads/2012/02/act2.png" width="155" height="143"></p> <p style="line-height: 16px"><tt><strong>OPUS POLYGLOTIS II, Act 2<br></strong>Tagline: "Noen har lest Gang of Four"<br>På scenen: Ruby</tt></p> <p><a href="http://blog.kjempekjekt.com/2012/02/21/opus-polyglotis-ii-python/">I forrige post så du en Python-løsning</a> som var grei nok, men den hadde et par problem. Koden manglet struktur – det var bare en rekke funksjoner i toppnivået. Og for å legge til flere formater, en endring man må kunne forvente, måtte man modifisere dispatch-koden. Det er noe man generelt bør unngå.</p> <p>I dag presenterer jeg en løsning på den samme oppgaven i Ruby. Den er objektorientert, og benytter et kjent design pattern for å fikse de nevnte problemene.</p> <p>La oss begynne å kode. Jeg lager en modul jeg kaller OpusPolyglotis. I den lager jeg en ny modul jeg rett og slett kaller Template.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 22 </span><span class="Keyword">module</span> <span class="Type">OpusPolyglotis</span>
+<span class="lnr"> 23 </span>
+<span class="lnr"> 24 </span>  <span class="Keyword">module</span> <span class="Type">Template</span>
+<span class="lnr"> 25 </span>    <span class="PreProc">def</span> <span class="Function">initialize</span> headers
+<span class="lnr"> 26 </span>      <span class="Identifier">@headers</span> = headers
+<span class="lnr"> 27 </span>    <span class="PreProc">end</span>
+<span class="lnr"> 28 </span>    <span class="PreProc">def</span> <span class="Function">header</span> ; <span class="rubyStringDelimiter">''</span> ; <span class="PreProc">end</span>
+<span class="lnr"> 29 </span>    <span class="PreProc">def</span> <span class="Function">row</span> r  ; <span class="rubyStringDelimiter">''</span> ; <span class="PreProc">end</span>
+<span class="lnr"> 30 </span>    <span class="PreProc">def</span> <span class="Function">footer</span> ; <span class="rubyStringDelimiter">''</span> ; <span class="PreProc">end</span>
+<span class="lnr"> 31 </span>    <span class="PreProc">def</span> <span class="Function">all_rows</span> rs
+<span class="lnr"> 32 </span>      rs.map{|<span class="Identifier">r</span>| row r}.join <span class="rubyStringDelimiter">''</span>
+<span class="lnr"> 33 </span>    <span class="PreProc">end</span>
+<span class="lnr"> 34 </span>  <span class="Keyword">end</span>
+</pre>
+<p>Template danner basisen for et format. Den har en konstruktør som tar inn headers fra csv-filen, og flere metoder som vil bli brukt til å generere output. header, row og footer har default-implementasjone som bare returnerer en tom streng. </p>
+<p>PS: Det er kanskje ikke akkurat <a href="http://blog.kjempekjekt.com/2012/01/30/template-method-del-1-statisk-oop/">Template Method Pattern</a> dette her, men måten jeg bruker det på er ikke så forferdelig langt unna heller.</p>
+<p>Vi er fortsatt inne i OpusPolyglotis-modulen, og nå kommer et lite, ideomatisk Ruby-triks som oppretter en variabel i selve OpusPolyglotis. Du kan tenke på <em>formatters</em> omtrent som en statisk variabel i en C#-klasse. Her vil jeg etterhvert laste inn de ulike format-definisjonene.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 36 </span>  <span class="Keyword">class</span> &lt;&lt; <span class="Constant">self</span>
+<span class="lnr"> 37 </span>    <span class="Statement">attr_accessor</span> <span class="Constant">:formatters</span>
+<span class="lnr"> 38 </span>  <span class="Keyword">end</span>
+<span class="lnr"> 39 </span>  <span class="Constant">self</span>.formatters = {}
+</pre>
+<p>Fortsatt i OpusPolyglotis oppretter jeg så en klasse jeg kaller Formatter. Dette er selve kjernen i programmet. I konstruktøren leser jeg en csv-fil ved hjelp av Ruby's utmerkede csv-støtte. Metoden format_as velger ut en format-definisjon fra formatters-variabelen, oppretter en instans av den, og produserer resultatet. Som du skjønner forventer denne koden at formatters inneholder klasser som implementerer metodene jeg definerte i Template-modulen.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 41 </span>  <span class="PreProc">require</span> <span class="rubyStringDelimiter">'</span><span class="String">csv</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr"> 42 </span>
+<span class="lnr"> 43 </span>  <span class="Keyword">class</span> <span class="Type">Formatter</span>
+<span class="lnr"> 44 </span>    <span class="PreProc">def</span> <span class="Function">initialize</span> csvfile
+<span class="lnr"> 45 </span>      data = <span class="Type">CSV</span>.read csvfile, <span class="Constant">:col_sep</span> =&gt; <span class="rubyStringDelimiter">'</span><span class="String">;</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr"> 46 </span>      <span class="Identifier">@headers</span> = data.first
+<span class="lnr"> 47 </span>      <span class="Identifier">@rows</span> = data.drop <span class="Number">1</span>
+<span class="lnr"> 48 </span>    <span class="PreProc">end</span>
+<span class="lnr"> 49 </span>
+<span class="lnr"> 50 </span>    <span class="PreProc">def</span> <span class="Function">format_as</span> key
+<span class="lnr"> 51 </span>      formatter_class = <span class="Type">OpusPolyglotis</span>.formatters[key]
+<span class="lnr"> 52 </span>      f = formatter_class.new <span class="Identifier">@headers</span>
+<span class="lnr"> 53 </span>      f.header + f.all_rows(<span class="Identifier">@rows</span>) + f.footer
+<span class="lnr"> 54 </span>    <span class="PreProc">end</span>
+<span class="lnr"> 55 </span>  <span class="Keyword">end</span>
+<span class="lnr"> 56 </span>
+<span class="lnr"> 57 </span><span class="Keyword">end</span> <span class="Comment"># module OpusPolyglotis</span>
+</pre>
+<p>La meg bruke et diagram til å illustrere hva jeg har laget og hvor jeg vil hen:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="ruby_objects" border="0" alt="ruby_objects" src="/uploads/2012/02/ruby_objects.png" width="445" height="268"></p>
+<p>Jeg kommer til å opprette tre nye klasser som implementerer hvert av formatene jeg skal støtte. Disse vil arve egenskapene til Template-modulen – ikke gjennom klassisk arv; formatene vil bruke Template som en <strong><a href="http://en.wikipedia.org/wiki/Mixin">mixin</a></strong> (ikke at det er sentralt for løsningen, men det er ganske praktisk likevel).</p>
+<p>De forskjellige formatene vil også registrere seg selv i formatter-variabelen. Dermed trenger jeg ikke endre dispatch-koden i Formatter-klassen, som jo bare henter ut definisjonen fra denne variabelen.</p>
+<p>La oss ta en titt på den enkleste format-definisjonen:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 59 </span><span class="Keyword">module</span> <span class="Type">OpusPolyglotis</span>
+<span class="lnr"> 60 </span>  <span class="Keyword">class</span> <span class="Type">YamlFormatter</span>
+<span class="lnr"> 61 </span>    <span class="PreProc">include</span> <span class="Type">Template</span>
+<span class="lnr"> 62 </span>    <span class="PreProc">def</span> <span class="Function">header</span>
+<span class="lnr"> 63 </span>      <span class="rubyStringDelimiter">'</span><span class="String">Yaml not yet implemented!</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr"> 64 </span>    <span class="PreProc">end</span>
+<span class="lnr"> 65 </span>  <span class="Keyword">end</span>
+<span class="lnr"> 66 </span>
+<span class="lnr"> 67 </span>  <span class="Constant">self</span>.formatters[<span class="rubyStringDelimiter">'</span><span class="String">yaml</span><span class="rubyStringDelimiter">'</span>] = <span class="Type">YamlFormatter</span>
+<span class="lnr"> 68 </span><span class="Keyword">end</span>
+</pre>
+<p>Som du ser "åpner jeg opp igjen" OpusPolyglotis-modulen, slik at jeg får plassert format-definisjonen i det "namespacet". Dette er ikke essensielt, men ryddig. Jeg lager en klasse som så inkluderer Template. Jeg overstyrer en av funksjonene fra Template, nemlig <em>header</em>, som nå bare vil returnere "YAML not yet implemented!".</p>
+<p>Og så til den sentrale linjen under klassedefinisjonen: Her legger jeg inn selve klassen YamlFormatter som en verdi i formatters, og bruker "yaml" som nøkkel. <em>Neat!</em> Nå kan jeg hente ut de definerte formatene hvor som helst og studere dem ved å si <em>OpusPolyglotis.formatters</em>.</p>
+<p>Jeg tror du skjønner hvordan det henger sammen nå, og jeg kan vise deg XmlFormatter:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 73 </span><span class="Keyword">module</span> <span class="Type">OpusPolyglotis</span>
+<span class="lnr"> 74 </span>  <span class="Keyword">class</span> <span class="Type">XmlFormatter</span>
+<span class="lnr"> 75 </span>    <span class="PreProc">include</span> <span class="Type">Template</span>
+<span class="lnr"> 76 </span>
+<span class="lnr"> 77 </span>    <span class="PreProc">def</span> <span class="Function">header</span>; <span class="rubyStringDelimiter">"</span><span class="String">&lt;records&gt;</span><span class="rubyStringDelimiter">"</span> ; <span class="PreProc">end</span>
+<span class="lnr"> 78 </span>    <span class="PreProc">def</span> <span class="Function">footer</span>; <span class="rubyStringDelimiter">"</span><span class="Special">\n</span><span class="String">&lt;/records&gt;</span><span class="rubyStringDelimiter">"</span> ; <span class="PreProc">end</span>
+<span class="lnr"> 79 </span>
+<span class="lnr"> 80 </span>    <span class="PreProc">def</span> <span class="Function">row</span> r
+<span class="lnr"> 81 </span>      <span class="rubyStringDelimiter">"</span><span class="Special">\n\t</span><span class="String">&lt;record&gt;</span><span class="rubyInterpolationDelimiter">#{</span>
+<span class="lnr"> 82 </span>        <span class="Identifier">@headers</span>.
+<span class="lnr"> 83 </span>          map{|<span class="Identifier">h</span>| h.gsub <span class="rubyRegexpDelimiter">/</span><span class="rubyRegexp">\ </span><span class="rubyRegexpDelimiter">/</span>, <span class="rubyStringDelimiter">'</span><span class="String">_</span><span class="rubyStringDelimiter">'</span> }.
+<span class="lnr"> 84 </span>          zip(r).
+<span class="lnr"> 85 </span>          map{|<span class="Identifier">kv</span>| <span class="rubyStringDelimiter">"</span><span class="Special">\n\t\t</span><span class="String">&lt;</span><span class="rubyInterpolationDelimiter">#{</span>kv[<span class="Number">0</span>]<span class="rubyInterpolationDelimiter">}</span><span class="String">&gt;</span><span class="rubyInterpolationDelimiter">#{</span>kv[<span class="Number">1</span>]<span class="rubyInterpolationDelimiter">}</span><span class="String">&lt;/</span><span class="rubyInterpolationDelimiter">#{</span>kv[<span class="Number">0</span>]<span class="rubyInterpolationDelimiter">}</span><span class="String">&gt;</span><span class="rubyStringDelimiter">"</span>}.
+<span class="lnr"> 86 </span>          join(<span class="rubyStringDelimiter">""</span>)
+<span class="lnr"> 87 </span>      <span class="rubyInterpolationDelimiter">}</span><span class="Special">\n\t</span><span class="String">&lt;/record&gt;</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 88 </span>    <span class="PreProc">end</span>
+<span class="lnr"> 89 </span>  <span class="Keyword">end</span>
+<span class="lnr"> 90 </span>
+<span class="lnr"> 91 </span>  <span class="Constant">self</span>.formatters[<span class="rubyStringDelimiter">'</span><span class="String">xml</span><span class="rubyStringDelimiter">'</span>] = <span class="Type">XmlFormatter</span>
+<span class="lnr"> 92 </span><span class="Keyword">end</span>
+</pre>
+<p>Denne gangen overstyrer jeg header- og footer-metodene til å returnere henholdsvis start- og slutt-tag for XML-dokumentet. Og så bruker jeg metoder jeg er veldig glad i – <em>map, zip</em> og <em>join</em> – til å lage et record-element i row-metoden. Ser du hvor enkel og elegant formatdefinisjonen har blitt fordi jeg baserer meg på en felles Template modul?</p>
+<p><em>Zip</em> er forresten en metode jeg kanskje ikke har snakket om før. Dictionary.com sier: <em>"A function that takes two lists and returns a list of pairs. The idea can easily be extended to take N lists and return a list of N-tuples."</em> Jeg bruker den til å "pare opp" en og en header med de tilhørende feltverdiene i raden. Zip er en kjekk funksjon fra den funksjonelle paradigmen, men ikke så vanlig som map, filter og fold.</p>
+<p>Og så – hvis du henger med fortsatt – tar vi en titt på implementasjonen av JSON-formatet:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">100 </span><span class="Keyword">module</span> <span class="Type">OpusPolyglotis</span>
+<span class="lnr">101 </span>  <span class="Keyword">class</span> <span class="Type">JsonFormatter</span>
+<span class="lnr">102 </span>    <span class="PreProc">include</span> <span class="Type">Template</span>
+<span class="lnr">103 </span>
+<span class="lnr">104 </span>    <span class="PreProc">def</span> <span class="Function">header</span>; <span class="rubyStringDelimiter">'</span><span class="String">[</span><span class="rubyStringDelimiter">'</span> ; <span class="PreProc">end</span>
+<span class="lnr">105 </span>    <span class="PreProc">def</span> <span class="Function">footer</span>; <span class="rubyStringDelimiter">'</span><span class="String">]</span><span class="rubyStringDelimiter">'</span> ; <span class="PreProc">end</span>
+<span class="lnr">106 </span>
+<span class="lnr">107 </span>    <span class="PreProc">def</span> <span class="Function">row</span> r
+<span class="lnr">108 </span>      <span class="rubyStringDelimiter">'</span><span class="String">{</span><span class="rubyStringDelimiter">'</span> + get_fields(r) + <span class="rubyStringDelimiter">"</span><span class="String">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">109 </span>    <span class="PreProc">end</span>
+<span class="lnr">110 </span>
+<span class="lnr">111 </span>    <span class="PreProc">def</span> <span class="Function">get_fields</span> r
+<span class="lnr">112 </span>      (<span class="Identifier">@headers</span>.zip(r).map <span class="rubyControl">do</span> |<span class="Identifier">key_val</span>|
+<span class="lnr">113 </span>        <span class="rubyStringDelimiter">'</span><span class="String">"</span><span class="rubyStringDelimiter">'</span> + key_val[<span class="Number">0</span>] + <span class="rubyStringDelimiter">'</span><span class="String">":</span><span class="rubyStringDelimiter">'</span> + format_value(key_val[<span class="Number">1</span>])
+<span class="lnr">114 </span>      <span class="rubyControl">end</span>).join <span class="rubyStringDelimiter">'</span><span class="String">, </span><span class="rubyStringDelimiter">'</span>
+<span class="lnr">115 </span>    <span class="PreProc">end</span>
+<span class="lnr">116 </span>
+<span class="lnr">117 </span>    <span class="PreProc">def</span> <span class="Function">format_value</span> v
+<span class="lnr">118 </span>      <span class="rubyControl">return</span> v <span class="Conditional">if</span> <span class="rubyRegexpDelimiter">/</span><span class="Special">^</span><span class="Special">\d</span><span class="Special">+</span><span class="Special">.</span><span class="Special">?</span><span class="Special">\d</span><span class="Special">*</span><span class="Special">$</span><span class="rubyRegexpDelimiter">/</span> =~ v
+<span class="lnr">119 </span>      <span class="rubyControl">return</span> <span class="rubyStringDelimiter">'</span><span class="String">"</span><span class="rubyStringDelimiter">'</span> + v + <span class="rubyStringDelimiter">'</span><span class="String">"</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr">120 </span>    <span class="PreProc">end</span>
+<span class="lnr">121 </span>
+<span class="lnr">122 </span>    <span class="Comment"># override all_rows to add newline between rows</span>
+<span class="lnr">123 </span>    <span class="PreProc">def</span> <span class="Function">all_rows</span> rs
+<span class="lnr">124 </span>      rs.map{|<span class="Identifier">r</span>| row r}.join <span class="rubyStringDelimiter">"</span><span class="Special">\n</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">125 </span>    <span class="PreProc">end</span>
+<span class="lnr">126 </span>  <span class="Keyword">end</span>
+<span class="lnr">127 </span>
+<span class="lnr">128 </span>  <span class="Constant">self</span>.formatters[<span class="rubyStringDelimiter">'</span><span class="String">json</span><span class="rubyStringDelimiter">'</span>] = <span class="Type">JsonFormatter</span>
+<span class="lnr">129 </span><span class="Keyword">end</span>
+</pre>
+<p>Ganske likt som for XML egentlig: zip, map og join bygger opp den nødvendige strengen. Som jeg gjorde i Python-løsningen må jeg også her validere om en verdi er et gyldig tall (metoden format_value). I så fall skal det ikke ha hermetegn.</p>
+<p>Legg merke til at jeg også overstyrer Template's <em>all_rows</em>-metode, noe jeg ikke trengte i XML. Dette gjør jeg bare for at output skal bli litt finere – jeg putter nemlig inn et linjeskift mellom JSON-objektene.</p>
+<p>Det eneste som gjenstår nå er plukke opp argumentene til programmet, og å generere og printe ut&nbsp; formatet. I Ruby lager vi typisk ikke main-metoder, men konstruerer et lite idiom som sjekker om det er denne filen som har blitt eksekvert (de magiske __FILE__ og $0 variablene). Og så er vi i mål!</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">131 </span><span class="Conditional">if</span> <span class="Constant">__FILE__</span> == <span class="Identifier">$0</span>
+<span class="lnr">132 </span>  some_format, csvfile = <span class="Identifier">ARGV</span>
+<span class="lnr">133 </span>  formatter = <span class="Type">OpusPolyglotis</span>::<span class="Type">Formatter</span>.new csvfile
+<span class="lnr">134 </span>  puts formatter.format_as some_format
+<span class="lnr">135 </span><span class="Conditional">end</span>
+</pre>
+<h4>Oppsummering</h4>
+<p>Det ble litt mere kode enn i <a href="http://blog.kjempekjekt.com/2012/02/21/opus-polyglotis-ii-python/">act 1</a>, men det ble en fin og anvendelig struktur. Strategiene (ja, dette er <a href="http://en.wikipedia.org/wiki/Strategy_pattern">Strategy Pattern</a>) er <em>self contained</em>, og nye formater kan legges til helt uten å redigere eksisterende kode. Bruken av en Template-modul til strategiene gjorde også at selve koden for å generere de ulike formatene ble ganske ryddig.</p>
+<p>Jeg er altså ganske fornøyd med denne løsningen. Følg med i neste episode, hvor det godt kan hende jeg roter det litt til igjen! ;)</p>

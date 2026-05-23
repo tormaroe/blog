@@ -1,0 +1,45 @@
+---
+title: Lambda til kaffen (del 1)
+link: http://blog.kjempekjekt.com/2013/09/19/lambda-til-kaffen-del-1/
+layout: post
+date: 2013-09-19 13:48:46Z
+tags:
+  - Polyglot
+  - CoffeeScript
+  - Lambda
+---
+<p>Du har hørt om denne <strong>lambda calculus</strong>, men hva i pokker er det for noe?! Er det ikke himla teoretisk, og kan det i det hele tatt brukes til noe?</p> <p>I denne og de følgende postene kommer jeg til å snakke minimalt om teori, og i stedet <strong>vise lambda calculus i praksis</strong>. Og hva er det jeg nesten alltid gjør når jeg skal demonstrere? Jo, jeg beregner summen av alle tall under 1000 som er multipler av 3 eller 5. Det skal jeg forsøke her også. Men vi må starte på begynnelsen...</p> <p><img title="lambdacoffee" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="lambdacoffee" src="/uploads/2013/09/lambdacoffee.jpg" width="200" height="200"></p> <h2>Hva vi har å jobbe med</h2> <p>Du kan godt si at lambda calculus er et programmeringsspråk, og som et språk er det ganske begrenset; det inneholder kun tre ting:</p> <ol> <li>Variabler  <li>Anonyme funksjoner (mer presist kalt <em>lambda-abstraksjoner</em>). Lambda calculus er normalt også begrenset til kun funksjoner med én parameter.  <li>Funksjonskall (mer presist kalt en <em>applikasjon</em>)</li></ol> <p>Dette er jo ting som alle programmeringsspråk med respekt for seg selv har, så dermed kan vi programmere lambda calculus i et annet språk – om vi bare passer på å ikke bruke noe vi ikke skal.</p> <p>Et språk som uttrykker anonyme funksjoner veldig elegant er CoffeeScript. I coffee kan man uttrykke lambda nesten like kompakt og elegant som i Alonzo Church sin opprinnelige lambda-syntaks. Men uansett er det ikke syntaksen som er viktig, men konseptene bak. Så dermed bruker jeg altså CoffeeScript.</p> <h2>Lambda calculus i CoffeeScript</h2> <p>Vi har altså tre ting vi må kunne uttrykke. Det første er en variabel. Det er det lett å uttrykke i coffee, for eksempel:</p><pre>x</pre>
+<p>Og så trenger vi anonyme funksjoner. For eksempel en funksjon som tar inn en verdi og returnerer den:</p><pre>(x) -&gt; x</pre>
+<p>Du skjønner hva jeg mener med elegant syntaks nå, ikke sant?! I JavaScript ville det samme sett ut som dette:</p><pre>function(x) { return x; }</pre>
+<p>Det siste vi behøver er funksjonskall. Sett at f er en funksjon og x en annen variabel, så er dette et funksjonskall:</p><pre>f(x)</pre>
+<p>Tilsvarende i JavaScript:</p><pre>f(x)</pre>
+<p>Jepp, det er selvfølgelig helt likt!</p>
+<h2>Trenger vi noe mer?</h2>
+<p>Egentlig ikke. Men for det skal være praktisk å demonstrere noe med lambda calculus så vil jeg gjerne ha en ting til, nemlig muligheten til å tilordne et lamdbauttrykk til en variabel. Dette er altså ikke for å gi språket mere kraft på noen måte, men for å slippe å repetere meg selv og for å gjøre koden lesbar.</p>
+<p>Jeg kommer også til å lage noen hjelpefunksjoner. Disse er til for å gjøre uttrykkene forståelige for deg og meg, og har ellers ingenting med lambda calculus å gjøre.</p>
+<h2>Boolske verdier i lambda calculus</h2>
+<p>Jeg vet ikke om du har lagt merke til det, men jeg har ikke sagt noe om datatyper enda? Det er fordi det kun finnes én type, nemlig funksjonen! For å kunne programmere på en fornuftig måte behøver vi liksom noe mer. Og en av de enkleste datatypene bruker å være <em>boolean</em>. Så da får vi lage den da...</p>
+<p>Men hva skal bool være i et språk som bare har funksjoner? En funksjon selvfølgelig. Trust me, dette gir mening! La oss si at en bool er en funksjon med to parametre. La oss anta at TRUE vil returnere det første argumentet, mens FALSE vil returnere det andre argumentet. Da kan vi definere TRUE og FALSE slik:</p><pre>TRUE  = (x, y) -&gt; x
+FALSE = (x, y) -&gt; y</pre>
+<p>Her har jeg allerede brutt med reglene for lambda calculus, ettersomjeg har laget funksjoner med flere parametre. Dette fikser vi derimot enkelt:</p><pre>TRUE  = (x) -&gt; (y) -&gt; x
+FALSE = (x) -&gt; (y) -&gt; y</pre>
+<p>Det vi har nå er egentlig funksjoner som returnerer funksjoner, men det går for det samme. La oss for ordens skyld se hvordan TRUE ser ut i JavaScript:</p><pre>  TRUE = function(x) {
+    return function(y) {
+      return x;
+    };
+  };</pre>
+<p>La oss teste disse verdiene vi har laget:</p><pre>show = console.log
+show TRUE(true)(false)
+show FALSE(true)(false)</pre>
+<p>Her skriver jeg ut resultatet av å kalle henholdsvis TRUE og FALSE med argumentene true og false. Dette resulterer i to linjer i konsollet med henholdsvis "true" og "false".</p>
+<p>Faktisk: la oss lage en hjelpefunksjon som konverterer et boolean-representerende lambdauttrykk til CoffeeScript-verdien true eller false:</p><pre>toBool = (f) -&gt; f(true)(false)</pre>
+<p>Nå kan jeg teste med å bruke denne i stedet:</p><pre>show toBool(TRUE)
+show toBool(FALSE)</pre>
+<p>.. som igjen skriver ut "true" og "false".</p>
+<h2>If / else</h2>
+<p>La oss avslutte denne del 1 med noe litt kult! Jeg skal nå lage en if/else-konstruksjon i lambda calculus. Og den er enkel:</p><pre>IF = (b) -&gt; b</pre>
+<p>If er rett og slett en funksjon som returnerer argumentet sitt, som jeg antar er en funksjon som representerer en boolean. La oss se hvordan den ser ut i bruk:</p><pre>show IF(TRUE)("yes")("no")
+show IF(FALSE)("yes")("no")</pre>
+<p>Som man kan forvente består if/else-konstruksjon av tre deler: et boolsk uttrykk, resultatet når uttrykket er sant, og resultatet når uttrykket ikke er sant. Testen skriver ut "yes" og "no".</p>
+<h2>Neste kaffepause</h2>
+<p>Jeg håper dette på en eller annen måte gav mersmak. I <a href="http://blog.kjempekjekt.com/2013/09/19/lambda-til-kaffen-del-2-tall/">neste kaffepause</a> vil jeg vise hvordan man lager tall i lambda calculus, så følg med!</p>

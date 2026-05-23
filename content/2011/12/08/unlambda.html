@@ -1,0 +1,35 @@
+---
+title: Unlambda
+link: http://blog.kjempekjekt.com/2011/12/08/unlambda/
+layout: post
+date: 2011-12-08 08:25:25Z
+tags:
+  - Julekalender
+  - Polyglot
+  - WTF
+  - Esoteriske språk
+  - Unlambda
+---
+<p><em>“The effect of reading an Unlambda program is like having your brains smashed out by a Lisp sexp wrapped around an ENIAC. You won't find anything like it west of Alpha Centauri.”</em> - The Hitch-Hacker's Guide to Programming</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="unlambda" border="0" alt="unlambda" src="/uploads/2011/12/unlambda.jpg" width="500" height="310"></p> <p>Unlambda beskrives som et mareritt som har blitt virkelig. Det er med vilje designet for å gjøre programmeringen vanskelig og smertefull – eller <em>utfordrende</em> og <em>underholdende</em>, om du lærer deg å like denslags. Å <em>skrive</em> Unlambda-kode er vanskelig, men å <em>lese</em> Unlamdba-kode er praktisk talt umulig!</p> <p>Det dreier seg her om et funksjonelt programmeringsspråk ala Scheme. I slike språk utgjør <em>funksjonen</em> den viktigste byggestenen, og i Unlambda er funksjonen faktisk det <em>eneste</em> man har å jobbe med. Matematisk kan man si at kjærnen i Unlambda er en implementasjon av Lambda Calculus, men uten selve Lambda-operatoren.</p> <p>Unlambda er altså ikke ment å være et praktisk anvendelig språk. I stedet demonstrerer det svært ren, funksjonell programmering. Man kan ikke ha variabler, og har ingen vanlige operatorer eller datatyper. Alt man har er noen få innebygde funksjoner som hver tar én annen funksjon som parameter, og returnerer en ny funksjon. For å gjøre det ekstra kryptisk (og elegant) består hver funksjon av kun et tegn. Språket har ingen syntaks utover dette.</p> <h4>Hvorfor skal man bruke tid på Unlambda?</h4> <p>Det som skremmer meg med Unlambda er at det er et språk jeg sålangt ikke klarer å forstå. Jeg tror derimot at om man jobber litt med det, og begynner å skjønne hvordan man bruker det, så har man forstått noe svært sentralt innen funksjonell programmering. Man vil sansynligvis stå bedre rustet til å utføre små mirakler i <a href="http://blog.kjempekjekt.com/2011/12/07/haskell/">Haskell</a>, i <a href="http://blog.kjempekjekt.com/category/lispclojure/">Lisp-dialektene</a> eller tilsvarende språk.</p> <p>Har du først og fremst en praktisk tilnærming til programmering er altså dette språket sansynligvis ikke noe for deg. Men om du liker en utfordring, og har tro på at all kunnskap kan berike deg, så er Unlambda noe av det mest spesielle du kan lære.</p> <h4>Hvordan ser det ut?</h4> <p>Jeg beklager, men jeg har ikke klart å lage et program som løser <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">Euler-oppgave 1</a>. Men jeg tviler på at det har noe nå si. Følgende "lånte" Unlamda-program kalkulerer og skriver i stedet ut Fibonacci-tall i form av linjer med stjerner.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">1 </span>```s``s``sii`ki
+<span class="lnr">2 </span>  `k.*``s``s`ks
+<span class="lnr">3 </span> ``s`k`s`ks``s``s`ks``s`k`s`kr``s`k`sikk
+<span class="lnr">4 </span>  `k``s`ksk
+</pre>
+<p>Som du ser er det mest brukte tegnet i dette programmet "backquote". Dette er rett og slett Unlambdas <em>apply</em>-funksjon. <strong>S</strong> står for <em>substitution</em>, <strong>k</strong> kalles <em>constant generator</em>, og <strong>i</strong> er identity-funksjonen som bare returnerer sitt argument uendret. <strong>R</strong> skriver ut en ny linje, og <strong>.*</strong> skriver ut en stjerne.</p>
+<p>Her ser du hvordan det ser ut når jeg kjører det med Java-implementasjonen av Unlambda (den fortsetter å kjøre i det uendelige antar jeg, men jeg trykket Ctrl-C for å stoppe den):</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px">C:\unlambda-2.0.0\java&gt;java unlambda.Execute fib.unl
+
+*
+*
+**
+***
+*****
+********
+*************
+*********************
+**********************************
+*******************************************************
+</pre>
+<h4>Tar du utfordringen?</h4>
+<p>Siden jeg feiget ut og ikke klarte å løse den vanlige adventsoppgaven, så har vi jo egentlig en utfordring her. Kjempekudos til førstemann som poster løsningen i en kommentar!</p>
+<h4>hvordan kommer man i gang?</h4>
+<p>Det første man må gjøre er å lese det som står på den ofisielle websiden til <a href="http://www.madore.org/~david/programs/unlambda/">The Unlambda Programming Language</a>. Deretter kan man <a href="ftp://quatramaran.ens.fr/pub/madore/unlambda/unlambda-2.0.0.tar.gz">laste ned Unlambda versjon 2</a>, som inkluderer implementasjoner i C, Java, Perl, Scheme med flere, samt eksempel-programmer og noen verktøy for Unlambda-utviklere. Og så er det bare å klø seg i hodet og forsøke å få ting til å virke :-)</p>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="C#,Funksjonell programmering,Julekalender">
+
+    <title>May&lt;T&gt;</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>May&lt;T&gt;</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 3. desember 2015</small> 
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p>I noen programmeringsspråk, typisk i de statisk typede funksjonelle språkene, finner du noe man kaller <strong>option type</strong> (også kalt <em>maybe type</em>). Dette er typer som representerer en &quot;valgfri&quot; verdi, og brukes som returtypen til funksjoner som enten returnerer en verdi eller som <em>ikke</em> returnerer en verdi. I stedet for at en funksjon returnerer en <code>User</code> vil den enten returnere <code>Some User</code> eller <code>None</code>.</p>
+<p>Her om dagen fikk jeg lyst på en slik datatype i C#. Jeg begynte først å implementere en selv, men så kom jeg på at jeg kanskje burde undersøke om dette var et hjul som var funnet opp før. Og det var det. </p>
+<p><a href="http://algorithmicassertions.com/">Craig Gidney</a>, som er ansatt hos Google, har nemlig laget .NET-bibloteket <strong><a href="https://github.com/Strilanc/May">May</a></strong>. Men før jeg viser litt av hva som er så bra med option type, la oss snakke litt om <em>null</em>. </p>
+<p>##Null og Nullable<T></p>
+<p>I språk som C# har vi alltid hatt <em>null</em>. Den verdien kan du jo bruke til å representere &quot;ingen verdi&quot;. I alle fall som regel (men hva gjør du om du skal hente første verdi fra en liste, og første verdien faktisk er <em>null</em>?).</p>
+<p>Hovedproblemet med <em>null</em> er derimot at det er en så <em>ubrukelig</em> verdi. Altså: Med en gang du prøver å bruke den så tryner alt, og du må værsågod håndtere en <em>NullReferenceException</em>. Ikke går det an for en metode å si at <em>&quot;jeg kommer aldri til å returnere null&quot;</em> heller. Strengt tatt bør all kode som skal bruke et objekt sjekke at det ikke er <em>null</em> først, og det er slitsomt, lett å glemme, og resulterer i at den interessante koden drukner i <code>if (someObject != null)</code>.</p>
+<p>Og så er det ikke alle verdier som kan være <em>null</em> heller da. Derfor fikk vi <code>Nullable&lt;T&gt;</code>, som gjør det mulig å representere at en <em>value type</em> (int, bool osv.) er <em>null</em>. Dette er et stykke på vei mot <em>option type</em>, men mangler mye av det som gjør <em>option types</em> bra i språk som Haskell og F#.</p>
+<p>##La oss teste May</p>
+<p>Det er alltid litt vanskelig å komme opp med realistiske kodeeksempler, men tenk deg at vi har en metode som gir deg nyeste filen i en folder, gitt at filen er endret i dag: </p>
+<pre><code class="hljs">public FileInfo GetNewestFileToday(string folder)
+{
+    <span class="hljs-keyword">return</span> Directory.GetFiles(folder)
+        .Select(<span class="hljs-function"><span class="hljs-params">f</span> =&gt;</span> <span class="hljs-keyword">new</span> FileInfo(f))
+        .Where(<span class="hljs-function"><span class="hljs-params">fi</span> =&gt;</span> fi.LastWriteTime &gt; DateTime.<span class="hljs-built_in">Today</span>)
+        .OrderByDescending(<span class="hljs-function"><span class="hljs-params">fi</span> =&gt;</span> fi.LastWriteTime)
+        .FirstOrDefault();
+}</code></pre><p>Denne metoden er fin å bruke sålenge det finnes noen filer i folderen som er endret i dag. Om det ikke er tilfelle vil metoden fortsatt fungere, men den returnerer <em>null</em>. Og om jeg ikke tar høyde for det når jeg bruker den så smeller det.</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> <span class="hljs-keyword">file</span> = GetNewestFileToday(<span class="hljs-string">@&quot;C:\temp\&quot;</span>);
+Console.WriteLine(<span class="hljs-keyword">file</span>.LastWriteTime); <span class="hljs-comment">// BOOM!</span></code></pre><p>May foreslår at du endrer <code>GetNewestFileToday()</code> til å være tydelig på hva den kan returnere. Og det er ikke så vanskelig:</p>
+<pre><code class="hljs">public May&lt;FileInfo&gt; GetNewestFileToday(string folder)
+{
+    <span class="hljs-keyword">var</span> file = Directory.GetFiles(folder)
+        .Select(<span class="hljs-function"><span class="hljs-params">f</span> =&gt;</span> <span class="hljs-keyword">new</span> FileInfo(f))
+        .Where(<span class="hljs-function"><span class="hljs-params">fi</span> =&gt;</span> fi.LastWriteTime &gt; DateTime.<span class="hljs-built_in">Today</span>)
+        .OrderByDescending(<span class="hljs-function"><span class="hljs-params">fi</span> =&gt;</span> fi.LastWriteTime)
+        .FirstOrDefault();
+    <span class="hljs-keyword">return</span> file != <span class="hljs-literal">null</span> ? file.Maybe() : May.NoValue;
+}</code></pre><p>Returtypen er endret til <code>May&lt;FileInfo&gt;</code>, som sier at metoden <em>&quot;may of may not&quot;</em> returnere en fil. I tillegg undersøker jeg om jeg har en fil å returnere, og om jeg <em>ikke</em> har det så returnerer jeg <code>NoValue</code>.</p>
+<p><em>PS: Craig Gidney foreslår at navnekonvensjonen for metoder som returnerer May skal være at de starter på &quot;May&quot; - altså at jeg bør endre navnet til <code>MayGetNewestFileToday</code>. Jeg gjør ikke det her, men det kan kanskje være lurt.</em></p>
+<p>Et sentralt poeng her er at jeg <strong>unngår null-testen alle steder hvor jeg benytter verdien ved å gjøre den én gang der hvor verdien produseres!</strong></p>
+<p>Faktisk kan jeg gjøre endringen litt enklere, men jeg ville vise versjonen hvor jeg tester på null først. Ved å bruke en extension-metode i May som heter <code>MayFirst</code> blir metoden slik:</p>
+<pre><code class="hljs">public May&lt;FileInfo&gt; GetNewestFileToday(string folder)
+{
+    <span class="hljs-keyword">return</span> Directory.GetFiles(folder)
+        .Select(<span class="hljs-function"><span class="hljs-params">f</span> =&gt;</span> <span class="hljs-keyword">new</span> FileInfo(f))
+        .Where(<span class="hljs-function"><span class="hljs-params">fi</span> =&gt;</span> fi.LastWriteTime &gt; DateTime.<span class="hljs-built_in">Today</span>)
+        .OrderByDescending(<span class="hljs-function"><span class="hljs-params">fi</span> =&gt;</span> fi.LastWriteTime)
+        .MayFirst();
+}</code></pre><p>##Hvordan bruke May-verdier?</p>
+<p>Men hvordan bruker jeg nå denne metoden? Jo, May-verdier er litt spesielle. Du forventer kanskje at de har en <code>HasValue</code> og en <code>Value</code> property, sånn som Nullable har - men det er ikke tilfelle. Du skal faktisk ikke gripe inn og hente ut verdien direkte. May tvinger deg til å ta stilling til om du har en verdi eller ikke ved å tilby deg noen hendige metoder som &quot;simulerer&quot; den typen <strong>pattern matching</strong> som du har i språk som Haskell og F#.</p>
+<p>La oss som i forrige eksempel skrive ut <code>LastWriteTime</code>:</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> <span class="hljs-keyword">file</span> = GetNewestFileToday(@<span class="hljs-string">&quot;C:\temp\&quot;</span>);
+Console.WriteLine(<span class="hljs-keyword">file</span>.<span class="hljs-built_in">Match</span>(
+    fi =&gt; fi.LastWriteTime.<span class="hljs-keyword">ToString</span>(),
+    <span class="hljs-string">&quot;No files changed today&quot;</span>));</code></pre><p>Metoden <code>Match</code> gir meg indirekte tilgang til verdien, men tvinger meg samtidig til å angi en default verdi om file er <code>NoValue</code>.</p>
+<p>Om du synes <code>Match</code> virker litt fremmed kan det hende du liker <code>Select</code> og <code>Else</code> bedre:</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> <span class="hljs-keyword">file</span> = GetNewestFileToday(@<span class="hljs-string">&quot;C:\temp\&quot;</span>);
+Console.WriteLine(<span class="hljs-keyword">file</span>
+    .Select(fi =&gt; fi.LastWriteTime.<span class="hljs-keyword">ToString</span>())
+    .<span class="hljs-keyword">Else</span>(<span class="hljs-string">&quot;No files changed today&quot;</span>));</code></pre><p>Om det hjelper kan du se på en <em>option type</em> som en slags sekvens som enten inneholder <em>ingen</em> eller <em>ett</em> element. Du kan til og med bruke Linq-syntaks om du foretrekker:</p>
+<pre><code class="hljs">Console.<span class="hljs-keyword">WriteLine</span>(
+    (<span class="hljs-keyword">from</span> f in <span class="hljs-keyword">file</span>
+     select f.LastWriteTime.ToString()
+    ).<span class="hljs-keyword">Else</span>(<span class="hljs-string">&quot;No files changed today&quot;</span>));</code></pre><p>Eller du kan gjøre dette:</p>
+<pre><code class="hljs">file.IfHasValueThenDo(<span class="hljs-function"><span class="hljs-params">fi</span> =&gt;</span> <span class="hljs-built_in">Console</span>.WriteLine(fi.LastWriteTime));</code></pre><p>Eventuelt med en alternativ handling om verdien mangler:</p>
+<pre><code class="hljs">file.IfHasValueThenDo(<span class="hljs-function"><span class="hljs-params">fi</span> =&gt;</span> <span class="hljs-built_in">Console</span>.WriteLine(fi.LastWriteTime))
+    .ElseDo(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Console</span>.WriteLine(<span class="hljs-string">&quot;No files changed today&quot;</span>));</code></pre><p>Dette er ikke nødvendigvis mindre støyende kode enn om man bruker null-tester, men option type gjør det mer sansynlig at du alle steder tar høyde for mulig fravær av verdi.</p>
+<p>##Er du bekymret?</p>
+<p>En bekymring du kanskje sitter med nå er at du må ta høyde for May<T> over alt, og at det kan bli ganske slitsomt. Men det er ikke helt sånn det er. Det du skal gjøre er å sørge for å returnere May<T> der hvor du produserer verdien, og å håndtere May<T> der hvor du til slutt skal vise verdien (sluttproduktet). For alt som skjer i mellom går det ofte an å <em>late som om May ikke finnes</em>.</p>
+<p>For å forklare dette må jeg utvide mitt fantastiske eksempel. La oss lage tre metoder som representerer forretningslogikk for å kontrollere om et filnavn inneholder for mange banneord:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title">CountBadWordsInName</span><span class="hljs-params">(FileInfo fi)</span>
+</span>{
+    <span class="hljs-comment">// Beklager ordbruken...</span>
+    var badWords = <span class="hljs-keyword">new</span>[] { <span class="hljs-string">&quot;fuck&quot;</span>, <span class="hljs-string">&quot;dick&quot;</span>, <span class="hljs-string">&quot;shit&quot;</span> };
+    <span class="hljs-keyword">return</span> badWords.<span class="hljs-built_in">Aggregate</span>(<span class="hljs-number">0</span>, (acc, <span class="hljs-type">word</span>) 
+        =&gt; acc + (fi.Name.<span class="hljs-built_in">Contains</span>(<span class="hljs-type">word</span>) ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>));
+}
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-type">bool</span> <span class="hljs-title">TooManyBadWords</span><span class="hljs-params">(<span class="hljs-type">int</span> badWordCount)</span>
+</span>{
+    <span class="hljs-keyword">return</span> badWordCount &gt; <span class="hljs-number">1</span>;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> string <span class="hljs-title">FileNameReport</span><span class="hljs-params">(<span class="hljs-type">bool</span> tooManyBadWords)</span>
+</span>{
+    <span class="hljs-keyword">return</span> tooManyBadWords
+        ? <span class="hljs-string">&quot;File name contain too many bad words!&quot;</span>
+        : <span class="hljs-string">&quot;File name is fine :)&quot;</span>;
+}</code></pre><p>Legg merke til at disse metodene ikke har noe forhold til May. Hva skjer om jeg først har en <code>GetNewestFileToday()</code> som <em>ikke</em> bruker May<T>, og gjør følgende..?</p>
+<pre><code class="hljs"><span class="hljs-keyword">var</span> <span class="hljs-keyword">file</span> = GetNewestFileToday(<span class="hljs-string">@&quot;C:\temp\&quot;</span>);
+<span class="hljs-built_in">int</span> badWordCount = CountBadWordsInName(<span class="hljs-keyword">file</span>);
+<span class="hljs-built_in">bool</span> tooManyBadWords = TooManyBadWords(badWordCount);
+Console.WriteLine(FileNameReport(tooManyBadWords));</code></pre><p>Det kan selvfølgelig gå helt fint. Eller vi sklir på et bananskall og <code>CountBadWordsInName()</code> kaster en stygg NullReferenceException. Men om jeg i stedet bruker varianten som returnerer <code>May&lt;FileInfo&gt;</code> så kan jeg endre koden over til dette:</p>
+<pre><code class="hljs">Console.WriteLine(<span class="hljs-keyword">file</span>
+    .<span class="hljs-keyword">Select</span>(CountBadWordsInName)
+    .<span class="hljs-keyword">Select</span>(TooManyBadWords)
+    .<span class="hljs-keyword">Select</span>(FileNameReport)
+    .<span class="hljs-keyword">Else</span>(<span class="hljs-string">&quot;No files today..&quot;</span>));</code></pre><p>For det første er det mye penere; forhåpentligvis synes du det er mye tydeligere hva jeg gjør. For det andre har jeg benyttet forretningslogikk som ikke aner hva May er for noe. Det <code>Select</code> gjør er å kalle argumentfunksjonen hvis og bare hvis <code>file</code> har en verdi. Hvis den ikke har noen verdi vil bare denne &quot;ikke-verdien&quot; bli sendt videre til neste steg.</p>
+<p>Det samme kan uttrykkes med Linq-syntax (om du ikke er glad i funksjonelle pipelines), for eksempel på denne måten :  </p>
+<pre><code class="hljs">Console.WriteLine(
+    (<span class="hljs-function"><span class="hljs-keyword">from</span> f <span class="hljs-keyword">in</span> <span class="hljs-keyword">file</span>
+     <span class="hljs-keyword">select</span> <span class="hljs-title">FileNameReport</span>(<span class="hljs-params">
+              TooManyBadWords(
+                CountBadWordsInName(f</span>)))
+    ).<span class="hljs-title">Else</span>(<span class="hljs-params"><span class="hljs-string">&quot;No files today..&quot;</span></span>))</span>;</code></pre><p>..eller i en mere imperativ stil:</p>
+<pre><code class="hljs">Console.WriteLine(
+    (<span class="hljs-keyword">from</span> f <span class="hljs-keyword">in</span> <span class="hljs-keyword">file</span>
+     <span class="hljs-keyword">let</span> badWordCount = CountBadWordsInName(f)
+     <span class="hljs-keyword">let</span> tooMany = TooManyBadWords(badWordCount)
+     <span class="hljs-function"><span class="hljs-keyword">select</span> <span class="hljs-title">FileNameReport</span>(<span class="hljs-params">tooMany</span>)
+    ).<span class="hljs-title">Else</span>(<span class="hljs-params"><span class="hljs-string">&quot;No files today..&quot;</span></span>))</span>;</code></pre><p>Jeg tror faktisk det er første gang jeg har brukt <code>let</code> i C#.</p>
+<p>##Wrap-up</p>
+<p>May-bibloteket (og option types generelt) vil kunne gjøre koden din tryggere ved å tvinge deg til å ta høyde for fravær av verdier der hvor du bruker det. Det vil prege koden din flere steder, men som du nå har sett behøver du ikke å innføre det over alt for å høste effekten.</p>
+<p>Om du vil vite mer om May bør du ta en titt på blogposten <a href="http://twistedoakstudios.com/blog/Post1130_when-null-is-not-enough-an-option-type-for-c">When null is not enough: an option type for C#</a>, hvor du får vite alt du trenger om hvordan bibloteket ble til. Og når du er klar til å teste det selv så <a href="https://www.nuget.org/packages/Strilanc.Value.May/">finner du det på NuGet</a>.</p>
+<p>Ble du inspirert til å lære mer om option types kan du kjøpe den tynne boken <em><a href="https://gumroad.com/l/maybe-haskell">Maybe Haskell</a></em>, som gir deg en innføring i funksjonell programmeirng og Haskell ved å snakke om nettopp <em>Maybe</em>.</p>
+<p>Og vil du se min første knoting med option types kan du lese kommentartråden på <a href="/2015/01/10/fsharp-msisdn/">en av mine tidligere bloggposter</a>, hvor jeg får litt gode råd om option types i F#.</p>
+<p>...</p>
+<p>Og så var det bare 21 dager igjen til Jul!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

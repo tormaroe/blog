@@ -1,0 +1,146 @@
+---
+title: "Opus Polyglotis II: Rebol"
+link: http://blog.kjempekjekt.com/2012/02/27/opus-polyglotis-ii-rebol/
+layout: post
+date: 2012-02-27 22:25:03Z
+tags:
+  - Polyglot
+  - Rebol
+---
+<p><img style="background-image: none; border-right-width: 0px; margin: 0px 21px 2px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="act3" border="0" alt="act3" align="left" src="/uploads/2012/02/act3.png" width="142" height="162"></p> <p style="line-height: 16px"><tt><strong>OPUS POLYGLOTIS II, Act 3<br></strong>Tagline: "Fjern støttehjulet, heng opp Wunderbaumen, og slå ut håret!"<br>På scenen: Rebol</tt></p> <p>Nå blir det gjensyn med en rebell jeg presenterte første gang <a href="http://blog.kjempekjekt.com/2011/12/15/rebol/">i Julekalenderen 15. desember</a>. Jeg vet ikke akkurat hva for noe nytt det vil tilføre i forhold til <a href="http://blog.kjempekjekt.com/2012/02/20/opus-polyglotis-ii/"><em>denne bloggserien</em></a>, men jammen var det gøy å bruke dette språket!</p> <p>Selve løsningen er vel mer eller mindre funksjonell (<a href="http://blog.kjempekjekt.com/2012/02/21/opus-polyglotis-ii-python/">som Python-løsningen i akt 1</a>), men bruker i tillegg et globalt objekt hvor de ulike formatene kan registrere seg. Dermed følger jeg Open/Closed-prinsippet (<a href="http://blog.kjempekjekt.com/2012/02/22/opus-polyglotis-ii-ruby/">som i Ruby-løsningen i akt 2</a>), og behøver ikke å endre noe dispatch-kode for å legge til flere formater. I tillegg demonstrerer jeg Rebol's ganske geniale <em>parse</em>-funksjon, som jeg også benytter <a href="http://blog.kjempekjekt.com/2011/12/24/en-euler-dsl/">da jeg lagde en DSL på selveste julaften i fjor</a>.</p> <p>Jeg kommer ikke til å forklare alle detaljer i koden – jeg vil i stedet at du forsøker å tolke mye av det selv. Er du interessert i språket kan du lære endel av det.</p> <h4>Men først må vi tette et lite hull</h4> <p>Rebol har ikke noen map-funksjon. Og jeg er glad i å mappe! Derfor måtte jeg lage min egen map. Funksjonen du ser nedenfor virker avansert, men det er fordi den kan brukes på to måter: Den kan mappe en funksjon over én serie med elementer, eller den kan mappe en funksjon over to serier.</p> <p>Jeg kunne nok ha gjort den enda mere generell, men nå dekket den behovet mitt for denne løsningen, så jeg stoppet der.</p> <pre style="font-family: monospace; color: #f6f3e8; background-color: #000000;margin-bottom:16px;padding:6px;">
+<span class="lnr"> 23 </span><span class="Identifier">map</span>: <span class="Statement">func</span> [
+<span class="lnr"> 24 </span> <span class="String"> { Returns a block consisting of the result of applying</span>
+<span class="lnr"> 25 </span><span class="String">    fun to the items in a series. }</span>
+<span class="lnr"> 26 </span>  <span class="Identifier">fun</span>         [<span class="Type">function!</span>] <span class="String">&quot;Function to map on&quot;</span>
+<span class="lnr"> 27 </span>  <span class="Identifier">series</span>      [<span class="Type">block!</span>]    <span class="String">&quot;Elements to map&quot;</span>
+<span class="lnr"> 28 </span>  <span class="Operator">/</span><span class="Identifier">two</span>        <span class="String">&quot;Use two series (fun must take two elements)&quot;</span>
+<span class="lnr"> 29 </span>  <span class="Identifier">series2</span>     [<span class="Type">block!</span>]    <span class="String">&quot;The second series of elements&quot;</span>
+<span class="lnr"> 30 </span>  <span class="Operator">/</span><span class="Identifier">local</span> <span class="Identifier">temp</span> <span class="String">&quot;Temp var to hold mapped values&quot;</span>
+<span class="lnr"> 31 </span>] [
+<span class="lnr"> 32 </span>  <span class="Identifier">temp</span>: <span class="Statement">copy</span> []
+<span class="lnr"> 33 </span>  <span class="Identifier">either</span> <span class="Identifier">two</span> [
+<span class="lnr"> 34 </span>    <span class="String">&quot; Map over both series and series2&quot;</span>
+<span class="lnr"> 35 </span>    <span class="Statement">while</span> [<span class="Operator">not</span> <span class="Operator">tail?</span> <span class="Identifier">series</span>] [
+<span class="lnr"> 36 </span>      <span class="Identifier">append</span> <span class="Identifier">temp</span> <span class="Identifier">fun</span> <span class="Statement">first</span> <span class="Identifier">series</span>
+<span class="lnr"> 37 </span>                      <span class="Statement">pick</span> <span class="Identifier">series2</span> <span class="Identifier">index?</span> <span class="Identifier">series</span>
+<span class="lnr"> 38 </span>      <span class="Identifier">series</span>: <span class="Statement">next</span> <span class="Identifier">series</span>
+<span class="lnr"> 39 </span>    ]
+<span class="lnr"> 40 </span>    <span class="Identifier">series</span>: <span class="Statement">head</span> <span class="Identifier">series</span>
+<span class="lnr"> 41 </span>    <span class="Identifier">temp</span>
+<span class="lnr"> 42 </span>  ] [
+<span class="lnr"> 43 </span>    <span class="String">&quot; else: map only the first series, which is simple &quot;</span>
+<span class="lnr"> 44 </span>    <span class="Statement">foreach</span> <span class="Identifier">x</span> <span class="Identifier">series</span> [ <span class="Identifier">append</span> <span class="Identifier">temp</span> <span class="Identifier">fun</span> <span class="Identifier">x</span> ]
+<span class="lnr"> 45 </span>  ]
+<span class="lnr"> 46 </span>]
+</pre>
+<h4>En DSL for registrering av nye formater</h4>
+<p>Og da kan vi begynne med selve løsningen. Jeg startet med å opprette et objekt – <em>opus-polyglotis</em> – som har en slot som holder en liste med format-funksjoner med tilhørende format-nøkler. Objektet har i tillegg to funksjoner, én for å legge til et format og én for å hente ut et format.</p>
+<pre style="font-family: monospace; color: #f6f3e8; background-color: #000000;margin-bottom:16px;padding:6px;">
+<span class="lnr"> 48 </span><span class="Identifier">opus-polyglotis</span>: <span class="Identifier">context</span> [
+<span class="lnr"> 49 </span>  <span class="Identifier">formaters</span>: []
+<span class="lnr"> 50 </span>
+<span class="lnr"> 51 </span>  <span class="Identifier">add-format</span>: <span class="Statement">func</span> [<span class="Identifier">key</span> <span class="Identifier">definition</span>] [
+<span class="lnr"> 52 </span>    <span class="Identifier">append</span> <span class="Identifier">formaters</span> <span class="Identifier">key</span>
+<span class="lnr"> 53 </span>    <span class="Identifier">append</span> <span class="Identifier">formaters</span> :<span class="Identifier">definition</span>
+<span class="lnr"> 54 </span>  ]
+<span class="lnr"> 55 </span>
+<span class="lnr"> 56 </span>  <span class="Identifier">get-format</span>: <span class="Statement">func</span> [<span class="Identifier">key</span>] [
+<span class="lnr"> 57 </span>    <span class="Statement">select</span> <span class="Identifier">formaters</span> <span class="Identifier">key</span>
+<span class="lnr"> 58 </span>  ]
+<span class="lnr"> 59 </span>]
+</pre>
+<p>I neste kodeblokk ser du hvordan jeg bruker dette objektet til å definere og registrere YAML-formatet:</p>
+<pre style="font-family: monospace; color: #f6f3e8; background-color: #000000;margin-bottom:16px;padding:6px;">
+<span class="lnr"> 61 </span><span class="Identifier">opus-polyglotis</span><span class="Operator">/</span><span class="Identifier">add-format</span> <span class="String">&quot;yaml&quot;</span>
+<span class="lnr"> 62 </span>
+<span class="lnr"> 63 </span><span class="Statement">func</span> [<span class="Identifier">headers</span> <span class="Identifier">records</span>] [
+<span class="lnr"> 64 </span>  <span class="String">&quot;YAML not supported yet&quot;</span>
+<span class="lnr"> 65 </span>]
+</pre>
+<p>Det ser ut som om jeg har opprettet en anonym funksjon uten å beholde noen referanse til den, men den er altså egentlig det andre argumentet til kallet til <em>add-format</em> funksjonen. Ganske kult egentlig – Rebol's syntaks er så løs og ledig at dette helt utilsiktet ble en aldri så liten intern DSL.</p>
+<h4>XML-formatet</h4>
+<p>Nå kommer koden for å formatere dataene mine (som jeg ikke har presentert enda) som XML. Formatfunksjonen har to hjelpefunksjoner: xml-tag og xml-record. Bruk litt fantasi så tror jeg du skjønner hvordan XML'en genereres. For å holde eksempelet ryddig og forståelig droppet jeg å legge til indentering og linjeskift.</p>
+<pre style="font-family: monospace; color: #f6f3e8; background-color: #000000;margin-bottom:16px;padding:6px;">
+<span class="lnr"> 67 </span><span class="Identifier">opus-polyglotis</span><span class="Operator">/</span><span class="Identifier">add-format</span> <span class="String">&quot;xml&quot;</span>
+<span class="lnr"> 68 </span>
+<span class="lnr"> 69 </span><span class="Statement">func</span> [<span class="Identifier">headers</span> <span class="Identifier">records</span> <span class="Operator">/</span><span class="Identifier">local</span> <span class="Identifier">xml-tag</span> <span class="Identifier">xml-record</span>] [
+<span class="lnr"> 70 </span>
+<span class="lnr"> 71 </span>  <span class="Identifier">xml-tag</span>: <span class="Statement">func</span> [<span class="Identifier">tag</span> <span class="Identifier">body</span>] [
+<span class="lnr"> 72 </span>    <span class="Identifier">tag</span>: <span class="Identifier">replace</span> <span class="Identifier">tag</span> <span class="String">&quot; &quot;</span> <span class="String">&quot;_&quot;</span>
+<span class="lnr"> 73 </span>    <span class="Identifier">rejoin</span> [ <span class="String">&quot;&lt;&quot;</span> <span class="Identifier">tag</span> <span class="String">&quot;&gt;&quot;</span> <span class="Identifier">body</span> <span class="String">&quot;&lt;/&quot;</span> <span class="Identifier">tag</span> <span class="String">&quot;&gt;&quot;</span> ]
+<span class="lnr"> 74 </span>  ]
+<span class="lnr"> 75 </span>
+<span class="lnr"> 76 </span>  <span class="Identifier">xml-record</span>: <span class="Statement">func</span> [<span class="Identifier">row</span>] [
+<span class="lnr"> 77 </span>    <span class="Identifier">xml-tag</span> <span class="String">&quot;record&quot;</span>
+<span class="lnr"> 78 </span>            <span class="Identifier">rejoin</span> <span class="Identifier">map</span><span class="Operator">/</span><span class="Identifier">two</span> :<span class="Identifier">xml-tag</span> <span class="Identifier">headers</span> <span class="Identifier">row</span>
+<span class="lnr"> 79 </span>  ]
+<span class="lnr"> 80 </span>
+<span class="lnr"> 81 </span>  <span class="Identifier">xml-tag</span> <span class="String">&quot;records&quot;</span>
+<span class="lnr"> 82 </span>          <span class="Identifier">rejoin</span> <span class="Identifier">map</span> :<span class="Identifier">xml-record</span> <span class="Identifier">records</span>
+<span class="lnr"> 83 </span>]
+</pre>
+<h4>json-formatet</h4>
+<p>Det var litt mere komplisert å produsere JSON. Hvis du har problemer med å forstå denne koden så er det helt greit. Men ta en ekstra titt på <em>numeric?</em>-funksjonen, som skjekker om en streng inneholder et tall. Rebol har ikke regulære uttrykk (som jeg brukte i Python og Ruby), men tilbyr i stedet en mye sterkere parse-funksjon.</p>
+<pre style="font-family: monospace; color: #f6f3e8; background-color: #000000;margin-bottom:16px;padding:6px;">
+<span class="lnr">101 </span><span class="Identifier">opus-polyglotis</span><span class="Operator">/</span><span class="Identifier">add-format</span> <span class="String">&quot;json&quot;</span>
+<span class="lnr">102 </span>
+<span class="lnr">103 </span><span class="Statement">func</span> [
+<span class="lnr">104 </span>  <span class="Identifier">headers</span> <span class="Identifier">records</span>
+<span class="lnr">105 </span>  <span class="Operator">/</span><span class="Identifier">local</span> <span class="Identifier">numeric?</span> <span class="Identifier">json-object</span> <span class="Identifier">json-value</span> <span class="Identifier">clear-from-tail</span>
+<span class="lnr">106 </span>] [
+<span class="lnr">107 </span>
+<span class="lnr">108 </span>  <span class="Identifier">chop-last-comma</span>: <span class="Statement">func</span> [<span class="Identifier">str</span>] [
+<span class="lnr">109 </span>    <span class="Statement">clear</span> <span class="Statement">skip</span> <span class="Identifier">str</span> (<span class="Statement">length?</span> <span class="Identifier">str</span>) <span class="Operator">-</span> <span class="Number">2</span>
+<span class="lnr">110 </span>    <span class="Statement">return</span> <span class="Identifier">str</span>
+<span class="lnr">111 </span>  ]
+<span class="lnr">112 </span>
+<span class="lnr">113 </span>  <span class="Identifier">numeric?</span>: <span class="Statement">func</span> [<span class="Identifier">x</span>] [
+<span class="lnr">114 </span>    <span class="Identifier">digit</span>:   <span class="Identifier">charset</span> <span class="String">&quot;0123456789&quot;</span>
+<span class="lnr">115 </span>    <span class="Identifier">integer</span>: [ <span class="Identifier">some</span> <span class="Identifier">digit</span>          ]
+<span class="lnr">116 </span>    <span class="Identifier">float</span>:   [ <span class="Identifier">integer</span> <span class="String">&quot;.&quot;</span> <span class="Identifier">integer</span> ]
+<span class="lnr">117 </span>    <span class="Statement">parse</span> <span class="Identifier">x</span>  [  <span class="Identifier">float</span>  |   <span class="Identifier">integer</span> ]
+<span class="lnr">118 </span>  ]
+<span class="lnr">119 </span>
+<span class="lnr">120 </span>  <span class="Identifier">json-value</span>: <span class="Statement">func</span> [<span class="Identifier">v</span>] [
+<span class="lnr">121 </span>    <span class="Identifier">either</span> <span class="Identifier">numeric?</span> <span class="Identifier">v</span>
+<span class="lnr">122 </span>      [               <span class="Identifier">v</span>        ]
+<span class="lnr">123 </span>      [ <span class="Identifier">rejoin</span> [ <span class="String">&quot;</span><span class="Special">^&quot;</span><span class="String">&quot;</span> <span class="Identifier">v</span> <span class="String">&quot;</span><span class="Special">^&quot;</span><span class="String">&quot;</span> ] ]
+<span class="lnr">124 </span>  ]
+<span class="lnr">125 </span>
+<span class="lnr">126 </span>  <span class="Identifier">json-object</span>: <span class="Statement">func</span>[<span class="Identifier">values</span>] [
+<span class="lnr">127 </span>    <span class="Identifier">append</span> <span class="Identifier">compose</span> [<span class="String">&quot;</span><span class="Special">^{</span><span class="String">&quot;</span> (
+<span class="lnr">128 </span>      <span class="Identifier">chop-last-comma</span> <span class="Identifier">rejoin</span> <span class="Identifier">map</span><span class="Operator">/</span><span class="Identifier">two</span> <span class="Statement">func</span>[<span class="Identifier">key</span> <span class="Identifier">value</span>] [
+<span class="lnr">129 </span>        <span class="Identifier">rejoin</span> [ <span class="String">&quot;</span><span class="Special">^&quot;</span><span class="String">&quot;</span> <span class="Identifier">key</span> <span class="String">&quot;</span><span class="Special">^&quot;</span><span class="String">:&quot;</span> <span class="Identifier">json-value</span> <span class="Identifier">value</span> <span class="String">&quot;, &quot;</span> ]
+<span class="lnr">130 </span>      ] <span class="Identifier">headers</span> <span class="Identifier">values</span>
+<span class="lnr">131 </span>    ) <span class="String">&quot;</span><span class="Special">^}</span><span class="String">,&quot;</span> ] <span class="Identifier">newline</span>
+<span class="lnr">132 </span>  ]
+<span class="lnr">133 </span>
+<span class="lnr">134 </span>  <span class="Identifier">rejoin</span> <span class="Identifier">compose</span> [
+<span class="lnr">135 </span>    <span class="String">&quot;[&quot;</span> (<span class="Identifier">chop-last-comma</span> <span class="Identifier">rejoin</span> <span class="Identifier">map</span> :<span class="Identifier">json-object</span> <span class="Identifier">records</span>) <span class="String">&quot;]&quot;</span>
+<span class="lnr">136 </span>  ]
+<span class="lnr">137 </span>]
+</pre>
+<p>Det jeg gjør i numeric? er å bygge opp definisjonen på et knøttlite språk. Er du kjent med <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">BNF-grammars</a> bør du se hvordan dette fungerer. Jeg sier at et <em>digit</em> er et tegn i serien "0123456789". Så sier jeg at en <em>integer</em> består av <em>noen digits</em>. Deretter sier jeg at en <em>float</em> består av en integer, etterfulgt av punktum, etterfulgt av en ny integer. Til slutt kaller jeg parse på teksten jeg skal teste, og sier at input skal være float eller integer.</p>
+<p>Dette er bare en ørliten smakebit av hva <em>parse</em> kan gjøre.</p>
+<h4>Resten av programmet</h4>
+<p>Nå må jeg hente kommandolinje-argumentene: formatet som er valgt for output, og filen som skal leses:</p>
+<pre style="font-family: monospace; color: #f6f3e8; background-color: #000000;margin-bottom:16px;padding:6px;">
+<span class="lnr">140 </span><span class="Identifier">selected-format</span>: <span class="Statement">first</span> <span class="Identifier">system</span><span class="Operator">/</span><span class="Identifier">options</span><span class="Operator">/</span><span class="Identifier">args</span>
+<span class="lnr">141 </span><span class="Identifier">csv-file</span>: <span class="Identifier">to-rebol-file</span> <span class="Statement">second</span> <span class="Identifier">system</span><span class="Operator">/</span><span class="Identifier">options</span><span class="Operator">/</span><span class="Identifier">args</span>
+</pre>
+<p>Så skal jeg parse CSV-filen. Igjen bruker jeg <em>parse</em>-funksjonen, som skjønner CSV-filer helt utmærket sålenge jeg forteller den hvilket tegn som brukes som separator. Resultatet lagrer jeg i variablene headers og records.</p>
+<pre style="font-family: monospace; color: #f6f3e8; background-color: #000000;margin-bottom:16px;padding:6px;">
+<span class="lnr">144 </span><span class="Identifier">records</span>: []
+<span class="lnr">145 </span><span class="Statement">foreach</span> <span class="Identifier">line</span> <span class="Statement">read</span><span class="Operator">/</span><span class="Identifier">lines</span> <span class="Identifier">csv-file</span> [
+<span class="lnr">146 </span>  <span class="Identifier">append</span><span class="Operator">/</span><span class="Identifier">only</span> <span class="Identifier">records</span> <span class="Statement">parse</span><span class="Operator">/</span><span class="Operator">all</span> <span class="Identifier">line</span> <span class="String">&quot;;&quot;</span>
+<span class="lnr">147 </span>]
+<span class="lnr">148 </span><span class="Identifier">headers</span>: <span class="Statement">first</span> <span class="Identifier">records</span>
+<span class="lnr">149 </span><span class="Identifier">records</span>: <span class="Statement">skip</span> <span class="Identifier">records</span> <span class="Number">1</span>
+</pre>
+<p>Og så kommer dispatch-koden. Jeg henter ut formatet fra opus-polyglotis, sender inn dataene til funksjonen, og printer resultatet. Hey Presto!</p>
+<pre style="font-family: monospace; color: #f6f3e8; background-color: #000000;margin-bottom:16px;padding:6px;">
+<span class="lnr">152 </span><span class="Identifier">formater</span>: <span class="Identifier">opus-polyglotis</span><span class="Operator">/</span><span class="Identifier">get-format</span> <span class="Identifier">selected-format</span>
+<span class="lnr">153 </span><span class="Statement">print</span> <span class="Identifier">formater</span> <span class="Identifier">headers</span> <span class="Identifier">records</span>
+</pre>
+<h4>Oppsummering</h4>
+<p>Som sagt vet jeg ikke om Rebol tilførte så mye nytt i forhold til problemet jeg jobber med, men jeg føler språket viste seg fra en bra side. Rebol er et lite språk med få funksjoner og enkle regler, men funksjonene er kraftige og kan settes sammen til å gjøre fantastiske ting med forholdsvis lite kode. Det var stimulerende og gøy å implementere dette programmet.</p>

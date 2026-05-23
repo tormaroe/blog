@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Databaser,IronRuby,Ruby">
+
+    <title>Litt ADO.NET i IronRuby</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Litt ADO.NET i IronRuby</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 8. juli 2010</small> 
+            <a href="/tags/databaser"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Databaser</span></a>
+          
+            <a href="/tags/ironruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> IronRuby</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p>For automatisering av driftsrutiner og andre ad-hoc oppgaver er det gull å ha et bra, dynamisk skriptspråk tilgjengelig. Og med IronRuby får du også tilgang til å bruke hele .Net-rammeverket, så da har du i både pose og sekk for å si det sånn. Akkurat nå sitter jeg og lager noen ADO.Net-spørringer mot SQL Server i IronRuby, og tenkte det kunne være greit å vise hvor enkelt det er.</p>
+<p>Så uten noe mer fjas og vas, her er et eksempel hvor jeg henter ut noe data og printer det til konsollet:</p>
+<div style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><font face="monospace"><span style="background-color: #000000"><font color="#3d3d3d">1 </font></span>load_assembly <font color="#336633">'</font><font color="#a8ff60">System.Data</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">2 </font></span><font color="#96cbfe">include</font>&nbsp;<font color="#ffffb6">System</font>::<font color="#ffffb6">Data</font>::<font color="#ffffb6">SqlClient</font><br><span style="background-color: #000000"><font color="#3d3d3d">3 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">4 </font></span><font color="#7c7c7c"># Utility method to open a DB connection, read and print</font><br><span style="background-color: #000000"><font color="#3d3d3d">5 </font></span><font color="#7c7c7c"># some data based on a SQL command and a hash of field</font><br><span style="background-color: #000000"><font color="#3d3d3d">6 </font></span><font color="#7c7c7c"># display names and related ordinals in the recordset.</font><br><span style="background-color: #000000"><font color="#3d3d3d">7 </font></span>def execute_read connection_string, sql, fields<br><span style="background-color: #000000"><font color="#3d3d3d">8 </font></span>&nbsp; connection = <font color="#ffffb6">SqlConnection</font>.new connection_string<br><span style="background-color: #000000"><font color="#3d3d3d">9 </font></span>&nbsp; command = <font color="#ffffb6">SqlCommand</font>.new sql, connection<br><span style="background-color: #000000"><font color="#3d3d3d">10 </font></span>&nbsp; connection.open<br><span style="background-color: #000000"><font color="#3d3d3d">11 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">12 </font></span>&nbsp; reader = command.execute_reader<br><span style="background-color: #000000"><font color="#3d3d3d">13 </font></span>&nbsp; <font color="#6699cc">while</font> reader.read<br><span style="background-color: #000000"><font color="#3d3d3d">14 </font></span>&nbsp;&nbsp;&nbsp; puts fields.inject({}) <font color="#6699cc">do</font> |<font color="#c6c5fe">acc</font>, <font color="#c6c5fe">field</font>| <br><span style="background-color: #000000"><font color="#3d3d3d">15 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#336633">"</font><font color="#00a0a0">#{</font>acc<font color="#00a0a0">}</font><font color="#a8ff60">&nbsp;</font><font color="#00a0a0">#{</font>field.first<font color="#00a0a0">}</font><font color="#a8ff60">: </font><font color="#00a0a0">#{</font>reader[field.last]<font color="#00a0a0">}</font><font color="#336633">"</font>&nbsp;<br><span style="background-color: #000000"><font color="#3d3d3d">16 </font></span>&nbsp;&nbsp;&nbsp; <font color="#6699cc">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">17 </font></span>&nbsp; <font color="#6699cc">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">18 </font></span>&nbsp; connection.close<br><span style="background-color: #000000"><font color="#3d3d3d">19 </font></span>end<br><span style="background-color: #000000"><font color="#3d3d3d">20 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">21 </font></span>execute_read(<br><span style="background-color: #000000"><font color="#3d3d3d">22 </font></span>&nbsp; <font color="#336633">"</font><font color="#a8ff60">User ID=foo;Password=bar;Data Source=THEBOSS</font><font color="#e18964">\\</font><font color="#a8ff60">SQL2005;Initial Catalog=theDB;</font><font color="#336633">"</font>,<br><span style="background-color: #000000"><font color="#3d3d3d">23 </font></span>&nbsp; <font color="#336633">"</font><font color="#a8ff60">SELECT * from Rule</font><font color="#336633">"</font>,<br><span style="background-color: #000000"><font color="#3d3d3d">24 </font></span>&nbsp; <font color="#336633">"</font><font color="#a8ff60">Id</font><font color="#336633">"</font> =&gt; <font color="#ff73fd">0</font>, <font color="#336633">"</font><font color="#a8ff60">Name</font><font color="#336633">"</font> =&gt; <font color="#ff73fd">1</font>, <font color="#336633">"</font><font color="#a8ff60">Active</font><font color="#336633">"</font> =&gt; <font color="#ff73fd">3</font>, <font color="#336633">"</font><font color="#a8ff60">Transp</font><font color="#336633">"</font> =&gt; <font color="#ff73fd">4</font>)<br></font></div>
+<p>Så lett er det å inkludere et namespace fra .Net-rammeverket og ta det i bruk. </p>
+<p>Det eneste som kan være litt vanskelig å tyde her er måten jeg skriver ut rader til konsollet på – jeg har blitt så utrolig glad i <em>inject</em> (<a href="/2010/06/09/filtrer-projiser-aggreger/">aggregate/reduce/fold/whatever</a>) i det siste, og bruker det hele tiden, men det resulterer ikke alltid i den mest lesbare koden i verden for dem som ikke er vandt til slikt ;)</p>
+<p><strong>Les også:</strong> <a href="/2010/03/07/slettetmme-msmq-ker-med-ironruby/">Slette/tømme MSMQ-køer med IronRuby</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

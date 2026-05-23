@@ -1,0 +1,82 @@
+---
+title: FORTHolito
+link: http://blog.kjempekjekt.com/2013/01/31/fortholito/
+layout: post
+date: 2013-01-30 23:32:58Z
+tags:
+  - Polyglot
+  - Testing
+  - Esoteriske språk
+  - Forth
+---
+<p>Jammen klarte jeg å levere et programmeringsspråk til PLT Games i januar også (<a href="http://blog.kjempekjekt.com/2013/01/01/ropy/">se desember-bidraget Ropy her</a>). README-filen sier det meste, så her er den gjengitt:</p> <hr>  <p><strong><em>FORTHolito</em></strong> is a programming language - specifically an (incomplete) implementation of the <a href="http://en.wikipedia.org/wiki/Forth_%28programming_language%29">FORTH</a> programming language - made just for fun and for the learning experience. The interpreter is implemented in Ruby, and it has an interactive REPL.</p> <p>But it's more! It's my entry into the <a href="http://www.pltgames.com/competition/2013/1">PLT Games: Testing the Waters</a> competition. I made it possible to write extensions to FORTHolito, and then wrote a <strong>test extension</strong>.</p> <p>When you run FORTHolito with this extension all words you define <strong>have to</strong> include one or more tests - working examples of how the word operates.</p> <p>Here's an example of a word definition in FORTHolito:</p><pre><code>: multiple-of? ( x n -- flag ) mod 0= ;
+</code></pre>
+<p>If I use the test extension however I would write it like this:</p><pre><code>: multiple-of? ( x n -- flag ) mod 0= 
+  &lt;EXAMPLE&gt; given: 3 6  expect: true
+  &lt;EXAMPLE&gt; given: 3 4  expect: false
+;
+</code></pre>
+<p>FORTHolito (or FORTH basically) makes for some nice tests when all you do is operate on a data stack. The <em>givens</em> are just stack operations - <em>"given 3 and 6 are pushed onto the stack"</em>. What's left on the stack when the word has been called is the <em>expected</em> part.</p>
+<h3><a class="anchor" href="#try-it-out" name="try-it-out"><span class="mini-icon mini-icon-link"></span></a>Try it out</h3>
+<p>FORTHolito is a small and limited language. But if you're just curious about FORTH, or want to see how you can implement a simple language in Ruby, you should <a href="https://github.com/tormaroe/fortholito">clone it</a> and fire up the REPL. </p>
+<p>FORTHolito have some basic options. Run it with <em>--help</em> to see how it's used:</p><pre><code>C:\dev\fortholito [master]&gt; .\fortholito --help
+Usage:
+
+  FORTHolito [options] [files]
+
+Options:
+  --eval &lt;code&gt;         Evaluate code. Everything after --eval
+                        is considered FORTHolito code. Code is
+                        evaluated after files.
+  --extend &lt;extension&gt;  Load an extension by name. Extensions
+                        are loaded before files.
+  --help                Display this help and exit.
+</code></pre>
+<p>When you enter the REPL this is what you'll see:</p><pre><code>C:\dev\fortholito [master]&gt; .\fortholito
+Welcome to FORTHolito version 0.2 by @tormaroe
+Type 'help' and hit [ENTER] to get started..
+ok
+</code></pre>
+<p>If you now type <em>help</em> you'll get a list of useful words to try out:</p><pre><code>ok  help
+ SOME USEFULL WORDS YOU SHOULD TRY:
+  words       \ display all words in the vocabulary
+  describe    \ pop word (string) and show details
+  .           \ pop and print the top item from the stack
+  .s          \ display stack once
+  showstack   \ toggle display of stack between commands
+  stacktrace  \ display all modifications to stack for debugging
+  help:stack  \ cheat sheet of stack overations
+  bye         \ exit REPL
+ok
+</code></pre>
+<p>To get a feel for how much (or how little) of FORTH I've implemented in FORTHolito, type <em>words</em>:</p><pre><code>ok  words
+ *                  +                  -                  -rot
+ .                  .s                 /                  0&lt;
+ 0&lt;=                0&lt;&gt;                0=                 0&gt;
+ 0&gt;=                1+                 1-                 2*
+ 2/                 2drop              2dup               &lt;
+ &lt;=                 &lt;&gt;                 =                  &gt;
+ &gt;=                 abs                and                between
+ bye                clear              cr                 depth
+ describe           drop               dup                false
+ help               help:stack         max                min
+ mod                negate             nip                noop
+ or                 over               push-range         rand
+ rot                showstack          space              stacktrace
+ swap               true               tuck               within
+ words
+ok
+</code></pre>
+<p>In addition to the words there are some constructs like <em>if</em> and iteration using <em>begin..until</em> and <em>begin..while..repeat</em>. You should have a look in the examples directory as well as the spec.rb file to learn more.</p>
+<p>As a treat to Ruby developers I've also made it possible to drop into Ruby inside strings.</p><pre><code>ok  "#{ 2 + 2 }"
+ok  "2 + 2 equals "
+ok  . . cr
+2 + 2 equals 4
+ok
+</code></pre>
+<h3><a class="anchor" href="#final-thoughs" name="final-thoughs"><span class="mini-icon mini-icon-link"></span></a>Final thoughs</h3>
+<p>FORTHolito hasn't become all I hoped it would be. I had big plans for the test extension when I started - it would become this great, interactive development environment for producing perfectly tested and safe code. I still believe my vision is possible, and possibly even useful, but it would take more time.</p>
+<p>The drive and passion I had in the beginning has dissipated for now. But it was great fun while it lasted - and maybe some day I'll pick up where I left off. Either way I did manage to enter into the <a href="http://www.pltgames.com/competition/2013/1">PLT Games</a> again.</p>
+<hr>
+
+<p><a href="https://github.com/tormaroe/fortholito">FORTHolito finner du på Github</a>.</p>

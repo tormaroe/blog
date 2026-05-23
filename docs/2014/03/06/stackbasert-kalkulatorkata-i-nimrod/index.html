@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Nimrod,Kata">
+
+    <title>Stack-basert kalkulator-kata i Nimrod</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Stack-basert kalkulator-kata i Nimrod</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 6. mars 2014</small> 
+            <a href="/tags/nimrod"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Nimrod</span></a>
+          
+            <a href="/tags/kata"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Kata</span></a>
+          </p>
+          <p>Jeg har <a href="/2014/03/02/intro-til-nimrod/">introdusert Nimrod</a> og jeg har vist hvordan man kan <a href="/2014/03/04/sende-sms-med-nimrod/">implementere et lite program i språket som sender en SMS</a>. Nå vil jeg implementere et litt større program som jeg også har gjort i mange språk før: nemlig en stack-basert kalkulator. Gjennom dette vil jeg introdusere deg for en rekke nye egenskaper fra Nimrod.</p>
+<p>En stack-basert kalkulator er interessant blant annet fordi det danner grunnlaget for hvordan mye innenfor datamaskiner og programmering fungerer <em>under the hood</em>. Hvis du ikke forstår hva en slik kalkulator er for noe eller hvordan den brukes så vil du nok lære det underveis i bloggposten.</p>
+<p>Så la oss begynne..</p>
+<h2>Tuples</h2>
+<p>Vi trenger å holde track på noe data, og jeg vil samle det i et eller annet form for objekt. Nimrod har fin støtte for sterkt typede <em>tuples</em>, og det passer meg fint. Jeg definerer typen <code>TState</code> som skal holde på kalkulatorens tilstand.</p>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> strutils
+
+<span class="hljs-built_in">type</span>
+  TState = <span class="hljs-built_in">tuple</span>
+    running: <span class="hljs-built_in">bool</span>
+    <span class="hljs-built_in">input</span>: string
+    stack: seq[<span class="hljs-built_in">int</span>]</code></pre><p><code>TState</code> har tre verdier:</p>
+<ul>
+<li><code>running</code>: En boolsk variabel som sier om kalkulatoren fortsatt kjører (settes til <code>false</code> når bruker ønsker å avslutte)</li>
+<li><code>input</code>: Brukerinput fra konsollet</li>
+<li><code>stack</code>: En sekvens av heltall som representerer datastacken til kalkulatoren</li>
+</ul>
+<p>Jeg kan nå opprette en global variabel av type <code>TState</code> med kalkulatorens starttilstand.</p>
+<pre><code class="hljs python">var
+  state: TState = ( running: true,
+                    <span class="hljs-built_in">input</span>: <span class="hljs-string">&quot;&quot;</span>,
+                    stack: @[<span class="hljs-number">0</span>] )</code></pre><p>Legg merke til at jeg initialiserer datastacken med tallet 0. Det er praktisk å gjøre dette fordi jeg da kan unngå å håndtere situasjonen hvor stacken er helt tom.</p>
+<p>Normalt forsøker jeg gjerne å unngå global state, men i dag gjør vi det enkelt.</p>
+<h2>Input fra bruker</h2>
+<p>La oss så definere en prosedyre som skriver ut et prompt og leser inn innput fra brukeren. Input lagres i <code>state</code> tupelen.</p>
+<pre><code class="hljs python">proc read() =
+  stdout.write <span class="hljs-string">&quot;~&gt; &quot;</span>
+  state.<span class="hljs-built_in">input</span> = stdin.readLine</code></pre><h2>En høyere ordens prosedyre</h2>
+<p>Kalkulatoren skal kunne gjøre operasjonen på stacken. Operasjonene jeg vil støtte er <code>+</code>, <code>-</code> og <code>*</code>. Jeg dropper deling for å unngå å forholde meg til flyttall - denne kalkulatoren opererer kun på heltall.</p>
+<p>Når man sier at kalkulatoren skal gjøre en operasjon så skal den gjøre på de to øverste elementene i stacken. Disse to elementene poppes av (altså fjernes), og resultatet pushes tilbake på stacken.</p>
+<p>Vi kan lage en prosedyre som tar en operasjon (i form av en annen prosedyre) som argument, og utfører denne. Dette kan se slik ut:</p>
+<pre><code class="hljs python">proc doStackOp (op: proc (a, b: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">int</span>) =
+  let 
+    a = state.stack.pop
+    b = state.stack.pop
+  state.stack.add op(a, b)</code></pre><p>Parameterdeklarasjonen er det mest avanserte her. <code>op: proc (a, b: int): int</code> betyr altså at parameter ved navn <code>op</code> skal være en prosedyre (<code>proc</code>) som tar inn to heltall (<code>a, b: int</code>) og returnerer et heltall (<code>: int</code>).</p>
+<p>Men hva om stacken bare har ett element? Da skal vi late som om elementet ligger to ganger på stacken. Inneholder stacken for eksempel kun tallet <code>10</code>, og vi utfører operasjon <code>+</code>, så skal stacken etterpå inneholde tallet <code>20</code>. For å få til det må vi endre hvordan vi popper variabel <code>b</code>:</p>
+<pre><code class="hljs python">proc doStackOp (op: proc (a, b: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">int</span>) =
+  let 
+    a = state.stack.pop
+    b = <span class="hljs-keyword">if</span> state.stack.<span class="hljs-built_in">len</span> == <span class="hljs-number">0</span>: a
+        <span class="hljs-keyword">else</span>: state.stack.pop
+  state.stack.add op(a, b)</code></pre><h2>Unntakshåndtering og switch/case</h2>
+<p>Nå når vi har <code>doStackOp</code> kan vi lage en prosedyre som evaluerer input som vi har fått fra brukeren. Først forsøker vi å gjøre om input til et heltall ved å bruke <code>ParseInt</code>. Hvis det går bra legger vi bare tallet på stacken.</p>
+<p>Hvis det ikke går bra vil det bli kastet et <code>EInvalidValue</code> exception. Dette kan vi fange opp og så undersøke hva input er med Nimrods <code>case .. of</code> struktur. Jeg definerer cases for regneoperasjonene, samt en case for input <code>q</code> som skal avslutte kalkulatoren. All annen input forkaster jeg ved hjelp av en tom <em>else</em>.</p>
+<p>Hele prosedyren ser slik ut:</p>
+<pre><code class="hljs python">proc <span class="hljs-built_in">eval</span>() =
+  <span class="hljs-keyword">try</span>:
+    let n = state.<span class="hljs-built_in">input</span>.ParseInt
+    state.stack.add n
+  <span class="hljs-keyword">except</span> EInvalidValue:
+    <span class="hljs-keyword">case</span> state.<span class="hljs-built_in">input</span>
+    of <span class="hljs-string">&quot;q&quot;</span>: state.running = false
+    of <span class="hljs-string">&quot;+&quot;</span>: doStackOp proc (a, b: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">int</span> = a + b
+    of <span class="hljs-string">&quot;-&quot;</span>: doStackOp proc (a, b: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">int</span> = a - b
+    of <span class="hljs-string">&quot;*&quot;</span>: doStackOp proc (a, b: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">int</span> = a * b
+    <span class="hljs-keyword">else</span>:
+      <span class="hljs-comment"># bad input, but we don&#x27;t care..</span></code></pre><h2>Templates</h2>
+<p>Prosedyren <code>eval</code> som vi nettopp lagde fungerer greit den, men det var litt tungvidt å skrive kallene til <code>doStackOp</code>. Det føltes liksom som om jeg måtte repetere meg selv så mye. La oss se hva vi kan gjøre med det..</p>
+<p>Nimrod har ulike former for makroer. Den enkleste varianten kalles <em>templates</em>. Jeg kan lage en template som hjelper meg å skrive enklere syntaks for kall til <code>doStackOp</code>. Denne templaten ser ut som en prosedyre, men den tolkes under kompileringen av programmet, og kallet til template-prosedyren erstattes av innholdet i templaten før programmet er ferdig kompilert.</p>
+<pre><code class="hljs python">template stackOp (ex: expr): expr =
+  doStackOp proc (a, b: <span class="hljs-built_in">int</span>): <span class="hljs-built_in">int</span> = ex</code></pre><p>Legg merke til at parameter <code>ex</code> har type <code>expr</code> - som står for expression. Legg også merke til at linje to er veldig lik det som gjøres i hvert case i <code>eval</code>. Nå kan vi nemlig skrive <code>eval</code> på nytt litt enklere:</p>
+<pre><code class="hljs python">proc <span class="hljs-built_in">eval</span>() =
+  <span class="hljs-keyword">try</span>:
+    let n = state.<span class="hljs-built_in">input</span>.ParseInt
+    state.stack.add n
+  <span class="hljs-keyword">except</span> EInvalidValue:
+    <span class="hljs-keyword">case</span> state.<span class="hljs-built_in">input</span>
+    of <span class="hljs-string">&quot;q&quot;</span>: state.running = false
+    of <span class="hljs-string">&quot;+&quot;</span>: stackOp a + b
+    of <span class="hljs-string">&quot;-&quot;</span>: stackOp a - b
+    of <span class="hljs-string">&quot;*&quot;</span>: stackOp a * b
+    <span class="hljs-keyword">else</span>:
+      <span class="hljs-comment"># bad input, but we don&#x27;t care..</span></code></pre><p>Kult? Det synes i alle fall jeg :)</p>
+<h2>Dollartegn-operatoren</h2>
+<p>Nimrod bruker <code>$</code> som en standard operator for å gjøre en hvilken som helst verdi om til en streng. Dette er altså som for eksempel <code>Object.ToString()</code> i .NET. Nå vil jeg lage en slik operator for stacken, slik at jeg kan skrive den ut mellom hver gang brukeren gjør noe.</p>
+<pre><code class="hljs python">proc `$` (s: seq[<span class="hljs-built_in">int</span>]): string =
+  result = <span class="hljs-string">&quot;[&quot;</span>
+  <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> s:
+    result.addSep(startLen=<span class="hljs-built_in">len</span>(<span class="hljs-string">&quot;[&quot;</span>))
+    result.add($x)
+  result.add <span class="hljs-string">&quot;]&quot;</span></code></pre><p>En streng i Nimrod har (via strutils-modulen) metoder som gjør den om til noe som minner mer om en slags <code>StringBuilder</code>. Her bruker jeg for eksempel <code>addSep</code>. Fra <a href="http://nimrod-lang.org/strutils.html">dokumentasjonen</a>:</p>
+<blockquote>
+<p>proc addSep(dest: var string; sep = &quot;, &quot;; startLen = 0)
+...
+This is often useful for generating some code where the items need to be separated by sep. sep is only added if dest is longer than startLen.</p>
+</blockquote>
+<h2>Print</h2>
+<p>Neste prosedyre bruker <code>$</code> som vi akkurat lagde til å skrive ut stacken:</p>
+<pre><code class="hljs python">proc <span class="hljs-built_in">print</span>() =
+  state.stack.`$`.echo</code></pre><p>Vi kunne har skrevet <code>echo($(state.stack))</code>, men <em>proc chaining</em> er mere interessant og enklere å lese.</p>
+<h2>REPL</h2>
+<p>Vi nærmer oss slutten. Vi har nå blant annet laget prosedyrene <code>read</code>, <code>eval</code> og <code>print</code>. Det er 3/4 av det vi kaller en <em>REPL</em>, som står for <em>Read Eval Print Loop</em>. Dette er en kraftig abstraksjon som kan brukes til å designe de fleste, interaktive konsollprogram.</p>
+<p>Og her er delen som mangler:</p>
+<pre><code class="hljs python">proc loop() =
+  read(); <span class="hljs-built_in">eval</span>(); <span class="hljs-built_in">print</span>()
+  <span class="hljs-keyword">if</span> state.running: loop()</code></pre><p>Dette er altså en rekursiv prosedyre som leser input, evaluerer input, skriver ut tilstanden, og så gjør alt sammen en gang til - hvis ikke det er på tide å stoppe.</p>
+<p>De eneste som gjenstår nå er å kalle <code>loop</code>..</p>
+<pre><code class="hljs python">loop()
+echo <span class="hljs-string">&quot;Bye bye&quot;</span></code></pre><p>...og si <em>bye bye</em> når loopen er ferdig.</p>
+<h2>Kompilering og kjøreeksempel</h2>
+<p>For ordens skyld tar jeg med hvordan det ser ut når jeg til slutt kompilerer calc.nim:</p>
+<pre><code class="hljs">PS C:\dev\nimrod-test&gt; nimrod.exe compile .\calc.nim
+c:\program <span class="hljs-title function_ invoke__">files</span> (x86)\nimrod\config\nimrod.<span class="hljs-title function_ invoke__">cfg</span>(<span class="hljs-number">36</span>, <span class="hljs-number">11</span>) Hint: added path: <span class="hljs-symbol">&#x27;C</span>:\Users\tormar\.babel\libs\<span class="hljs-string">&#x27; [Path]
+Hint: used config file &#x27;</span>C:\Program <span class="hljs-title function_ invoke__">Files</span> (x86)\Nimrod\config\nimrod.cfg<span class="hljs-string">&#x27; [Conf]
+Hint: system [Processing]
+Hint: calc [Processing]
+Hint: strutils [Processing]
+Hint: parseutils [Processing]
+gcc.exe -c -w &quot;-IC:<span class="hljs-char escape_">\P</span>rogram Files (x86)<span class="hljs-char escape_">\N</span>imrod<span class="hljs-char escape_">\l</span>ib&quot; -o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\c</span>alc.o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\c</span>alc.c
+gcc.exe -c -w &quot;-IC:<span class="hljs-char escape_">\P</span>rogram Files (x86)<span class="hljs-char escape_">\N</span>imrod<span class="hljs-char escape_">\l</span>ib&quot; -o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\s</span>ystem.o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\s</span>ystem.c
+gcc.exe -c -w &quot;-IC:<span class="hljs-char escape_">\P</span>rogram Files (x86)<span class="hljs-char escape_">\N</span>imrod<span class="hljs-char escape_">\l</span>ib&quot; -o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\s</span>trutils.o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\s</span>trutils.c
+gcc.exe -c -w &quot;-IC:<span class="hljs-char escape_">\P</span>rogram Files (x86)<span class="hljs-char escape_">\N</span>imrod<span class="hljs-char escape_">\l</span>ib&quot; -o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\p</span>arseutils.o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\p</span>arseutils.c
+gcc.exe   -o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\c</span>alc.exe  c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\p</span>arseutils.o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\s</span>trutils.o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\s</span>ystem.o c:<span class="hljs-char escape_">\d</span>ev<span class="hljs-char escape_">\n</span>imrod-test<span class="hljs-char escape_">\n</span>imcache<span class="hljs-char escape_">\c</span>alc.o
+Hint: operation successful (9347 lines compiled; 5.370 sec total; 10.102MB) [SuccessX]</span></code></pre><p>Og bruker kalkulatoren:</p>
+<pre><code class="hljs"><span class="hljs-selector-tag">PS</span> <span class="hljs-selector-tag">C</span>:\<span class="hljs-selector-tag">dev</span>\<span class="hljs-selector-tag">nimrod-test</span>&gt; .\<span class="hljs-selector-tag">calc2</span><span class="hljs-selector-class">.exe</span>
+~&gt; <span class="hljs-number">2</span>
+<span class="hljs-selector-attr">[0, 2]</span>
+~&gt; <span class="hljs-number">234</span>
+<span class="hljs-selector-attr">[0, 2, 234]</span>
+~&gt; <span class="hljs-selector-tag">bad</span> <span class="hljs-selector-tag">input</span>
+<span class="hljs-selector-attr">[0, 2, 234]</span>
+~&gt; +
+<span class="hljs-selector-attr">[0, 236]</span>
+~&gt; <span class="hljs-selector-tag">-</span>
+<span class="hljs-selector-attr">[236]</span>
+~&gt; *
+<span class="hljs-selector-attr">[55696]</span>
+~&gt; <span class="hljs-number">3</span>
+<span class="hljs-selector-attr">[55696, 3]</span>
+~&gt; <span class="hljs-selector-tag">-</span>
+<span class="hljs-selector-attr">[-55693]</span>
+~&gt; <span class="hljs-selector-tag">q</span>
+<span class="hljs-selector-attr">[-55693]</span>
+<span class="hljs-selector-tag">Bye</span> <span class="hljs-selector-tag">bye</span></code></pre><h2>Konklusjon</h2>
+<p>Jeg har akkurat gjort denne kataen i F# også, og jeg synes Nimrod-løsningen ble like enkel og nesten like elegant som den. Det viktigste jeg lærte meg var hvordan <em>tuples</em> fungerer i Nimrod, og hvordan jeg kan lage <em>template-makroer</em>.</p>
+<p>Det neste jeg bør gjøre er å sette meg inn i hvordan Nimrods andre makroer fungerer. Kanskje det er på tide at jeg ser <a href="http://www.infoq.com/presentations/nimrod">Nimrod: A New Approach to Metaprogramming</a>?!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

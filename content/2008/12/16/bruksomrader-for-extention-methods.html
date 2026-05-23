@@ -1,0 +1,18 @@
+---
+title: Bruksområder for Extention methods
+link: http://blog.kjempekjekt.com/2008/12/16/bruksomrader-for-extention-methods/
+layout: post
+date: 2008-12-16 07:50:22Z
+tags:
+  - Podcasts
+  - C#
+---
+Da <strong>extention methods</strong> ble annonsert i C# så syntes jeg med en gang at det hørtes ut som en veldig lur ide, men jeg klarte ikke å komme på så veldig mange områder hvor jeg ville bruke det. Jeg så på det først og fremst som en måte å utvide typer som allerede var definert av andre.
+
+Nå har jeg derimot nettopp sett episode 125 av <a href="http://www.dnrtv.com/">DNRTV</a>, hvor Bill Wagner brukte god tid på å illustrere tre konkrete bruksmønstre av extension methods som faktisk gav mening. For å huske dem lister jeg dem her:
+<ol>
+	<li>Når man lager interface vil man kunne oppnå renere interface ved å skille ut enkelte metoder som extension methods.</li>
+	<li>I stedet for å implementere sterkt typede kolleksjoner ønsker man å benytte generics. Da kan man i tillegg implementere extension methods for generiske kolleksjoner av den gitte typen for å implementere kolleksjons-spesifikk funksjonalitet.</li>
+	<li>Av og til kan det gi mening å gi enums funksjonalitet. Dette kan man få til ved hjelp av extension methods.</li>
+</ol>
+Bill Wagner, forfatter av <em>More Effective C#</em>, forklarer dette mye bedre. <a href="http://dnrtv.com/default.aspx?ShowID=125">Last ned episode 125 her</a>.

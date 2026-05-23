@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Softwareutvikling,Testing / TDD">
+
+    <title>Systemer som blogger</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Systemer som blogger</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 10. juli 2009</small> 
+            <a href="/tags/softwareutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Softwareutvikling</span></a>
+          
+            <a href="/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
+          </p>
+          <p><a href="/uploads/2009/07/ayende.jpg"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 0px; border-left-width: 0px; margin-right: 10px" title="ayende" border="0" alt="ayende" align="left" src="/uploads/2009/07/ayende_thumb.jpg" width="171" height="185"></a> På NDC 2009 hørte jeg bl.a. på Oren Eini (a.k.a. <a href="http://ayende.com/">Ayende Rahien</a>) snakke om <strong>Production Quality Software</strong>. Første del av sesjonen var ikke så veldig bra, men når han begynte å snakke om hvordan vi bør bygge inn driftsovervåkning i systemene våre ble jeg veldig inspirert.</p>
+<p>Oren påpekte at drift er en viktig stakeholder i det meste vi lager, og at vi bør designe for dem. Vi bør synliggjøre systemets status og parametre på en god måte. Han foreslo at alle systemer (av en viss størrelse) bør ha en separat <em>Operations Database</em> som skal gi oss bedre innblikk i hva systemet til enhver tid driver med.</p>
+<p>Ops-databasen skal inneholde observasjoner og forventninger. Observasjoner er det enkletse, og noe mange av oss gjør i dag. Å observere vil si å logge ting som skjer, som for eksempel <em>"At date X I started some process Y with parameter Z"</em>. Denne informasjonen kan være nyttig i mange tilfeller, ikke minst ved feilsøking (som ellers kan være utfordrende i et produksjonssystem).</p>
+<p>Forventninger er anderledes – det kan være ting som at <em>"90% av alle transaksjoner skal fullføres innen 5 sekunder"</em> eller <em>"jobb X skal kjøre hver uke"</em>. Ops-databasen kan kontrollere disse forventningene, og trigge en eller annen form for alarm om en eller flere ikke er innfridd.</p>
+<p><strong>Hva hadde dette å gjøre med blogging sa du?</strong></p>
+<p>Det Oren spesielt foreslo var at <strong>systemet kan skrive til en blog</strong>. Alle systemer burde ha sin egen blog, og stakeholderne burde abonnere på bloggen. Bloggen til et system bør se ut og fungere som en blog skrevet av og for mennesker – titler og innhold i blogpostene må bestå av normalt språk, og det må ikke postes for hyppig (bedre å summere opp hendelser i én post om det skjer mye på en dag). Dette vil gi dem som leser bloggen et helt annet forhold til det bakenforliggende systemet.</p>
+<p>Jeg syntes dette hørtes veldig spennende ut. Her er en <i>mockup</i> av hvordan jeg ser for meg en slik blog skal kommunisere:</p>
+<p style="text-align: center"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="Sample blog" border="0" alt="Sample blog" src="/uploads/2009/07/CropperCapture5_thumb.png" width="504" height="354"></p>
+<p>De fleste systemer i drift har en SLA – en <em>Service Level Agreement</em> – som sier noe om hvordan systemet skal yte. Men vi, spesielt vi utviklere, har et alt for dårlig forhold til SLA'en. Hvordan vet vi at den er opprettholdt? Oren foreslår at Ops-systemet skal automatisere SLA'en. Systemet kjøre en automatisert audit, f.eks. hvert 30 minutt, som foretar spesifike operasjoner som innebærer database aksess, filaksess, eksekvering av prosesser, osv. Miljøet systemet kjører i kan verifiseres, tilgjengelig diskplass, responstid etc. kan måles.</p>
+<p>Alle ulike komponenter i systemet bør ha sine egne SLA'er, og de må være laget sånn at det går an å verifisere dem. Disse vil fungere som automatiserte akseptansetester mens systemet er i drift. Observasjoner, forventninger og miljø-validering vil til sammen gi et komplett bilde av systemet i drift, man vil enklere kunne identifisere feil som inntreffer, og man vil kunne fange opp problemer før det blir så mange av dem at det får hele systemet til å "knele".</p>
+<p>En detalj, men likefullt et viktig poeng, er at administrasjonsgrensesnittet, hvor man kan aksessere Ops-databasen, må være separat fra produksjonsgrensesnittet. Hvis produksjonssystemet går ned må man sørge for at man fortsatt har tilgang til Operasions.</p>
+<p>For å oppsummere: Vi må designe systemene våre med tanke på drift. Vi har hørt det før, men gjennomfører det sjelden på en god nok måte. Vi må gi driftsfolkene det de trenger, men ikke gi dem for mye, for da mister de oversikten og fokuset på hva som er viktig. Å la systemet skrive en <em>operations blog</em> er et eksempel på et bra grensesnitt. Den viser kun nøkkeldata / hendelser. Og la Ops-systemet foreta automatiske system-verifiseringer gjevnlig for å fange opp problemsituasjoner tidlig, og for å bevise at vår fantastiske konstruksjon overholder SLA'en.</p>
+<p>Du kan se Oren's Production Quality Software sesjon <a href="http://media01.smartcom.no/microsite/asx.aspx?eventid=4535">ved å følge denne linken</a>.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=ayende" rel="tag">Ayende</a>, <a href="/index.php?s=NDC" rel="tag">NDC</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

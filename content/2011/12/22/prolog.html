@@ -1,0 +1,69 @@
+---
+title: Prolog
+link: http://blog.kjempekjekt.com/2011/12/22/prolog/
+layout: post
+date: 2011-12-22 08:08:00Z
+tags:
+  - Julekalender
+  - Polyglot
+  - Prolog
+---
+<p><strong>Prolog</strong> er et såkalt <u>logisk programmeringsspråk</u>. Jeg snakket om det nylig i posten <em><a href="http://blog.kjempekjekt.com/2011/10/19/hvem-bor-hvor-codingdojoziptalk/">Hvem bor hvor?</a></em>. Mens man i nord-amerika først og fremst tenker på Lisp når man snakker om kunstig intelligens og implementasjon av lingvistiske løsninger, bruker man i Europa og andre steder oftere nettopp Prolog.</p> <p>Prolog er deklerativt: Et program er et sett med relasjoner representert gjennom <u>regler</u> og <u>fakta</u>. Å kjøre et prolog-program er å kjøre spørringer mot disse relasjonene. Språket er som en ultra-smart fyr som kan finne alle logiske slutninger basert på det du forteller den.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="prolog" border="0" alt="prolog" src="/uploads/2011/12/prolog.jpg" width="300" height="527"></p> <p>Da det ble implementert tidlig på 70-tallet var Prolog et av de aller første logiske programmeringsspråkene, og det er fortsatt et av de mest populære. Det finnes en rekke implementasjoner, og språket er flittig brukt innen forskning og utdanning.</p> <p>Til å begynne med trodde mange at Prolog kom til å få stor utbredelse, og at det var et steg i retning av en helt ny type programmeringsspråk. Men utenfor forskningsmiljøene - i industrien forøvrig - har Prolog og logisk programmering hatt liten gjennomslagskraft.</p> <p>Den eneste språket som "minner om" Prolog, som de fleste utviklere har et tett forhold til, og som også ble skapt tidlig på 70-taller, er <strong>SQL</strong>.</p> <h4>En Prolog-intro</h4> <p>Vi vil begynne med å definere en slektsdatabase i Prolog. Først deklarerer vi noen fakta: Adam er en mann, Peter er en mann, osv..</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">27 </span><span class="Constant">man(adam).</span>
+<span class="lnr">28 </span><span class="Constant">man(peter).</span>
+<span class="lnr">29 </span><span class="Constant">man(paul).</span>
+<span class="lnr">30 </span>
+<span class="lnr">31 </span><span class="Constant">woman(marry).</span>
+<span class="lnr">32 </span><span class="Constant">woman(eve).</span>
+</pre>
+<p>Så kan vi legge til noen relasjoner:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">34 </span><span class="Constant">parent(adam,peter). </span><span class="Comment">% means adam is parent of peter</span>
+<span class="lnr">35 </span><span class="Constant">parent(eve,peter).</span>
+<span class="lnr">36 </span><span class="Constant">parent(adam,paul).</span>
+<span class="lnr">37 </span><span class="Constant">parent(marry,paul).</span>
+</pre>
+<p>Relasjonene var også fakta, men nå er det på tide med noen regler. Følgende regler bruker de definerte faktaene til å si hva det innebærer å vare en far eller mor:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">39 </span><span class="Constant">father(F,C) :-</span> man(F),   parent(F,C).
+<span class="lnr">40 </span><span class="Constant">mother(M,C) :-</span> woman(M), parent(M,C).
+</pre>
+<p>F, C og M er variabler – alt som begynner med stor bokstav er variabler i Prolog. En far (F) må altså både være en mann og forelder til sitt barn (C). </p>
+<p>Nå kan vi bruke det vi har definert til å spørre Prolog hvem som er faren til Paul:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="PreProc">?-father(X,paul).</span>
+</pre>
+<p>Prolog vil svare <strong>X = adam</strong>.</p>
+<p>Videre kan vi definere regler for andre familierelasjoner:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">44 </span><span class="Constant">son(S,P)      :-</span> man(S),   parent(P,S).
+<span class="lnr">45 </span><span class="Constant">daughter(D,P) :-</span> woman(D), parent(P,D).
+<span class="lnr">46 </span>
+<span class="lnr">47 </span><span class="Constant">siblings(A,B) :-</span> parent(P,A), parent(P,B), A<span class="Operator">\=</span>B.
+<span class="lnr">48 </span>    <span class="Comment">% siblings have at least one common parent</span>
+<span class="lnr">49 </span>    <span class="Comment">% the test A\=B ensures siblings are different persons</span>
+<span class="lnr">50 </span>
+<span class="lnr">51 </span><span class="Constant">uncle(U,N) :-</span> man(U),   siblings(U,P), parent(P,N).
+<span class="lnr">52 </span><span class="Constant">aunt(A,N)  :-</span> woman(A), siblings(A,P), parent(P,N).
+<span class="lnr">53 </span>
+<span class="lnr">54 </span><span class="Constant">grand_parent(G,N) :-</span> parent(G,X), parent(X,N).
+</pre>
+<p>Det var en smakebit. Nå skal vi se noe litt mere avansert..</p>
+<h4>Euler1 i Prolog</h4>
+<p><a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">Euler-oppgaven jeg løser i denne julekalenderen</a> er ikke en typisk oppgave for Prolog – i alle fall ikke så langt jeg kan se. Jeg er kun en nybegynner i dette språket. Men jeg måtte nesten lage en løsning likevel, og med litt hjelp har jeg kommet frem til en løsning.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Constant">interesting_number(N) :-</span> N rem <span class="Number">3</span> <span class="Operator">=:=</span> <span class="Number">0</span>.
+<span class="lnr">11 </span><span class="Constant">interesting_number(N) :-</span> N rem <span class="Number">5</span> <span class="Operator">=:=</span> <span class="Number">0</span>.
+<span class="lnr">12 </span>
+<span class="lnr">13 </span><span class="Constant">euler1(0, 0) :-</span> <span class="Keyword">true</span>, <span class="Special">!</span>.
+<span class="lnr">14 </span><span class="Constant">euler1(N, Answer) :-</span>
+<span class="lnr">15 </span>    N <span class="Operator">&gt;</span> <span class="Number">0</span>, interesting_number(N),
+<span class="lnr">16 </span>    Next <span class="Keyword">is</span> N-<span class="Number">1</span>,
+<span class="lnr">17 </span>    euler1(Next, SubAnswer),
+<span class="lnr">18 </span>    Answer <span class="Keyword">is</span> SubAnswer + N, <span class="Special">!</span>.
+<span class="lnr">19 </span><span class="Constant">euler1(N, Answer) :-</span>
+<span class="lnr">20 </span>    N <span class="Operator">&gt;</span> <span class="Number">0</span>,
+<span class="lnr">21 </span>    Next <span class="Keyword">is</span> N-<span class="Number">1</span>,
+<span class="lnr">22 </span>    euler1(Next, Answer).
+</pre>
+<p>I de to første linjene beskriver jeg regelen for hvilke numre jeg er interessert i: de som er delelige på 3 og de som er delelige på 5. Den neste tre-delte regelen er rekursiv, og hakket for kompleks til at jeg forsøker meg på en beskrivelse her og nå.</p>
+<p>Det finnes som sagt en rekke implementasjoner av Prolog, og mange støtter ulike ekstra-funksjoner som <em>filter</em> og <em>reduce</em>, slik at oppgaven i praksis kan løses omtrent som i et hvilket som helst annet språk. Løsningen over er derimot en minimal løsning i "ren" Prolog.</p>
+<h4>Hvorfor bruke tid på Prolog, og hva er alternativet?</h4>
+<p>Logisk programmering er en veldig interessant løsningsmodell, og utviklere bør kjenne til muligheten. Når det dukker opp et problem som egner seg for dette, vil det være fordelaktig å ha litt erfaring.</p>
+<p>Nok en gang er det også et språk som vil lære deg nye måter å tenke på, og vil kunne gi deg ideer du kan dra nytte av i mere konvensjonelle språk.</p>
+<p>Men det kan kanskje være urealistisk å lære seg en ny plattform og et litt sært språk for noe man kun skjelden har bruk for. Heldigvis kan man ved hjelp av bibloteker benytte logisk programmering i mange andre språk også. I prinsippet har man som regel da en komponent som implementerer en slags Prolog for den plattformen man jobber på, og et API for å deklerativt angi fakta og regler – i en syntaks man er kjent med.</p>
+<p>Eksempler på dette er <a href="https://github.com/clojure/core.logic">core.logic</a> i Clojure, og <a href="https://github.com/preston/ruby-prolog">ruby-prolog</a>, en Prolog-lignende DSL for Ruby. De kan være litt vanskelige å finne!</p>
+<p>Ellers finner du også støtte for logisk programmering i <a href="http://blog.kjempekjekt.com/2011/12/12/oz/">Oz</a>. Og programmeringsspråket <a href="http://en.wikipedia.org/wiki/Mercury_(programming_language)">Mercury</a> er en slags moderne arvtager av Prolog, som også støtter funksjonell programmering inspirert av <a href="http://blog.kjempekjekt.com/2011/12/07/haskell/">Haskell</a>.</p>
+<h4>Hvordan komme igang</h4>
+<p>Jeg startet med <a href="http://www.gprolog.org/">GNU Prolog</a>. Et kanskje enda bedre alternativ er <a href="http://www.swi-prolog.org/">SWI Prolog</a>, som har støtte for multi-threading, http request/response, og har et rikere støttebiblotek. Begge er open source og tilgjengelige for Windows, Mac og Unix.</p>
+<p>Og så er det viktig å finne en god læringsressurs. <a href="http://www.learnprolognow.org/">LearnPrologNow.org</a> er én mulighet. Sjekk også ut <a href="http://kti.mff.cuni.cz/~bartak/prolog/learning.html">Prolog in Examples.</a></p>
+<p>Ellers er det en bok jeg har hatt lyst til å lese en stund, og det er <a href="http://www.amazon.com/Reasoned-Schemer-Daniel-P-Friedman/dp/0262562146"><em><strong>The Reasoned Schemer</strong></em></a>. Den&nbsp; handler ikke om Prolog direkte, men om hvordan man utvider Scheme (en Lisp) til å støtte logisk programmering. Boken vil gi deg en dyp forståelse for sammenhengen mellom funksjonell og logisk programmering.</p>

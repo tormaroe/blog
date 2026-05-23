@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Monad,Funksjonell programmering,Clojure,Ruby">
+
+    <title>Hva er en Monad?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hva er en Monad?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 13. august 2010</small> 
+            <a href="/tags/monad"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Monad</span></a>
+          
+            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+          
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p><img style="border-right-width: 0px; margin: 0px 15px 0px 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="yin_yang" border="0" alt="yin_yang" align="left" src="/uploads/2010/08/yin_yang.jpg" width="150" height="188"> </p>
+<p><strong><em>Monad</em></strong> er et ord med <a href="http://en.wikipedia.org/wiki/Monad">mange betydninger</a>; det brukes blant annet innenfor ulike filosofiske grener for å beskrive "universets essens", eller som et slags navn på Gud. Det kjente tegnet fra kinesisk filosofi og kosmologi, som kineserne kaller T'ai-Chi, kalles også t<em>he Great Monad</em> i Vesten, og representerer den underliggende harmonien mellom motstridende krefter i universet (mann/kvinne, yin/yang, hard/myk, sol/måne). Men ordet har også en betydning i matematikken, og den er overført til informatikk, hvor det er mest kjent som en feature i programmeringsspråket <a href="http://en.wikipedia.org/wiki/Haskell_(programming_language)">Haskell</a>.</p>
+<p><a href="http://en.wikipedia.org/wiki/Windows_PowerShell">Windows PowerShell</a> er også kjent under kodenavnet Monad, men meg bekjent er dette ikke relatert til betydningen i de funksjonelle språkene.</p>
+<p>Mange betrakter monads som det mest skumle og uforståelige med funksjonelle språk, og det tar tid å skjønne hva det er for noe. Jeg har akkurat begynt å forstå det selv, og dette er forklaringen jeg skulle ønske jeg hadde sett før jeg begynte å lese de mer teoretiske beskrivelsene. Forhåpentligvis kan dette være til hjelp for andre som sliter med det samme, men jeg gir ingen garantier.</p>
+<h4>Du skal ikke se bort fra at du har brukt monader allerede</h4>
+<p>Da jeg begynte å lese meg opp på F# lærte jeg at man har monads der også, men at man kaller dem <em>computation expressions</em>. Og så sa læreboken at <a href="http://en.wikipedia.org/wiki/Linq">LINQ</a> i .net også er computation expressions. Tidligere har jeg også hørt at LINQ er en form for list comprehension, som jeg lærte meg da jeg begynte å bruke Erlang, og som jeg senere har funnet igjen i flere andre språk. (List comprehension er en slags spesialsyntaks for å generere lister.) Det viser seg at list comprehensions kan kalles bruk av en <em>list monad</em>, og <em>monad comprehension</em> er en mer generell variant av list comprehensions.</p>
+<p>Ok, du ble kanskje ikke noe klokere av dette, men saken er at alle disse tingene henger sammen på et vis. Du vil forhåpentlig vis se lyset mot slutten av blogposten!</p>
+<p>For å skape noen nye hjernekoblinger kan vi først ta tak i litt Ruby-kode. Følgende er en banal, liten kodesnutt som deklarerer et par variabler som brukes til å beregne og skrive ut en verdi:</p>
+<div style="padding-bottom: 6px; background-color: #333333; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace">n = <font color="#ffa0a0">1337</font><br>m = n * <font color="#ffa0a0">3.1415</font><br>puts m <font color="#87ceeb"># Skriver ut: 4200.1855</font><br></font></div>
+<p>Dette er imperativ kode, slik man for eksempel finner i C og alle etterfølgerne av det språket. I Ruby har vi derimot muligheten til å gjøre koden mer funksjonell ved å gjøre følgende:</p>
+<div style="padding-bottom: 6px; background-color: #333333; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace">def times_pi x<br>&nbsp; <font color="#f0e68c"><b>yield</b></font> x * <font color="#ffa0a0">3.1415</font><br>end<br><br>times_pi(<font color="#ffa0a0">1337</font>) {|<font color="#98fb98">m</font>| puts m} <font color="#87ceeb"># Skriver ut: 4200.1855</font><br></font></div>
+<p>Legg merke til at det ikke er noen likhetstegn i denne koden – det deklareres ingen variabler. I stedet kaller man en metode (<tt style="background-color: #e6e6e6">times_pi</tt>) hvor man sender med en anonym funksjon som et av argumentene (en kodeblokk). Denne kodeblokken kalles så i funksjonen ved å bruke nøkkelordet yield. Når metodekallet er ferdig finnes det ingen variabler – ingen <em>state</em>!</p>
+<p>For å bli en dyktig Ruby-utvikler må man endre tankemønsteret man bruker fra kode som i det første, imperative eksempelet til kode som det man finner i det andre eksempelet hvor man bruker kodeblokker. Men dette er også et stort steg på veien mot å lære seg funskjonell programmering. <tt style="background-color: #e6e6e6">Times_pi</tt> er nemlig en høyere-ordens funksjon (den tar en funksjon som et parameter), og koden har ingen variabler / state. Vi har snudd måten vi tenker på <em>(en slags </em><a href="http://en.wikipedia.org/wiki/Inversion_of_Control"><em>Inversion of Control</em></a><em>).</em></p>
+<h4>Hva har dette med monad å gjøre?</h4>
+<p>Jeg skal snart vise deg en monad, men ta først en titt på følgende, skrekkelige eksempel på Clojure-kode:</p>
+<div style="padding-bottom: 6px; background-color: #333333; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><font color="#87ceeb">; BAD BAD BAD - DON'T DO THIS EVER!!!</font><br><font color="#ffdead">(</font>def <font color="#f0e68c"><b>pi</b></font>&nbsp;<font color="#ffa0a0">3.1415</font><font color="#ffdead">)</font>&nbsp; <font color="#87ceeb">; pi = 3.1415</font><br><font color="#ffdead">(</font>def n <font color="#ffa0a0">1337</font><font color="#ffdead">)</font>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#87ceeb">; n = 1337</font><br><font color="#ffdead">(</font>def m <font color="#ffdead">(</font><font color="#f0e68c"><b>*</b></font> n <font color="#f0e68c"><b>pi</b></font><font color="#ffdead">))</font>&nbsp;<font color="#87ceeb">; m = n * pi</font><br><font color="#ffdead">(</font>println m<font color="#ffdead">)</font>&nbsp;<font color="#87ceeb">; Skriver ut: 4200.1855000000005</font><br></font></div>
+<p>Her har jeg skrevet imperativ kode i Clojure, noe det ikke akkurat er laget for (men det fungerer). I virkeligheten ville jeg ha gjort det slik:</p>
+<div style="padding-bottom: 6px; background-color: #333333; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><font color="#ffdead">(</font><font color="#f0e68c"><b>let</b></font> [pi <font color="#ffa0a0">3.1415</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; n&nbsp; <font color="#ffa0a0">1337</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m&nbsp; <font color="#ffdead">(</font><font color="#f0e68c"><b>*</b></font> n <font color="#f0e68c"><b>pi</b></font><font color="#ffdead">)</font>]<br>&nbsp; <font color="#ffdead">(</font>println m<font color="#ffdead">))</font>&nbsp;<font color="#87ceeb">; Skriver ut: 4200.1855000000005</font><br></font></div>
+<p><tt style="background-color: #e6e6e6">Let</tt> lar meg definere et sett med verdier som så er tilgjengelig innenfor <tt style="background-color: #e6e6e6">let</tt>-kallet. Når let-kallet er ferdig opphører verdiene å eksistere. <tt style="background-color: #e6e6e6">Let</tt> er faktisk en monad – i Haskell er den kjent som <a href="http://en.wikipedia.org/wiki/Monad_(functional_programming)#Identity_monad">Identity Monad</a>. Det let gjør er å transformere argumentene sine til en kjede med funskjonskall, og resultatet blir noe sånn som dette:</p>
+<div style="padding-bottom: 6px; background-color: #333333; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><font color="#ffdead">((</font>fn [pi] <br>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ffdead">((</font>fn [n] <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ffdead">((</font>fn [m] <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ffdead">(</font>println m<font color="#ffdead">))</font>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ffdead">(</font><font color="#f0e68c"><b>*</b></font> n <font color="#f0e68c"><b>pi</b></font><font color="#ffdead">)))</font>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ffa0a0">1337</font><font color="#ffdead">))</font>&nbsp;<br>&nbsp;<font color="#ffa0a0">3.1415</font><font color="#ffdead">)</font>&nbsp;<font color="#87ceeb">; Skriver ut: 4200.1855000000005</font><br></font></div>
+<p>Den koden er jo nærmest uleselig, og i alle fall ekstremt vanskelig å skrive (selv for dette lille eksempelet). Og det er hele poenget: <tt style="background-color: #e6e6e6">Let</tt>-monaden lar meg på en enkel måte skrive imperativ-lignende kode – noe som ser ut som statements – <strong><em>som så blir omformet og kjedet sammen i en pipeline av funksjonskall</em></strong> (ren funskjonell kode). </p>
+<h4>Så hva er en monad?</h4>
+<p>Monader er altså i prinsippet, slik jeg ser det, <strong><em>syntaktisk sukker</em></strong> som omformer kode til funksjonskall etter bestemte regler. Tenk for eksempel på LINQ, som er en spørre-syntaks som under panseret blir omformet til funksjonskallene <tt style="background-color: #e6e6e6">Select()</tt>, <tt style="background-color: #e6e6e6">Where()</tt>, etc. Det er en formell teori knyttet til monad som snakker om <tt style="background-color: #e6e6e6">bind</tt> og <tt style="background-color: #e6e6e6">return</tt>, og forteller hvordan denne omformingen skal fungere. Dette er derimot ikke så viktig før man skal lage sine egne monads.., og jeg er <em>ikke</em> der enda. Det har derimot ikke hindret meg fra å bruke monads lenge uten å vite at det var det jeg gjorde i det hele tatt.</p>
+<p>Monads er dermed ikke så skummelt lenger. List comprehensions og LINQ hjelper meg til å unngå løkker, og til å skrive bedre og mer deklerativ kode. Og <tt style="background-color: #e6e6e6">let</tt>-monaden er helt uvurderlig i Clojure.</p>
+<h4>Andre monader</h4>
+<p>En annen, velkjent monad kalles <em>Maybe-monad</em>. Den fungerer i prinsippet slik at hvis én av handlingene i sekvensen/pipelinen returnerer null/ingenting så vil hele monaden returnerer det samme. På den måten kan monader forenkle kode hvor man normalt må sjekke for null. Det samme prinsippet kan brukes for å forenkle unntakshåndtering.</p>
+<p>Ellers er vel ingen omtale av monad komplett uten å nevne I/O (input/output). Haskell bruker monads til dette, og det garanterer at I/O-handlinger (som jo har sideeffekter) kun utføres én gang, og i riktig rekkefølge. Det er altså <strong><em>ikke riktig</em></strong> at Haskell er et språk uten sideeffekter, slik jeg har blitt fortalt. Men språket krever at handlinger som har sideeffekter utføres i spesielle strukturer (altså monads) som håndterer sideeffektene på riktig måte. Dermed står man friere til å betrakte koden som "rent funksjonell", og man kan utføre andre deler av koden i "valgfrie" rekkefølger, benytte lazy evaluering effektivt etc.</p>
+<p>Vel, det var mine betraktninger rundt monad, og en forklaring for dem som bare har litt erfaring med funksjonelle språk. Det er <em>kun kort tid</em> siden jeg følte at jeg begynte å forstå konseptet, så om du betrakter noe av dette som feil får du bare si fra. Min kunnskap er selvsagt langt fra komplett, så jeg vil gjerne høre andre synspunkter.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

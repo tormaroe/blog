@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Polyglot,CoffeeScript,Lambda">
+
+    <title>Lambda til kaffen (del 3: modulo)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Lambda til kaffen (del 3: modulo)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 20. september 2013</small> 
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/coffeescript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> CoffeeScript</span></a>
+          
+            <a href="/tags/lambda"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lambda</span></a>
+          </p>
+          <p>Det er lurt å lese <a href="/2013/09/19/lambda-til-kaffen-del-1/">del 1 om boolske variabler</a> og <a href="/2013/09/19/lambda-til-kaffen-del-2-tall/">del 2 om tall</a> før du tar fatt på denne posten...</p>
+<p>I del to definerte vi funksjonen INCREMENT, og i denne delen skal vi gå videre med å definere flere numeriske operasjoner.</p>
+<h2>Addisjon</h2>
+<p>Noe av det første vi lærer på skolen er å plusse sammen to tall, så det kan jo være en grei funksjon å ha. Og den er ganske enkel å lage så lenge vi husker hva et tall er i lambda calculus: Nemlig en funksjon som kaller sitt første argument så mange ganger som tallet tilsier. Dermed får vi:</p>
+<pre>ADD = (m) -&gt; (n) -&gt; n(INCREMENT)(m)</pre>
+<p>som betyr at m + n er det samme som <strong>m inkrementert n ganger</strong>. Dermed vil for eksempel</p>
+<pre>show toNumber(ADD(THREE)(FOUR))</pre>
+<p>skrive ut tallet "7" fordi 3 + 4 = 3 + 1 + 1 + 1 + 1 = 7. Easy peasy lemon squeezy!</p>
+<h2>Multiplikasjon</h2>
+<p>Når vi har laget pluss blir det også enkelt å gange to tall:</p>
+<pre>MULTIPLY = (m) -&gt; (n) -&gt; n(ADD(m))(ZERO)</pre>
+<p>Her sier vi altså at m * n er det samme som om vi starter med 0 (ZERO) og n ganger plusser på m. For eksempel er 3 * 4 = 0 + 3 + 3 + 3 + 3 = 12.</p>
+<h2>Potens</h2>
+<p>Og når vi har MULTIPLY kan vi enkelt opphøye et tall i et annet tall.</p>
+<pre>POWER = (m) -&gt; (n) -&gt; n(MULTIPLY(m))(ONE)</pre>
+<p>m opphøyd i n er altså det samme som (litt upresist) n ganger 1 * m. 3 opphøyd i 4 er da for eksempel 1 * 3 * 3 * 3 * 3 = 81.</p>
+<h2>Subtraksjon</h2>
+<p>Å trekke et tall fra et annet tall er litt vanskeligere enn det vi har gjort sålangt. Hvorfor? Å øke et tall er enkelt fordi det kun krever flere funksjonskall. Skal vi redusere et tall må vi fjerne funksjonskall, og det kan vi ikke uten videre gjøre. Så hva gjør vi da?</p>
+<p>Se for deg at vi kan lage par av tall.</p>
+<p><img title="pair" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="pair" src="/uploads/2013/09/pair.png" width="232" height="72"></p>
+<p>Som alt annet i lambda calculus må et par være en funksjon. Vi definerer den slik:</p>
+<pre>PAIR  = (x) -&gt; (y) -&gt; (f) -&gt; f(x)(y)</pre>
+<p>Se på dette som en funksjon som tar i mot 2 argumenter (x og y) og returnerer en funksjon som kaller sitt argument (f) med x og y. Dermed kan vi lage to funksjoner for å aksessere disse to variablene:</p>
+<pre>LEFT  = (p) -&gt; p( (x) -&gt; (y) -&gt; x )
+RIGHT = (p) -&gt; p( (x) -&gt; (y) -&gt; y )</pre>
+<p>Se videre for deg at vi har en funksjon SLIDE som kan inkrementere et par av tall som i tegningen under. Ved å bruke dette kan vi holde track på hvilket tall som er ett mindre enn et gitt annet tall.</p>
+<p><img title="slide" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="slide" src="/uploads/2013/09/slide.png" width="584" height="123"></p>
+<p>SLIDE definerer vi slik:</p>
+<pre>SLIDE = (p) -&gt; PAIR(RIGHT(p))(INCREMENT(RIGHT(p)))</pre>
+<p>Og nå er det plutselig ikke så vanskelig å definere en funksjon som dekrementerer (trekker fra 1) fra et tall:</p>
+<pre>DECREMENT = (n) -&gt; LEFT(n(SLIDE)(PAIR(ZERO)(ZERO)))</pre>
+<p>DECREMENT vil altså starte med paret (0,0) og "slide" tallet n ganger. Til slutt returnerer funksjonen venstresiden av paret. Endelig kan vi bruke DECREMENT til å implementere subtraksjon, akkurat som vi bruke INCREMENT til å implementere addisjon:</p>
+<pre>SUBTRACT = (m) -&gt; (n) -&gt; n(DECREMENT)(m)</pre>
+<h2>Mindre enn eller lik</h2>
+<p>I del 2 laget vi en funksjon for å kontrollere om et tall var lik 0. Nå som vi har DECREMENT i verktøykassen kan vi lage en ny funksjon som sjekker om et tall er mindre eller lik et annet tall. For m er mindre eller lik n hvis (m – n) er mindre eller lik 0:</p>
+<p>IS_LESS_OR_EQUAL = (m) -&gt; (n) -&gt; IS_ZERO(SUBTRACT(m)(n)) </p>
+<p>Disclamer: I tall-systemet vi har laget finnes det ikke negative tall, og DECREMENT av 0 er lik 0. 3 minus 5 vil for eksempel derfor også bli 0.</p>
+<pre>show toBool(IS_LESS_OR_EQUAL(ONE)(TWO))
+show toBool(IS_LESS_OR_EQUAL(TWO)(TWO))
+show toBool(IS_LESS_OR_EQUAL(THREE)(TWO))</pre>
+<p>Linjene over skriver derfor ut "true", "true" og "false".</p>
+<h2>Modulo (versjon 1)</h2>
+<p>Jeg er nå klar for å implementere første versjon av modulo, funksjonen for å finne resten av et heltall eller en divisjon med et annet tall. Her er en fremgangsmåte basert på de byggestenene vi nå har:</p>
+<p><img title="modulo" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="modulo" src="/uploads/2013/09/modulo.png" width="532" height="337"></p>
+<p>Og her er noen eksempler:</p>
+<pre>10 % 3 ==&gt; m = 10      , n = 3, svar = ?
+           m = 10-3 = 7, n = 3, svar = ?
+           m =  7-3 = 4, n = 3, svar = ?
+           m =  4-3 = 1, n = 3, svar = m = <u>1</u>
+
+ 8 % 4 ==&gt; m =  8      , n = 4, svar = ?
+           m =  8-4 = 4, n = 4, svar = ?
+           m =  4-4 = 0, n = 4, svar = m = <u>0</u></pre>
+<p>I min CoffeeScript-baserte lambda calculus kan denne algoritmen implementeres slik:</p>
+<pre>MOD = (m) -&gt; (n) -&gt;
+  IF(IS_LESS_OR_EQUAL(n)(m))(
+    (x) -&gt; MOD(SUBTRACT(m)(n))(n)(x)
+  )(
+    m
+  )</pre>
+<p>Denne MOD-funksjonen fungerer. Jeg kan for eksempel kjøre</p>
+<pre>show toNumber(MOD(THREE)(TWO))</pre>
+<p>som skriver "1" til konsollet. Men definisjonen har et alvorlig problem – den bryter reglene i lambda calculus. Den bruker nemlig <strong>rekursjon</strong>: den kaller funksjonen MOD i definisjonen av MOD. Dette går ikke an, siden MOD-variabelen er noe jeg egentlig bare lager for å gjøre ting enklere for deg om meg. Skulle jeg gjort dette riktig måtte jeg ha erstattet "MOD" i definisjonen med implementasjonen av MOD. I den definisjonen måtte jeg gjort det samme, og jeg måtte ha fortsatt i det uendelige.... </p>
+<h2>Neste kaffepause..</h2>
+<p>I <a href="/2013/09/21/lambda-til-kaffen-del-4-rekursjon/">neste post i denne serien</a> må jeg fikse problemet med den rekursive MOD-funksjonen. For å gjøre det vil jeg introdusere deg for noe som kalles <strong>Z-kombinatoren</strong>. Den er nesten det samme som den mere kjente Y-kombinatoren, som du kanskje har hørt funksjonfolk snakke om. </p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

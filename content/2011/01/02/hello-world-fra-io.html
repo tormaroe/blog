@@ -1,0 +1,59 @@
+---
+title: Hello, world fra Io
+link: http://blog.kjempekjekt.com/2011/01/02/hello-world-fra-io/
+layout: post
+date: 2011-01-02 22:20:52Z
+tags:
+  - Polyglot
+  - Io
+---
+<p>Min kjære kone var så snill å kjøpe <em><a href="http://www.amazon.com/Seven-Languages-Weeks-Pragmatic-Programming/dp/193435659X" target="_blank">Seven Languages in Seven Weeks</a></em> til meg til Jul i år <em>(dvs. i fjor)</em>. Første del handlet om Ruby – et språk jeg allerede behersker ganske bra, så den delen skumleste jeg raskt. Uke to handler om <strong><a href="http://www.iolanguage.com/" target="_blank">Io</a></strong>, et elegant programmeringsspråket jeg har hatt lyst til å se nærmere på en god stund nå. </p> <p>Io har en ekstremt enkel syntaks, en enkelhet og samtidig en fleksibilitet som ikke er helt ulik <em>Lisp</em>. Den har et lite “footprint”, og en attraktiv samtidighetsmodell med <em>actors</em>, <em>futures</em> og <em>korutiner</em>. Den største svakheten er at utviklermiljøet er lite, og det er svært uvisst om språket vil vokse i popularitet.</p> <p>Men her er i alle fall mitt aller første Io-program:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Comment">// First a test method printing the 10 first fibonacci numbers</span>
+<span class="lnr"> 2 </span><span class="Statement">printFib</span> := method(label,
+<span class="lnr"> 3 </span>  label print <span class="String">":"</span> println
+<span class="lnr"> 4 </span>  <span class="Statement">for</span>(i, <span class="Number">1</span>, <span class="Number">10</span>, <span class="String">"Fib #{i} is #{fib(i)}"</span> interpolate println)
+<span class="lnr"> 5 </span>  <span class="String">""</span> println
+<span class="lnr"> 6 </span>)
+<span class="lnr"> 7 </span>
+<span class="lnr"> 8 </span><span class="Comment">// Then a slim and simple fibonacci implementation..</span>
+<span class="lnr"> 9 </span><span class="Statement">fib</span> := method(n, <span class="Conditional">if</span>(n &lt;= <span class="Number">2</span>, <span class="Number">1</span>, fib(n - <span class="Number">1</span>) + fib(n - <span class="Number">2</span>)))
+<span class="lnr">10 </span>
+<span class="lnr">11 </span><span class="Comment">// which I can test like this..</span>
+<span class="lnr">12 </span>printFib(<span class="String">"Recursive fibonacci"</span>)
+<span class="lnr">13 </span>
+<span class="lnr">14 </span><span class="Comment">// Next I want an implementation with a loop</span>
+<span class="lnr">15 </span><span class="Statement">fib</span> := method(n,
+<span class="lnr">16 </span>  sequence := list(<span class="Number">1</span>,<span class="Number">1</span>)
+<span class="lnr">17 </span>  <span class="Statement">for</span>(i, <span class="Number">2</span>, n-<span class="Number">1</span>,
+<span class="lnr">18 </span>    sequence append((sequence at(i-<span class="Number">1</span>)) + (sequence at(i-<span class="Number">2</span>)))
+<span class="lnr">19 </span>  )
+<span class="lnr">20 </span>  <span class="Statement">return</span> sequence at(n-<span class="Number">1</span>)
+<span class="lnr">21 </span>)
+<span class="lnr">22 </span>
+<span class="lnr">23 </span><span class="Comment">// and the test again..</span>
+<span class="lnr">24 </span>printFib(<span class="String">"Fibonacci with a loop"</span>)
+</pre>
+<p>Output:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px">C:\usr\local\bin&gt;io_static.exe c:\temp\hello.io
+Recursive fibonacci:
+Fib 1 is 1
+Fib 2 is 1
+Fib 3 is 2
+Fib 4 is 3
+Fib 5 is 5
+Fib 6 is 8
+Fib 7 is 13
+Fib 8 is 21
+Fib 9 is 34
+Fib 10 is 55
+
+Fibonacci with a loop:
+Fib 1 is 1
+Fib 2 is 1
+Fib 3 is 2
+Fib 4 is 3
+Fib 5 is 5
+Fib 6 is 8
+Fib 7 is 13
+Fib 8 is 21
+Fib 9 is 34
+Fib 10 is 55
+</pre>

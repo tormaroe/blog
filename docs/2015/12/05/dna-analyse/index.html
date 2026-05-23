@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Julekalender,Esoteriske språk">
+
+    <title>DNA-analyse med Common Lisp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>DNA-analyse med Common Lisp</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 5. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/esoteriske-språk"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Esoteriske språk</span></a>
+          </p>
+          <p>Jeg fortsetter å løse oppgavene fra <a href="https://julekalender.knowit.no/">Knowit sin julekalender</a> ved hjelp av Common Lisp. Luke 4 var ganske triviell; vi skulle rett og slett telle antall forekomster av de fire ulike basene i en passe lang DNA-sekvens.</p>
+<p>Først lager vi en variabel som holder på sekvensen (forkortet her av estetiske grunner):</p>
+<pre><code class="hljs">(<span class="hljs-name">defvar</span> *dna* <span class="hljs-string">&quot;TAACGAGTCTGCC...&quot;</span>)</code></pre><p>Og så kunne jeg løse oppgaven rett og slett ved å bruke funksjonen <code>count</code>:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;A~A, C~A, G~A, T~A~%&quot;</span>
+  (<span class="hljs-name"><span class="hljs-built_in">count</span></span> #<span class="hljs-character">\A</span> *dna*)
+  (<span class="hljs-name"><span class="hljs-built_in">count</span></span> #<span class="hljs-character">\C</span> *dna*)
+  (<span class="hljs-name"><span class="hljs-built_in">count</span></span> #<span class="hljs-character">\G</span> *dna*)
+  (<span class="hljs-name"><span class="hljs-built_in">count</span></span> #<span class="hljs-character">\T</span> *dna*))</code></pre><p>Løsningen er grei den, men jeg syntes det var lite tilfredstillende å kalle <code>count</code> fire ganger. DNA-sekvensen må jo da traverseres fire ganger, og om det var en veldig lang sekvens det var snakk om så vil jo det koste unødvendig med CPU-sykler.</p>
+<p>Derfor lagde jeg i stedet en løsning som bruker <code>loop</code>-makroen til å traversere sekvensen én gang. Jeg lager en liste med fire tall som jeg muterer underveis basert på hvilken bokstav jeg støter på. </p>
+<pre><code class="hljs">(<span class="hljs-keyword">loop</span> <span class="hljs-keyword">for</span> <span class="hljs-type">char</span> across *dna*
+  <span class="hljs-keyword">with</span> (adenin cytosin guanin tymin) 
+     = (list <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>)
+  <span class="hljs-keyword">when</span> (eq <span class="hljs-type">char</span> #\A) <span class="hljs-keyword">do</span> (incf adenin)
+  <span class="hljs-keyword">when</span> (eq <span class="hljs-type">char</span> #\C) <span class="hljs-keyword">do</span> (incf cytosin)
+  <span class="hljs-keyword">when</span> (eq <span class="hljs-type">char</span> #\G) <span class="hljs-keyword">do</span> (incf guanin)
+  <span class="hljs-keyword">when</span> (eq <span class="hljs-type">char</span> #\T) <span class="hljs-keyword">do</span> (incf tymin)
+  finally (<span class="hljs-keyword">format</span> t &quot;A~A, C~A, G~A, T~A~%&quot; 
+            adenin cytosin guanin tymin))</code></pre><p>Denne løsningen ble rett og slett mye gøyere. Det mest krevende var å skumme internett for å finne ut at jeg måtte bruke <code>across</code> når jeg skal iterere over elementene i en streng (og ikke <code>in</code> som brukes for lister).</p>
+<p>##Esoteriske løsninger</p>
+<p>Det er forresten interessant å se alle løsningene som folk poster i kommentartråden til lukene. Det er et hav av ulike språk i sving her, og denne luken ble blant annet løst i <strong><a href="https://en.wikipedia.org/wiki/ABAP">ABAP</a></strong> av KjetilK. <em>Kudos!</em> Brukeren som kaller seg Suppen løste oppgaven i et esoterisk språk som heter <strong><a href="https://esolangs.org/wiki/Fish">Fish</a></strong>. Slik så det ut:</p>
+<pre><code class="hljs">042p0b2p0a8+2p0aa5++2p01.
+&gt;i:&quot;A&quot;=?v:&quot;C&quot;=?v:&quot;G&quot;=?v:&quot;T&quot;=?v01-=?!v  v&gt;v&gt;v
+    n   ~  n   ~  n   ~  n   ~     <span class="hljs-number"> 0 </span> &quot;n&quot;o5
+       <span class="hljs-number"> 4 </span>     b      a     <span class="hljs-number"> 5 </span>    <span class="hljs-number"> 1 </span> AgGo5
+       <span class="hljs-number"> 2 </span>    <span class="hljs-number"> 2 </span>    <span class="hljs-number"> 8 </span>    <span class="hljs-number"> 5 </span>     &gt;. &quot;2 o*
+        g      g      +      *         ob,&quot;2
+       <span class="hljs-number"> 1 </span>    <span class="hljs-number"> 1 </span>    <span class="hljs-number"> 2 </span>    <span class="hljs-number"> 2 </span>        4o&quot;,g
+        +      +      g      g         2oo n
+       <span class="hljs-number"> 4 </span>     b     <span class="hljs-number"> 1 </span>    <span class="hljs-number"> 1 </span>        gooT;
+                      +      +         n&quot;o&quot;
+                      a     <span class="hljs-number"> 5 </span>        &quot;,an
+                     <span class="hljs-number"> 8 </span>    <span class="hljs-number"> 5 </span>        C 8g
+                      +      *         &quot;&quot;+2
+^p2&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;         &gt;^&gt;^</code></pre><p>Og Pantheon løste oppgaven i språket <strong><a href="https://pyth.readthedocs.org/en/latest/">Pyth</a></strong> med dette lille programmet: </p>
+<pre><code class="hljs">FNcS{z1NsmqNdz</code></pre><p>Genialt! Denne quizen ble rett og slett så gøy som folk gjorde den til selv. Og ikke minst kjekt å se at jeg ikke er alene i norge om å synes sånt er underholdende å holde på med :)</p>
+<p>Men nå håper jeg på en mere utfordrende oppgave i neste luke ;)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

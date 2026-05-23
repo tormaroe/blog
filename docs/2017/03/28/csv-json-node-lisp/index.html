@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Node.js">
+
+    <title>CSV, json, node, lisp, utf8 og closures</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>CSV, json, node, lisp, utf8 og closures</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 28. mars 2017</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/nodejs"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Node.js</span></a>
+          </p>
+          <p>Her om dagen skulle jeg konvertere et sett med kommaseparerte filer (csv) til filer med json-linjer (<a href="http://jsonlines.org/">jsonl</a>). Bare et utvalg av feltene fra csv&#39;en skulle brukes og noen av verdiene skulle modifiseres underveis, så oppgaven var hakket mer kompleks enn at jeg ville gjøre det med for eksempel regex-transformasjoner i teksteditoren.</p>
+<p>Om jeg forenkler problemet betraktelig kan du forestille deg at csv-filen så ut omtrent som dette:</p>
+<pre><code class="hljs"><span class="hljs-attribute">SSN</span>,FIRSTNAME,LASTNAME,YEAR_OF_BIRTH
+<span class="hljs-attribute">987654321</span>-<span class="hljs-number">0018</span>,<span class="hljs-string">&quot;Bob Kåre Jonny&quot;</span>,<span class="hljs-string">&quot;Ingebrigtsen&quot;</span>,<span class="hljs-number">1956</span>
+<span class="hljs-attribute">765432109</span>-<span class="hljs-number">0144</span>,<span class="hljs-string">&quot;猪来了&quot;</span>,<span class="hljs-string">&quot;属版&quot;</span>,<span class="hljs-number">1987</span>
+<span class="hljs-attribute">543210987</span>-<span class="hljs-number">1112</span>,<span class="hljs-string">&quot;Александр&quot;</span>,<span class="hljs-string">&quot;Набатов&quot;</span>,<span class="hljs-number">2001</span></code></pre><p>Siden jeg synes det er veldig gøy med Common Lisp for tiden hadde jeg først lyst til å forsøke det, og <a href="/2016/05/29/parprogrammering/">min parprogrammeringspartner</a> var villig til det. Vi fikk derimot raskt et problem med å lese inn filen, og siden vi hadde knapt med tid bestemte vi oss for å bytte til Node.js.</p>
+<h2>Løsning i Node</h2>
+<p>Vi skrev <em>(det vil si mer eller mindre kopierte fra internett)</em> raskt et lite script omtrent som dette:</p>
+<pre><code class="hljs"><span class="hljs-built_in">var</span> csv = <span class="hljs-keyword">require</span>(<span class="hljs-string">&#x27;csv-parser&#x27;</span>)
+<span class="hljs-built_in">var</span> fs = <span class="hljs-keyword">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>)
+ 
+fs.createReadStream(<span class="hljs-string">&#x27;thefile.csv&#x27;</span>)
+  .pipe(csv())
+  .<span class="hljs-keyword">on</span>(<span class="hljs-string">&#x27;data&#x27;</span>, function (<span class="hljs-built_in">data</span>) {
+    <span class="hljs-built_in">var</span> k = { 
+      <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-built_in">data</span>.SSN, 
+      <span class="hljs-string">&quot;given_name&quot;</span>: <span class="hljs-built_in">data</span>.FIRSTNAME, 
+      <span class="hljs-string">&quot;surname&quot;</span>: <span class="hljs-built_in">data</span>.LASTNAME, 
+      <span class="hljs-string">&quot;yob&quot;</span>: <span class="hljs-built_in">data</span>.YEAR_OF_BIRTH 
+    };
+    console.<span class="hljs-keyword">log</span>(<span class="hljs-string">&quot;%j&quot;</span>, k);
+  })</code></pre><p>Nå kunne vi fra kommandolinjen kjøre <code>node script.js &gt; result.jsonl</code> og vi var i mål.</p>
+<p>Siden json hører hjemme i JavaScript er Node egentlig det perfekte verktøyet for å skrive dette scriptet. Likevel hadde jeg veldig lyst til å få det til i Common Lisp, så etter arbeidstid gav jeg det et forsøk til...</p>
+<h2>Løsning i Lisp</h2>
+<p>Utfordringen som stoppet oss ved første forsøk viste seg å være at csv-filen var kodet i utf-8. Min lisp (<a href="http://sbcl.org/">SBCL</a>) på Windows antok at alt som leses inn til programmet er ISO-8859-1. Den missoppfattelsen rettet jeg opp ved å sette variabelen <code>*default-external-format*</code>.</p>
+<p>Dermed kunne jeg lage en Lisp-løsning tilsvarende den vi allerede hadde i Node:</p>
+<pre><code class="hljs">(<span class="hljs-name">use-package</span> &#x27;(<span class="hljs-symbol">:read-csv</span> <span class="hljs-symbol">:cl-json</span>))
+
+(<span class="hljs-name">setf</span> sb-impl::*default-external-format* <span class="hljs-symbol">:UTF-8</span>)
+
+(<span class="hljs-name">with-open-file</span> (<span class="hljs-name">s</span> <span class="hljs-string">&quot;thefile.csv&quot;</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">rows</span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> (<span class="hljs-name">parse-csv</span> s))))
+    (<span class="hljs-name">dolist</span> (<span class="hljs-name">row</span> rows)
+      (<span class="hljs-name">encode-json</span> 
+       `((<span class="hljs-symbol">:id</span>         . ,(<span class="hljs-name"><span class="hljs-built_in">nth</span></span> <span class="hljs-number">0</span> row))
+         (<span class="hljs-symbol">:given_name</span> . ,(<span class="hljs-name"><span class="hljs-built_in">nth</span></span> <span class="hljs-number">1</span> row))
+         (<span class="hljs-symbol">:surname</span>    . ,(<span class="hljs-name"><span class="hljs-built_in">nth</span></span> <span class="hljs-number">2</span> row))
+         (<span class="hljs-symbol">:yob</span>        . ,(<span class="hljs-name"><span class="hljs-built_in">nth</span></span> <span class="hljs-number">3</span> row))))
+      (<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;~%&quot;</span>))))</code></pre><p><code>*default-external-format*</code> er ikke endel av Common Lisp standarden, men spesifikt for SBCL. Dermot kunne jeg i stedet ha brukt et bibliotek som heter <strong><a href="https://github.com/keithj/alexandria">alexandria</a></strong> som blant annet inneholder et sett med forbedre funskjoner for å lese og skrive filer. Med funksjonen <code>with-input-from-file</code> får man mulighet til å spesifisere hvilken encoding man skal anta filen har:</p>
+<pre><code class="hljs">(<span class="hljs-keyword">use</span>-package <span class="hljs-symbol">:alexandria</span>)
+
+(<span class="hljs-keyword">with</span>-input-from-file (s <span class="hljs-string">&quot;thefile.csv&quot;</span>
+                       <span class="hljs-symbol">:external-format</span> <span class="hljs-symbol">:UTF-</span><span class="hljs-number">8</span>)
+  ; ...
+  ; ...
+  )</code></pre><p>Om du seriøst ønsker å bruke Common Lisp til noe nyttig bør du ta en grundig titt på alexandria og hva det har å tilby.</p>
+<h2>Funksjonell kolonneaksess</h2>
+<p>Til slutt måtte jeg leke med litt, og om du vil ha en liten utfordring kan forsøke å overbevise deg om at du skjønner hvordan dette fungerer.. </p>
+<p>Det som er litt kjipt med løsningen over er at csv-biblioteket ikke lar meg bruke kolonnenavnene til å hente ut feltverdiene, men må spesifisere kolonneindeks. For å løse den svakheten lagde jeg følgende funksjon som tar inn listen med kolonnenavn og returnerer en ny funksjon. Denne nye funksjonen en en closure <em>(let over lambda)</em> som tar to parametre - et kolonnenavn og en datarad - og finner så verdien via at den søker opp indeksen i listen av kolonnenavn:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> make-column-accessor (<span class="hljs-name">headers</span>)
+  (<span class="hljs-name">let*</span> ((<span class="hljs-name">index</span> <span class="hljs-number">-1</span>)
+         (<span class="hljs-name"><span class="hljs-built_in">next</span></span> (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (<span class="hljs-name"><span class="hljs-built_in">name</span></span>) (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> name (<span class="hljs-name">incf</span> index))))
+         (<span class="hljs-name">name-to-index-map</span> (<span class="hljs-name">mapcar</span> next headers)))
+    (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (<span class="hljs-name">fieldname</span> row)
+      (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">index</span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> (<span class="hljs-name"><span class="hljs-built_in">assoc</span></span> fieldname name-to-index-map 
+                               <span class="hljs-symbol">:test</span> #&#x27;equalp))))
+        (<span class="hljs-name"><span class="hljs-built_in">nth</span></span> index row)))))</code></pre><p>Nå kan jeg modifisere løsningen litt og bruke denne nye måten å hente ut feltene på:</p>
+<pre><code class="hljs">(<span class="hljs-name">with-open-file</span> (<span class="hljs-name">s</span> <span class="hljs-string">&quot;thefile.csv&quot;</span>)
+  (<span class="hljs-name">let*</span> ((<span class="hljs-name"><span class="hljs-built_in">all</span></span> (<span class="hljs-name">parse-csv</span> s))
+         (<span class="hljs-name">rows</span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> all))
+         (<span class="hljs-name">get-column</span> (<span class="hljs-name">make-column-accessor</span> (<span class="hljs-name"><span class="hljs-built_in">car</span></span> all))))
+    (<span class="hljs-name">dolist</span> (<span class="hljs-name">row</span> rows)
+      (<span class="hljs-name">macrolet</span> ((<span class="hljs-name">col</span> (<span class="hljs-name"><span class="hljs-built_in">name</span></span>) `(<span class="hljs-name">funcall</span> get-column ,name row)))
+        (<span class="hljs-name">encode-json</span> 
+         `((<span class="hljs-symbol">:id</span>         . ,(<span class="hljs-name">col</span> <span class="hljs-string">&quot;SSN&quot;</span>))
+           (<span class="hljs-symbol">:given_name</span> . ,(<span class="hljs-name">col</span> <span class="hljs-string">&quot;FIRSTNAME&quot;</span>))
+           (<span class="hljs-symbol">:surname</span>    . ,(<span class="hljs-name">col</span> <span class="hljs-string">&quot;LASTNAME&quot;</span>))
+           (<span class="hljs-symbol">:yob</span>        . ,(<span class="hljs-name">col</span> <span class="hljs-string">&quot;YEAR_OF_BIRTH&quot;</span>))))
+          (<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;~%&quot;</span>)))))</code></pre><p>Her brukte jeg også en aldri så liten makro (se <code>macrolet</code>) til å forenkle syntaksen. Takket være den kan jeg skrive <code>(col &quot;FOO&quot;)</code> som Lisp oversetter til uttrykket <code>(funcall get-column &quot;FOO&quot; row)</code>.</p>
+<p>Løsningen i Node.js er fortsatt enklest, med Common Lisp er rett og slett morsommere :P</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

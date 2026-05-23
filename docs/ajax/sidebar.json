@@ -1,0 +1,64 @@
+{
+  "features": [
+    {
+      "heading": "En introduksjon til erlang",
+      "text": "Erlang er et veldig spennende språk og platform for å lage skalerbare serverløsninger som yter maksimalt.",
+      "link": "/2010/04/21/en-introduksjon-til-erlang/",
+      "image": "bbErlang.jpg"
+    },
+    {
+      "heading": "Den sosiale hjernen",
+      "text": "Samspillet mellom emosjoner og det rasjonelle i hjernen påvirker hvordan vi fungerer sammen med andre.",
+      "link": "/2013/05/20/den-sosiale-hjernen/",
+      "image": "bbSosialHjerne.png"
+    }
+  ],
+  "featuredTag": {
+    "name": "F#",
+    "slug": "fsharp",
+    "image": "bbFSharp.jpg",
+    "text": "F# er et kraftig språk i ML-familien som kombinerer funksjonell programmering og objektorientering på .NET og Mono."
+  },
+  "posts": [
+    {
+      "link": "/2019/02/11/maze2/",
+      "title": "Labyrint-algoritmer"
+    },
+    {
+      "link": "/2019/01/11/mazes/",
+      "title": "Generere labyrinter (i Go)"
+    },
+    {
+      "link": "/2018/09/28/fersk-it-konsulent/",
+      "title": "Fersk IT-konsulent"
+    },
+    {
+      "link": "/2018/08/27/ny-jobb/",
+      "title": "Takk for nå"
+    },
+    {
+      "link": "/2018/05/01/smallbasic/",
+      "title": "Jentungen koder for første gang"
+    },
+    {
+      "link": "/2018/03/05/morsom-kodetrening/",
+      "title": "Morsom kodetrening"
+    },
+    {
+      "link": "/2018/02/25/return-of-programmeringsbloggen/",
+      "title": "The Return of Programmeringsbloggen"
+    },
+    {
+      "link": "/2017/03/28/csv-json-node-lisp/",
+      "title": "CSV, json, node, lisp, utf8 og closures"
+    },
+    {
+      "link": "/2017/03/25/crystal/",
+      "title": "Crystal: Hurtig som C, glatt som Ruby"
+    },
+    {
+      "link": "/2017/03/24/apl/",
+      "title": "A Programming Language"
+    }
+  ]
+}

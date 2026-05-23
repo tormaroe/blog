@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="F#,Polyglot,Trær">
+
+    <title>Funksjonell lek med trær i F#</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Funksjonell lek med trær i F#</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 15. februar 2013</small> 
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/trær"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Trær</span></a>
+          </p>
+          <p>I forrige post <a href="/2013/02/14/funksjonell-lek-med-lister-i-f/">lekte jeg med med cons-baserte lister</a>. Nå har jeg gått over til tre-strukturer. Som utvikler får man veldig ofte bruk for trær av ett eller annet slag, så dette er noe det kan være greit å øve litt på av og til – og spesielt når man jobber med et nytt programmeringsspråk.</p>
+<h2>Et node-basert tre</h2>
+<p>Husker du cons-cellen fra forrige bloggpost? I Lisp bruker man rett som det er cons-celler til å lage trær med også. Det jeg skal gjøre nå ligner litt, men jeg skal gjøre det litt enklere.</p>
+<p>Igjen bruker jeg en <em>discriminated union</em> til å definerer en generisk type. Denne gangen kaller jeg den <code>Tree</code>. Tree er en union av to muligheter: Enten er det en <code>Branch</code> (en gren altså), som har en verdi av den generiske typen samt en liste med flere tre-noder. Eller er den et <code>Leaf</code> (et blad), som bare har en verdi.</p>
+<pre>type Tree&lt;'T&gt; =
+    | Branch of 'T * Tree&lt;'T&gt; list
+    | Leaf of 'T</pre>
+<p>Forresten, når jeg nå snakker om lister så kommer jeg ikke til å bruke min hjemmesnekrede liste fra forrige post. Jeg skal bruke listene som finnes i F#.</p>
+<p>En liste kan konstrueres på denne måten:</p>
+<pre>let aList = 1 :: 2 :: 3 :: 4 :: []</pre>
+<p><code>::</code> er det samme som cons-funksjonen fra sist, men den fungerer som en operator mellom to argumenter (i stedet for at begge argumentene kommer etterpå).</p>
+<p>Jeg kan også opprette den samme listen slik som dette:</p>
+<pre>let aList = [1; 2; 3; 4]</pre>
+<p>Hadde vi brukt komma i stedet for semikolon hadde det lignet på arrays i de fleste andre språk. Til slutt kan jeg nevne at man også kan droppe semikolon-separatorene om man putter elementene i listen på hver sin linje, slik som dette:</p>
+<pre>let aList = [ 1
+              2
+              3
+              4 ]</pre>
+<p>Men tilbake til trær! For å lage et bittelite tre med min nye datatype kan jeg nå gjøre slik som dette:</p>
+<pre>let smallTree = Branch ("root", [ Leaf "leaf" ])</pre>
+<p>Dette definerer treet <code>smallTree</code>, som består av en rot-node og en blad-node. Rot-noden holder verdien <code>"root"</code>, og bladnoden holder verdien <code>"leaf"</code>.</p>
+<h2>Traversering av trær</h2>
+<p>La oss lage et litt større tre:</p>
+<pre>let root = 
+    Branch 
+      ("root", 
+       [Branch ("branch1", [Leaf "A"
+                            Leaf "B"])
+        Branch ("branch2", [Leaf "C"
+                            Branch ("D", [Leaf "E"])
+                            Leaf "F"])])</pre>
+<p>En ASCII-representasjon av dette treet har du her:</p>
+<pre>            root
+            /  \
+      branch1  branch2
+      /   |    |  \   \
+     A    B    C   D   F
+                   |
+                   E</pre>
+<p>Det jeg nå vil lage er en funksjon som kan brukes til å besøke samtlige noder i treet. Det finnes to hovedstrategier for å besøke alle nodene, og vi kaller dem <strong>dybde-først</strong> og <strong>bredde-først</strong>. Bredde-først vil besøke alle nodene på et gitt nivå før det beveger seg videre ned i treet. Dybde-først vil i stedet gå helt til bunns i en gren, for så å snu, gå tilbake, og så helt ned i neste gren. Ta en titt på Wikipedia-artiklene om <a href="http://en.wikipedia.org/wiki/Depth-first_search">depth-first search</a> og <a href="http://en.wikipedia.org/wiki/Breadth-first_search">breadth-first search</a> om du trenger å vite mer.</p>
+<p>Jeg velger å bruke en dybde-først strategi, og kaller funksjonen <code>visit</code>:</p>
+<pre>let rec visit f tree =
+    match tree with
+    | Leaf    v       -&gt; f v
+    | Branch (v, sub) -&gt; f v
+                         List.iter (visit f) sub</pre>
+<p>visit er rekursiv, og tar i tillegg til treet inn en funksjon som skal kalles for hver node. Hvis noden som behandles er et <code>Leaf</code>, så vil den bare kalle funksjonen <code>f</code> med verdien av noden som argument. Hvis noden derimot er en <code>Branch</code> vil den først kalle <code>f</code> på verdien, men så iterere over alle subnodene og kalle visit på dem.</p>
+<p>Nå kan jeg bruke visit-funksjonen på treet mitt, og sende med en funksjon som rett og slett bare skriver ut verdien i noden samt et mellomrom:</p>
+<pre>visit (printf "%s ") root</pre>
+<p>Output:</p>
+<pre>root branch1 A B branch2 C D E F </pre>
+<p>Fra dette kan du se at visit har brukt dybde-først strategien.</p>
+<h2>En mere funksjonell fremgangsmåte</h2>
+<p><code>visit</code> bruker ikke hva vi vil kalle en funksjonell fremgangsmåte. Den baserer seg i stedet på at funksjonen <code>f</code> som sendes inn har sideeffekter – i tilfellet over skrev jeg ut verdier til konsollet.</p>
+<p>I stedet ønsker jeg en funksjon som kan traversere treet, kalle en funksjon for hver node, men ta vare på resultatene underveis. Til slutt skal den returnere "summen" fra alle nodene.</p>
+<p>Høres dette kjent ut? Det var jo dette <code>fold</code> gjorde for lister! Det jeg ønsker meg er en fold-funksjon for trær. Jeg velger å kalle den <code>treeFold</code>:</p>
+<pre>let rec treeFold f acc tree =
+    match tree with
+    | Leaf    v       -&gt; f acc v
+    | Branch (v, sub) -&gt; List.fold (treeFold f) (f acc v) sub</pre>
+<p>Denne funksjonen har én parameter mer enn visit, nemlig en akkumulatorverdi (<code>acc</code>). Her samles resultatet fra behandlingen av alle nodene. I den siste linjen kaller jeg F# sin fold-funksjon på alle undernodene til noden jeg behandler. Funksjonen som skal kalles på hver av dem er <code>(treeFold f)</code>. Akkumulatorverdien er resultatet av å kalle f på denne nodens verdi: <code>(f acc v)</code>. </p>
+<p>Henger du med?</p>
+<p>Nå kan jeg kalle treeFold og sende inn en funksjon som <em>ikke</em> har noen sideeffekter:</p>
+<pre>let result = treeFold (sprintf "%s %s") "" root</pre>
+<p>Og resultatet blir at <code>result</code> inneholder den samme strenger som tidligere ble skrevet ut til konsollet.</p>
+<h2>Å regne med trær</h2>
+<p>Nå skal jeg gjøre noe gøy! Jeg skal bruke trestrukturen jeg har laget til å utføre regnestykker. Jeg skal rett og slett laget et såkalt <a href="http://en.wikipedia.org/wiki/Expression_tree">expression tree</a>. Deretter vil jeg lage en funksjon som parser treet – dvs. besøker alle nodene og kalkulerer resultatet av regnestykket det representerer.</p>
+<p>Regnestykket jeg vil modellere er <code>3 * 4 + 5 * 6</code>. Som et tre vil det se slik ut:</p>
+<pre>            Plus
+            /  \
+     Multiply  Multiply
+      /   |      |   \ 
+     3    4      5    6 </pre>
+<p>Til dette trenger jeg en ny datatype jeg kaller <code>CalcExpression</code>, som i dette enkle eksempelet kan være en av tre ting: et tall, en multipliseringsoperator, eller en adderingsoperator.</p>
+<pre>type CalcExpression =
+    | Number of int
+    | Multiply
+    | Plus</pre>
+<p>Og så kan jeg sette opp regnestykket som et tre:</p>
+<pre>let expression = 
+    Branch 
+      (Plus, [Branch (Multiply, [Leaf (Number 3)
+                                 Leaf (Number 4)])
+              Branch (Multiply, [Leaf (Number 5)
+                                 Leaf (Number 6)])])</pre>
+<p>Da gjenstår det bare å lage parseren, som jeg har kalt <code>calc</code>. Den må skille mellom de ulike typene av CalcExpression, og vite hvordan den håndterer hver av dem. Finner den en addisjon må den <em>plusse</em> sammen alle subnodene (som kan være trær – derfor inneholder den rekursive kall til calc). Finner den en multiplikasjon må den gjøre det samme, men denne gangen <em>gange</em> sammen subnodene. Finner den et tall så returneres bare tallet.</p>
+<pre>let rec calc = function 
+    | Branch (Plus,     xs) -&gt; List.fold (fun x y -&gt; x + calc y) 0 xs
+    | Branch (Multiply, xs) -&gt; List.fold (fun x y -&gt; x * calc y) 1 xs
+    | Leaf   (Number n)     -&gt; n
+    | _                     -&gt; failwith "Invalid expression tree"</pre>
+<p>Til slutt kan jeg finne svaret av regnestykket:</p>
+<pre>let answer = calc expression</pre>
+<p>.. som selvfølgelig er <strong>42</strong>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

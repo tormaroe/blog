@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Polyglot,WTF,Esoteriske språk,Befunge">
+
+    <title>Befunge</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Befunge</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 20. desember 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/wtf"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> WTF</span></a>
+          
+            <a href="/tags/esoteriske-språk"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Esoteriske språk</span></a>
+          
+            <a href="/tags/befunge"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Befunge</span></a>
+          </p>
+          <p>I 1993 satte Chris Pressey seg som mål å lage et programmeringsspråk som var vanskeligere å kompilere enn alle andre språk. Resultatet ble <strong><em>Befunge</em></strong>, et språk du aldri har sett maken til. Om du finner et praktisk bruksområde for Befunge så er du god, men språket er uansett underholdende, og stimulerer hjernen til å tenke tanker du aldri har hatt før.</p>
+<p>Gjør deg klar for litt orntlig trylling med tekst!</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="Befunge" border="0" alt="Befunge" src="/uploads/2011/12/Befunge.jpg" width="500" height="434"></p>
+<p>Befunge skiller seg klart fra alle konvensjonelle språk. Som <a href="/2011/12/18/forth/">Forth</a> og <a href="/2011/12/19/factor/">Factor</a> er det et stack-basert, men måten man skriver programmer på i Befunge er helt anderledes.</p>
+<p>Et Befunge-program er et todimensjonalt grid. Alle kommandoer er representert ved ett tegn. Program-counteren starter på kommandoen øverst til venstre i kildefilen, og så beveger den seg normalt ett og ett tegn mot høyre. Men man kan bruke spesielle kommandoer for å endre retningen, og programmet vil i praksis bevege seg på kryss og tvers i 2D-verdenen som kildekoden representerer.</p>
+<p>La det synke inn litt... Et program i et tradisjonelt programmeringsspråk er en sekvens med instruksjoner. Man kan hoppe fra sted til sted – f.eks. ved hjelp av metodekall – men i metodene er det igjen en vanlig sekvens med instruksjoner. I Befunge kan programmet bevege seg til høyre, til venstre, oppover og nedover. Instruksjonspekeren kan til og med gå ut over en av kantene i kildekoden, og dukke opp igjen på den motsatte siden!</p>
+<h4>Euler-oppgave 1</h4>
+<p>Jepp, du har sett det før: <a href="/2011/11/24/hello-world-euler-style/">en algoritme for å finne summen av alle multipler av 3 eller 5 mindre enn 1000</a>.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span> 9872***9- v    Euler Problem #1
+<span class="lnr"> 2 </span>       &gt;   v
+<span class="lnr"> 3 </span>           :                   &gt;\         v
+<span class="lnr"> 4 </span>           !
+<span class="lnr"> 5 </span>           _   v               |  :  \+   &lt;$
+<span class="lnr"> 6 </span>               :
+<span class="lnr"> 7 </span>       -       3
+<span class="lnr"> 8 </span>       1       %               $
+<span class="lnr"> 9 </span>               !               .
+<span class="lnr">10 </span>       ^  \:&lt;  _  v            @
+<span class="lnr">11 </span>                  :
+<span class="lnr">12 </span>                  5
+<span class="lnr">13 </span>                  %
+<span class="lnr">14 </span>                  !
+<span class="lnr">15 </span>            ^     _     v
+<span class="lnr">16 </span>       ^                &lt;  - By Torbjørn Marø
+</pre>
+<p>Ahhhhhh, <em>what a rush!!</em> Det var kanskje den kjekkeste koden jeg har skrevet til denne julekalenderen. Jeg utfordrer deg til å forsøke selv, for dette er både stimulerende hjernetrim og underholdende morro.</p>
+<p>Når du har begynt å tenke stack-basert, og vært innom andre ett-tegn-baserte språk som <a href="/2011/12/16/betterave/">Betterave</a>, så er løsningen egentlig ganske "rett frem". Det mest utfordrende er å holde orden på koden, å strukturere den riktig og godt.</p>
+<p>Nedenfor har jeg forsøkt å forklare programmet gjennom et diagram. Diagrammet speiler strukturen i koden – sammenligner du dem så vil du begynne å se det.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="befunge_fig1" border="0" alt="befunge_fig1" src="/uploads/2011/12/befunge_fig1.png" width="500" height="333"></p>
+<p>Har du noengang spilt et spill hvor du må plassere objekter i et rom får å få en laserstråle eller en ball til å lyse/sprette fra start til mål? Befunge er mye av det samme. Du kan også sammenligne det med workflow-baserte systemer; jeg ser på Befunge som en enkel ASCII-basert versjon av Windows Workflow Foundation eller tilsvarende prosessdesigner-verktøy, bare med et litt begrenset sett med byggeklosser.</p>
+<p>Algoritmen jeg har brukt er forresten den samme som <a href="/2011/12/18/forth/">den rekursive algoritmen jeg løste oppgaven med i Forth</a>. Men i Befunge har jeg laget en visuell utgave. Med litt fantasi kan jeg se for meg hvordan programmet kjører rundt i koden og bygger opp stacken, før den slår alle tallene sammen og skriver ut svaret.</p>
+<h4>Hvordan komme igang</h4>
+<p>Esolangs-wikien gir deg <a href="http://esolangs.org/wiki/Befunge">en god introduksjon til språket</a> og alle kommandoene du kan benytte. Det finnes en rekke tolkere til Befunge, skrevet i blant annet Python, JavaScript og Java. Selv har jeg brukt en kompilator skrevet i C, men jeg klarer av en eller annen grunn ikke å finne eller huske hvor jeg fikk den fra. Men om noen er interessert i den kan jeg gjøre koden tilgjengelig.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

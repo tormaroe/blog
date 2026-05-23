@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Databaser,db4o">
+
+    <title>Objekt-orienterte databaser (del2): Db4objects</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Objekt-orienterte databaser (del2): Db4objects</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 27. februar 2009</small> 
+            <a href="/tags/databaser"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Databaser</span></a>
+          
+            <a href="/tags/db4o"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> db4o</span></a>
+          </p>
+          <p><i>Del 1 i denne serien <a href="/2009/02/26/objekt-orienterte-databaser-del-1/">finner du her</a>.</i></p>
+<p>De første objekt-orienterte databasene kom ut av forskningsmiljøene tidlig på 70-tallet, men begrepet ble ikke tatt i bruk før 1985. På 90-tallet dukket det opp mange, komersielle løsninger, hvor objektdatabaser bl.a. ble integrert i programmeringsspråk for persistering av objekter. C++ var lenge størst på dette området.</p>
+<p>Rundt 2004 fikk objektdatabaser en ny vekst gjennom diverse <i>open source</i>-prosjekter. Det finnes i dag <a href="http://en.wikipedia.org/wiki/Comparison_of_object_database_management_systems">et hav av løsninger</a> under diverse lisenser og for diverse programmeringspråk.</p>
+<p>Objektdatabasene har hatt liten effekt på <i>mainstream</i>, kommersiell dataprosessering, og mange utviklere vet derfor lite om dem. Men ODBMS er mye brukt innenfor enkelte spesialfelt, som f.eks. telekommunikasjon, fysikk og molekylærbiologi. Det er verdt å merke seg at verdens største database er en objektdatabase: Stanford Linear Accelerator Center's ODBMS var den første databasen over 1000 terabytes. Objektdatabaser er også attraktive for <a href="http://en.wikipedia.org/wiki/Embedded_devices"><i>embedded devices</i></a> og innefor <a href="http://en.wikipedia.org/wiki/Real-time_computing">real-time</a> systemer.</p>
+<p>Den objektdatabase-teknologien jeg har valgt å eksperimentere med heter <a href="http://www.db4o.com/"><strong>db4o</strong></a> (<i>database for objects</i>). Db4o er en objektdatabase både for Java og .NET, og er gratis for ikke-kommerisell bruk. Produktet fikk prisen <em style="color:blue;"><strong>Best of Open Source Developer Tools</strong></em> i 2008, og har et stort community. Det finnes allerede et hav av open source sideprosjekter som implementerer støtteverktøy og lignende ting - intergasjon til Castle, Spring.NET og CSLA, støtte for bruk i Ruby, JRuby, Eiffel.NET, Scala og PHP, Ant tasks, Silverlight-støtte, ASP.NET providers osv. Dokumentasjonen er relativt bra, og teknologien er i produksjon mange steder: bl.a. sitter det en db4o-database i hjertet av Spanias nye kontrollsenter for høyhastighetståg.</p>
+<p style="font-size:12pt;font-weight:bold;">Databasespørringer i db4o</p>
+<p>I <a href="/2009/02/26/objekt-orienterte-databaser-del-1/">del 1</a> viste jeg hvor enkelt det er å lagre objekter i objektdatabasen. Oppdatering av objekter er like enkelt - man bruker den samme <i>Store()</i> metoden faktisk - den legger inn nye objekter og oppdaterer eksisterende objekter. Når det gjelder å hente ut data har db4o flere muligheter.</p>
+<p>For det første kan man bruke <b>QueryByExample</b> (QBE). Dette er noe f.eks. NHibernate også støtter. Man oppretter et nytt objekt av den typen man skal hente ut - ofte kalt en prototype - og setter properties som man er interessert i å <i>matche</i> på. Vil man f.eks. hente ut alle Personer som heter "Torbjørn", oppretter man en person som heter nettopp Torbjørn og sender det til QBE metoden:</p>
+<div style="font-family: Courier New; font-size: 10pt; color: black; background: #f8f8f8;">
+<p style="margin: 0px;"><span style="color: blue;">public</span> <span style="color: #2b91af;">IEnumerable</span>&lt;<span style="color: #2b91af;">Person</span>&gt; FindAllTorbjorns()</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="color: blue;">using</span> (<span style="color: #2b91af;">IObjectContainer</span> db = <span style="color: #2b91af;">Db4oFactory</span>.OpenFile(<span style="color: #a31515;">"foo.db"</span>))</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        <span style="color: #2b91af;">Person</span> prototype = <span style="color: blue;">new</span> <span style="color: #2b91af;">Person</span></p>
+<p style="margin: 0px;">        {</p>
+<p style="margin: 0px;">            GivenName = <span style="color: #a31515;">"Torbjørn"</span></p>
+<p style="margin: 0px;">        };</p>
+<p style="margin: 0px;">
+<p style="margin: 0px;">        <span style="color: blue;">return</span> db.QueryByExample(prototype).Cast&lt;<span style="color: #2b91af;">Person</span>&gt;();</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+</div>
+<p>QBE kan selvsagt ikke brukes til alt, men det er overraskende kraftig, og godt nok i mange tilfeller.</p>
+<p>Den neste muligheten i db4o er det de kaller <b>native queries</b>. Her bruker man elementer i programmeringspåket man jobber i til å gjøre spørringer mot objektene. Man bruker typisk delegater / anonyme metoder til å definere kriterier for hvilke objekter som skal returneres. En variant av native queries i .NET er db4o's støtte for <b>LINQ</b>. Jeg er veldig glad i LINQ, og synes det er den mest naturlige måten å jobbe med databasen på. Skal jeg f.eks. hente ut alle personer som har enter en shipping-adresse eller en e-post adresse (ja, jeg har utvidet domenemodellene min litt nå), så kan jeg gjøre det slik:</p>
+<div style="font-family: Courier New; font-size: 10pt; color: black; background: #f8f8f8;">
+<p style="margin: 0px;"><span style="color: blue;">public</span> <span style="color: #2b91af;">IList</span>&lt;<span style="color: #2b91af;">Person</span>&gt; FindPersonsWeCanContact()</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="color: blue;">using</span> (<span style="color: #2b91af;">IObjectContainer</span> db = <span style="color: #2b91af;">Db4oFactory</span>.OpenFile(<span style="color: #a31515;">"foo.db"</span>))</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        <span style="color: blue;">var</span> query = <span style="color: blue;">from</span> <span style="color: #2b91af;">Person</span> p <span style="color: blue;">in</span> db</p>
+<p style="margin: 0px;">                    <span style="color: blue;">where</span> p.ShippingAddress != <span style="color: blue;">null</span></p>
+<p style="margin: 0px;">                       || p.Email != <span style="color: blue;">null</span></p>
+<p style="margin: 0px;">                    <span style="color: blue;">select</span> p;</p>
+<p style="margin: 0px;">
+<p style="margin: 0px;">        <span style="color: blue;">return</span> query.ToList();</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+</div>
+<p>Gjennom LINQ kan jeg uttrykke akkurat hva jeg er ute etter. Jeg kan jobbe med databasen som om det var en avansert kolleksjon i minnet, og få tilbake mine egne domeneobjekter uten å måtte gjøre noen form for mapping. Å jobbe med persistert data har <i>aldri</i> vært enklere!</p>
+<p>Det finnes selvsagt noen detaljer jeg har utelatt. F.eks. vil ikke db4o returnere den komplette objektstrukturen (Person + alle underobjekter) uten at jeg eksplisitt ber den om det. Db4o kan derimot konfigureres til f.eks. å bruke <i>eager fetching / load all levels</i> hver gang jeg henter ut personobjekter - eller jeg kan definere nøyakig hvor mange nivåer som skal lastes. Samme teknikk må man bruke når man oppdaterer og sletter - fortelle db4o hvor mange nivåer som skal påvirkes.</p>
+<p>Det finnes også en siste måte å gjøre spørringer, og det er via db4o's <b>SODA</b> Query API. Dette er den mest kraftige måten å gjøre spørringer på, men også mer <i>low level</i>, og krever at man setter seg inn i API'et. Foreløpig har jeg ikke hatt behov for det - LINQ har gitt meg alt jeg trenger til nå, og er den måten dokumentasjonen anbefaler å bruke - men om du vil lære mer har db4o documentert SODA ganske bra også.</p>
+<p style="margin:6px;"><i>Dette er andre del av en artikkelserie om objekt-orienterte databaser, basert på mitt NNUG-foredrag om samme tema. Fortsettelsen følger..</i></p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=db4o" rel="tag">db4o</a>, <a href="/index.php?s=NNUG" rel="tag">NNUG</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+---
+title: Mange skal bli flere (eller noe sånt)
+link: http://blog.kjempekjekt.com/2010/06/13/selectmany/
+layout: post
+date: 2010-06-13 19:49:15Z
+tags:
+  - Funksjonell programmering
+  - C#
+---
+<p>I artikkelen <a href="http://blog.kjempekjekt.com/2010/06/09/filtrer-projiser-aggreger/"><em>Filtrer, Projiser, Aggreger</em></a> presenterte jeg tre av de mest grunnleggende høyereordens-funksjonene man bruker til å behandle lister og andre datastrukturer. Grafisk kan de tre funksjonene illustreres slik:</p> <p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="filter_map_fold" border="0" alt="filter_map_fold" src="/uploads/2010/06/filter_map_fold.png" width="448" height="249"> </p> <p><em>Filter</em> returnerer et subsett av den orginale strukturen. <em>Map</em> omformer strukturen, og returnerer en ny struktur som har et 1-til-1 forhold til de orginale dataene. <em>Fold</em> returnerer én verdi som er generert ved å analysere hele datastrukturen.</p> <p>I denne blogposten vil jeg se nærmere på en fjærde funksjon, som kan illustreres på denne måten:</p> <p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="select_many" border="0" alt="select_many" src="/uploads/2010/06/select_many.png" width="448" height="87"> </p> <p>Denne funksjonen omformer/projiserer den orginale datastrukturen, på samme måte som <em>map</em>, men uten at det er et 1-til-1 forhold mellom input og output. Dette kan brukes til å "hente ut" data fra en mer kompleks datastruktur, men uten at det slås sammen slik som i <em>fold/aggregate</em>.</p> <p>La oss anta at vi har en liste med SMS-meldinger. Hver melding har en meldingstekst, og vi er interessert i å lage en liste med alle ordene som inngår i meldingene. Dette tilfellet er ikke så veldig komplekst, men nok til å illustrere poenget. I C# kunne vi for eksempel ha opprettet en tom liste, og loopet over alle meldingene for så å trekke ut ordene fra teksten, slik som dette:</p> 
+<pre>
+// ALTERNATIV 1 : foreach
+var words1 = new List&lt;string&gt;();
+foreach (var message in messages)
+    words1.AddRange(message.Text.Split());
+</pre>
+<p>Takket være <em>AddRange</em>-metoden slipper vi en eksplisit indre loop for å legge til alle ordene.</p>
+<p>Bruker du <a href="http://www.devexpress.com/Products/Visual_Studio_Add-in/Coding_Assistance/">CodeRush</a> i Visual Studio vil den foreslå at du omformer den vanlige foreach-loopen til en Linq ForEach action, slik som i alternativ 2:</p>
+<pre>
+// ALTERNATIV 2 : ForEach action
+var words2 = new List&lt;string&gt;();
+messages.ForEach(message 
+    =&gt; words2.AddRange(message.Text.Split()));
+</pre>
+<p>.. men i bunn og grunn er dette selvsagt akkurat det samme.</p>
+<p>Kan vi bruke en høyereordens-funskjon i stedet? Ja, det er klart, vi kan for eksempel bruke Aggregate. Som du så lengre oppe skal aggregate returnere én verdi, men en liste er jo også én verdi, så det burde gå greit:</p>
+<pre>
+// ALTERNATIV 3 : Aggregate action
+var words3 = messages.Aggregate(new List&lt;string&gt;(), 
+              (list, message) =&gt; 
+              {
+                  list.AddRange(message.Text.Split());
+                  return list;
+              });
+</pre>
+<p>I stedet for å opprette listen som en egen statement (som i alternativ 1 og 2) oppretter vi den her som første argument til aggregate. Den listen brukes så videre når en og en melding blir behandlet, og lambda-uttrykket må returnere listen for hver melding. Ja, dette fungerte, men dette ble ikke særlig elegant…</p>
+<p><strong>Nå er det derimot på tide å introdusere denne artikkelens hovedperson</strong>, funksjonen som i .NET har fått navnet <strong><em>SelectMany</em></strong>. Den gjør akkurat det vi er ute etter; vi spesifiserer en funksjon som gitt en melding returnerer en ny liste. SelectMany vil så slå sammen alle listene som produseres:</p>
+<pre>
+// ALTERNATIV 4 : SelectMany
+IEnumerable&lt;string&gt; words4 = messages.SelectMany(message 
+    =&gt; message.Text.Split());
+</pre>
+<p>Dette var klart mye bedre enn enn å bruke aggregate, og mer konsist og deklerativt enn å bruke foreach.</p>
+<p>Med litt av det syntaktisk sukker som ligger i C# 3.0 og Linq kan dette også skrives slik:</p>
+<pre>
+// ALTERNATIV 5 : From x 2
+var words5 = from message in messages
+             from words in message.Text.Split()
+             select words;
+</pre>
+<p>Slik jeg har forstått det genererer denne bruken av <strong><em>2 from</em></strong> den samme koden som alternativ 4.</p>
+<p>PS: F# har akkurat den samme funksjonen, men der heter den <em>collect</em>. Dette må ikke blandes med <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a>, hvor <em>collect</em> forvirrende nok er et alias for <em>map</em>. Jeg kjenner ikke til hvilke andre spåk som har funksjonen, og følgelig ikke hva de heter (men jeg er sikker på at Ameth vil fortelle meg alt om hvilke muligheter man har i Haskell).</p>
+<p><strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=C#" rel="tag">C#</a>, <a href="http://blog.kjempekjekt.com/index.php?s=F#" rel="tag">F#</a>, <a href="http://blog.kjempekjekt.com/index.php?s=LINQ" rel="tag">LINQ</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Ruby" rel="tag">Ruby</a>, <a href="http://blog.kjempekjekt.com/index.php?s=SMS" rel="tag">SMS</a></p>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="OO Patterns">
+
+    <title>Template Method Intermesso</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Template Method Intermesso</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 1. februar 2012</small> 
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          </p>
+          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 27px 22px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="tm_intermesso" border="0" alt="tm_intermesso" align="left" src="/uploads/2012/02/tm_intermesso.png" width="171" height="127">Det blir et kort opphold i den oppsatte sendeplanen for å gjøre plass til en litt grundigere forklaring av hva det er vi snakker om her.</p>
+<p>Da jeg presenterte min "funksjonelle" løsning i <a href="/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">del 2 av Template Method-serien min</a> dukket det opp et spørsmål: Er ikke dette egentlig Strategy Pattern? Jeg svarte at det fortsatt var Template Method, men at det nå lå bedre til rette også for ulike strategier.</p>
+<p>Lars-Petter fulgte opp på mail med å si at han mener "<strong><em>..forskjellen på TM og Strategy nettopp er om du bruker arv eller ikke. Det er i hvertfall det jeg kan lese ut av mine bøker, GoF inkudert."</em></strong></p>
+<p>Jeg setter stor pris på spørsmålet, og vil forsøke å forklare mitt ståsted...</p>
+<h4>Forskjellen på Template Method og Strategy</h4>
+<p>Strategy Pattern og Template Method Pattern er på mange måter ganske like, men målet med dem er forskjellig. Strategy brukes for å <strong>tillate ulike implementasjoner av en algoritme eller operasjon</strong>, som så kan velges dynamisk i <em>runtime</em>. Målet med Template Method er ikke å tillate adferd å bli implementert på ulike måter, men å <strong>forsikre at en bestemt adferd/algoritme blir implementert på én måte</strong>.</p>
+<p>Med andre ord: Mens Strategy fokuserer på å <u>tillate variasjon</u>, fokuserer Template Method på å <u>forsikre konsistent adferd</u>. (<a href="http://c2.com/cgi/wiki?TemplateMethodPattern">kilde</a>)</p>
+<p>Kanskje noen grafiske representasjoner kan hjelpe på å se det bedre. Her ser du en representasjon av en typisk Template Method Pattern implementasjon:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="templatemethod_graphical" border="0" alt="templatemethod_graphical" src="/uploads/2012/02/templatemethod_graphical.png" width="389" height="190"></p>
+<p>Den abstrakte klassen eksisterer for å forsikre én bestemt algoritme, men åpner for ulike implementasjoner av enkelte detaljer. De to konkrete klassene representerer ulike implementasjoner av disse detaljene. Sammenlign dette med følgende representasjon av strategy:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="strategy_graphical" border="0" alt="strategy_graphical" src="/uploads/2012/02/strategy_graphical.png" width="468" height="195"></p>
+<p>Strategy definerer et grensesnitt – et sett med steg om du vil. Disse settene er utbyttbare, og kan brukes om hverandre av ulike algoritmer. Målet er derimot ikke å sikre en bestemt algoritme i seg selv – Strategy Pattern begynner svært ofte som et rent interface uten noe funksjonalitet. Strategy dreier seg ofte mer om å gi forventninger om et bestemt resultat, men ikke hvordan det implementeres (tenk f.eks. ulike strategier for sortering).</p>
+<p>Så hva var det da jeg lagde i del 2 av min Template Method-serie? Vel, se på denne representasjonen:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="functionaltemplate_graphical" border="0" alt="functionaltemplate_graphical" src="/uploads/2012/02/functionaltemplate_graphical.png" width="402" height="179"></p>
+<p>Jeg implementerte en konkret klasse som definerte en fast allgoritme, men hvor enkelte steg var utbyttbare. Motivasjonen min er altså den samme som for Template Method pattern. Forskjellen er at min implementasjon, siden den ikke baserer seg på arv, ikke krever at hvert av stegene kommer fra samme kilde.</p>
+<p>Template Method kan derimot danne grunnlaget for ulike strategier, og det var det jeg snakket om da jeg hevdet at den klassiske implementasjonen var regid, mens min var mer fleksibel. Med min kunne jeg enklere kombinere ulike byggestener til nye strategier basert på templaten. Så bloggserien handlet på en måte om Strategy også.</p>
+<p>Min løsning er altså Template Method Pattern "i ånden". Spørsmålet er da om jeg får lov til å kalle det <em>det</em> når jeg ikke implementerer det slik som The Gang of Four gjorde!? For å svare på det må jeg utdype mitt syn på <em>konseptet</em> design patterns...</p>
+<h4>Hva er egentlig Design Patterns?</h4>
+<p>Mange ser på design patterns som implementasjons-oppskrifter. WikiPedia legger også vekt på dette. Der står det blant annet:</p>
+<p><em>"Design patterns are composed of several sections. Of particular interest are the Structure, Participants, and Collaboration sections. These sections describe a design motif: a prototypical micro-architecture that developers copy and adapt to their particular designs to solve the recurrent problem described by the design pattern."</em></p>
+<p>Jeg ser derimot på design patterns først og fremts som <strong>problembeskrivelser</strong>. De delene av patterns-beskrivelsen jeg legger mest vekt på er <em>Intent</em>, <em>Motivation (Forces)</em> og <em>Consequences</em>. Som regel <em>(ok da, omtrent ALLTID)</em> beskrives mønstrene i kontekst av objektorienterte språk, men motivasjonen eller utfordringene bak dem er ikke begrenset til det domenet, og lærdommen bak dem strekker seg lengre – selv om både dynamiske språk og funksjonelle språk gjør mange av problemene trivielle i forhold til hvordan de må løses i språk som C++ eller Java.</p>
+<p>Design Patters kan altså (ifølge meg) diskuteres uavhengig av implementasjonsteknikk – løsningene er (kun) eksempler, og må tilpasses. Mønstrene er kommunikasjonsredskaper som fungerer på tvers av programmeringsparadigmene. De oppfattes i alle fall slik av meg, som startet med statisk objektorientering, for så utvide horisonten flere år senere.</p>
+<p>Jeg finner flere som støtter mitt syn på dette. Budskapet i <a href="http://www.infoq.com/presentations/Functional-Design-Patterns">dette foredraget om "funksjonelle design patterns"</a> som et eksempel – presentert av PhD in Computer Science Aino Corry, som har gjort en Master Thesis om Design Patterns - er i tråd med min oppfatning.</p>
+<h4>Konklusjon</h4>
+<p>Jeg oppfatter altså spørsmålet som er stilt som at man henger seg for mye opp i eksempelimplementasjonen i beskrivelsene av&nbsp; design patterns, og at man kanskje går glipp av det som jeg oppfatter som det viktigste; problemet som skal løses, og den generelle og mer eller mindre universelle strategien for å løse det.</p>
+<p>Eksemplene er viktige for dem som bruker et "begrenset" språk; mange av mønstrene fra Gang of Four fokuserer på C++, og hvordan man best lager fleksibel kode der – mens de vil se ganske anderledes ut i for eksempel Ruby. Det er til eksempel ingen vits å basere Strategy Pattern på et interface når man har <a href="http://en.wikipedia.org/wiki/Duck_typing">duck typing</a>.</p>
+<p>Jeg føler jeg allerede har lært mye av å holde <a href="/2012/01/26/oop-vs-fp-p-nnug-bergens-januarmte/">patterns-foredraget mitt</a>, skrive denne bloggserien, og svare på dette spørsmålet. Om du ser noen hull eller selvmotsigelser i det jeg sier nå er jeg veldig interessert i å høre hva du har å si, for det betyr bare at jeg får en mulighet til å lære enda mer!</p>
+<p><a href="http://c2.com/ward/">Ward Cunningham</a> er en smart fyr, og jeg vil avslutte med å sitere noe han har skrevet på <a href="http://c2.com/ppr/about/patterns.html">The Portland Pattern Repository</a>:</p>
+<p style="font-size: 115%"><em>"Patterns link together in the mind so that one pattern leads to another and another until familiar problems are solved. That is, patterns form languages, not unlike natural languages, within which the human mind can <strong>assemble correct and infinitely varied statements from a small number of elements</strong>."</em></p>
+<p>PS: Vil du lese et par interessante artikler om patterns kan jeg anbefale Steve Yegge's <a href="https://sites.google.com/site/steveyegge2/singleton-considered-stupid">Singleton Considered Stupid</a> fra 2004 (fra hans tid som utvikler i Amazon) og <a href="http://steve-yegge.blogspot.com/2007/12/codes-worst-enemy.html">Code's Worst Enemy</a> fra 2007 (etter at han begynte å kode for Google). Steve provoserer alltid, men har uansett mye fornuftig å si i refleksjonene sine.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

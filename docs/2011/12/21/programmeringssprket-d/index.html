@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Polyglot,D">
+
+    <title>Programmeringsspråket D</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Programmeringsspråket D</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 21. desember 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/d"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> D</span></a>
+          </p>
+          <p>Dagens programmeringsspråk heter rett og slett <strong>D</strong>. Og det er jo et greit navn på et språk som blant annet kan erstatte C. Egentlig er det vel mest sammenlignbart med C++, men D har også latt seg påvirke av språk som Java og C#, og dynamiske språk som Python og Ruby.</p>
+<p>D forsøker å kombinere ytelsen til C++, sikkerheten og minnehåndteringen i de mest moderne, kompilerte språkene, og de dynamiske språkenes evne til å la utvikleren uttrykke seg så enkelt og effektivt som mulig.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="d" border="0" alt="d" src="/uploads/2011/12/d.jpg" width="467" height="500"></p>
+<h4>Effektivitet, enkelhet og kraft</h4>
+<p>D kompileres til effektiv maskinkode. Ideomatisk D-kode er både rask og sikker. Men utvikleren har mulighet til å "sku av" typesikkerhet, og bruke pekere, direkte tilgang til C-funksjoner, og til og med inline assembly, om han ønsker det.</p>
+<p>D lar deg skrive ganske mye kode uten unødvendige typedeklarasjoner – kompilatoren finner ut av det. Språket har også god og fleksibel, automatisk minnehåndtering.</p>
+<p>Dessuten støtter språket "de fleste" programmeringsparadigmene, og har god samtidighets-støtte. Noen stikkord som bør være kjente for dem som leser denne bloggen er <em>immutable state</em> og <em>message passing</em>. D tillater ikke deling av state på tvers av tråder <em>"by default"</em>, men tilbyr kontrollert deling av data som kan endres (<em>mutable state</em>) når det er påkrevd. Her skiller altså D seg kraftig ut fra de fleste andre, imperative språkene.</p>
+<h4>Hvem D er laget for</h4>
+<p>D er laget for utviklere som ikke trives med objektorienteringen i C++ fordi den er for kompleks. D er laget for utviklere som liker kraften i C++, men som er frustrerte over å måtte bruke det meste av tiden sin på eksplisitt minnehåndtering og på å lete etter pointer-bugs.</p>
+<p>D er også laget for utviklere som programmerer én del av løsningene sine i skripspråk som Python eller Ruby, og en annen del i C++. D kombinerer mange av styrkene fra begge sider, og gjør at du kan holde deg i ett språk.</p>
+<p>Og sist men ikke minst: D er et praktisk språk. Det er laget for å få jobben gjort.</p>
+<h4>Litt kode</h4>
+<p>Syntaksen i D ser stort sett ut som C/C++. Løsningen av <a href="/2011/11/24/hello-world-euler-style/">euler-oppgave nummer 1</a> inneholder derfor ingen overraskelser: </p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="PreProc">import</span> std.stdio;
+<span class="lnr">11 </span>
+<span class="lnr">12 </span><span class="Type">bool</span> includeNumber(<span class="Type">int</span> x)
+<span class="lnr">13 </span>{
+<span class="lnr">14 </span>  <span class="Statement">return</span> x % <span class="Number">3</span> == <span class="Number">0</span> || x % <span class="Number">5</span> == <span class="Number">0</span>;
+<span class="lnr">15 </span>}
+<span class="lnr">16 </span>
+<span class="lnr">17 </span><span class="Type">void</span> main()
+<span class="lnr">18 </span>{
+<span class="lnr">19 </span>  <span class="Type">int</span> sum = <span class="Number">0</span>;
+<span class="lnr">20 </span>  <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Number">0</span>; i &lt; <span class="Number">1000</span>; i++)
+<span class="lnr">21 </span>    <span class="Conditional">if</span>(includeNumber(i))
+<span class="lnr">22 </span>      sum += i;
+<span class="lnr">23 </span>  writeln(sum);
+<span class="lnr">24 </span>}
+</pre>
+<p>Vil du se mer D-kode er jeg redd du må ta turen til <a href="http://www.d-programming-language.org/">d-programming-language.org</a>.</p>
+<h4>Noen flere detaljer</h4>
+<p>Merk at D <em>ikke</em> er bakoverkompatibelt med C. D har heller ingen preprosessor, og støtter ikke multippel arv. D støtter derimot templates, men disse skal være enklere å bruke enn varianten man finner i C++ (jeg kan ikke nok C++ til å uttale meg om dette selv).</p>
+<p>D støtter også kodekontrakter / <em>Design By Contract</em>, som beskrevet i <a href="/2011/12/05/cobra/">artikkelen om språket Cobra</a>. Og det har innebygde muligheter for enhetstester.</p>
+<p>En liten detalj med D som jeg virkelig setter pris på er at alle metoder er virtuelle. Jeg har alltid sagt at C# burde ha virtuelle metoder by default, men D har tatt det enda lengre. Torbjørn liker dette!</p>
+<h4>Konklusjon</h4>
+<p>Av og til kan det virke som om C og C++ har et absolutt monopol på visse områder. Da er det interessant når det kommer et språk som forsøker å erstatte og overgå dem. Selv om utbredelsen foreløpig er begrenset har jeg stor tro på D.</p>
+<p>Ta turen innom <a href="http://www.d-programming-language.org/">www.d-programming-language.org</a> – en behagelig side med mye informasjon – og bli inspirert du også!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

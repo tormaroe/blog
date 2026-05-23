@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender">
+
+    <title>Kalenderluke 10: Litt Lisp (oh no!)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kalenderluke 10: Litt Lisp (oh no!)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 12. desember 2013</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p>Luke 10 i <a href="http://kodejul.herokuapp.com/">årets julekalender</a> inneholdt noen få linjer Common Lisp, en bug, og et spørsmål om hvilket output koden hadde skrevet ut om den hadde fungert. Til å dreie seg om et språk som svært få utviklere behersker, synes jeg mange klarte seg bra.</p>
+<p><img title="luke10_knut" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 25px auto; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke10_knut" src="/uploads/2013/12/luke10_knut.jpg" width="573" height="100"></p>
+<p>I denne posten vil jeg gi noen tips til hvordan jeg tenker man burde gått frem for å løse oppgaven.</p>
+<h2>Buggen</h2>
+<p>Jeg hadde introdusert en bug i koden. Jeg hadde kun fjernet ett tegn, og dette tegnet hadde ingen stor betydning for forståelsen av koden, men skulle sørge for at man ikke bare kunne <em>poppe</em> koden inn i en "try Common Lisp online"-compilator og få frem svaret uten å måtte tenke selv.</p>
+<p>Når buggen er fikset ser koden slik ut – tegnet som manglet er markert:</p>
+<pre>(defun xmas (<b style="background-color: yellow">&amp;</b>rest args)
+  (format t "~{~a~#[~; and ~:;, ~]~}!" args))
+
+(apply #'xmas (loop for i upto 3 collect "Ho"))
+</pre>
+<p>Målet mitt var aldri at utviklere uten Lisp-erfaring skulle finne buggen for å løse oppgaven. Den beste strategien her er etter min mening å forsøke å forstå koden.</p>
+<h2>En funksjon</h2>
+<p>Hvis man vet noe som helst om Lisp – eller bruker litt fantasi – så ser man at de to første linjene definerer en funksjon (<code>defun</code>), og at denne heter <code>xmas</code>. Det som følger i paranteser etter navnet må være argumentene. Det funksjonen gjør, som er det sentrale her, finner vi altså i linje 2.</p>
+<h2>Format</h2>
+<p>Koden kaller en funksjon som heter <code>format</code>. Dermed er det viktig å finne ut hvordan den virker. Man kan gjette seg til at den formaterer en streng på en eller annen måte – de fleste språk har en eller flere sånne funksjoner. Første steg bør da være å finne dokumentasjonen til format.</p>
+<p>Man kunne også forsøkt å google formatstrengen som sendes inn som andre parameter i format-kallet. Det kan hende det kan gi deg noe, men jeg tror jeg <em>brakk</em> google da jeg forsøkte: Treffene jeg fikk omhandlet alt annet enn Common Lisp (Forskjellen mellom Vest- og Øst-Polen, forskjellen mellom Shari'a og vestens lov-tradisjon, og Raspberry Pi).</p>
+<p>Formatstrengen inneholder faktisk noe så komplekst som et domenespesifikt språk for formatering – like vanskelig å forstå, men ikke så vanlig, som regulære uttrykk. Man kan selvfølgelig klare å gjette seg til hva den gjør – og noen gjorde kanskje det – men hvis ikke vil en titt på dokumentasjonen kunne forklare mye...</p>
+<p>...som at formatstrengen kan iterere over lister. Og det er det som skjer her. Det bygges opp en streng av inneholdet i listen <code>args</code>, og alle elementene bortsett fra de to siste joines sammen med separatoren ", ". Mellom de to siste elementene derimot brukes separatoren " and ". <code>(format t "~{~a~#[~; and ~:;, ~]~}" '("a" "b" "c")))</code> ville dermed gi strengen <code>"a, b and c"</code>.</p>
+<p><strong>Lenker:</strong> <a href="/2011/04/07/formater-ikke-konkatiner/">Formater, ikke konkatener</a> (min blogpost fra 2011) | <a href="http://www.lispworks.com/documentation/HyperSpec/Body/22_c.htm">Commen Lisp HyperSpec: Formatted Output</a></p>
+<h2>Ikke glem utropstegnet</h2>
+<p>Det siste tegnet i formatstrengen hadde derimot ikke noe med iterasjonen å gjøre.., det la jeg bare til som en liten felle. Og mange gikk i den :) <code>(format t "~{~a~#[~; and ~:;, ~]~}!" '("a" "b" "c")))</code> gir strengen <code>"a, b and c!"</code>.</p>
+<h2>Apply</h2>
+<p>Vi har kommet til siste linje. Den begynner med <code>(apply #'xmas ... </code>, og selv om man ikke google apply-funksjonen så kan man gjette seg til at dette kaller funksjonen xmas. Men det vi lurer på er hva argumentene til xmas er, for da har vi løsningen.</p>
+<h2>Loop</h2>
+<p>Common Lisp's <code>loop</code>-makro er nesten et helt lite språk i seg selv, og brukes her til å produsere en liste. <code>for i upto 3</code> sier at vi skal loope' fra 0 (default start) og helt opp <u>til og med</u> 3. Mange hadde nesten løsningen, men fikk ikke med seg at "upto" inkluderer 3 (eventuelt trodde de at man startet på 1).</p>
+<p>For hver iterasjon skal vi <code>collect</code>e strengen "Ho". Da står vi igjen med listen <code>("Ho" "Ho" "Ho" "Ho")</code>.</p>
+<p>Løsningen på luke 10 er dermed <code>"Ho, Ho, Ho and Ho!"</code>.</p>
+<p><strong>Lenker:</strong> <a href="http://www.lispworks.com/documentation/HyperSpec/Body/06_a.htm">Common Lisp HyperSpec: The LOOP Facility</a></p>
+<h2>Hvem var raskest?</h2>
+<p>Raskeste utvikler på luke 10 var <strong>Henrik Grotle</strong> (PSWinCom), som leverte riktig svar på 4 minutter og 29 sekunder. Han har aldri kodet en linje Lisp i sitt liv, men er flink til å google :)</p>
+<p>Magnar Sveen kom på fjerdeplass, og tok dermed tilbake ledelsen sammenlagt.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

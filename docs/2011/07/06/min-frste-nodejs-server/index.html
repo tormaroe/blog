@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Node.js">
+
+    <title>Min første Node.js server</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Min første Node.js server</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 6. juli 2011</small> 
+            <a href="/tags/nodejs"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Node.js</span></a>
+          </p>
+          <p><strong><a href="http://nodejs.org/">Node.js</a></strong> er en <em>cutting edge</em> plattform som skal gjøre det enkelt, eller i alle fall enklere, å lage skalerbare nettverksprogrammer. Den er bygget på toppen av <a href="http://code.google.com/p/v8/">V8</a><strong></strong>, Googles JavaScript-motor som kompilerer JavaScript til maskinkode før den kjøres (i motsetning til å kompilere til bytekode, eller tolke koden).</p>
+<p>I motsetning til de fleste, tilsvarende plattformene baserer ikke Node.js sin skalerbarhet på tråding. Node-kode består i å knytte en rekke callbacks opp mot events, og så sover programmet til et av disse eventene inntreffer. Hvert event – f.eks. hver connection i en webserver – bruker veldig lite minne, og blokkerer aldri prosessen. Dessuten er dead-locks helt umulig, for siden det ikke finnes tråder finnes det heller ingen locks.</p>
+<h4>Node.js integrert med Intouch</h4>
+<p>Som et første eksepriment med Node.js har jeg laget en mini-website som lister opp mine Intouch-kontakter. <a href="http://pswin.com/produkter/intouch">PSWinCom Intouch</a> er en webbasert klient for mobil kommunikasjon. Den eksponerer <a href="http://wiki.pswin.com/Intouch-REST-API.ashx">et REST-api</a> som gjør at jeg blant annet kan hente ut informasjon fra kontoen min i XML eller json-format.</p>
+<p>Først lager jeg en statisk html-fil som skal vise kontaktene. Den bruker litt jQuery-magi for å hente kontaktene fra Node.js-serveren og viser dem i siden. Jeg kunne selvsagt generert html’en for kontaktene på server-siden, men synes egentlig det er bedre å bruke en Ajax-løsning. </p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="nodejs" border="0" alt="nodejs" src="/uploads/2011/07/nodejs.png" width="495" height="214"></p>
+<p>UML-diagrammet over viser kommunikasjonsflyten. Jeg har også forsøkt å illustrere forskjellen på en Node.js-basert server og en vanlig webserver som Intouch-serveren representerer; Node.js blokkerer ikke, men er bare aktiv når den har noe å gjøre.</p>
+<p>index.html ser ut som dette:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Keyword">&lt;</span><span class="Conditional">html</span><span class="Keyword">&gt;</span>
+<span class="lnr"> 2 </span>  <span class="Keyword">&lt;</span><span class="Conditional">head</span><span class="Keyword">&gt;</span>
+<span class="lnr"> 3 </span><span class="PreProc">    </span><span class="Keyword">&lt;</span><span class="Conditional">title</span><span class="Keyword">&gt;</span><span class="Title">My Intouch Contacts</span><span class="Identifier">&lt;/</span><span class="Conditional">title</span><span class="Identifier">&gt;</span>
+<span class="lnr"> 4 </span><span class="PreProc">    </span><span class="Keyword">&lt;</span><span class="Statement">script</span><span class="Keyword"> </span><span class="Type">type</span><span class="Keyword">=</span><span class="String">"text/javascript"</span><span class="Keyword"> </span><span class="Type">src</span><span class="Keyword">=</span><span class="String">"jquery.min.js"</span><span class="Keyword">&gt;</span><span class="Identifier">&lt;/</span><span class="Statement">script</span><span class="Identifier">&gt;</span>
+<span class="lnr"> 5 </span><span class="PreProc">    </span><span class="Keyword">&lt;</span><span class="Statement">script</span><span class="Keyword"> </span><span class="Type">type</span><span class="Keyword">=</span><span class="String">"text/javascript"</span><span class="Keyword">&gt;</span>
+<span class="lnr"> 6 </span>
+<span class="lnr"> 7 </span><span class="Special">    </span><span class="Identifier">var</span><span class="Special"> loadContacts = </span><span class="Function">function</span>()<span class="Special"> </span><span class="Function">{</span>
+<span class="lnr"> 8 </span><span class="Special">      </span><span class="Identifier">var</span><span class="Special"> formatContact = </span><span class="Function">function</span>(<span class="Special">contact</span>)<span class="Special"> </span><span class="Function">{</span>
+<span class="lnr"> 9 </span><span class="Special">        </span><span class="Statement">return</span><span class="Special"> $</span>(<span class="String">"&lt;div&gt;"</span>)<span class="Special">.append</span>(
+<span class="lnr">10 </span><span class="Special">          </span><span class="String">"&lt;b&gt;Name:&lt;/b&gt; "</span><span class="Special"> + contact.Firstname + </span>
+<span class="lnr">11 </span><span class="Special">          </span><span class="String">" "</span><span class="Special"> + contact.Lastname +</span>
+<span class="lnr">12 </span><span class="Special">          </span><span class="String">" &lt;b&gt;Phone:&lt;/b&gt; "</span><span class="Special"> +  contact.PhoneNumber</span>)<span class="Special">;</span>
+<span class="lnr">13 </span><span class="Special">      </span><span class="Function">}</span><span class="Special">;</span>
+<span class="lnr">14 </span><span class="Special">      $.getJSON</span>(<span class="String">"/contacts"</span><span class="Special">, </span><span class="Function">function</span>(<span class="Special">contacts</span>)<span class="Special"> </span><span class="Function">{</span>
+<span class="lnr">15 </span><span class="Special">        $.each</span>(<span class="Special">contacts, </span><span class="Function">function</span>()<span class="Special"> </span><span class="Function">{</span>
+<span class="lnr">16 </span><span class="Special">          $</span>(<span class="String">"#contacts"</span>)<span class="Special">.append</span>(<span class="Special">formatContact</span>(<span class="Identifier">this</span>))<span class="Special">;</span>
+<span class="lnr">17 </span><span class="Special">        </span><span class="Function">}</span>)<span class="Special">;</span>
+<span class="lnr">18 </span><span class="Special">      </span><span class="Function">}</span>)<span class="Special">;</span>
+<span class="lnr">19 </span><span class="Special">    </span><span class="Function">}</span>
+<span class="lnr">20 </span>
+<span class="lnr">21 </span><span class="Special">    $</span>(<span class="Function">function</span>()<span class="Special"> </span><span class="Function">{</span>
+<span class="lnr">22 </span><span class="Special">      loadContacts</span>()<span class="Special">;</span>
+<span class="lnr">23 </span><span class="Special">    </span><span class="Function">}</span>)<span class="Special">;</span>
+<span class="lnr">24 </span><span class="Special">    </span><span class="Identifier">&lt;/</span><span class="Statement">script</span><span class="Identifier">&gt;</span>
+<span class="lnr">25 </span><span class="PreProc">  </span><span class="Identifier">&lt;/</span><span class="Conditional">head</span><span class="Identifier">&gt;</span>
+<span class="lnr">26 </span>  <span class="Keyword">&lt;</span><span class="Conditional">body</span><span class="Keyword">&gt;</span>
+<span class="lnr">27 </span>    <span class="Keyword">&lt;</span><span class="Conditional">h1</span><span class="Keyword">&gt;</span><span class="Title">Intouch Contacts</span><span class="Identifier">&lt;/</span><span class="Conditional">h1</span><span class="Identifier">&gt;</span>
+<span class="lnr">28 </span>    <span class="Keyword">&lt;</span><span class="Conditional">div</span><span class="Keyword"> </span><span class="Type">id</span><span class="Keyword">=</span><span class="String">"contacts"</span><span class="Keyword">&gt;</span><span class="Identifier">&lt;/</span><span class="Conditional">div</span><span class="Identifier">&gt;</span>
+<span class="lnr">29 </span>  <span class="Identifier">&lt;/</span><span class="Conditional">body</span><span class="Identifier">&gt;</span>
+<span class="lnr">30 </span><span class="Identifier">&lt;/</span><span class="Conditional">html</span><span class="Identifier">&gt;</span>
+</pre>
+<p>Serveren jeg lager må altså både kunne levere ut index.html og sende kontaktene. Her følger server-koden i sin helhet. Merk at jeg er helt n00b i Node.js, og har klippet og limt litt fra diverse eksempler for å få dette til å virke. Følgende kildekode lagret jeg i en fil jeg kalte server.js.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Identifier">var</span> sys = require(<span class="String">"sys"</span>),
+<span class="lnr"> 2 </span>    http = require(<span class="String">"http"</span>),
+<span class="lnr"> 3 </span>    url = require(<span class="String">"url"</span>),
+<span class="lnr"> 4 </span>    path = require(<span class="String">"path"</span>),
+<span class="lnr"> 5 </span>    fs = require(<span class="String">"fs"</span>),
+<span class="lnr"> 6 </span>    rest = require(<span class="String">"restler"</span>);
+<span class="lnr"> 7 </span>
+<span class="lnr"> 8 </span><span class="Function">function</span> load_static_file(uri, response) <span class="Function">{</span>
+<span class="lnr"> 9 </span>  <span class="Identifier">var</span> filename = path.join(process.cwd(), uri);
+<span class="lnr">10 </span>  path.exists(filename, <span class="Function">function</span>(exists) <span class="Function">{</span>
+<span class="lnr">11 </span>    <span class="Conditional">if</span>(!exists) <span class="Function">{</span>
+<span class="lnr">12 </span>      response.writeHeader(<span class="Number">404</span>, <span class="Function">{</span><span class="String">"Content-Type"</span>: <span class="String">"text/plain"</span><span class="Function">}</span>);
+<span class="lnr">13 </span>      response.write(<span class="String">"404 Not Found</span><span class="Special">&#092;n</span><span class="String">"</span>);
+<span class="lnr">14 </span>      response.close();
+<span class="lnr">15 </span>      <span class="Statement">return</span>;
+<span class="lnr">16 </span>    <span class="Function">}</span>
+<span class="lnr">17 </span>
+<span class="lnr">18 </span>    fs.readFile(filename, <span class="String">"binary"</span>, <span class="Function">function</span>(err, file) <span class="Function">{</span>
+<span class="lnr">19 </span>      <span class="Conditional">if</span>(err) <span class="Function">{</span>
+<span class="lnr">20 </span>        response.writeHead(<span class="Number">500</span>, <span class="Function">{</span><span class="String">"Content-Type"</span>: <span class="String">"text/plain"</span><span class="Function">}</span>);
+<span class="lnr">21 </span>        response.end(err + <span class="String">"</span><span class="Special">&#092;n</span><span class="String">"</span>);
+<span class="lnr">22 </span>        <span class="Statement">return</span>;
+<span class="lnr">23 </span>      <span class="Function">}</span>
+<span class="lnr">24 </span>
+<span class="lnr">25 </span>      response.writeHeader(<span class="Number">200</span>);
+<span class="lnr">26 </span>      response.end(file, <span class="String">"binary"</span>);
+<span class="lnr">27 </span>    <span class="Function">}</span>);
+<span class="lnr">28 </span>  <span class="Function">}</span>);
+<span class="lnr">29 </span><span class="Function">}</span>
+<span class="lnr">30 </span>
+<span class="lnr">31 </span>http.createServer(<span class="Function">function</span>(request, response) <span class="Function">{</span>
+<span class="lnr">32 </span>    <span class="Identifier">var</span> uri = url.parse(request.url).pathname;
+<span class="lnr">33 </span>    <span class="Conditional">if</span>(uri === <span class="String">"/"</span>) <span class="Function">{</span>
+<span class="lnr">34 </span>      load_static_file(<span class="String">"index.html"</span>, response);
+<span class="lnr">35 </span>      <span class="Statement">return</span>;
+<span class="lnr">36 </span>    <span class="Function">}</span>
+<span class="lnr">37 </span>    <span class="Conditional">else</span> <span class="Conditional">if</span>(uri === <span class="String">"/contacts"</span>) <span class="Function">{</span>
+<span class="lnr">38 </span>      rest.get(<span class="String">"http://intouchapi.pswin.com/1/contacts"</span>, <span class="Function">{</span>
+<span class="lnr">39 </span>          username: <span class="String">'myuser@mydomain'</span>,
+<span class="lnr">40 </span>          password: <span class="String">'mypassword'</span>,
+<span class="lnr">41 </span>        <span class="Function">}</span>).on(<span class="String">'complete'</span>, <span class="Function">function</span>(data) <span class="Function">{</span>
+<span class="lnr">42 </span>          response.writeHeader(<span class="Number">200</span>, <span class="Function">{</span> <span class="String">"Content-Type"</span> : <span class="String">"application/json"</span> <span class="Function">}</span>);
+<span class="lnr">43 </span>          response.end(JSON.stringify(data));
+<span class="lnr">44 </span>      <span class="Function">}</span>);
+<span class="lnr">45 </span>    <span class="Function">}</span>
+<span class="lnr">46 </span>    <span class="Conditional">else</span> <span class="Function">{</span>
+<span class="lnr">47 </span>      console.log(<span class="String">"Not supported request "</span> + uri);
+<span class="lnr">48 </span>      response.writeHeader(<span class="Number">404</span>, <span class="Function">{</span><span class="String">"Content-Type"</span>: <span class="String">"text/plain"</span><span class="Function">}</span>);
+<span class="lnr">49 </span>      response.end(<span class="String">"404 Not Found</span><span class="Special">&#092;n</span><span class="String">"</span>);
+<span class="lnr">50 </span>    <span class="Function">}</span>
+<span class="lnr">51 </span><span class="Function">}</span>).listen(<span class="Number">8080</span>);
+<span class="lnr">52 </span>
+<span class="lnr">53 </span>sys.puts(<span class="String">"Server running at http://localhost:8080/"</span>);
+</pre>
+<p>Linje 8 til 29 er kun en funksjon for å serve statiske filer, og det aner meg at det finnes enklere måter å gjøre dette på. Selve serveren registreres på linje 31, hvor jeg legger opp til tre muligheter…</p>
+<p>Hvis requesten er “/”, leverer jeg ut index.html-filen. Hvis requesten er “/contacts” gjør jeg et REST-kall til Intouch, og når jeg får svar tilbake derfra sender jeg det bare videre. For alle andre requester svarer jeg tilbake med status <em>404 Not Found</em>.</p>
+<p>Og det var det! Når jeg kjører kommandoen “node server.js” i konsollet, og deretter åpner opp http://localhost:8080/ i en browser, får jeg et resultat som ser ut omtrent som dette:</p>
+<div style="border-bottom: black 1px solid; border-left: black 1px solid; padding-bottom: 20px; padding-left: 20px; padding-right: 20px; margin-bottom: 16px; border-top: black 1px solid; border-right: black 1px solid; padding-top: 20px">
+<div style="margin-bottom: 8px; font-size: 180%">Intouch Contacts</div>
+<p><b>Name:</b> Ola Nordman <b>Phone:</b> 90807060<br><b>Name:</b> Kari Nordman <b>Phone:</b> 90807061<br><b>Name:</b> Thor Divel <b>Phone:</b> 90807062<br><b>Name:</b> Bob Kåre <b>Phone:</b> 90807063<br></p>
+</div>
+<p>Mulige utvidelser av denne mini-siten, som vil være ganske enkelt å få til, kan for eksempel være å gi brukeren mulighet til å trykke på en kontakt for å sende ham/henne en SMS-melding. Jeg kunne også ha listet ut kontakt-gruppene mine fra Intouch, og gitt mulighet for å distribuere en SMS til hele gruppen. Mulighetene er mange!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

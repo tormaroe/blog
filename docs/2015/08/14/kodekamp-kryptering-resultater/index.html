@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Python,Kryptering,Konkurranse">
+
+    <title>Kodekamp: Kryptering med engangsnøkkel - resultater</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kodekamp: Kryptering med engangsnøkkel - resultater</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 14. august 2015</small> 
+            <a href="/tags/python"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Python</span></a>
+          
+            <a href="/tags/kryptering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Kryptering</span></a>
+          
+            <a href="/tags/konkurranse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Konkurranse</span></a>
+          </p>
+          <p>Dette er en oppfølgingspost til <a href="/2015/08/03/kodekamp-kryptering/">Kodekamp: Kryptering med engangsnøkkel</a>. Her vil jeg gå nokså grundig gjennom hvordan oppgaven kan løses, og så ta et like detaljert blikk på hvert av bidragene som ble levert i løpet av uken. Til slutt forsøker jeg å kåre en vinner.</p>
+<p>Tusen takk til alle dere som løste kodekampen og sendte inn bidrag! Hele 14 stykker deltok - det var over hva jeg våget å håpe på, og dette var skikkelig gøy.</p>
+<p>Denne første kodekamp-oppsummeringen er veldig lang. Jeg kommer nok ikke til å gå så grundig til verks i fremtiden. Jeg håper at i alle fall dere som deltok orker å lese gjennom :)</p>
+<p>Og forsøk da å tenke gjennom hvordan du tar kritikk, og hvordan man bør forholde seg til <em>code review</em>. Dere som får innspill til forbedringer: Vær glad for det! Innspill er muligheter til å lære noe. Og om du ikke er enig i mine vurderinger, så er det helt greit det også. Det er bare <em>mine</em> meninger.</p>
+<h2>Steg for steg</h2>
+<p>Før vi går løs på bidragene som har kommet inn vil jeg gå gjennom stegene i én potensiell (min egen) løsning på oppgaven. Når jeg så ser på bidragene så vil jeg spesielt fremheve ulikhetene i forhold til denne løsningen. </p>
+<h3>UTF-8</h3>
+<p>For å gjøre det mulig å jobbe med UTF-8 er det greit å deklarere at kodefilen benytter UTF-8. Det gjør du ved å starte filen med den litt kryptiske linjen:</p>
+<pre><code class="hljs"><span class="hljs-section"># -<span class="hljs-emphasis">*- coding: utf-8 -*</span>-</span></code></pre><p>Så kan jeg definere det gyldige alfabetet som en unicode-streng:</p>
+<pre><code class="hljs">alphabet = <span class="hljs-string">u&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ .&quot;</span></code></pre><p>Jeg lager også en funksjon som bruker <a href="http://pymotw.com/2/codecs/">codecs-modulen</a> i Python til å lese en UTF-8 tegnkodet fil, slik:</p>
+<pre><code class="hljs">import codecs
+
+def readMessage(path):
+    <span class="hljs-keyword">with</span> codecs.<span class="hljs-built_in">open</span>(path, <span class="hljs-string">&quot;r&quot;</span>, <span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> <span class="hljs-built_in">file</span>:
+        <span class="hljs-literal">return</span> <span class="hljs-built_in">file</span>.<span class="hljs-built_in">read</span>()</code></pre><h3>Lese nøkkelfilen</h3>
+<p>Nøkkelfilen som skulle leses hadde et spesielt format, men det viste seg å være ganske enkelt å parse; den vanligste løsningen var rett og slett å erstatte bindestrek og linjeskift med <em>ingenting</em>.</p>
+<p>I mitt Windows-vennlige program ble det sånn som dette:</p>
+<pre><code class="hljs">def readKey(<span class="hljs-type">path</span>):
+    <span class="hljs-keyword">return</span> readMessage(<span class="hljs-type">path</span>)\
+           .replace(&quot;-&quot;, &quot;&quot;)\
+           .replace(&quot;\r&quot;, &quot;&quot;)\
+           .replace(&quot;\n&quot;, &quot;&quot;)</code></pre><h3>Operasjon == en høyereordens funksjon</h3>
+<p>Programmet dere skulle kode skulle kunne gjøre en av to operasjoner: <em>kryptering</em> og <em>dekryptering</em>. Mange av løsningene som kom inn valgte å løse dette ved å sende inn én av to ulike funksjoner til koden som utførte transformasjonen på teksten. Forskjellen på kryptering og dekryptering er jo bare bruk av enten <em>pluss</em> eller <em>minus</em>.</p>
+<p>I min versjon av programmet ser det slik ut:</p>
+<pre><code class="hljs"><span class="hljs-keyword">from</span> <span class="hljs-keyword">operator</span> <span class="hljs-keyword">import</span> <span class="hljs-keyword">add</span>, sub
+
+def cryptoOperator(<span class="hljs-keyword">option</span>):
+    <span class="hljs-keyword">return</span> sub <span class="hljs-keyword">if</span> <span class="hljs-keyword">option</span>.startswith(&quot;d&quot;) <span class="hljs-keyword">else</span> <span class="hljs-keyword">add</span></code></pre><h3>og til slutt selve (de)krypteringen</h3>
+<p>Jeg lagde først en funksjon som tar inn en operasjon (representerer kryptering eller dekryptering), tekst som skal krypteres/dekrypteres, samt den hemmelige nøkkelen. Så bruker jeg funksjonen <code>zip</code> til å kombinere ett-og-ett tegn fra teksten med ett-og-ett tegn fra nøkkelen. Disse tegn-parene sender jeg så, ved hjelp av <code>map</code>, til en ny funksjon som krypterer eller dekryptere det ene tegnet:</p>
+<pre><code class="hljs">def shiftString(<span class="hljs-built_in">op</span>, st, <span class="hljs-built_in">key</span>):
+    shifted = <span class="hljs-built_in">map</span>(
+        <span class="hljs-built_in">lambda</span> (c, k): shiftChar(<span class="hljs-built_in">op</span>, c, k), 
+        zip(st, <span class="hljs-built_in">key</span>))
+    <span class="hljs-built_in">return</span> <span class="hljs-string">&quot;&quot;</span>.<span class="hljs-built_in">join</span>(shifted)</code></pre><p>Hvis tegnet er i alfabetet vi bruker vil <code>shiftChar</code> utføre operasjonen <code>op</code> på indeksen til tegnet fra teksten og indeksen til tegnet fra nøkkelen. Deretter kan jeg hente ut tegnet jeg har kryptert/dekryptert til fra <code>alphabet</code>... </p>
+<pre><code class="hljs">def shiftChar<span class="hljs-punctuation">(</span>op<span class="hljs-punctuation">,</span> <span class="hljs-built_in">c</span><span class="hljs-punctuation">,</span> cKey<span class="hljs-punctuation">)</span><span class="hljs-operator">:</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">c</span> <span class="hljs-keyword">in</span> alphabet<span class="hljs-operator">:</span>
+        n <span class="hljs-operator">=</span> op<span class="hljs-punctuation">(</span>alphabet.index<span class="hljs-punctuation">(</span><span class="hljs-built_in">c</span><span class="hljs-punctuation">)</span><span class="hljs-punctuation">,</span> alphabet.index<span class="hljs-punctuation">(</span>cKey<span class="hljs-punctuation">)</span><span class="hljs-punctuation">)</span>
+        <span class="hljs-built_in">return</span> alphabet<span class="hljs-punctuation">[</span>toValidAlphabetIndex<span class="hljs-punctuation">(</span>n<span class="hljs-punctuation">)</span><span class="hljs-punctuation">]</span>
+    <span class="hljs-keyword">else</span><span class="hljs-operator">:</span>
+        <span class="hljs-built_in">return</span> <span class="hljs-built_in">c</span> <span class="hljs-comment"># keep char as is if not in alphabet</span></code></pre><p>...det eneste jeg må passe på er at jeg bruker en gyldig indeks, og koden for det har jeg dratt ut i funksjonen <code>toValidAlphabetIndex</code>. Hvis indeksen har blitt negativ legger jeg til lengden av alfabetet, og ellers bruker jeg <em>modulo</em> alfabetlengden i tilfelle indeksen er blitt for stor: </p>
+<pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">toValidAlphabetIndex</span>(<span class="hljs-params">n</span>):
+    <span class="hljs-keyword">if</span> n &lt; <span class="hljs-number">0</span>:
+        <span class="hljs-keyword">return</span> (n + <span class="hljs-built_in">len</span>(alphabet))
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> n % <span class="hljs-built_in">len</span>(alphabet)</code></pre><h3>ARGV og å sy alt sammen..</h3>
+<p>Til slutt kaller jeg funksjonene jeg har laget med argumentene til programmet. Oppgaven sa ingen ting om å validere input, så det dropper jeg.</p>
+<pre><code class="hljs">from sys import argv
+
+op = <span class="hljs-built_in">cryptoOperator</span>(argv<span class="hljs-selector-attr">[1]</span>)
+message = <span class="hljs-built_in">readMessage</span>(argv<span class="hljs-selector-attr">[2]</span>)
+key = <span class="hljs-built_in">readKey</span>(argv<span class="hljs-selector-attr">[3]</span>)
+
+print <span class="hljs-built_in">shiftString</span>(op, message, key)</code></pre><p>Og det var det! Nå er det på tide å ta en titt på programmene dere lesere har bidratt med..</p>
+<p>-- hver enkelt løsning (navn, lenke, vurdering av løsning)</p>
+<h2>BIDRAGENE</h2>
+<p>Nå er det på tide å vurdere de ulike løsningene som har kommet inn...</p>
+<h3>Arnt Joakim</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/arnt_joakim.py">Kildekode</a></p>
+<p>Arnt Joakims løsning ligner ganske mye på min egen, som jeg nettopp har gjennomgått - og det løser oppgaven akkurat som det skal. Et par ting kan jeg likevel trekke frem.</p>
+<p>For det første: Jeg trodde jeg hadde vært veldig smart da jeg brukte <code>zip</code> sammen med <code>map</code> for å iterere over ett-og-ett tegn fra teksten og nøkkelen samtidig. Arnt Joakim kjenner Pythons map-funksjon bedre, og viser at bruk av <code>zip</code> er helt unødvendig:</p>
+<pre><code class="hljs">def process(msg, <span class="hljs-built_in">key</span>, e):
+    res = <span class="hljs-built_in">map</span>(<span class="hljs-built_in">lambda</span> m, k: processChar(m, k, e), msg, <span class="hljs-built_in">key</span>)
+    <span class="hljs-built_in">return</span> <span class="hljs-string">&quot;&quot;</span>.<span class="hljs-built_in">join</span>(res)</code></pre><p>Arnt Joakim brukte derimot ikke en høyereordens funksjon til å skille kryptering og dekryptering, men i stedet en boolsk variabel. Og det er jo helt greit det.</p>
+<pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">calcChar</span>(<span class="hljs-params">mi, ki, e</span>):
+    <span class="hljs-keyword">if</span> (e):
+        <span class="hljs-keyword">return</span> (mi + ki) % <span class="hljs-built_in">len</span>(alphabet)
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> (mi - ki) % <span class="hljs-built_in">len</span>(alphabet)</code></pre><p>Men denne løsningen viser også at jeg <em>ikke</em> behøver å justere spesielt for negative indekser, slik jeg gjorde i min <code>toValidAlphabetIndex</code>. I Python vil <em>modulo</em> også fikse negative verdier. Den er matematisk korrekt slik jeg tolker en rask titt i <a href="https://en.wikipedia.org/wiki/Modulo_operation">wikipedia</a>, i motsetning til modulo-operatoren i enkelte andre språk som for eksempel C# og Java. </p>
+<p>Til slutt viser Arnt Joakim også hvordan man idiomatisk kaller en main-funksjon kun hvis skriptet man befinner seg i er det skriptet som eksekveres:</p>
+<pre><code class="hljs"><span class="hljs-variable"><span class="hljs-keyword">if</span></span> <span class="hljs-variable">__name__</span> == <span class="hljs-string">&quot;__main__&quot;</span>:
+    <span class="hljs-function"><span class="hljs-title">main</span>()</span></code></pre><h3>Bjørn Einar</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/bjorn_einar.py">Kildekode</a></p>
+<p>Bjørn Einar klagde mye over problemer med tegnkoding, men kom til slutt opp med en interessant løsning. Han har det desidert største programmet, men det skyldes at han bruker <a href="https://en.wikipedia.org/wiki/Doctest">doctest</a>. Bjørn Einar sier:</p>
+<blockquote>
+<p>(Programmet skal) teste seg selv før den skriver ut kode, hvis dokumentarene feiler så kræsjer programmet. Artig</p>
+</blockquote>
+<p>Jeg kommenterer ikke det noe mer, men du bør ta en titt på koden!</p>
+<p>Jeg brukte funksjonene <code>add</code> og <code>sub</code>, mens Arnt Joakim brukte en bolsk variabel. Bjørn Einar har en litt annen vri: Han representerer kryptering med <code>1</code> og dekryptering med <code>-1</code>. Om for eksempel Arnt Joakim hadde gjort det samme, kunne han ha skrevet sin <code>calcChar</code> slik:</p>
+<pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">calcChar</span>(<span class="hljs-params">mi, ki, e</span>):
+    <span class="hljs-keyword">return</span> (mi + e * ki) % <span class="hljs-built_in">len</span>(alphabet)</code></pre><p>Der hvor Bjørn Einars løsning skiller seg mest ut er ved lesing av fil. Han har en funksjon som returnerer en iterator - filene leses ett-og-ett tegn av gangen:</p>
+<pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">iter_input</span>(<span class="hljs-params">path,alfabet</span>):
+    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(path, <span class="hljs-string">&quot;r&quot;</span>) <span class="hljs-keyword">as</span> <span class="hljs-built_in">input</span>:
+        binary_chunks = <span class="hljs-built_in">iter</span>(partial(<span class="hljs-built_in">input</span>.read, <span class="hljs-number">1</span>), <span class="hljs-string">&quot;&quot;</span>)        
+        <span class="hljs-keyword">for</span> unicode_chunk <span class="hljs-keyword">in</span> codecs.iterdecode(binary_chunks, <span class="hljs-string">&quot;utf-8&quot;</span>):
+            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> unicode_chunk <span class="hljs-keyword">in</span> alfabet:
+                <span class="hljs-keyword">continue</span>
+            <span class="hljs-keyword">yield</span> unicode_chunk</code></pre><p>Dermed kan programmet lese og (de)kryptere gigantiske meldinger - om det skulle være av interesse.</p>
+<p>Han velger å droppe alle tegn som ikke er i alfabetet, og dermed slipper han å gjøre noe spesielt for å parse nøkkelfilen også.</p>
+<h3>Christian</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/christian.py">Kildekode</a></p>
+<p>Selv om mye er gjenkjennelig så skiller Christian (kollega fra Link Mobility) sin løsning seg endel fra de andre. Han gjør mange transformasjoner på få linjer, og det er stilig, men jeg synes han mister endel lesbarhet. Du kan jo ta en titt og vurdere selv..</p>
+<p>Christian bruker <code>1</code> og <code>-1</code> for å representere krypteringsoperasjonen, slik som Bjørn Einar gjorde. Men måten han kommer frem til operasjonen på er litt anderledes. Her er et utdrag:</p>
+<pre><code class="hljs"><span class="hljs-comment"># ...</span>
+(encode,decode) = (<span class="hljs-number">1</span>,<span class="hljs-number">-1</span>)
+operations = {<span class="hljs-string">&#x27;e&#x27;</span><span class="hljs-symbol">:encode</span>,<span class="hljs-string">&#x27;d&#x27;</span><span class="hljs-symbol">:decode</span>}
+<span class="hljs-keyword">if</span> (len(sys.argv) &lt; <span class="hljs-number">4</span> <span class="hljs-keyword">or</span> sys.argv[<span class="hljs-number">1</span>] <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> operations): usage()
+(opcode,msgfile,keyfile) = sys.argv[<span class="hljs-number">1</span><span class="hljs-symbol">:</span><span class="hljs-number">4</span>]
+<span class="hljs-comment"># ...</span></code></pre><p>Nå har han validert input, og henter ut operasjonsverdien med <code>operations[opcode]</code>.</p>
+<p>For å parse nøkkelen har Christian valgt å bruke <code>filter</code>; han filtrerer bort alle tegn som ikke er en del av alfabetet (<code>chash</code> er en dictionary som mapper tegn til indeks):</p>
+<pre><code class="hljs">klist <span class="hljs-operator">=</span> <span class="hljs-keyword">filter</span>(lambda <span class="hljs-keyword">x</span>: <span class="hljs-keyword">x</span> in chash<span class="hljs-punctuation">,</span> list(key))</code></pre><p>Det virker som om Christian har hatt det gøy med denne oppgaven, og jeg liker hvordan han har tenkt. Han får pluss for eleganse, men minus for lesbarhet :)</p>
+<h3>Einar Høst</h3>
+<p>Kildekode <a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/einar.py">versjon 1</a> og <a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/einar_v2.py">versjon 2</a></p>
+<p>Einar nøyde seg ikke med å levere bare ett bidrag, han måtte løse oppgaven to ganger. Forskjellen er ikke stor, men i versjon to bruker han <code>codecs.iterdecode</code> til å lese filene. Jeg er ikke helt sikker på hvilken forskjell det egentlig utgjør, men det kan han kanskje utdype i en kommentar?!</p>
+<p>Einars løsning er kort og elegant. Han skiller kryptering og dekryptering i to ulike funksjoner, og velger én basert på første argument:</p>
+<pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">enc</span>(<span class="hljs-params">x, p</span>):
+    <span class="hljs-keyword">return</span> otp(<span class="hljs-keyword">lambda</span> a, b: a + b, x, p)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">dec</span>(<span class="hljs-params">x, p</span>):
+    <span class="hljs-keyword">return</span> otp(<span class="hljs-keyword">lambda</span> a, b: a - b + <span class="hljs-built_in">len</span>(alfa), x, p)
+
+otpop = dec <span class="hljs-keyword">if</span> sys.argv[<span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;d&#x27;</span> <span class="hljs-keyword">else</span> enc</code></pre><p>Ved å plusse på alfabetlengden under dekryptering unngår han at den nye verdien blir negativ. Stilig det, selv om Arnt Joakim jo viste at dette ikke var nødvendig.</p>
+<p>I stedet for å bruke <code>map</code> til å iterere over melding og nøkkel bruker Einar en <em>list comprehension</em>. Det virker som om dette (og generator expressions, som ikke er helt det samme, men som ligner) er nokså vanlig å bruke i Python.</p>
+<pre><code class="hljs">output = [ otpop(<span class="hljs-variable language_">x</span>, p) <span class="hljs-keyword">for</span> (<span class="hljs-variable language_">x</span>,p) in zip(<span class="hljs-variable language_">message</span>, otpkey) ]</code></pre><p>Det jeg likte aller mest med Einars løsning tror jeg likevel var hvordan han lagde en dictionary av alfabetet, og brukte denne til å hente ut indeksene (i stedet for å bruke <code>string.index()</code>):</p>
+<pre><code class="hljs">alfa = <span class="hljs-string">u&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZ\xc6\xd8\xc5 .&#x27;</span>
+d = { ch : ix <span class="hljs-keyword">for</span> (ix, ch) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(alfa) }
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">otp</span>(<span class="hljs-params">f, x, p</span>):
+    <span class="hljs-keyword">return</span> alfa[f(d[x], d[p]) % <span class="hljs-built_in">len</span>(alfa)]</code></pre><h3>Einar He.</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/einar_he.py">Kildekode</a></p>
+<p>Einar (en <em>ny</em> Einar altså) har levert en kort og kompakt løsning. Mangel på funksjonsdefinisjoner og noen korte / lite beskrivende variabelnavn går litt ut over lesbarheten, men kanskje ikke så mye at det gjør noe.</p>
+<p>Einar filtrerer også nøkkelen på tegnene i alfabetet, men gjør det med et generator-uttrykk:</p>
+<pre><code class="hljs">key = (<span class="hljs-variable language_">x</span> <span class="hljs-keyword">for</span> <span class="hljs-variable language_">x</span> in otp.read() <span class="hljs-keyword">if</span> <span class="hljs-variable language_">x</span> in alf)</code></pre><p>Og han bruker en list comprehension for å iterere over melding og nøkkel:</p>
+<pre><code class="hljs"><span class="hljs-selector-attr">[crypt[encr_type]</span>(x,y) if <span class="hljs-attribute">x</span> in alf else <span class="hljs-attribute">x</span>
+ for <span class="hljs-attribute">x</span>,<span class="hljs-attribute">y</span> in <span class="hljs-built_in">zip</span>(txt,key)]</code></pre><p><code>crypt</code> er en dictionary som inneholder funksjoner for henholdsvis kryptering og dekryptering:</p>
+<pre><code class="hljs">crypt = { <span class="hljs-string">&#x27;d&#x27;</span>: (lambda <span class="hljs-variable language_">x</span>,<span class="hljs-variable language_">y</span>: alf[(alf.find(<span class="hljs-variable language_">x</span>) - alf.find(<span class="hljs-variable language_">y</span>)) % n]),
+          <span class="hljs-string">&#x27;e&#x27;</span>: (lambda <span class="hljs-variable language_">x</span>,<span class="hljs-variable language_">y</span>: alf[(alf.find(<span class="hljs-variable language_">x</span>) + alf.find(<span class="hljs-variable language_">y</span>)) % n]) }</code></pre><h3>Feng Xue</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/feng_xue.py">Kildekode</a></p>
+<p>Feng Xue har levert en løsning som følger noen navnekonvensjoner jeg ikke er helt enig i. Lesbarheten kunne vært bedre; spesielt har jeg problemer med å følge logikken i funksjonen <code>de_or_encrypt</code>:</p>
+<pre><code class="hljs">def <span class="hljs-built_in">de_or_encrypt</span>(de_en_content, key, alpha, oper):
+    content_num_list = <span class="hljs-built_in">map</span>(<span class="hljs-built_in">partial</span>(str_to_num, alp=alpha), de_en_content)
+    matched_length_key = <span class="hljs-built_in">generate_matched_key</span>(key, <span class="hljs-built_in">len</span>(de_en_content))
+    key_num_list = <span class="hljs-built_in">map</span>(<span class="hljs-built_in">partial</span>(str_to_num, alp=alpha), matched_length_key)
+    encrypted_num_list = <span class="hljs-built_in">map</span>(oper, content_num_list, key_num_list)
+    mod_num_list = <span class="hljs-built_in">map</span>(<span class="hljs-built_in">partial</span>(mod, alp=alpha), encrypted_num_list)
+    return <span class="hljs-string">&quot;&quot;</span>.<span class="hljs-built_in">join</span>(<span class="hljs-built_in">map</span>(<span class="hljs-built_in">partial</span>(num_to_str, alp=alpha), mod_num_list))</code></pre><p>Det er ikke alltid det hjelper å navngi alle operasjoner, og navngiving er uansett noe av det vanskeligste med programmering... Men programmet gjør hva det skal, ikke noe problem der.</p>
+<p>En detalj som er fin er at Feng Xue splitter filene på linjeskift med <code>splitlines</code>. Dermed slipper han å fjerne <code>\r</code> og <code>\n</code> eller filtrere på gyldige tegn.</p>
+<h3>Kitteh Evilson</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/kitteh.py">Kildekode</a></p>
+<p>Kitteh har også levert en kort og enkel løsning. Lite beskrivende variabelnavn som <code>a</code> og <code>b</code> og <code>x</code> og <code>y</code> gjør det litt vanskelig å følge koden. Og det var et problem fordi jeg først trodde at programmet gjorde en feil - output ble nesten riktig, men ikke helt. Hva er galt?</p>
+<p>Etter litt testing skjønte jeg derimot at det bare var at tegnet <code>\r</code> ikke ble filtrert bort fra nøkkelen, og det var jo strengt tatt ikke et krav beskrevet i oppgaven. Så løsningen er godkjent.</p>
+<p>Det mest overraskende / unike med løsningen er at Kitteh ikke kontrollerer om et tegn befinner seg i alfabetet, men baserer seg på at <code>rindex</code> (kunne vel like godt benyttet <code>index</code>?) kaster en exception:</p>
+<pre><code class="hljs">def f(a,b):
+    try:
+        <span class="hljs-variable language_">x</span> = alph.rindex(a)
+        <span class="hljs-variable language_">y</span> = alph.rindex(b)
+        <span class="hljs-keyword">return</span> alph[(<span class="hljs-variable language_">y</span>-<span class="hljs-variable language_">x</span> <span class="hljs-keyword">if</span> sys.argv[<span class="hljs-number">1</span>] == <span class="hljs-string">&quot;d&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-variable language_">x</span>+<span class="hljs-variable language_">y</span>) % <span class="hljs-number">31</span>]
+    except:
+        <span class="hljs-keyword">return</span> b</code></pre><p>Om man ikke forventer at mange tegn er utenfor alfabetet så er dette en ok løsning, mens det ikke er optimalt å kaste en haug med unntak om input har mye av dette. Lengden på alfabetet burde heller ikke vært hardkodet til 31 fordi man da må huske å endre denne om man endrer på hva som er gyldige tegn.</p>
+<p>Til Kittehs forsvar så sier hun (?) i eposten jeg fikk:</p>
+<blockquote>
+<p>Feilhåndtering, brukerinstruksjoner, kommentarer, etc. utelatt da det falt utenfor et av kravene til utføringen av oppgaven (å ha det gøy.)</p>
+</blockquote>
+<p>Det liker jeg :)</p>
+<h3>Kjetil</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/kjetil.py">Kildekode</a></p>
+<p>Kjetils løsning bruker getopt-modulen til å validere programmets argumenter. Det er jo fornuftig, men ingen andre gjorde det. Jeg er likevel litt overrasket over måten det er gjort på, og ville tro at getopt hadde mer funksjonalitet som gjorde det hele enklere. Noe å ta en nærmere titt på senere tenker jeg.</p>
+<p>Ellers er Kjetils besvarelse stort sett en kombinasjon av ting vi allerede har vært innom - kanskje med unntak av at Kjetil foretrekker for-løkker fremfor map, generator expressions eller list comprehensions.</p>
+<h3>Morten</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/morten.py">Kildekode</a></p>
+<p>Morten har levert en kort løsning som bruker min zip/map kombo for iterasjon. Den er grei, enkel å finne frem i, men tilfører ikke noe nytt. Forbedringer jeg ville foreslått var å fjerne litt kodeduplisering - både på tvers av encrypt/decrypt og der hvor disse kalles. Og så ville jeg unngått å hardkode <code>31</code>, lengden på alfabetet (også duplisert).</p>
+<p>Morten gjør forresten et lite triks for å få til UTF-8 output:</p>
+<pre><code class="hljs"><span class="hljs-attr">sys.stdout</span> = codecs.getwriter(<span class="hljs-string">&#x27;utf8&#x27;</span>)(sys.stdout)</code></pre><p>Dette fungerer ikke så bra i min konsoll, men det er helt greit - oppgaven spesifiserte ikke noe om tegnkoding av output, og jeg stoler på at dette fungerte bra for Morten :) Det samme gjelder forøvrig output fra besvarelsene til Christian og Kjetil.</p>
+<h3>Stian B.</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/stian_b.py">Kildekode</a></p>
+<p>Stian B. har ikke tatt høyde for <code>\r</code> i nøkkelfilen, men det er som sagt greit - og er enkelt å fikse. Måten han filtrerer bort uønskede tegn i nøkkelen på er han forresten alene om:</p>
+<pre><code class="hljs"><span class="hljs-type">text</span> = codecs.<span class="hljs-keyword">open</span>(filepath, <span class="hljs-string">&#x27;r&#x27;</span>, encoding=&quot;utf-8&quot;).<span class="hljs-keyword">read</span>()
+<span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&#x27;</span>.<span class="hljs-keyword">join</span>(c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> <span class="hljs-type">text</span> <span class="hljs-keyword">if</span> c <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> &quot;-\n&quot;)</code></pre><p>Løsningen er enkel og grei, men inneholder en del duplisering og hardkodet alfabetlengde. Det mest positive å trekke frem er bruk av <code>assert</code>, som gjør noen av funksjonenes forventninger til input eksplisitte, for eksempel:</p>
+<pre><code class="hljs">def <span class="hljs-title function_">encrypt_char</span>(<span class="hljs-type">char</span>, <span class="hljs-built_in">key</span>):
+    <span class="hljs-keyword">assert</span> <span class="hljs-built_in">key</span> in weights
+    <span class="hljs-keyword">if</span> not <span class="hljs-type">char</span> in weights: <span class="hljs-keyword">return</span> <span class="hljs-type">char</span>
+    weight = weights[<span class="hljs-type">char</span>] + weights[<span class="hljs-built_in">key</span>]
+    <span class="hljs-keyword">return</span> alphabet[weight % <span class="hljs-number">31</span>]</code></pre><h3>Stian E.</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/stian_e.py">Kildekode</a></p>
+<p>Husker dere vinneren av programmeringsbloggens julekalender for et par år siden? Stian Eikeland har levert et fint bidrag med god lesbarhet. Løsningen er generator-basert, og her er noen utdrag som viser det. Legg merke til <code>yield</code>, <code>iter</code>, <code>ifilter</code> og <code>izip</code>.</p>
+<pre><code class="hljs"><span class="hljs-keyword">from</span> itertools <span class="hljs-keyword">import</span> ifilter, izip
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">file_iter</span>(<span class="hljs-params">filename</span>):
+    <span class="hljs-keyword">with</span> codecs.<span class="hljs-built_in">open</span>(filename, <span class="hljs-string">&quot;r&quot;</span>, <span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:
+        <span class="hljs-keyword">for</span> char <span class="hljs-keyword">in</span> <span class="hljs-built_in">iter</span>(<span class="hljs-keyword">lambda</span>: f.read(<span class="hljs-number">1</span>), <span class="hljs-string">&quot;&quot;</span>):
+            <span class="hljs-keyword">yield</span> char
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">key_cleaner</span>(<span class="hljs-params">key</span>):
+    <span class="hljs-keyword">return</span> ifilter(<span class="hljs-keyword">lambda</span> char: char <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> INVALID_KEY_CHARS, key)
+
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">process_message</span>(<span class="hljs-params">operator, message, key</span>):
+    <span class="hljs-keyword">for</span> [m, k] <span class="hljs-keyword">in</span> izip(message, key):
+        <span class="hljs-keyword">if</span> m <span class="hljs-keyword">in</span> VALUES:
+            <span class="hljs-keyword">yield</span> operator(m, k)
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-keyword">yield</span> m</code></pre><p>Det eneste forbedringspotensialet jeg ser er duplisering på tvers av encrypter og decrypter-funksjonene.</p>
+<h3>Teodor</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/teodor.py">Kildekode</a></p>
+<p>Teodor har gjort noe interessant som jeg ikke tror noen andre har tenkt på: Han representerer alfabetet som en toveis dictionary som både mapper fra tegn til indeks og fra indeks til tegn. Han bygger den slik:</p>
+<pre><code class="hljs"><span class="hljs-selector-tag">a</span> = <span class="hljs-string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ .&#x27;</span><span class="hljs-selector-class">.decode</span>(<span class="hljs-string">&#x27;utf8&#x27;</span>)
+d = <span class="hljs-built_in">dict</span>()
+
+<span class="hljs-keyword">for</span> <span class="hljs-selector-tag">i</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(a)):
+    d<span class="hljs-selector-attr">[a[i]</span>] = <span class="hljs-selector-tag">i</span>
+    d<span class="hljs-selector-attr">[i]</span> = <span class="hljs-selector-tag">a</span><span class="hljs-selector-attr">[i]</span></code></pre><p>Ganske fiffig. Når han så skal (de)kryptere et tegn gjør han slik som dette:</p>
+<pre><code class="hljs"># <span class="hljs-selector-tag">a</span> er alfabet-dictionary
+# crypter er funksjon som gjø<span class="hljs-attribute">r</span> kryptering eller dekryptering
+<span class="hljs-selector-tag">a</span><span class="hljs-selector-attr">[crypter(a[letter]</span>, <span class="hljs-selector-tag">a</span><span class="hljs-selector-attr">[key_letter]</span>) % (len(<span class="hljs-selector-tag">a</span>) / <span class="hljs-number">2</span>)]</code></pre><p>For å iterere over melding/nøkkel har Teodor brukt en uendelig while-løkke med en <code>break</code>. I tillegg fjerner han ugyldige nøkkel-tegn &quot;on the fly&quot;. Jeg synes dette kommuniserer litt dårlig, men det er kanskje mest en vanesak?</p>
+<pre><code class="hljs">while <span class="hljs-number">1</span>:
+    m = <span class="hljs-built_in">next_letter</span>(message)
+    k = <span class="hljs-built_in">next_valid_letter</span>(key, alphabet)
+
+    <span class="hljs-keyword">if</span> not m or not k:
+        break
+
+    <span class="hljs-attribute">r</span> = <span class="hljs-built_in">crypt_letter</span>(crypter, m, k, alphabet)
+    sys<span class="hljs-selector-class">.stdout</span><span class="hljs-selector-class">.write</span>(<span class="hljs-attribute">r</span>)</code></pre><p>Det han derimot sørger for er å lese ett-og-ett tegn fra filene og skrive ett-og-ett tegn til output, så han kan håndtere &quot;uendelig&quot; store filer.</p>
+<h3>Tormod</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/tormod.py">Kildekode</a></p>
+<p>Tormod viser oss en litt orginal måte å fjerne ugyldige tegn fra nøkkelen. Han bruker nemlig et regulært uttrykk:</p>
+<pre><code class="hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">fix_key</span>(<span class="hljs-params">key</span>):
+    p = re.<span class="hljs-built_in">compile</span>(<span class="hljs-string">&#x27;[^&#x27;</span>+ALPHABET+<span class="hljs-string">&#x27;]&#x27;</span>)
+    <span class="hljs-keyword">return</span> p.sub(<span class="hljs-string">&#x27;&#x27;</span>, key)</code></pre><p>Litt <em>overkill</em> spør du meg, men det viser i alle fall at man har kontroll på noe som <em>er</em> et viktig utviklerverktøy.</p>
+<p>Tormod bruker også asserts, og det er bra, men bruker ikke <code>with</code> når han åpner filen, og det er et forbedringspotensiale.</p>
+<p>Tormod har også en unik vri på selve (de)krypterings-beregningen. I stedet for å velge om man skal addere eller subtrahere, eller eventuelt om man skal gange med <code>1</code> eller <code>-1</code>, så har Tormods løsning denne funskjonen:</p>
+<pre><code class="hljs">def get_pos_from_code_alphabet(<span class="hljs-built_in">index</span>, key, <span class="hljs-keyword">mode</span>):
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">mode</span> == <span class="hljs-string">&#x27;e&#x27;</span>:
+        <span class="hljs-keyword">return</span> ALPHABET.<span class="hljs-keyword">find</span>(key[<span class="hljs-built_in">index</span>])
+    <span class="hljs-keyword">return</span> -ALPHABET.<span class="hljs-keyword">find</span>(key[<span class="hljs-built_in">index</span>])</code></pre><p>Funksjonsnavnet beskriver ikke helt hva funksjonen gjør. Hvis man krypterer så gir funksjonen indeksen til et tegn i alfabetet, men om man dekrypterer gir funksjonen den negerte indeksen:</p>
+<pre><code class="hljs"><span class="hljs-attribute">get_pos_from_code_alphabet</span>(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;GDW&quot;</span>, <span class="hljs-string">&quot;e&quot;</span>)
+<span class="hljs-comment"># ==&gt; 6, indeksen til G i ABCDEFGH...</span>
+
+<span class="hljs-attribute">get_pos_from_code_alphabet</span>(<span class="hljs-number">0</span>, <span class="hljs-string">&quot;GDW&quot;</span>, <span class="hljs-string">&quot;d&quot;</span>)
+<span class="hljs-comment"># ==&gt; -6, den negerte indeksen</span></code></pre><p>Legg også merke til at koden her aksesserer elementer i nøkkel (og også i meldingsteksten) ved hjelp av en indeks. Tormod itererer over melding og nøkkel med en løkke som dette:</p>
+<pre><code class="hljs">for <span class="hljs-keyword">index</span> <span class="hljs-keyword">in</span> <span class="hljs-meta">range</span>(le<span class="hljs-meta">n</span>(<span class="hljs-keyword">input</span>)):
+    ....
+    ....</code></pre><p>Jeg synes det er mere elegang (og enklere å forstå / fange opp feil) når man itererer over de faktiske elementene i stedet for en indeks range.</p>
+<p>Til slutt må jeg kommentere at programmet konkatenerer ett-og-ett tegn på en output-streng, og det regner jeg i alle fall med er en god del mere kostbart enn å bygge opp en sekvens og f.eks. bruke en <code>join</code>-operasjon, slik som mange andre har gjort.</p>
+<h3>Ulrich</h3>
+<p><a href="https://github.com/tormaroe/kodekamp-public/blob/kk1/1-One-Time-Pad/answers/ulrich.py">Kildekode</a></p>
+<p>Aller siste løsning: Ulrichs program bruker stort sett ting vi har sett før. For krypterings-operasjonen går han først en omvei om en bolsk variabel, men bruker så <code>add</code> og <code>sub</code> fra operator-modulen, slik jeg gjorde. Han bruker <code>zip</code> og en for-løkke for iterasjon, og konkatenerer ett-og-ett tegn til output. </p>
+<p>Jeg stusser litt over at løsningen til slutt kaller <code>join</code>, for argumentet til metoden er allerede en fullstendig streng. Det fungerer jo, men er unødvendig og sikkert en forglemmelse.</p>
+<h2>Hvem vant?</h2>
+<p>Jeg har rangert bidragene etter et system jeg selv har kommet opp med, og kommet frem til at førsteplassen i kodekamp #1 deles mellom radarparet fra Computas: <strong>Bjørn Einar Bjartnes</strong> og <strong>Einar Høst</strong>. Bjørn Einar skåret bra på grunn av de eksekverbare kommentarene, mens Einar hadde en gjevnt god løsning med høy lesbarhet.</p>
+<p>Gratulerer begge to, og takk igjen for at dere delte av deres enorme programmeringsforståelse :D</p>
+<p>Så da det ser ut til at dere to også må delta i <em>neste kodekamp</em> om vi skal klare å skille dere :) </p>
+<p>Så følg med, kodekamp nummer 2 kommer snart!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

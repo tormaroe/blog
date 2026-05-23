@@ -1,0 +1,30 @@
+---
+title: "Kalenderluke 5: Hvor like er setningene?"
+link: http://blog.kjempekjekt.com/2013/12/05/kalenderluke-5-hvor-like-er-setningene/
+layout: post
+date: 2013-12-05 11:41:46Z
+tags:
+  - Julekalender
+---
+<p>Jeg tar en liten statusoppdatering nå, selv om dagen er langt fra over. For dem som ikke har klart oppgaven enda kan man bruke dette til å i alle fall få med seg ett poeng.</p> <p>Dagens oppgave gikk ut på å finne ut hvor like to forskjellige setninger var. På fagspråket kalles dette <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein-distanse</a>.</p> <p>Jeg hadde hintet om at man kunne programmere for å finne løsningen, men regnet med at mange ville google og finne frem til online verktøy for å løse problemet. Og det hadde jeg nok rett i, for svarene haglet inn fra første minutt. Likevel er jeg imponert over hvor rask enkelte var.</p> <p>Og aller raskest var <strong>Eric Carr</strong>. Han er CTO i selskapet <a href="http://info.traveltext.no/">TravelText</a>, som forenkler reiseregnings-hverdagen din ved hjelp av en kreativ SMS-løsning. Eric ligger nå på 12-plass sammenlagt. Han kunne fortelle meg at: </p> <blockquote> <p>"Heldigvis hadde jeg nettopp mekket på noe Levenshtein-greier og fikk kanskje et lite forsprang."</p></blockquote> <p>Ellers var gutta på poengtoppen raske til å svare også denne gang, og her er den oppdaterte topp-10-listen etter fem luker:</p> <p><img title="luke5_stillingen" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 20px auto; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke5_stillingen" src="/uploads/2013/12/luke5_stillingen.jpg" width="350" height="374"></p> <p>Stian, Dag Stuan, Jarle Stabell og Alf Kåre Lefdal avanserer, og skyver ut William Killerud, Bente C. Andorsen og Andreas Lien Olsen. Magnar Sveen gjeninntar lederposisjonen.</p> <h2>Algoritmen</h2> <p>Hvis du ønsker å vite hvordan man kan kode seg frem til løsningen, så har jeg laget et eksempel i C#:</p><pre>static int LevenshteinDistance(string s, string t)
+{
+  int[,] d = new int[s.Length + 1, t.Length + 1];
+  for (int i = 0; i &lt;= s.Length; i++)
+    d[i, 0] = i;
+  for (int j = 0; j &lt;= t.Length; j++)
+    d[0, j] = j;
+  for (int j = 1; j &lt;= t.Length; j++)
+    for (int i = 1; i &lt;= s.Length; i++)
+      if (s[i - 1] == t[j - 1])
+        d[i, j] = d[i - 1, j - 1];  //no operation
+      else
+        d[i, j] = Math.Min(Math.Min(
+          d[i - 1, j] + 1,    //a deletion
+          d[i, j - 1] + 1),   //an insertion
+          d[i - 1, j - 1] + 1 //a substitution
+          );
+  return d[s.Length, t.Length];
+}</pre>
+<p>Du kan lese mer om denne <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">algoritmen på nettet</a>.</p>
+<h2>Litt om luke 6</h2>
+<p>Luken i morgen er en helt annen type oppgave, og minner kanskje mest om luke 1. Jeg tipper at noen veldig få vet svaret og tar det fra hukommelsen, mens alle andre kan finne det ut med litt smart søking. Så da kan du bare varme opp Google-muskelen din og være parat klokken 09:00 i morgen.</p>

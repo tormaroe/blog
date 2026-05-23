@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title><%= data.title %></title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <% include navbar %>
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-12">
+          <h1 style="padding-bottom:25px;">:( Huffda <small>den siden finnes ikke</small></h1>
+          <p class="lead">
+          Programmeringsbloggen har gjennomgått en omfattende omstrukturering, og noen av de gamle lenkene finnes ikke lengre. Bruk tags, arkiv eller søk for å finne innholdet du er ute etter...
+          </p>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:25px;">
+        <div class=" col-sm-offset-2 col-sm-3 text-center">
+          <a href="/tags" class="btn btn-primary btn-lg" style="width:100%;"><span class="glyphicon glyphicon-tags"></span><br>Tags index</a>
+        </div>
+        <div class="col-sm-offset-2 col-sm-3 text-center">
+          <a href="/arkiv" class="btn btn-primary btn-lg" style="width:100%;"><span class="glyphicon glyphicon-calendar"></span><br>Arkiv</a>
+        </div>
+      </div>
+      <% include footer %>
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

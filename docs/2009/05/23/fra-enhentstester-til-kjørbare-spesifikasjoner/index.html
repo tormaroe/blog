@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Softwareutvikling,Testing / TDD">
+
+    <title>Fra enhentstester til kjørbare spesifikasjoner</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Fra enhentstester til kjørbare spesifikasjoner</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 23. mai 2009</small> 
+            <a href="/tags/softwareutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Softwareutvikling</span></a>
+          
+            <a href="/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
+          </p>
+          <p><a title="Dan North by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3556935848/"><img height="155" alt="Dan North" src="http://farm4.static.flickr.com/3310/3556935848_71be95b2ac_o.png" width="155" align="right" border="0" /></a>Det er snart et år siden Dan North var i Bergen og snakket om <strong>Behaviour-Driven Development (BDD)</strong> - et besøk jeg bl.a. dokumenterte i <a href="http://contikistrip.kjempekjekt.com/?p=5">the Contiki Strip #5</a>. Det var et utrolig inspirerende møte, og <em>Given-When-Then</em> spesifikasjonformatet var noe vi prøvde å jobbe med i tiden etterpå. Men siden vi ikke hadde kommet orntlig igang med å skrive enhetstester, og var langt fra å praktisere TDD, glemte vi det raskt ut, og alt forble ved det gamle.</p>
+<p>Nå som jeg har jobbet mer med testdreven utvikling er det på tide å ta dette opp igjen. Jeg vil derfor presentere hvordan man kan gå fra "vanlige" unit-tester til å implementere kjørbare spesifikasjoner <em>(the BDD way)</em>, og snakke litt om hvilke fordeler dette gir oss.</p>
+<p>Ta f.eks. denne enhetstesten, hentet fra Robert C. Martins bok <em>Agile Principles, Patterns, and Practices in C#</em>:</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">    1</span> [<span style="color: yellow">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    2</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">DeleteEmployee</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    3</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    4</span>     <span style="font-weight: bold; color: #eaeaac">int</span> <span style="color: #f8ffc6">empId</span> = <span style="color: #8acccf">4</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    5</span>     <span style="color: yellow">AddComissionedEmployee</span> <span style="color: #f8ffc6">t</span> =</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    6</span>         <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">AddComissionedEmployee</span>(<span style="color: #f8ffc6">empId</span>, <span style="color: #c89191">"Bill"</span>, <span style="color: #c89191">"Home"</span>, <span style="color: #8acccf">2500</span>, <span style="color: #8acccf">3.2</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    7</span>     <span style="color: #f8ffc6">t</span>.<span style="color: #f8ffc6">Execute</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    8</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">    9</span>     <span style="color: yellow">Employee</span> <span style="color: #f8ffc6">e</span> = <span style="color: yellow">PayrollDatabase</span>.<span style="color: #f8ffc6">GetEmployee</span>(<span style="color: #f8ffc6">empId</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   10</span>     <span style="color: yellow">Assert</span>.<span style="color: #f8ffc6">IsNotNull</span>(<span style="color: #f8ffc6">e</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   11</span>     <span style="color: yellow">DeleteEmployeeTransaction</span> <span style="color: #f8ffc6">dt</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">DeleteEmployeeTransaction</span>(<span style="color: #f8ffc6">empId</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   12</span>     <span style="color: #f8ffc6">dt</span>.<span style="color: #f8ffc6">Execute</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   13</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   14</span>     <span style="color: #f8ffc6">e</span> = <span style="color: yellow">PayrollDatabase</span>.<span style="color: #f8ffc6">GetEmployee</span>(<span style="color: #f8ffc6">empId</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   15</span>     <span style="color: yellow">Assert</span>.<span style="color: #f8ffc6">IsNull</span>(<span style="color: #f8ffc6">e</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   16</span> }</p>
+</div>
+<p>Denne koden har utstract bruk av COMMAND pattern. Testen oppretter først en Employee i databasen (line 5-7), og bekrefter at den ble opprettet (line 9-10). Deretter sender den en slette-komando (linje 11-12) og verifiserer at den nå ikke finnes i databasen lengre (linje 14-15). En helt normal enhetstest etter min mening.</p>
+<p>Den uttrykker derimot ikke så mye om intensjonen bak testen - man må lese koden for å forstå hva som skjer, og strukturen er helt og holdent opp til utvikleren. En bedre måte å gjøre dette på er å sette opp et <em>Given-When-Then</em>-senario: <strong>Gitt at</strong> vi har en kunde, <strong>Når</strong> vi ber om å få den slettet, <strong>Så</strong> finnes den ikke lengre i databasen.</p>
+<p>Implementert vha. <a href="http://code.google.com/p/tinybdd/">TinyBDD</a>, et rammeverkt for å lage BDD-spesifikasjoner under utvikling av <a href="http://blog.goeran.no/">Gjøran Hansen</a>, forvandles enhetstesten til noe sånn som dette:</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">    1</span> [<span style="color: yellow">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    2</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">DeleteEmployeeTransaction_should_remove_employee</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    3</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    4</span>     <span style="font-weight: bold; color: #eaeaac">int</span> <span style="color: #f8ffc6">empId</span> = <span style="color: #8acccf">4</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    5</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">    6</span>     <span style="color: yellow">Scenario</span>.<span style="color: #f8ffc6">New</span>(<span style="color: #c89191">"DeleteEmployeeTransaction should remove employee"</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    7</span>         <span style="color: #f8ffc6">scenario</span> =></p>
+<p style="margin: 0px"><span style="color: #85ac8d">    8</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">    9</span>         <span style="color: #f8ffc6">scenario</span>.<span style="color: #f8ffc6">Given</span>(<span style="color: #c89191">"An Employee with a specific ID"</span>, () =></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   10</span>             <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">AddComissionedEmployee</span>(<span style="color: #f8ffc6">empId</span>, <span style="color: #c89191">"Bill"</span>, <span style="color: #c89191">"Home"</span>, <span style="color: #8acccf">2500</span>, <span style="color: #8acccf">3.2</span>).<span style="color: #f8ffc6">Execute</span>())</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   11</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   12</span>                 .<span style="color: #f8ffc6">And</span>(<span style="color: #c89191">"It exists in the repository"</span>, () =></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   13</span>                     <span style="color: yellow">Assert</span>.<span style="color: #f8ffc6">IsNotNull</span>(<span style="color: yellow">PayrollDatabase</span>.<span style="color: #f8ffc6">GetEmployee</span>(<span style="color: #f8ffc6">empId</span>)));</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   14</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   15</span>         <span style="color: #f8ffc6">scenario</span>.<span style="color: #f8ffc6">When</span>(<span style="color: #c89191">"A delete transaction is sent with that ID"</span>, () =></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   16</span>             <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">DeleteEmployeeTransaction</span>(<span style="color: #f8ffc6">empId</span>).<span style="color: #f8ffc6">Execute</span>());</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   17</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   18</span>         <span style="color: #f8ffc6">scenario</span>.<span style="color: #f8ffc6">Then</span>(<span style="color: #c89191">"The Employee should no longer exist in repository"</span>, () =></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   19</span>             <span style="color: yellow">Assert</span>.<span style="color: #f8ffc6">IsNull</span>(<span style="color: yellow">PayrollDatabase</span>.<span style="color: #f8ffc6">GetEmployee</span>(<span style="color: #f8ffc6">empId</span>)));</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   20</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   21</span>     }).<span style="color: #f8ffc6">Execute</span>();       </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   22</span> }</p>
+</div>
+<p>Om du ikke er vandt med <a href="http://msdn.microsoft.com/en-us/library/bb397687.aspx">lambda-uttrykk i C#</a> er dette sikkert ganske gresk, men gi det en sjanse likevel. I linje 6 opprettes et nytt senarie. Så på linje 9 sier vi at hvis (<strong>Given</strong>) en bestemt Employee existerer, og (på linje 12) han finnes i databasen, når (<strong>When</strong>) man da eksekverer en slette-kommando (linje 15), så (<strong>Then</strong>) vil Employee'en ikke lenger finnes i basen (linje 18).</p>
+<p>Lambda-uttrykkene på linje 10, 13, 16 og 19 utfører og/eller tester det vi har spesifisert i kallene til Given, When og Then. Og sammenligner du med den originale testen så ser du at de egentlig gjør akkurat det samme.</p>
+<p>Forskjellen er at BDD-spesifikasjonen beskriver/dokumenterer i klartekst hva situasjonen er og hvilken adferd vi er ute etter. Og spesifikasjonen er så nær koden at det ikke vil være noe problem å holde dem og koden synkronisert om den skulle endres. Den er relativt oversiktelig, og følger et fast mønster.</p>
+<p>Og den virkelige gevinsten oppdager du når du innser at disse spesifikasjonene kan skrives av eller i sammarbeid med testere, product owners og til og med kunden selv. Spranget fra kundens eller produktets krav til selve koden blir minimal. Utvikleren og kunden kan f.eks. sitte sammen og skrive spesifikasjonen rett inn i en .cs-fil.</p>
+<p>Når spesifikasjonene er definert kan man så kjøre dem underveis i prosjektet, og ta ut rapporter som i klartekst beskriver senariene, og hvilke av dem som er ferdig implementert, hvilke som gjenstår, og eventuelt hvilke som feiler (TinyBDD støtter ikke dette enda såvidt meg bekjent).</p>
+<p>BDD er mye mer enn det jeg har vist her. For en <em>praktisk</em> introduksjon til et annet BDD rammeverk som heter MSpec anbefaler jeg at du tar en titt på <a href="http://blog.wekeroad.com/mvc-storefront/kona-3/">Rob Conery's screencast om BDD</a> - meget inspirerende. Og for mer informasjon om BDD generelt er <a href="http://behaviour-driven.org/">behaviour-driven.org</a> en bra ressurs. Det har vært mye forvirring rundt testdreven utvikling, og BDD gir en litt annen vinkling på problemet, og et sterkere fokus på <em>adferd</em>, noe som vil kunne øke kvaliteten på programvaren du produserer.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=BDD" rel="tag">BDD</a>, <a href="/index.php?s=Contiki" rel="tag">Contiki</a>, <a href="/index.php?s=Dan+North" rel="tag">Dan North</a>, <a href="/index.php?s=TDD" rel="tag">TDD</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

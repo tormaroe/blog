@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Polyglot,Esoteriske språk">
+
+    <title>A Programming Language</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>A Programming Language</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 24. mars 2017</small> 
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/esoteriske-språk"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Esoteriske språk</span></a>
+          </p>
+          <p><strong><a href="https://en.wikipedia.org/wiki/APL_%28programming_language%29">APL</a></strong> er et programmeringsspråk <em>(pun intended!)</em> utviklet tidlig på 60-tallet. Det er matematisk av natur, og har hatt sterk inflytelse på mange av verktøyene vi bruker for å analysere tall og sånt i dag - f.eks. regneark, programmeringsspråk som MATLAB, og funksjonell programming som konsept. </p>
+<p style="text-align:center;"><img src="/uploads/2017/03/apl.png" alt="Kenneth Iverson" /></p>
+
+<p>Jeg har forsøkt ganske mange programmingsspråk, men APL har jeg ikke prøvd før. Grunnen er kanskje at det virker litt skummelt. Det har nemlig en sær og kompakt syntaks basert på tegn det ikke lenger er vanlig å se i kildekode. Men nå er det på tide å ta APL ut på en liten kjøretur!</p>
+<h2>Summen av alle tall...</h2>
+<p>Som vanlig vil jeg som et første eksperiment løse den oppgaven jeg har løst så mange ganger før: <em>Finne summen av alle multimpler av 3 eller 5 under 1000.</em> La oss steg for steg bygge opp en løsning...</p>
+<p>I APL jobber vi typisk med arrays, og det første jeg trenger å gjøre er å lage et array av alle tall fra 1 til 999.</p>
+<pre><code class="hljs">⍳999</code></pre><p>Symbolet <code>⍳</code> heter Iota, og representerer en funksjon som produserer en serie fra 1 til nummeret som gis som argument. La oss ta var på serien i en variabel vi kaller <code>n</code>.</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span></code></pre><p>Nå trenger jeg å ta modulo 3 av alle tallene. Om et tall modulo 3 er lik 0 er tallet et multippel av 3. APL-funksjonen jeg trenger er <code>|</code>, som gir meg resten etter en deling. Om jeg gjør dette:</p>
+<pre><code class="hljs"><span class="hljs-number">3</span><span class="hljs-string">|n</span></code></pre><p>..får jeg en serie som begynner slik:</p>
+<pre><code class="hljs"><span class="hljs-attribute">1</span> <span class="hljs-number">2</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> ...</code></pre><p>Som du kan se er tallene i posisjon 3, 6, 9 og 12 lik 0.</p>
+<p>Forresten kan jeg slå sammen flere uttrykk med separatoren <code>⋄</code>. Dermed blir hele programmet for å generer denne tallrekken som følger:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄<span class="hljs-number">3</span>|n</code></pre><p>I neste steg sjekker jeg alle tallene om de er lik 0..</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄<span class="hljs-number">0</span>=<span class="hljs-number">3</span>|n</code></pre><p>..som gir meg denne tallrekken:</p>
+<pre><code class="hljs"><span class="hljs-attribute">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">0</span> ...</code></pre><p>Nå kan jeg bruke vektormultiplisering (funksjonen <code>×</code>) mellom den orginale rekken <code>n</code> og denne siste rekken for å stå igjen med alle multiplene. Jeg har dermed gjort en slags filtrering:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄n×<span class="hljs-number">0</span>=<span class="hljs-number">3</span>|n
+
+<span class="hljs-attribute">0</span> <span class="hljs-number">0</span> <span class="hljs-number">3</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">6</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">12</span> <span class="hljs-number">0</span> ...</code></pre><p>Om jeg så bruker reduksjon (operatoren <code>/</code>) sammen med pluss så får jeg slått sammen alle tallene. Jeg tar vare på dem i en variabel jeg kaller <code>a</code>:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄a←+/n×<span class="hljs-number">0</span>=<span class="hljs-number">3</span>|n</code></pre><p>Det begynner å ligne på noe, og <code>a</code> inneholder nå summer 166833. Nå gjør jeg det samme med alle multipler av 5 (lagret i variabelen <code>b</code>) og alle multipler av 15 (lagret i variabelen <code>c</code>). Grunnen til at jeg trenger <code>c</code> er at det tallet representerer alle tall som er med i både <code>a</code> og <code>b</code>, og som derfor må trekkes fra det endelige svaret for at de ikke skal telle med to ganger.</p>
+<p>Her er programmet sålangt:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄a←+/n×<span class="hljs-number">0</span>=<span class="hljs-number">3</span>|n⋄b←+/n×<span class="hljs-number">0</span>=<span class="hljs-number">5</span>|n⋄c←+/n×<span class="hljs-number">0</span>=<span class="hljs-number">15</span>|n</code></pre><p>Det eneste som gjenstår nå er å plusse sammen <code>a</code> og <code>b</code> og så trekke fra <code>c</code>:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄a←+/n×<span class="hljs-number">0</span>=<span class="hljs-number">3</span>|n⋄b←+/n×<span class="hljs-number">0</span>=<span class="hljs-number">5</span>|n⋄c←+/n×<span class="hljs-number">0</span>=<span class="hljs-number">15</span>|n⋄a+b-c</code></pre><p>..og APL gir meg det korrekte svaret 233168.</p>
+<h2>Erfaring sålangt</h2>
+<p>Dette var mitt aller første APL program. Jeg begynte uten noen som helst kunnskap om språket, og lærte meg det jeg trengte i løpet av ca en time. All informasjonen jeg trengte fant jeg på <a href="http://aplwiki.com/LearnApl/BuiltInFunctions">APL Wiki&#39;s side om de innebygde funksjonene</a>, og jeg brukte <a href="http://tryapl.org/">tryapl.org</a> til å eksperimentere og evaluere programmet.</p>
+<p>Kanskje er jeg litt sær, men jeg synes det å lære meg APL var kjempegøy. Det er som å løse et avansert puslespill eller en logisk gåte. Det minner også litt om å kode i ren Lambda calculus (<a href="/2013/09/19/lambda-til-kaffen-del-1/">se denne bloggposten</a>), men man har litt flere byggeklosser og datatyper så man kan faktisk løse reelle problemer med språket.</p>
+<h2>Variasjoner</h2>
+<p>Her følger noen flere varianter jeg lagde av programmet mitt, som bruker litt ulike funksjoner og muligheter. Først er et hvor jeg definerer en funksjon <code>f</code>, slik at jeg unngår å repetere logikken for å summere multipler:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄f←{+/⍺×<span class="hljs-number">0</span>=⍵|⍺}⋄a←n f <span class="hljs-number">3</span>⋄b←n f <span class="hljs-number">5</span>⋄c←n f <span class="hljs-number">15</span>⋄a+b-c</code></pre><p>I stedet for å ta <code>n</code> inn som et av argumentene kan <code>f</code> bruke <code>n</code> direkte. Da blir det en mere kompakt løsning:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄f←{+/n×<span class="hljs-number">0</span>=⍵|n}⋄(f <span class="hljs-number">3</span>)+(f <span class="hljs-number">5</span>)-(f <span class="hljs-number">15</span>)</code></pre><p>Jeg kan også bruke reduksjon til å summere multippelsummen av 3 og multippelsummen av 5:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄f←{+/n×<span class="hljs-number">0</span>=⍵|n}⋄(+/f¨ <span class="hljs-number">3</span> <span class="hljs-number">5</span>) - f <span class="hljs-number">15</span></code></pre><p>Her er en interessant løsning hvor jeg &quot;innliner&quot; funksjonen. <code>m</code> blir et array med de tre summene jeg er interessert i:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄m←{+/n×<span class="hljs-number">0</span>=⍵|n}¨ <span class="hljs-number">3</span> <span class="hljs-number">5</span> <span class="hljs-number">15</span>⋄m[<span class="hljs-number">1</span>]+m[<span class="hljs-number">2</span>]-m[<span class="hljs-number">3</span>]</code></pre><p>..og om den løsningen kanskje ikke er kryptisk nok for deg så kan jeg plukke ut og slå sammen de to første summene på en litt annen måte:</p>
+<pre><code class="hljs"><span class="hljs-attribute">n</span>←⍳<span class="hljs-number">999</span>⋄m←{+/n×<span class="hljs-number">0</span>=⍵|n}¨ <span class="hljs-number">3</span> <span class="hljs-number">5</span> <span class="hljs-number">15</span>⋄(+/<span class="hljs-number">2</span>↑m)-m[<span class="hljs-number">3</span>]</code></pre><h2>Slutt aldri å lære!</h2>
+<p>For meg er det å lære en av &quot;meningene&quot; med selve livet. Og å eksperimentere med APL er absolutt synapsekspanderende. Jeg synes alle programmerere burde kjenne til og ha prøvd APL, og er du interessert i å prøve kan du enten gjøre det direkte i browseren med <a href="http://tryapl.org/">tryapl.org</a> eller du kan installere <a href="https://www.gnu.org/software/apl/">GNU APL</a>.</p>
+<p>Synes du den kryptiske syntaksen er fasinerende, men ikke er så opptatt av at språket skal ha hatt historisk betydning, kan du fortsette til min <a href="/2011/12/16/betterave/">bloggpost om programmeringsspråket betterave</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,132 @@
+---
+title: Event sourcing med s-expressions
+link: http://blog.kjempekjekt.com/2012/06/10/event-sourcing-med-s-expressions/
+layout: post
+date: 2012-06-10 23:36:49Z
+tags:
+  - Diverse prosjekter
+  - DSL
+  - Clojure
+  - Event sourcing
+---
+<p>Helt siden i september 2009 (<a href="http://blog.kjempekjekt.com/2009/09/27/greg-young-slapp-ls-domenet-sitt-p-nnug-i-bergen/">da Greg Young var på besøk i Bergen</a>) har jeg tenkt på <strong>event sourcing</strong>. Og i årene etter har dette blitt en mer og mer populær arkitektur blant de softwareutviklerne som er mest <em>cutting edge</em>. </p> <p>Men jeg har ikke bygget noe med det i tiden som har gått siden da. Å treffe Greg igjen på NDC i år har derimot stimulert meg på nytt, og her følger en blogpost som forklarer hva det går i, og som implementerer et lite eksempel.</p> <p>Blogposten er også en liten leksjon i programmeringsspråket <strong>Clojure</strong>. Eksempelet er en nedskalert begynnelse på et verktøy jeg kommer til å lage for eget bruk, og dette språket er ideelt for oppgaven. Men kunnskap om Clojure er absolutt ikke nødvendig for å henge med i det jeg gjør, alt du behøver er et åpent sinn.</p> <h3>Hva er Event Sourcing?</h3> <p>Event sourcing består av to steg:</p> <ol> <li>Man lagrer alle endringer i et system som en sekvens av hendelser.  <li>Man bygger opp igjen systemets tilstand fra disse registrerte hendelsene.</li></ol> <p><img style="background-image: none; border-right-width: 0px; margin: 10px auto; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="event_sourcing" border="0" alt="event_sourcing" src="/uploads/2012/06/event_sourcing.png" width="530" height="209"></p> <p>Se for deg hvordan en bank overfører penger fra en konto A til en konto B. De gjør <em>ikke</em> som i de typiske kodeeksemplene hvor man har en databasetransaksjon, og oppdaterer saldoen på de to kontoene i én atomisk operasjon. Nei, saldoen i banken din består av en serie med hendelser:</p> <ol> <li>Konto opprettet, saldo kr 0,-  <li>Innskudd a kr 30 000,-  <li>Overføring fra konto X a kr 560,-  <li>Betalt regning a kr 1 499,-  <li>1,1% renter effektuert  <li>Debetkort belastet kr 19.50  <li>osv...</li></ol> <p>Selv om den ikke står der eksplisitt er det enkelt å beregne saldoen.</p> <p>På grunn av at man kan bygge opp igjen systemets tilstand fra hendelsene kan man ofte klare seg uten noen annen form for lagring av tilstand. I praksis vil man nok ofte likevel lagre data i et annet format for eksempel for rapportering, og man vil også ta "snapshots" av tilstand for å slippe å kjøre gjennom hele loggen hver gang man trenger tilstand. Men rapportene og snapshotene kan når som helst forkastes og genereres på nytt fra loggen.</p> <h3>Fordelene med event sourcing</h3> <p>Fordelene med event sourcing er mange, men det kan være et komplekst tema å diskutere. Jeg har ikke mye erfaring, så jeg vil ikke gå i dybden, men her er de viktigste punktene slik jeg ser det:</p> <ul> <li>Event sourcing innebærer såkalt <strong>append only data storage</strong> – man behøver ALDRI oppdatere data. Dette løser flere problemer, spesielt knyttet til transaksjoner og samtidighet, og skrivehastigheten til systemet kan øke dramatisk. Skulle samtidighetskonflikter mellom endringer snike seg inn så er det også mye enklere å rydde opp i dem med en hendelseskø.  <li>Et system som baserer seg på event sourcing er godt tilrettelagt for testing. Man kan simulere all mulig adferd ved å sette opp en sekvens av hendelser. Og opplever man problemer i produksjon kan feilene alltid gjenskapes ved å kjøre hendelsesloggen derfra. Dette er gull!  <li>Hendelsesloggen inneholder ikke bare hvilke dataendringer som har skjedd, men eksplisitt <em>hvorfor</em> de skjedde. Meningen bak tilstandsendringene blir tatt vare på. Dette er noe som mangler i de fleste "vanlige" systemer i dag, og er verdifullt av mange grunner. En av dem er at man etter at systemet er i produksjon kan komme opp med nye måter å analysere bruken på, og så kjøre disse analysene på historiske hendelser.  <li>Og finner man en bug i systemet; da fikser man den, ruller systemet tilbake, og alle hendelsene blir registrert på nytt med den nye koden. Feil i data vil "fikse seg selv".</li></ul> <h3>Hvorfor (og hva er) s-expressions?</h3> <p>For noen år siden var XML det ultimate dataformatet. Nå føles det som om JSON er blitt vårt standard format, både for lagring og for kommunikasjon mellom tjenester. Men det har lenge funnes et annet format i denne kategorien, et format som i sin tid ble utviklet for å representere både kode og data (i form av lister og trær) i programmeringsspråket LISP. Dette er såkalte <em>symbolske uttrykk</em>, gjerne forkortet til <strong>sexprs</strong> eller <strong>sexps</strong>.</p> <p>Sexps er enkle å parse, mye mindre bråkete enn XML, og mere fleksible enn JSON. Du ser ikke mye til dette formatet utenfor Lisp-sfæren, men det er ekstremt kraftig. Hvorfor? Fordi de kan representere data og programkode på en og samme tid.</p> <p>I denne blogposten skal jeg implementere en del av et todo-program. I programmet skal man kunne opprette todo-items, flytte dem rundt mellom ulike "bøtter", markere dem som utført, slette dem, og lignende handlinger.</p> <p>Hva om jeg lar todo-programmet logge alt som skjer til en fil, og jeg logger på et format som dette:</p><pre style="background-color: #bdb">(<strong>todo-created</strong> (id t1) "Experiment with event sourcing s-expressions")
+(<strong>todo-created</strong> (id t2) "Draw some good event sourcing illustrations")
+(<strong>todo-created</strong> (id t3) "Blog about event sourcing")
+(<strong>todo-moved</strong>   (id t1) (todo-bucket today))
+(<strong>todo-moved</strong>   (id t2) (todo-bucket tomorrow))
+(<strong>todo-moved</strong>   (id t3) (todo-bucket tomorrow))
+(<strong>todo-done</strong>    (id t1))
+(<strong>todo-created</strong> (id t4) "Create an awesome todo system")
+(<strong>todo-moved</strong>   (id t4) (todo-bucket in-two-days))
+(<strong>todo-created</strong> (id t5) "Rule the World!")
+(<strong>todo-moved</strong>   (id t5) (todo-bucket later))
+(<strong>todo-deleted</strong> (id t5) (reason "Just kidding"))
+</pre>
+<p>Det du ser over er kun en tekstfil. Men loggelinjene er formatert som sexps. Altså er de gyldige Lisp-uttrykk. Hva om jeg så implementerte funksjoner som het <em>todo-created</em>, <em>todo-moved</em> osv., og så kjørte loggfilen gjennom en Lisp-tolker – f.eks. Clojure?</p>
+<p><strong>Loggen vil da ha blitt til et program skrevet i et domenespesifikt språk som gjenskaper tilstanden som hendelsene loggen er generert ut ifra en gang før skapte.</strong></p>
+<p>Det kan tenkes du bør lese den forrige setningen mer enn én gang!</p>
+<h3>En implementasjon i Clojure</h3>
+<p>Så la oss skrive litt kode som er i stand til å gjøre dette. Jeg begynner med å deklarere et navnerom, og oppretter så en variabel <strong>todos </strong>(globalt i navnerommet). Denne peker til en hash / dictionary / lookup table som vil holde programmets todo-items.</p><pre>(<font color="#0000ff">ns </font>worklog.core)
+
+<font color="#c0504d">;; Todo items are stored here</font>
+(<font color="#0000ff">def</font> <strong>todos</strong> (<font color="#0000ff">atom</font> {}))
+</pre>
+<p>Deretter begynner jeg å skrive implementasjoner for nøkkelordene i loggfilen. Jeg tar de enkleste først – dette er små makroer som transformerer symbolene de omkranser til spesifike datatyper i Clojure (henholdsvis string for id og keyword for todo-bucket). Reason, som brukes i siste linje i loggfilen, tar en streng og ikke et symbol som parameter, og returnerer den derfor bare som den er. Dette er et eksempel på en funksjon som bare eksisterer for å gjøre loggfilen mere leselig.</p><pre>(<font color="#0000ff">defmacro</font> <strong>id</strong> [id]
+  (<font color="#0000ff">str</font> id))
+
+(<font color="#0000ff">defmacro</font> <strong>todo-bucket</strong> [bucket-id]
+  (<font color="#0000ff">keyword</font> bucket-id))
+
+(<font color="#0000ff">def</font> <strong>reason</strong> <font color="#0000ff">identity</font>)
+</pre>
+<p>Og så har jeg kommet til den første seriøse funksjonen, nemlig <strong>todo-created</strong>. Parametrene er en todo-id og en todo-beskrivelse. Hvis et todo-item med gitt id allerede finnes i todos kaster den et exception. Hvis ikke legger den til et nytt objekt i en default bøtte (staging) og med default tilstand (open):</p><pre>(<font color="#0000ff">defn</font> <strong>todo-created</strong> [id description]
+  (<font color="#0000ff">if</font> (@todos id)
+    (<font color="#0000ff">throw</font> (Exception. 
+             (<font color="#0000ff">str</font> <font color="#ff0000">"Todo with id "</font> id 
+                  <font color="#ff0000">" already exist, can't create!"</font>)))
+    (<font color="#0000ff">swap!</font> todos <font color="#0000ff">assoc</font> id { :id     id
+                            :desc   description
+                            :bucket :staging
+                            :state  :open })))
+</pre>
+<p>Før jeg implementerer de resterende tre funksjonene trenger jeg en liten makro – dette er for å unngå at jeg repeterer meg selv i koden. De tre funksjonene skal nemlig oppdatere et todo-item, så da lager jeg en makro jeg kaller <strong>update-todo!</strong> som gjør det for en gitt todo-id, et feltnavn, og en verdi.</p>
+<p>Makroen kontrollerer at et todo-item med den gitte identifikatoren eksisterer, og kaster et exception hvis det ikke gjør det:</p><pre>(<font color="#0000ff">defmacro</font> <strong>update-todo!</strong> [id key val]
+  `(<font color="#0000ff">if-let</font> [todo# (@todos ~id)]
+     (<font color="#0000ff">swap!</font> todos <font color="#0000ff">assoc-in</font> [~id ~key] ~val)
+     (<font color="#0000ff">throw</font> (Exception.
+              (<font color="#0000ff">str</font> <font color="#ff0000">"Unable to find todo "</font> ~id)))))
+</pre>
+<p>OBS: Nærmere gjennomlesning fikk meg til å innse at jeg her har laget en makro helt unødvendig – dette kunne ha vært en helt vanlig funksjon. Jaja..!</p>
+<p>Når jeg har <strong>update-todo!</strong> er det trivielt å implementere funksjonene for å flytte, markere som utført, og å slette et todo-item:</p><pre>(<font color="#0000ff">defn</font> <strong>todo-moved</strong> [id bucket]
+  (update-todo! id :bucket bucket))
+
+(<font color="#0000ff">defn</font> <strong>todo-done</strong> [id]
+  (update-todo! id :state :done))
+
+(<font color="#0000ff">defn</font> <strong>todo-deleted</strong> [id _reason-ignored]
+  (update-todo! id :state :deleted))
+</pre>
+<p>Den siste funksjonen illustrerer også et case hvor loggfilen inneholder informasjon som jeg ikke behøver for å gjenskape programmets tilstand – nemlig årsaken til hvorfor et todo-item ble slettet.</p>
+<h3>På tide å laste event-historikken</h3>
+<p>Alt jeg nå trenger å gjøre for å laste todo-listen min er å laste logfilen og eksekvere den. Følgende funksjon gjør det (den er egentlig bare en wrapper som gir meg en funksjon med et litt mere spesifikt navn):</p><pre>(<font color="#0000ff">defn</font> <strong>load-events-from-file</strong> [file]
+  (<font color="#0000ff">load-file</font> file)
+  :ok)
+</pre>
+<p>Hvis jeg nå fyrer opp en REPL i terminalen min og laster DSL-koden så kan jeg kjøre funksjonen og gi den stien til loggfilen min (altså filen gjengitt i toppen av bloggposten):</p><pre style="background-color: #222; color: white; font-weight: bold"><font color="#ffc000">worklog.core=&gt;</font> (require 'worklog2.core :reload)
+nil
+<font color="#ffc000">worklog.core=&gt;</font> (load-events-from-file "./todo.log")
+:ok
+</pre>
+<h3>Å skrive ut todo-listen</h3>
+<p><strong>load-events-from-file</strong> svarer med nøkkelordet "ok". todos-variabelen vil nå inneholde todo-itemene mine. Vi kan se på innholdet direkte, men i stedet tar jeg meg tid til å vise deg litt kode jeg har skrevet for å presentere listen litt bedre.</p>
+<p>Funksjonene er små og har gode navn, så se om du klarer å skjønne hva de gjør (det kommer ingen forklaring):</p><pre><font color="#c0504d">;; Formating functions to print todo list</font>
+
+(<font color="#0000ff">defn</font> <strong>todo-state-to-str</strong> [t]
+  (<font color="#0000ff">condp</font> = (:state t)
+    :done    <font color="#ff0000">"DONE"</font>
+    :deleted <font color="#ff0000">"XXXX"</font>
+    :open    <font color="#ff0000">"    "</font>))
+
+(<font color="#0000ff">defn</font> <strong>todo-2-str</strong> [t]
+  (<font color="#0000ff">str</font> <font color="#ff0000">"  ["</font> (todo-state-to-str t)  <font color="#ff0000">"] "</font> 
+       (:desc t)))
+
+(<font color="#0000ff">defn</font> <strong>todos-for-bucket</strong> [b todos]
+  (<font color="#0000ff">filter</font> #(= (:bucket %) b) todos))
+
+(<font color="#0000ff">defn</font> <strong>bucket-to-str</strong> [b-id]
+  (<font color="#0000ff">let</font> [s (<font color="#0000ff">name</font> b-id)]
+    (<font color="#0000ff">str</font> (.toUpperCase (<font color="#0000ff">subs</font> s 0 1))
+         (.toUpperCase (<font color="#0000ff">subs</font> s 1)))))
+
+(<font color="#0000ff">defn</font> <strong>print-bucket</strong> [id todos]
+  (<font color="#0000ff">println</font> (bucket-to-str id))
+  (<font color="#0000ff">doseq</font> [t (todos-for-bucket id todos)]
+    (<font color="#0000ff">println</font> (todo-2-str t))))
+
+(<font color="#0000ff">defn</font> <strong>print-todos</strong> 
+  ([] (print-todos (<font color="#0000ff">vals</font> @todos)))
+  ([t]
+    (<font color="#0000ff">println</font> <font color="#ff0000">"--- TODO-LIST ----------------------------")</font>
+    (<font color="#0000ff">doall</font> (<font color="#0000ff">map</font> #(print-bucket % t)
+                [:today :tomorrow :in-two-days :later]))
+    'EOF))
+</pre>
+<p>Om jeg nå går tilbake til REPL'en og evaluerer funksjonen print-todos så får jeg en formatert utskrift av todo-listen min slik den ble etter at jeg lastet inn alle eventene fra todo.log:</p><pre style="background-color: #222; color: white; font-weight: bold"><font color="#ffc000">worklog.core=&gt;</font> (print-todos)
+--- TODO-LIST ----------------------------
+TODAY
+  [DONE] Experiment with event sourcing s-expressions
+TOMORROW
+  [    ] Blog about event sourcing
+  [    ] Draw some good event sourcing illustrations
+IN-TWO-DAYS
+  [    ] Create an awesome todo system
+LATER
+  [XXXX] Rule the World!
+EOF
+</pre>
+<p>Som du kan se er alle items flyttet inn i riktige bøtter, dagens todo-item er utført, og verdensherredømme er kansellert.</p>
+<h3>Konklusjon</h3>
+<p>Du har sett meg fortelle om event sourcing, som er en teknikk hvor man lagrer alle hendelser i et softwaresystem, for så å kunne gjenskape nåtilstand (eller tilstanden for et hvilket som helst tidspunkt) ved å kjøre hendelsene på nytt. Dette eliminerer mer eller mindre behovet for klassisk lagring av tilstand, og gir en rekke nye muligheter.</p>
+<p>Jo mer jeg tenker på disse mulighetene, jo mer verdifull blir denne teknikken for meg. Jeg kan f.eks. veldig enkelt lage ulike versjoner av DSL'en / parseren som utfører ulike ting basert på hendelsene i loggen. Mulighetene rundt testing, både hva angår <em>enkelhet</em> og <em>styrke</em>, er også veldig interessante.</p>
+<p>Se ikke bort ifra at jeg kommer til å begynne å logge i sexps-format overalt fremover. Du er herved advart! :D</p>

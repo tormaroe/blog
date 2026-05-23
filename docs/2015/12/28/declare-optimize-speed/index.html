@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Ytelse">
+
+    <title>Optimalisering og gradvis typing i Common Lisp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Optimalisering og gradvis typing i Common Lisp</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 28. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/ytelse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ytelse</span></a>
+          </p>
+          <img src="/uploads/2015/12/performance.png" alt="Kjøretidsforbedringer" />
+
+<p>I boken <em><a href="http://norvig.com/paip.html">Paradigms of Artificial Intelligence Programming</a></em> presenterer Peter Norvig seks ulike teknikker for mikrooptimalisering av kode som skviser mer ytelse ut av Common Lisp.</p>
+<p>Norvig sier at man kan få bedre ytelse om man unngår generiske funksjoner, unngår funksjoner med komplekse parameterlister, og unngår unødvendig <em><a href="http://stackoverflow.com/questions/2256261/why-is-consing-in-lisp-slow">consing</a></em> (minneallokering). Han foreslår å bruke mere optimale datastrukturer (som hashtabell i stedet for association list), og han foreslår å bruke makroer for å kompilere for å flytte deler av kompleksiteten fra runtime til compile time.</p>
+<p>Men tipset jeg skal se nærmere på i denne artikkelen er å bruke det Common Lisp kaller <strong>deklarasjoner</strong>. Vi bruker <code>declare</code> til å gi Lisp instruksjoner om hvordan den skal kompilere koden vår.</p>
+<h2>Løpe i trapper</h2>
+<p>Oppgaven jeg vil løse og så optimalisere denne gangen er hentet fra luke 19 i Knowit sin julekalender for utviklere. Oppgaven lød:</p>
+<blockquote>
+<p>Et barn løper opp en trapp med 30 trinn, 
+og kan ta enten ett, to eller tre steg 
+omgangen. Hvor mange ulike måter kan 
+barnet løpe opp trappen?</p>
+</blockquote>
+<p>Jeg skal etterhvert implementere syv varianter av en rekursiv løsning på dette problemet, og hver gang skreller vi av litt av kjøretiden. Her er en utlisting av mine målinger: </p>
+<pre><code class="hljs">* (<span class="hljs-built_in">load</span> <span class="hljs-string">&quot;oppgave19&quot;</span>)
+
+<span class="hljs-number">53798080</span> returned <span class="hljs-keyword">in</span> <span class="hljs-number">1.563</span> <span class="hljs-built_in">seconds</span> <span class="hljs-keyword">by</span> (WALK-STEPS<span class="hljs-number">-1</span> <span class="hljs-number">30</span> <span class="hljs-number">0</span>).
+<span class="hljs-number">53798080</span> returned <span class="hljs-keyword">in</span> <span class="hljs-number">1.496</span> <span class="hljs-built_in">seconds</span> <span class="hljs-keyword">by</span> (WALK-STEPS<span class="hljs-number">-2</span> <span class="hljs-number">30</span>).
+<span class="hljs-number">53798080</span> returned <span class="hljs-keyword">in</span> <span class="hljs-number">0.863</span> <span class="hljs-built_in">seconds</span> <span class="hljs-keyword">by</span> (WALK-STEPS<span class="hljs-number">-2</span>B <span class="hljs-number">30</span>).
+<span class="hljs-number">53798080</span> returned <span class="hljs-keyword">in</span> <span class="hljs-number">0.644</span> <span class="hljs-built_in">seconds</span> <span class="hljs-keyword">by</span> (WALK-STEPS<span class="hljs-number">-2</span>C <span class="hljs-number">30</span>).
+<span class="hljs-number">53798080</span> returned <span class="hljs-keyword">in</span> <span class="hljs-number">0.350</span> <span class="hljs-built_in">seconds</span> <span class="hljs-keyword">by</span> (WALK-STEPS<span class="hljs-number">-3</span> <span class="hljs-number">30</span>).
+<span class="hljs-number">53798080</span> returned <span class="hljs-keyword">in</span> <span class="hljs-number">0.168</span> <span class="hljs-built_in">seconds</span> <span class="hljs-keyword">by</span> (WALK-STEPS<span class="hljs-number">-3</span>B <span class="hljs-number">30</span>).
+<span class="hljs-number">53798080</span> returned <span class="hljs-keyword">in</span> <span class="hljs-number">0.124</span> <span class="hljs-built_in">seconds</span> <span class="hljs-keyword">by</span> (WALK-STEPS<span class="hljs-number">-3</span>C <span class="hljs-number">30</span>).</code></pre><p>Som du kan se oppnår jeg en reduksjon i kjøretiden fra værste til beste på 92%.</p>
+<h2>Første forsøk</h2>
+<p>Her er min orginale løsning som jeg brukte til å svare på kalenderoppgaven fra Knowit:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> walk-steps-1 (<span class="hljs-name">s</span> acc)
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">zerop</span> s)
+    (<span class="hljs-name">1+</span> acc) <span class="hljs-comment">; End of stairs reached, count now!</span>
+    (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">walk-steps-1</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">1</span>) acc)
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> s <span class="hljs-number">2</span>) (<span class="hljs-name">walk-steps-1</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">2</span>) acc) <span class="hljs-number">0</span>)
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> s <span class="hljs-number">3</span>) (<span class="hljs-name">walk-steps-1</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">3</span>) acc) <span class="hljs-number">0</span>))))</code></pre><p>Det jeg gjør her er å rekursivt utforske treet av alle mulige måter å gå på. Hvis det bare er ett trinn igjen å gå så har vi bare én kombinasjon. Ellers må vi summere kombinasjonene for ett trinn, to trinn og tre trinn (gitt at vi har så mange trinn).</p>
+<p>Løsningen ble funnet på drøye 1,5 sekunder.</p>
+<h2>Akkumuleringsvariabel unødvendig</h2>
+<p>Etter å ha levert løsningen oppdaget jeg at å bruke en akkumuleringsvariabel (<code>acc</code>) faktisk var helt unødvendig; det var nok en kombinasjon av vane og tidspress som gjorde at jeg brukte det.</p>
+<p>Jeg kan enkelt fjerne <code>acc</code>, som gjør funksjonen litt enklere:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> walk-steps-2 (<span class="hljs-name">s</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">zerop</span> s)
+    <span class="hljs-number">1</span> <span class="hljs-comment">; End of stairs reached, count now!</span>
+    (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">walk-steps-2</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">1</span>))
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> s <span class="hljs-number">2</span>) (<span class="hljs-name">walk-steps-2</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">2</span>)) <span class="hljs-number">0</span>)
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> s <span class="hljs-number">3</span>) (<span class="hljs-name">walk-steps-2</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">3</span>)) <span class="hljs-number">0</span>))))</code></pre><p>Denne endringen skrelte bort ca 5% av kjøretiden. Ikke mye, men det er en begynnelse. </p>
+<h2>Deklarer parametertypen</h2>
+<p>Nå skal vi forsøke å bruke <code>declare</code>, som vil la oss fortelle kompilatoren at argumentet <code>s</code> er av typen <code>fixnum</code> - dvs. en integer mellom -536870912 og 536870911 (i Common Lisp-implementasjonen jeg bruker).</p>
+<p>Jeg legger til én linje i funksjonen min:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> walk-steps-2b (<span class="hljs-name">s</span>)
+  (<span class="hljs-name">declare</span> (<span class="hljs-name">fixnum</span> s))
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">zerop</span> s)
+    <span class="hljs-number">1</span> <span class="hljs-comment">; End of stairs reached, count now!</span>
+    (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">walk-steps-2b</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">1</span>))
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> s <span class="hljs-number">2</span>) (<span class="hljs-name">walk-steps-2b</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">2</span>)) <span class="hljs-number">0</span>)
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> s <span class="hljs-number">3</span>) (<span class="hljs-name">walk-steps-2b</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">3</span>)) <span class="hljs-number">0</span>))))</code></pre><p>Denne teknikken gir oss altså muligheten for å gradvis tilføre statisk typing, der hvor det gir fordeler...</p>
+<p>..og fordelen vi oppnår i dette tilfellet er en ytelsesforbedring på ytterligere 42%. Nå snakker vi!</p>
+<h2>Optimaliser for ytelse</h2>
+<p>Men vi kan bruke <code>declare</code> til flere ting; vi kan fortelle kompilatore hva vi ønsker den skal optimalisere for: <em>kompileringshastighet, debuggingsfasiliteter, runtime error checking, minnebruk, eller kjøretidsytelse</em>.</p>
+<p>La oss prøve å si at vi vil optimalisere for hastighet, og samtidig at vi <em>gir beng</em> i sikkerhet:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> walk-steps-2c (<span class="hljs-name">s</span>)
+  (<span class="hljs-name">declare</span> (<span class="hljs-name">optimize</span> speed (<span class="hljs-name">safety</span> <span class="hljs-number">0</span>)))
+  (<span class="hljs-name">declare</span> (<span class="hljs-name">fixnum</span> s))
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">zerop</span> s)
+    <span class="hljs-number">1</span> <span class="hljs-comment">; End of stairs reached, count now!</span>
+    (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">walk-steps-2c</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">1</span>))
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> s <span class="hljs-number">2</span>) (<span class="hljs-name">walk-steps-2c</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">2</span>)) <span class="hljs-number">0</span>)
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> s <span class="hljs-number">3</span>) (<span class="hljs-name">walk-steps-2c</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">3</span>)) <span class="hljs-number">0</span>))))</code></pre><p>Dette skreller av enda 25% av kjøretiden - de to deklarasjonene kombinert reduserer nå tiden med totalt 57%. Når vi snakker om mikrooptimalisering (uten å endre logikken) så er det et ganske så bra resultat.</p>
+<h2>Smartere rekursjon</h2>
+<p>Men nå har jeg fått blod på tann, og jeg har fått lyst til å se hvor mye jeg klarer å forbedre løsningen. Ved å endre litt på rekursjonen kan jeg skvise ut enda mer ytelse.</p>
+<p>Jeg baserer meg på at jeg vet hvor mange kombinasjoner to og tre trappetrinn utgjør, og unngår mange rekursive funksjonskall ved å hardkode løsningene for <code>s</code> mindre enn eller lik 3.</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> walk-steps-3 (<span class="hljs-name">s</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">cond</span></span>
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">0</span>) <span class="hljs-number">1</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">1</span>) <span class="hljs-number">1</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">2</span>) <span class="hljs-number">2</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">3</span>) <span class="hljs-number">4</span>)
+    (<span class="hljs-name">t</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">walk-steps-3</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">1</span>))
+          (<span class="hljs-name">walk-steps-3</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">2</span>))
+          (<span class="hljs-name">walk-steps-3</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">3</span>))))))</code></pre><p>Mens den orginale løsningen gjorde nesten 118 millioner funksjonskall gjør denne nye løsningen knappe 31 millioner. Det utgjør en reduksjon i kjøretiden på mer enn 76%.</p>
+<p>Om vi så bruker de samme deklarasjonene som tidligere så blir det enda bedre:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> walk-steps-3b (<span class="hljs-name">s</span>)
+  (<span class="hljs-name">declare</span> (<span class="hljs-name">optimize</span> speed (<span class="hljs-name">safety</span> <span class="hljs-number">0</span>)))
+  (<span class="hljs-name">declare</span> (<span class="hljs-name">fixnum</span> s))
+  (<span class="hljs-name"><span class="hljs-built_in">cond</span></span>
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">0</span>) <span class="hljs-number">1</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">1</span>) <span class="hljs-number">1</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">2</span>) <span class="hljs-number">2</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">3</span>) <span class="hljs-number">4</span>)
+    (<span class="hljs-name">t</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">walk-steps-3b</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">1</span>))
+          (<span class="hljs-name">walk-steps-3b</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">2</span>))
+          (<span class="hljs-name">walk-steps-3b</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">3</span>))))))</code></pre><p>Vi har nå redusert den orginale kjøretiden med nesten 90%. Men vi har en typedeklerasjon til vi kan forsøke.. </p>
+<h2>Deklarer returtype</h2>
+<p>Common Lisp har en operator som kalles <code>the</code>. Den kan brukes til å si ting som <code>(the fixnum (+ 5 7))</code>, som da er en garanti til kompilatoren at resultatet av 5 pluss 7 vil være et fixnum.</p>
+<p>La oss forsøke å garantere at resultatet av vår summeringsoperasjon er et fixnum:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> walk-steps-3c (<span class="hljs-name">s</span>)
+  (<span class="hljs-name">declare</span> (<span class="hljs-name">optimize</span> speed (<span class="hljs-name">safety</span> <span class="hljs-number">0</span>)))
+  (<span class="hljs-name">declare</span> (<span class="hljs-name">fixnum</span> s))
+  (<span class="hljs-name"><span class="hljs-built_in">cond</span></span>
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">0</span>) <span class="hljs-number">1</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">1</span>) <span class="hljs-number">1</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">2</span>) <span class="hljs-number">2</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> s <span class="hljs-number">3</span>) <span class="hljs-number">4</span>)
+    (<span class="hljs-name">t</span> (<span class="hljs-name">the</span> fixnum 
+         (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">walk-steps-3c</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">1</span>))
+            (<span class="hljs-name">walk-steps-3c</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">2</span>))
+            (<span class="hljs-name">walk-steps-3c</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> s <span class="hljs-number">3</span>)))))))</code></pre><p>Dette gir alene en 26% reduksjon i kjøretid, som er ganske utrolig, og totalt har vi nå oppnådd 92% reduksjon.</p>
+<h2>Benchmarking</h2>
+<p>Profilering er essensielt når man driver med ytelsesforbedringer - aldri forsøk uten! For å måle kjøretiden til de ulike funksjonene mine har jeg laget en makro jeg har kalt <code>benchmark</code>. Den bruker <code>get-internal-real-time</code> til å se hvor mange millisekunder som brukes på en vilkårlig operasjon, og rappoerterer dette.</p>
+<pre><code class="hljs">(<span class="hljs-keyword">defmacro</span> <span class="hljs-title">benchmark</span> (<span class="hljs-name">expr</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">start</span> (<span class="hljs-name"><span class="hljs-built_in">gensym</span></span>)) 
+        (<span class="hljs-name">end</span> (<span class="hljs-name"><span class="hljs-built_in">gensym</span></span>))
+        (<span class="hljs-name">result</span> (<span class="hljs-name"><span class="hljs-built_in">gensym</span></span>)))
+    `(<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-punctuation">,</span>start (<span class="hljs-name">get-internal-real-time</span>))
+           (<span class="hljs-punctuation">,</span>result <span class="hljs-punctuation">,</span>expr)
+           (<span class="hljs-punctuation">,</span>end (<span class="hljs-name">get-internal-real-time</span>)))
+       (<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;~&amp;~a returned in ~,3f seconds by ~a.~%&quot;</span>
+          <span class="hljs-punctuation">,</span>result 
+          (/ (<span class="hljs-name"><span class="hljs-built_in">-</span></span> <span class="hljs-punctuation">,</span>end <span class="hljs-punctuation">,</span>start) <span class="hljs-number">1000.0</span>)
+          (<span class="hljs-name"><span class="hljs-built_in">quote</span></span> <span class="hljs-punctuation">,</span>expr)))))</code></pre><p>Nå kan vi teste funksjonene på denne måten:</p>
+<pre><code class="hljs">(<span class="hljs-name">benchmark</span> (<span class="hljs-name">walk-steps-1</span> <span class="hljs-number">30</span> <span class="hljs-number">0</span>))
+(<span class="hljs-name">benchmark</span> (<span class="hljs-name">walk-steps-2</span> <span class="hljs-number">30</span>))
+(<span class="hljs-name">benchmark</span> (<span class="hljs-name">walk-steps-2b</span> <span class="hljs-number">30</span>))
+(<span class="hljs-name">benchmark</span> (<span class="hljs-name">walk-steps-2c</span> <span class="hljs-number">30</span>))
+(<span class="hljs-name">benchmark</span> (<span class="hljs-name">walk-steps-3</span> <span class="hljs-number">30</span>))
+(<span class="hljs-name">benchmark</span> (<span class="hljs-name">walk-steps-3b</span> <span class="hljs-number">30</span>))
+(<span class="hljs-name">benchmark</span> (<span class="hljs-name">walk-steps-3c</span> <span class="hljs-number">30</span>))</code></pre><p>Og resultatet så du i starten av artikkelen.</p>
+<h2>Oppsummering</h2>
+<p>Som jeg har demonstrert kan deklarasjoner i Common Lisp gi en stor ytelsesforbedring. Som regel er Common Lisp mer enn raskt nok, men når man faktisk trenger å presse ned kjøretiden er det greit å vite at man har denne muligheten.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

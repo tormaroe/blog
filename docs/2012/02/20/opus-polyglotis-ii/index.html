@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Diverse prosjekter,Polyglot">
+
+    <title>Opus Polyglotis II</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Opus Polyglotis II</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 20. februar 2012</small> 
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          </p>
+          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 15px 10px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="introductio" border="0" alt="introductio" align="left" src="/uploads/2012/02/introductio.png" width="142" height="111">For halvannet år siden lagde jeg <a href="/2010/09/04/ping-ring-del-1-introduksjon/">en blogserie jeg kalte <em>Ping Ring</em></a>, hvor jeg implementerte ett og samme program i en rekke forskjellige språk. Nå har jeg tenkt å gjøre det samme igjen; dette er mitt Opus Polyglotis del II.</p>
+<p>Det jeg vil forsøke denne gangen er å implementere et program hvor jeg får brukt mange forskjellige elementer som kan være viktige for en som vil starte med språket. Alle implementasjonene vil inneholde:</p>
+<ul style="margin-left: 30px">
+<li>Bruk av kommandolinje-parametre
+<li>Lesing og parsing av en semikolonseparert&nbsp; fil
+<li>En eller annen form for looping
+<li>Konstruksjon og manipulasjon av strenger
+<li>Bruke av regulære uttrykk eller tilsvarende
+<li>Dispatch mellom ulike strategier
+<li>Og selvfølgelig utskrift til konsollet</li>
+</ul>
+<p>Jeg vil i større grad enn sist gang forsøke å vise ulike måter å designe en løsning på. Målet er ikke så mye det å sammenligne språkene, men å utforske ulike løsningsmodeller. I tillegg bør programmene kunne fungere som praktiske og reelle (men likevel korte og overkommelige) nybegynner-eksempler for hvert av språkene. Derfor vil jeg i så stor grad som mulig forsøke å følge <em><a href="http://en.wikipedia.org/wiki/Programming_idiom">idiomene</a></em> som finnes i språket.</p>
+<h4>Hva skal programmet gjøre?</h4>
+<p>Programmet jeg skal lage skal formatere data fra ett format til et annet. Det tar to parametre: første parameter avgjør output-format og andre parameter er stien til en CSV-fil som skal leses og transformeres. Formatene som skal støttes er JSON og XML. I bildet nedenfor ser du hvordan formatene ser ut.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="formats" border="0" alt="formats" src="/uploads/2012/02/formats.png" width="496" height="299"></p>
+<p>Jeg har ingen planer om å gjøre programmet ufeilbarlig eller 100% robust, men jeg skal håndtere et par spesialtilfeller. I CSV-filen kan du legge merke til at tekstverdier kan være omsluttet av hermetegn, men kun må være det om teksten inneholder semikolon. Legg også merke til at JSON-formatet skiller mellom tekst og tall, og at programmet må støtte desimaltall.</p>
+<p>Et av hovedfokusene er å vise ulike måter å implementere ulike strategier på. Programmet bør være enkelt å utvide med flere strategier (dvs. flere output-formater). For å illustrere dette skal programmet også godta et tredje format (YAML), men svare med at det ikke er implementert enda.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="flow" border="0" alt="flow" src="/uploads/2012/02/flow.png" width="462" height="268"></p>
+<p>Det er altså ikke et veldig komplisert program dette her, men spennende nok til at det kan gi verdi både til meg selv og mine lesere. Så da håper jeg du har lyst til å følge med.., gjør deg klar for første akt!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

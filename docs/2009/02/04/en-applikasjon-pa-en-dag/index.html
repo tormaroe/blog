@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Diverse prosjekter,Jobb,Webutvikling">
+
+    <title>En applikasjon på en dag</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En applikasjon på en dag</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 4. februar 2009</small> 
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          
+            <a href="/tags/jobb"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Jobb</span></a>
+          
+            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+          </p>
+          <p>Av og til er det herlig å bare gjøre et <u>veldig lite</u> utviklingsprosjekt. Man får en ide eller en forespørsel, lar tanken modnes i en dag eller to, og så implementerer man løsningen på ca en arbeidsdag. Jeg har nettopp gjort et slikt prosjekt, hvor jeg utviklet et internt verktøyt på jobben for å samle kunnskap om feilsituasjoner knyttet til utvikling, installasjon og support av produktene våre.</p>
+<p><strong>ContikiException</strong> er en meget enkel web app for registrering av kjente feilmeldinger med mulige løsninger. Det var Halvard (fra <a href="/2008/03/26/har-startet-open-source-prosjekt/">The Forecast Exchange</a>) som kom frem til at vi hadde et behov for dette verktøyet, og gav meg lysten til å gjøre det.</p>
+<p align="center"><img id="image412" alt="ContikiExceptionSmaller.png" src="/uploads/2009/02/ContikiExceptionSmaller.png" /></p>
+<p>Det fine med slike småprosjekter er at de fungerer som ideelle "prøvefelt" for nye verktøy og teknikker. Man kan teste ut nesten hva som helst når det meste man kan tape er én dags arbeid. Denne gangen valgte jeg å droppe relasjonsdatabase, og brukte i stedet en objectdatabase som heter <a href="http://www.db4o.com/">db4objects</a>. Jeg bruker denne teknologien på et par andre prosjekter også, men ingenting som er ferdig enda.</p>
+<p>I slutten av måneden skal jeg holde et innlegg på <a href="http://nnug.no/Avdelinger/Bergen/">NNUG i Bergen</a> om objectdatabaser, og hva vi .net utviklere kan bruke dem til.</p>
+<p>I tillegg har jeg så smått begynt å bruke <a href="http://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> i prosjektene mine; i ContikiException brukte jeg <a href="http://ninject.org/">ninject</a>. Ninject skryter av å være en ultrarask lettvekter, og i stedet for å basere seg på XML-konfigurasjon som mange av de andre DI rammeverkene bruker ninject et såkalt <em>fluent interface</em>. Dette betyr at det er enklere å sette opp avhengighetene - det er i alle fall mitt inntrykk, selv om jeg ikke har mye erfaring. I tillegg kan man dra nytte av <strong>code completion</strong> og <strong>type-safety</strong> - noe som i alle fall er et stort pluss.</p>
+<p>Dokumentasjoen sier dessuten at <em>"Ninject makes your application more ninja-like"</em>, så da er det uansett det naturlige valget for meg :)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

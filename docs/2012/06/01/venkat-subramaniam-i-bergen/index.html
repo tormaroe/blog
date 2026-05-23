@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="NNUG">
+
+    <title>Venkat Subramaniam i Bergen</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Venkat Subramaniam i Bergen</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 1. juni 2012</small> 
+            <a href="/tags/nnug"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> NNUG</span></a>
+          </p>
+          <p>I går fikk utviklerne i Bergen besøk av den berømte og populære foreleseren <a href="https://twitter.com/venkat_s">Venkat Subramaniam</a>. Programmerere fra NNUG og JavaBin samlet seg for å høre Venkat fortelle og demonstrere sine erfaringer om hvordan man skriver kode som trenger <a href="http://en.wikipedia.org/wiki/Thread_safety">thread safety</a> på en testdrevet måte.</p>
+<p>Jeg har hørt mye bra om Venkat, og han levde opp til forventningene; har var morsom og engasjerende, og hadde sterke meninger. Under hele kvelden byttet han mellom å demonstrere med Java og med C#, og det behersket han også bra.</p>
+<p><img style="background-image: none; border-right-width: 0px; margin: 20px auto; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="venkat" border="0" alt="venkat" src="/uploads/2012/06/venkat.jpg" width="404" height="377"></p>
+<p>Venkat viste en spennende teknikk for å skrive tester som forsikrer at man bruker locking på riktig måte. Han brukte teknikker jeg og flere andre har brukt for å løse andre problemer, men å se hvordan de kan løse utfordringen med å garantere korrekt synkronisering av parallel kode var interessant. Foredraget var likevel ikke det jeg hadde forventet.</p>
+<p>Jeg hadde nemlig et lite håp om å få presentert en løsning på hvordan man kan teste kode for å finne ut <em>når</em> man trenger locking. Hvordan man kan luke ut <a href="http://en.wikipedia.org/wiki/Heisenbug">Heisenbugs</a>. En slik <em>silver bullet</em> finnes selvsagt ikke, selv om jeg (i motsetning til Venkat) har tro på at produkter som <a href="http://research.microsoft.com/en-us/projects/CHESS/">CHESS fra Microsoft Research</a> kan komme til å bli nyttige.</p>
+<p><img style="background-image: none; border-right-width: 0px; margin: 20px auto; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="berge_aadland" border="0" alt="berge_aadland" src="/uploads/2012/06/berge_aadland.jpg" width="404" height="314"></p>
+<p>På slutten av kvelden delte vi også ut en Golden Ticket til NDC 2012. Det var flere som hadde lyst til å dra, men som ikke hadde fått mulighet til å dra på konferansen i år. Den heldige vinneren - som vil være å se i Oslo neste uke, og som der vil kunne få med seg flere foredrag av Venkat - ble Berge Aadland. Gratulerer!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

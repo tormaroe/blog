@@ -1,0 +1,25 @@
+---
+title: Reflector med add-ins
+link: http://blog.kjempekjekt.com/2007/03/28/reflector-med-add-ins/
+layout: post
+date: 2007-03-28 08:53:07Z
+tags:
+  - Software/verktøy
+---
+Jeg har lenge brukt <a href="http://www.aisto.com/roeder/dotnet/" target="_blank">Lutz Roeder's .NET Reflector</a>, et gratis verktøy som lar deg se på klassene i en .NET assembly, analysere dem for avhengigheter og dekompilere dem - det vil si at den gir deg kildekoden, i det .NET språket du måtte ønske. Jeg har først og fremst brukt det til å studere assemblies hvor jeg ikke har kildekoden.
+
+Jeg har derimot ikke vært klar over at det finnes en haug med add-ins til Reflector. Nå har jeg installer noen av dem, og verktøyets bruksområder har økt enormt.
+<p align="center"><img id="image205" alt="reflector.jpg" src="/uploads/2007/03/reflector.jpg" /></p>
+I bildet over ser du hvordan min Reflector ser ut for øyeblikket. Til venstre er treet hvor man kan browse assemblies, namespaces, klasser og funksjoner. Øverst til høyre er dekompileringsvinduet hvor man ser kildekoden.
+
+Men under kodevinduet har jeg etter at jeg installerte <strong>CodeMetrics</strong> modulen fått et nytt vindu. Her har jeg kjørt en analyse på en av assembliene, og får opp en haug med viktige parametre som f.eks. cyclomatisk kompleksitet, og jeg kan velge mellom å se på klasser, funksjoner eller hele modulen. I tillegg får jeg en grafisk visning over klassene som rask viser meg hvor det er høyest kompleksitet (de grønne boksene).
+
+I tillegg har jeg installert en modul som heter <strong>Review</strong>, synlig nederst i bildet. Her kan jeg skrive kommentarer etterhvert som jeg finner kode med høy kompleksitet som jeg mener må refaktureres. Etterpå kan jeg bruke review'ene til å navigere til de aktuelle funksjonene. Totalt er dette nå blitt et fantastisk verktøy for å kjøre code reviews, både alene og sammen med andre utviklere.
+
+Det finnes også andre, nyttige add-ins som f.eks. <strong>Doubler</strong>, som kan generere testklasser, stubs og wrappers for ulike unittest rammeverk, eller <strong>Graph</strong>, som gir deg et grafisk diagram over modulene dine. Den fullstendige add-inn listen finner du på <a href="http://www.codeplex.com/reflectoraddins" target="_blank">www.codeplex.com/reflectoraddins</a>.
+
+Til slutt bare en liten ting til jeg fant ut i går...
+
+Man kan administrere flere, lagrede lister med assemblies, slik at man slipper å laste dem inn manuelt hver gang man starter verktøyet (om man bruker det til å se på ulike sett med assemblies). Da bruker man <em>File>Open List</em> funksjonen. Man kan forøvrig også lagre ulike review-filer knyttet til de ulike listene.
+
+Har du et seriøst forhold til koden din så er Reflector nærmest et påkrevd verktøy. Genialt enkelt og ganske enkelt genialt!

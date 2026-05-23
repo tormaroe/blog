@@ -1,0 +1,24 @@
+---
+title: "Nytt prosjekt: SharpBrain"
+link: http://blog.kjempekjekt.com/2009/10/05/nytt-prosjekt-sharpbrain/
+layout: post
+date: 2009-10-05 09:55:30Z
+tags:
+  - Diverse prosjekter
+  - Spill
+---
+Jeg begynte et nytt hobbyprosjekt i helgen – et 2D brettspill i WPF jeg har valgt å kalle <strong>SharpBrain</strong>, eller <strong>#Brain</strong> om du vil. Denne gangen tror jeg at jeg har et brukbart konsept, og at det vil være noe jeg kan fullføre. Her er et foreløpig screenshot – en del av grunnlogikken ble ganske raskt klar, men den eneste visuelle sålangt er selve spillbrettet:
+
+<img style="display: block; float: none; margin-left: auto; margin-right: auto; border-width: 0px;" title="CropperCapture[39]" src="/uploads/2009/10/CropperCapture39.png" alt="CropperCapture[39]" width="500" height="273" border="0" />
+
+SharpBrain vil i utgangspunktet bli et ganske enkelt spill mellom to eller flere "styrker" plassert på et hexagonalt rutenett. Styrken din vokser for hver runde, og man kan spre styrkene ved å bevege seg rundt og angripe/konsumere andre styrker. Det mest interessante i Sharpbrain vil derimot bestå av diverse "pluggable" moduler:
+
+-- For det første vil spillet vil ha et utvidbart sett med <strong><em>game actions</em></strong> – handlinger spilleren kan utføre når det er hans tur. Den grunnleggende handlinger er <em>move</em>, men vil bli utvidet med diverse andre, som <em>teleport</em>, <em>shoot</em>, <em>shield</em>, <em>explode</em>, etc. De ulike handlingene kan ha ulike <em>conditions </em>som gjør at de blir tilgjengelige.
+
+-- Sharpbrain vil også kunne endre karakter ganske drastisk gjennom et sett med <strong><em>game rules</em></strong>. Tanken er at dette skal være moduler som kjøres for hver celle etter hver spillers tur, og kan gi spilleren ulike fordeler eller ulemper basert på spillets gang, hvor mange styrker spilleren har i den bestemte cellen o.l.
+
+-- Videre vil jeg implementere ulike <strong><em>game judges</em></strong>, som avgjør hvordan man vinner spillet. Et scenario vil for eksempel være at man skal utslette alle andre styrker. Et annet kan være at man skal okkupere en eller flere predefinerte celler i en eller flere runder.., et slags <em>"capture and hold"</em> modus.
+
+-- Til slutt vil jeg implementere ulike <strong><em>AI'er</em></strong>, sånn at man kan spille mot maskinen, som kan benytte ulike strategier for å forsøke å slå deg. Jeg tror dette kan bli den mest utfordrende delen av utviklingen – selv om spillet i utgangspunktet er ganske enkelt, så åpner det opp for ekstremt mange muligheter i løpet av spillets gang – ikke minst når man legger til flere actions, rules og judges. Drømmen er at folk får lyst til å bidra med utvidelser når jeg er ferdig med grunnimplementasjonen av spillet. Jeg skal i alle fall sørge for å gjøre det relativt enkelt å legge til ny plug-ins. Dessuten vet jeg at det er mange som har sansen for å lage AI's, og dette vil kunne bli en brukbar plattform for å kjøre <em>"robot battles"</em> mellom dem. Kanskje kunne jeg lagt opp muligheten for å lage AI's i IronRuby og IronPython – det hadde vært konge!
+
+Følg med fremover på hvordan dette (forhåpentligvis) utvikler seg..

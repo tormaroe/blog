@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Ruby,Testing,BDD">
+
+    <title>En agurktest</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En agurktest</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 24. februar 2010</small> 
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          
+            <a href="/tags/testing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing</span></a>
+          
+            <a href="/tags/bdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> BDD</span></a>
+          </p>
+          <p>Om du ikke har levd under en stein det siste året så har sansynligvis hørt om Aslak Hellesøys <strong><a href="http://cukes.info/">Cucumber</a>.</strong></p>
+<p style="padding-left: 15px"><em>"Cucumber lets software development teams describe how software should behave in plain text. The text is written in a </em><a href="http://www.martinfowler.com/bliki/BusinessReadableDSL.html"><em>business-readable domain-specific language</em></a><em> and serves as documentation, automated tests and development-aid - all rolled into one format.<strong>"</strong></em></p>
+<p style="padding-left: 15px"><em>"Cucumber works with Ruby, Java, .NET, Flex or web applications written in any language. It has been translated to over 30 spoken languages.<strong>"</strong></em></p>
+<p>Men du har kanskje ikke testet det selv? Jeg tenkte derfor jeg kunne gjøre en rask demonstrasjon ved å skrive en akseptansetest for tjenesten jeg lagde i blogpostene om <a href="/2010/02/18/en-minimal-http-server-i-net/">en minimal http-server i .Net</a> / <a href="/2010/02/22/en-minimal-http-server-i-ruby/">Ruby</a>. Normalt vil man selvsagt beskrive featurene først, og så implementere dem og bruke cucumber til å bevise at de fungerer, men for enkelhets skyld tester jeg her altså min eksisterende tjeneste. Det spiller forøvrig ingen rolle om jeg tester .Net-varianten eller Ruby-varianten – jeg vil la akseptansetesten aksessere tjenesten direkte over http, og da er jo grensesnittet uansett det samme.</p>
+<p>Det første jeg må gjøre er å beskrive tjenesten i form av en feature med tilhørende scenarier. Virker dette litt gresk anbefaler jeg at du leser deg litt opp på <a href="http://behaviour-driven.org/">Behaviour-Driven Development</a> (BDD).</p>
+<div style="margin-bottom: 15px"><font face="monospace">File: features\add_service.feature:<br />
+<div style="background-color: #000000; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">1 </font></span>Feature: Add-service<br><span style="background-color: #000000"><font color="#3d3d3d">2 </font></span>  In order to save cycles on client CPUs<br><span style="background-color: #000000"><font color="#3d3d3d">3 </font></span>  As an IT manager<br><span style="background-color: #000000"><font color="#3d3d3d">4 </font></span>  I want a central server that can add numbers<br><span style="background-color: #000000"><font color="#3d3d3d">5 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">6 </font></span>  Scenario: Add a string of numbers<br><span style="background-color: #000000"><font color="#3d3d3d">7 </font></span>    When I send 9,11,33,100 to the add service<br><span style="background-color: #000000"><font color="#3d3d3d">8 </font></span>    Then the response should be "The answer is 153"<br><span style="background-color: #000000"><font color="#3d3d3d">9 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">10 </font></span>  Scenario: Add a single number<br><span style="background-color: #000000"><font color="#3d3d3d">11 </font></span>    When I send 1 to the add service<br><span style="background-color: #000000"><font color="#3d3d3d">12 </font></span>    Then the response should be "The answer is 1"<br></div>
+<p></font></div>
+<p>Feature-filen er input til cucumber, som vil analysere stegene i scenariene og forsøke å eksekvere dem. Men foreløpig skjønner cucumber lite, så vi må skrive litt kode for å definere stegene.</p>
+<div style="margin-bottom: 15px"><font face="monospace">File: features\add_service_steps.rb:<br />
+<div style="background-color: #000000; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">1 </font></span><font color="#96cbfe">require</font> <font color="#336633">'</font><font color="#a8ff60">open-uri</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">2 </font></span><font color="#96cbfe">require</font> <font color="#336633">'</font><font color="#a8ff60">spec/expectations</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">3 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">4 </font></span><font color="#ffffb6">When</font> <font color="#ff8000">/</font><font color="#b18a3d">I send </font><font color="#e18964">(</font><font color="#e18964">.</font><font color="#e18964">*</font><font color="#e18964">)</font><font color="#b18a3d"> to the </font><font color="#e18964">(</font><font color="#e18964">.</font><font color="#e18964">*</font><font color="#e18964">)</font><font color="#b18a3d"> service</font><font color="#ff8000">/</font> <font color="#6699cc">do</font> |<font color="#c6c5fe">argument</font>, <font color="#c6c5fe">service</font>|<br><span style="background-color: #000000"><font color="#3d3d3d">5 </font></span>  open(<font color="#336633">"</font><font color="#a8ff60"><a href="http://127.0.0.1:4567/">http://127.0.0.1:4567/</a></font><font color="#00a0a0">#{</font>service<font color="#00a0a0">}</font><font color="#a8ff60">?</font><font color="#00a0a0">#{</font>argument<font color="#00a0a0">}</font><font color="#336633">"</font>) <font color="#6699cc">do</font> |<font color="#c6c5fe">response</font>|<br><span style="background-color: #000000"><font color="#3d3d3d">6 </font></span>    <font color="#c6c5fe">@data</font> = response.read<br><span style="background-color: #000000"><font color="#3d3d3d">7 </font></span>  <font color="#6699cc">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">8 </font></span><font color="#6699cc">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">9 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">10 </font></span><font color="#ffffb6">Then</font> <font color="#ff8000">/</font><font color="#b18a3d">the response should be "</font><font color="#e18964">(</font><font color="#e18964">[^</font><font color="#b18a3d">\"</font><font color="#e18964">]</font><font color="#e18964">*</font><font color="#e18964">)</font><font color="#b18a3d">"</font><font color="#ff8000">/</font> <font color="#6699cc">do</font> |<font color="#c6c5fe">expected</font>|<br><span style="background-color: #000000"><font color="#3d3d3d">11 </font></span>  <font color="#c6c5fe">@data</font>.should == expected<br><span style="background-color: #000000"><font color="#3d3d3d">12 </font></span><font color="#6699cc">end</font><br></div>
+<p></font></div>
+<p>Sånn, det er alt som trengs. Jeg lager et <em>"When I send X to the Y service"</em>-steg som gjør en forespørsel til tjenesten min og sender de definerte argumentene. Cucumber tar seg av å bytte ut X og Y med argumentene og navnet på tjenesten. <em>"Then the response should be Z"</em>-steget gjør en assert mot det forventede svaret som er beskrevet i scenariene. </p>
+<p>Legg merke til at det er to forskjellige DSL'er (domenespesifike språk) i bruk her – en ekstern DSL for å definere features, og en intern Ruby-DSL (intern som i "er gyldig ruby-kode) for å definere stegene.</p>
+<p>Når jeg kjører cucumber nå får jeg følgende output:</p>
+<div style="margin-bottom: 15px"><font face="monospace">C:\Users\tormar\ruby_projects\httpListener>cucumber<br />
+<div style="background-color: #000000; padding-left: 5px; color: #f6f3e8">Feature: Add-service<br>        In order to save cycles on client CPUs<br>        As an IT manager<br>        I want a central server that can add numbers<br><br>  Scenario: Add a string of numbers<br>    <font color="green">When I send</font> <font color="#a8ff60">9,11,33,100</font> <font color="green">to the</font> <font color="#a8ff60">add</font> <font color="green">service</font><br>    <font color="green">Then the response should be "</font><font color="#a8ff60">The answer is 153</font><font color="green">"</font><br><br>  Scenario: Add a single number<br>    <font color="green">When I send</font> <font color="#a8ff60">1</font> <font color="green">to the</font> <font color="#a8ff60">add</font> <font color="green">service</font><br>    <font color="green">Then the response should be "</font><font color="#a8ff60">The answer is 1</font><font color="green">"</font><br><br>2 scenarios (<font color="green">2 passed</font>)<br>4 steps (<font color="green">4 passed</font>)<br>0m0.122s<br></div>
+<p></font></div>
+<p>Alle scenariene for Add-servicen passerte (hvis ikke hadde det dukket opp endel rødt i output). Kult?</p>
+<p>Hvis du er alergisk mot Ruby så finnes det også et prosjekt som heter <a href="http://www.specflow.org/">SpecFlow</a> som er en port av cucumber til .Net. Men det er absolutt å anbefale å benytte the real thing, gjerne med IronRuby på .Net-plattformen.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

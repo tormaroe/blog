@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Julekalender">
+
+    <title>cl-utilities</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>cl-utilities</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 6. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p>Luke nummer fem i <a href="https://julekalender.knowit.no">Knowit sin julekalender</a> hadde en oppgave hvor man gitt 22282 ord skulle finne antallet ord som kunne danne et anagram av ett av de andre. Tidlig lørdag morgen hadde jeg ikke noe bedre å finne på enn å løse også denne oppgaven i Common Lisp.</p>
+<p>Den endelige løsningen ble en funksjonell pipeline:</p>
+<pre><code class="hljs">(-&gt;&gt; <span class="hljs-string">&quot;sGbqMyCa&quot;</span>
+     <span class="hljs-built_in">get-pastebin</span>
+     <span class="hljs-string">split-lines</span>
+     (<span class="hljs-string">mapcar</span> (<span class="hljs-string">compose</span> <span class="hljs-comment">#&#x27;list-to-string </span>
+                      <span class="hljs-comment">#&#x27;sort-chars </span>
+                      <span class="hljs-comment">#&#x27;string-to-list))</span>
+     <span class="hljs-string">group-by-identity</span>
+     (<span class="hljs-string">remove-if</span> <span class="hljs-comment">#&#x27;has-only-one-value-p)</span>
+     (<span class="hljs-string">mapcar</span> (<span class="hljs-string">compose</span> <span class="hljs-comment">#&#x27;1- #&#x27;length))</span>
+     (<span class="hljs-string">reduce</span> <span class="hljs-comment">#&#x27;+)</span>
+     <span class="hljs-string">print</span>)</code></pre><p>Jeg starter med pastebin-nøkkelen, henter dataene med <code>get-pastebin</code> og splitter til en liste med <code>split-lines</code>. </p>
+<p>Deretter sorterer jeg bokstavene i hvert ord. For å få til det må jeg først konvertere hvert ord til en liste av bokstaver, så sortere denne, og til slutt konvertere tilbake til en streng. Jeg kunne gjort dette ved å iterere over listen tre ganger, sånn:</p>
+<pre><code class="hljs">(<span class="hljs-name">-&gt;&gt;</span> 
+     ....
+     (<span class="hljs-name">mapcar</span> #&#x27;string-to-list)
+     (<span class="hljs-name">mapcar</span> #&#x27;sort-chars) 
+     (<span class="hljs-name">mapcar</span> #&#x27;list-to-string) 
+     ....
+     )</code></pre><p>..men i stedet komponerer jeg en ny funksjon som kombinerer de tre stegene, og mapper kun én gang. Common Lisp har ikke noen compose-funksjon ut av boksen, men <a href="http://quickdocs.org/cl-utilities/">cl-utilities</a> er en nyttig pakke som blant annet har dette.</p>
+<p>Etter å ha sortert bokstavene i hvert ord vil ord som kan danne anagrammer være identiske. Dermed kan jeg gruppere på ordene, fjerne de det bare finnes ett av, telle alle som gjenstår, og summere sammen.</p>
+<p>Underveis her delegerer jeg til endel hjelpefunksjoner. <code>get-pastebin</code> og <code>split-lines</code> har jeg vist <a href="/2015/12/03/cl-arrow/">i en tidligere post</a>, og her følger resten:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> string-to-list (<span class="hljs-name">s</span>)
+  (<span class="hljs-name">coerce</span> s &#x27;list))
+
+(<span class="hljs-name">defun</span> list-to-string (<span class="hljs-name">xs</span>)
+  (<span class="hljs-name">concatenate</span> &#x27;string xs))
+
+(<span class="hljs-name">defun</span> sort-chars (<span class="hljs-name">charlist</span>)
+  (<span class="hljs-name">sort</span> charlist #&#x27;char-lessp))
+
+(<span class="hljs-name">defun</span> group-by-identity (<span class="hljs-name">lists</span>)
+  (<span class="hljs-name">group-by</span> lists <span class="hljs-symbol">:key</span> #&#x27;identity 
+                  <span class="hljs-symbol">:value</span> #&#x27;identity))
+
+(<span class="hljs-name">defun</span> has-only-one-value-p (<span class="hljs-name">grouping</span>)
+  <span class="hljs-comment">;; A grouping is a list where</span>
+  <span class="hljs-comment">;; car =&gt; the key</span>
+  <span class="hljs-comment">;; cdr =&gt; the values</span>
+  (<span class="hljs-name">=</span> (<span class="hljs-name">length</span> grouping) <span class="hljs-number">2</span>))</code></pre><p>Totalt bruker jeg fem eksterne pakker i denne løsningen:</p>
+<pre><code class="hljs">(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:drakma</span>)       <span class="hljs-comment">; http-request</span>
+(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:cl-ppcre</span>)     <span class="hljs-comment">; split</span>
+(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:cl-arrows</span>)    <span class="hljs-comment">; -&gt;&gt;</span>
+(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:cl-utilities</span>) <span class="hljs-comment">; compose</span>
+(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:group-by</span>)     <span class="hljs-comment">; group-by</span></code></pre>
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

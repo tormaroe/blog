@@ -1,0 +1,45 @@
+---
+title: Euphoria
+link: http://blog.kjempekjekt.com/2011/12/03/euphoria/
+layout: post
+date: 2011-12-03 07:16:07Z
+tags:
+  - Julekalender
+  - Polyglot
+  - Euphoria
+---
+<p><strong>Euphoria</strong> er et akronym for noe så spesielt som <em>End-User Programming with Hierarchical Objects for Robust Interpreted Applications</em>. Dette prosedyrebaserte språket ble orginalt utviklet for Atari, og første release kom i 1993. I 2006 ble det open source, og i dag er det et språk som kan kjøre på Windows, Linux, FreeBSD og OS X.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="euphoria" border="0" alt="euphoria" src="/uploads/2011/12/euphoria.jpg" width="400" height="495"></p> <p>Euphoria har en syntaks som skal være lett å både lære og lese. Engelske ord foretrekkes fremfor kryptiske tegn. Jeg får rett og slett litt BASIC-assosiasjoner. Det har også bare fire innebygde datatyper: <em>atom, sequence, integer og object</em>.</p> <p>I tillegg til enkelhet vektlegger språket rask utvikling. Det er i utgangspunktet et tolket språk, som f.eks. Python og Ruby, men kan også kompileres til C-kode. Du kan dessuten pakke kildekode sammen med en tolker for å lage selvstendige, kjørbare programmer.</p> <p>Euphoria har også en meget effektiv garbage collector, og det skrytes av at Euphoria er et av de raskeste tolkede språkene som finnes. Av andre ting som er verdt å nevne har Euphoria en debugger, enkel wrapping (eller tilgang til) C-bibloteker, og en enkel, innebygget database.</p> <p>Det er flere paraleller til <a href="http://blog.kjempekjekt.com/2011/12/01/lua/#comments">Lua</a> her, som jeg presenterte i går.</p> <h4>Og så skal vi se hvordan koden ser ut</h4> <p>Som vanlig setter jeg igang med å implementere <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">et program som finner summen av alle multipler av 3 eller 5 under 1000</a>, uten å vite noe spesielt om språket på forhånd. API-dokumentasjonen var ganske bra, men det var litt problematisk likevel. Euphoria skal være god på sekvenser, og har et rikt sekvens-biblotek, men funksjonene har ikke de navnene jeg forventer.</p> <p>Etter litt knoting frem og tilbake kommer jeg frem til følgende løsning:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span>include std<span class="Operator">/</span>io<span class="Special">.</span>e
+<span class="lnr">11 </span>include std<span class="Operator">/</span>math<span class="Special">.</span>e
+<span class="lnr">12 </span>include std<span class="Operator">/</span>sequence<span class="Special">.</span>e
+<span class="lnr">13 </span>
+<span class="lnr">14 </span><span class="Keyword">function</span> multiplesOf<span class="Special">(</span>integer n<span class="Special">)</span>
+<span class="lnr">15 </span>  <span class="Statement">return</span> series<span class="Special">(</span><span class="Number">0</span><span class="Special">,</span> n<span class="Special">,</span> ceil<span class="Special">(</span><span class="Number">1000</span> <span class="Operator">/</span> n<span class="Special">))</span>
+<span class="lnr">16 </span><span class="Keyword">end</span> <span class="Keyword">function</span>
+<span class="lnr">17 </span>
+<span class="lnr">18 </span><span class="Keyword">function</span> negate<span class="Special">(</span>integer x<span class="Special">,</span> object ignored<span class="Special">)</span>
+<span class="lnr">19 </span>  <span class="Statement">return</span> x <span class="Operator">*</span> <span class="Number">-</span><span class="Number">1</span>
+<span class="lnr">20 </span><span class="Keyword">end</span> <span class="Keyword">function</span>
+<span class="lnr">21 </span>
+<span class="lnr">22 </span><span class="Keyword">procedure</span> main<span class="Special">()</span>
+<span class="lnr">23 </span>  sequence mults_3 <span class="Operator">=</span> multiplesOf<span class="Special">(</span><span class="Number">3</span><span class="Special">)</span>
+<span class="lnr">24 </span>  sequence mults_5 <span class="Operator">=</span> multiplesOf<span class="Special">(</span><span class="Number">5</span><span class="Special">)</span>
+<span class="lnr">25 </span>  sequence mults_15 <span class="Operator">=</span> apply<span class="Special">(</span>
+<span class="lnr">26 </span>                        retain_all<span class="Special">(</span>mults_3<span class="Special">,</span> mults_5<span class="Special">),</span>
+<span class="lnr">27 </span>                        routine_id<span class="Special">(</span><span class="String">"negate"</span><span class="Special">))</span>
+<span class="lnr">28 </span>
+<span class="lnr">29 </span>  ? sum<span class="Special">(</span>{mults_3<span class="Special">,</span> mults_5<span class="Special">,</span> mults_15}<span class="Special">)</span>
+<span class="lnr">30 </span><span class="Keyword">end</span> <span class="Keyword">procedure</span>
+<span class="lnr">31 </span>
+<span class="lnr">32 </span>main<span class="Special">()</span>
+</pre>
+<p>Med litt forklaring bør koden være grei å forstå: Jeg løser <a href="http://blog.kjempekjekt.com/2011/11/25/euler-1-som-et-sett-problem/">oppgaven som et sett-problem</a>, med algoritmen som summerer alle multipler av 3 og alle multipler av 5, for så å trekke fra snittet av disse to, som er alle multipler av 15.</p>
+<p><strong><em>retain_all(a, b)</em></strong> gir meg en sekvens med alle tallene fra b som også er i a. <strong><em>apply(a, routine_id)</em></strong> sender alle elementene i sekvens a til rutinen, og gir meg en sekvens med resultatet – dette tilsvarer altså det som andre steder heter <em>map</em> eller eventuelt <em>select</em>.</p>
+<p>Til slutt bygger jeg en ny sekvens som består av de tre sekvensene jeg har laget, og sender denne til den innebygde <em>sum</em>-funksjonen, som summerer alt sammen. Spørsmålstegnet printer ut svaret.</p>
+<p>Det rareste er at jeg må bruke <em>routine_id</em> og en streng for å sende en funksjons-referanse til apply. Funksjoner er altså ikke førsterangs borgere i Euphoria. Språket har heller ikke anonyme funksjoner eller lambda-uttrykk såvidt jeg kan se.</p>
+<h4>Hvorfor bruke tid på Euphoria?</h4>
+<p>Euphoria er ikke objektorientert. Det støtter ikke funksjonell programmering på en god måte. Det har en enkel syntaks som likevel føles "bråkete". Så hvilken verdi har det?</p>
+<p>På OpenEuphoria-forumet leser jeg at Euphoria er et lett språk å lære seg, og at det resulterer i mere lesbar kode enn mange andre språk. Og at man kan løse problemer raskere. Sammenlignet med tolkede språk som f.eks. Python har det mye bedre performance, og er også lett å pakke til en frittstående fil.</p>
+<p>Men for å være ærlig føles det litt som å ta en tidsmaskin tilbake til en tid før internett, til et sted hvor noen ikke hadde fått med seg hva som finnes av andre språk der ute. En verden hvor BASIC hadde dødd ut, C var vanskelig, og det egentlig ikke fantes noen andre alternativer. Det var en interessant reise, for all del, og språket kan nok brukes til mye rart. Men jeg tviler på at <em>jeg</em> kommer til å gjøre det.</p>
+<p>Jeg er redd jeg kan ha sløst bort tiden din i dag, og at Euphoria blir den store taperen blant språkene jeg presenterer. Jeg lover mye mere spenstige språk i fortsettelsen!</p>
+<h4>Hvordan komme igang</h4>
+<p>Er du likevel interessert i å prøve ut Euphoria kan du ta turen til <a href="http://openeuphoria.org/">OpenEuphoria.org</a>. Der kan du laste det ned for din foretrukne plattform, og lese så mye dokumentasjon som du bare måtte orke.</p>

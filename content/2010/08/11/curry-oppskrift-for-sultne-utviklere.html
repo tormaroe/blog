@@ -1,0 +1,113 @@
+---
+title: Curry-oppskrift for sultne utviklere
+link: http://blog.kjempekjekt.com/2010/08/11/curry-oppskrift-for-sultne-utviklere/
+layout: post
+date: 2010-08-11 14:22:12Z
+tags:
+  - Clojure
+  - F#
+  - C#
+  - JavaScript
+  - Funksjonell programmering
+---
+<p style="font-size: 110%; font-weight: bold;"><img style="margin: 0px 15px 5px 0px; display: inline; border-width: 0px;" title="CurryChef" src="/uploads/2010/08/CurryChef.jpg" alt="CurryChef" width="204" height="229" align="left" border="0" />1. Ta en funksjon som har to eller flere argumenter
+2. Tilsett noen av argumentene, men la det være igjen litt til senere
+3. Rør godt rundt
+4. Ta vare på resultatet i en ny funksjon (dette er curryen av den orginale funkjonen)
+5. Stek på 120 grader i 15 minutter
+6. Du kan nå kalle curryen ved å tilsette de siste ingrediensene..</p>
+<strong><em>Currying</em></strong>, er <em>(litt enkelt forklart)</em> en teknikk for å omforme en funksjon som tar mange argumentere til en mer spesifik funksjon som tar færre argumenter. Dette er et vanlig begrep innen funksjonell prorammering. Currying kan bl.a. brukes til å på en enkel måte få mere beskrivende funksjonsnavn og samtidig redusere kodeduplisering. I mer avanserte tilfeller brukes det for eksempel til å tilpasse funksjoner for en "call chain"/pipeline, og gjør kode mer kompakt.
+
+Navnet stammer fra logikeren Haskell Curry, som gjenoppdaget denne teknikken etter at den orginalt var beskrevet av Moses Schönfinkel. Det alternative navnet <em>"Schönfinkelisation"</em> for teknikken har blitt foreslått!!! <strong><em>Partial application</em></strong> er et mere beskrivende navn, og får ikke magen til å rumle på samme måte. Jeg har tidligere demonstrert <a href="http://blog.kjempekjekt.com/2010/06/02/komponere-funksjoner-i-f/">partial application i F# her</a>.
+
+Uten noe mer <em>Om Og Men</em> vil jeg nå demonstrere litt currying i ulike språk..
+<h4>Curry i F#</h4>
+<pre>
+open System
+ 
+// Define a simple add function taking two arguments
+let add a b = a + b
+ 
+Console.WriteLine(add 1 2) // -&gt; 3
+ 
+// Then we apply the function partially,
+// sending in just a single argument
+let addFive = add 5
+ 
+Console.WriteLine(addFive 1) // -&gt; 6
+</pre>
+Ser du hvordan jeg kaller add-funksjonen med bare ett argument, og dermed får returnert tilbake en ny funksjon? Currying er en naturlig del av funksjonelle språk som F#, og det skjer helt implisitt.
+<h4>Curry i Clojure</h4>
+I Clojure kan man ikke "kalle funksjoner delvis" ved å bruke færre argumenter enn funksjonen skal ha, slik som jeg nettopp gjorde i F#. I stedet bruker man funksjonen <em>partial</em>. Den tar som input en funksjon og en rekke argumenter, og returnerer en ny funksjon hvor de gitte argumentene er predefinert.
+<div style="background-color: #141414; margin-bottom: 18px; color: #f8f8f8; padding: 6px;"><span style="font-family: monospace;"><span style="background-color: #141414;"><span style="color: #665f57;">1 </span></span><span style="color: #665f57;">; First we define a simple add function</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">2 </span></span><span style="color: #665f57;">; taking two arguments, a and b.</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">3 </span></span><span style="color: #cda869;">(</span>defn add [a b]
+<span style="background-color: #141414;"><span style="color: #665f57;">4 </span></span>      <span style="color: #cda869;">(</span><span style="color: #cda869;"><strong>+</strong></span> a b<span style="color: #cda869;">))</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">5 </span></span>
+<span style="background-color: #141414;"><span style="color: #665f57;">6 </span></span><span style="color: #cda869;">(</span>println <span style="color: #cda869;">(</span>add <span style="color: #cf6a4c;">1</span> <span style="color: #cf6a4c;">2</span><span style="color: #cda869;">))</span> <span style="color: #665f57;">; -&gt; 3</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">7 </span></span>
+<span style="background-color: #141414;"><span style="color: #665f57;">8 </span></span><span style="color: #665f57;">; Then we create a curried version</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">9 </span></span><span style="color: #cda869;">(</span>def add-five
+<span style="background-color: #141414;"><span style="color: #665f57;">10 </span></span>     <span style="color: #cda869;">(</span>partial add <span style="color: #cf6a4c;">5</span><span style="color: #cda869;">))</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">11 </span></span>
+<span style="background-color: #141414;"><span style="color: #665f57;">12 </span></span><span style="color: #665f57;">; and use it in a couple of examples</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">13 </span></span><span style="color: #cda869;">(</span>println <span style="color: #cda869;">(</span>add-five <span style="color: #cf6a4c;">1</span><span style="color: #cda869;">))</span> <span style="color: #665f57;">; -&gt; 6</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">14 </span></span><span style="color: #cda869;">(</span>println <span style="color: #cda869;">(</span>add-five <span style="color: #cda869;">(</span>add-five <span style="color: #cf6a4c;">0</span><span style="color: #cda869;">)))</span> <span style="color: #665f57;">; -&gt; 10</span></span></div>
+Legg merke til at definisjonen av add-five i linje 9 bruker <em>def</em>, ikke <em>defn</em>. Defn brukes til å definere funksjoner – det er ikke det vi gjør her, i stedet kaller i partial, som returnerer en funksjon. Gav det mening?
+<h4>Curry i JavaScript</h4>
+JavaScript har i utgangspunktet ikke noen støtte for partial application. Men i et <span style="text-decoration: underline;">dynamisk</span>, <span style="text-decoration: underline;">løst typet</span> språk, med <span style="text-decoration: underline;">first class functions</span> som er <span style="text-decoration: underline;">fleksible i forhold til antall funksjonsparametre</span>, <em>og</em> med <span style="text-decoration: underline;">støtte for closures</span>, er det ikke noe problem å implementere currying. Følgende er inspirert av JavaScript-guru Douglas Crockford:
+<div style="background-color: #141414; margin-bottom: 18px; color: #f8f8f8; padding: 6px;"><span style="font-family: monospace;"><span style="background-color: #141414;"><span style="color: #665f57;">1 </span></span><span style="color: #7587a6;">Function</span>.prototype.curry = <span style="color: #7587a6;">function</span> () <span style="color: #7587a6;">{</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">2 </span></span>    <span style="color: #7587a6;">var</span> slice = <span style="color: #9b859d;"><strong>Array</strong></span>.prototype.slice,
+<span style="background-color: #141414;"><span style="color: #665f57;">3 </span></span>        args = slice.apply(<span style="color: #7587a6;">arguments</span>),
+<span style="background-color: #141414;"><span style="color: #665f57;">4 </span></span>        that = <span style="color: #7587a6;">this</span>;
+<span style="background-color: #141414;"><span style="color: #665f57;">5 </span></span>    <span style="color: #cda869;"><strong>return</strong></span> <span style="color: #7587a6;">function</span> () <span style="color: #7587a6;">{</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">6 </span></span>      <span style="color: #cda869;"><strong>return</strong></span> that.apply(<span style="color: #cda869;">null</span>, args.concat(slice.apply(<span style="color: #7587a6;">arguments</span>)));
+<span style="background-color: #141414;"><span style="color: #665f57;">7 </span></span>    <span style="color: #7587a6;">}</span>;
+<span style="background-color: #141414;"><span style="color: #665f57;">8 </span></span><span style="color: #7587a6;">}</span>;
+</span></div>
+Prinsippet er at vi lager en closure som husker argumentene som er spesifisert, og som legger dem til argumentene når metoden blir kalt neste gang. Det hele virker mer komplisert enn det er fordi arguments ikke er et orntlig array, så vi må gjøre litt triksing og miksing for å joine to av disse.
+
+Nedenfor kan du se hvordan curry kan brukes på en funksjon som i utgangspunktet tar to argumenter. Jeg inkluderer også en add5_explained hvor jeg forsøker å vise hvordan det hele virker ved å gjøre curryingen manuelt.
+<div style="background-color: #141414; margin-bottom: 18px; color: #f8f8f8; padding: 6px;"><span style="font-family: monospace;"><span style="background-color: #141414;"><span style="color: #665f57;">12 </span></span><span style="color: #7587a6;">var</span> add = <span style="color: #7587a6;">function</span> (a, b) <span style="color: #7587a6;">{</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">13 </span></span>  <span style="color: #cda869;"><strong>return</strong></span> a + b;
+<span style="background-color: #141414;"><span style="color: #665f57;">14 </span></span><span style="color: #7587a6;">}</span>;
+<span style="background-color: #141414;"><span style="color: #665f57;">15 </span></span>
+<span style="background-color: #141414;"><span style="color: #665f57;">16 </span></span><span style="color: #7587a6;">var</span> add5 = add.curry(5);
+<span style="background-color: #141414;"><span style="color: #665f57;">17 </span></span><span style="color: #cda869;">document</span>.writeln(add5(1)); <span style="color: #665f57;">// prints 6</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">18 </span></span>
+<span style="background-color: #141414;"><span style="color: #665f57;">19 </span></span><span style="color: #665f57;">// what's really going on??</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">20 </span></span>
+<span style="background-color: #141414;"><span style="color: #665f57;">21 </span></span><span style="color: #7587a6;">var</span> add5_explained = <span style="color: #7587a6;">function</span> (b) <span style="color: #7587a6;">{</span>
+<span style="background-color: #141414;"><span style="color: #665f57;">22 </span></span>  <span style="color: #cda869;"><strong>return</strong></span> add.apply(<span style="color: #cda869;">null</span>, <span style="color: #7587a6;">[</span>5<span style="color: #7587a6;">]</span>.concat(<span style="color: #7587a6;">[</span>b<span style="color: #7587a6;">]</span>));
+<span style="background-color: #141414;"><span style="color: #665f57;">23 </span></span><span style="color: #7587a6;">}</span>;
+<span style="background-color: #141414;"><span style="color: #665f57;">24 </span></span>
+<span style="background-color: #141414;"><span style="color: #665f57;">25 </span></span><span style="color: #cda869;">document</span>.writeln(add5_explained(1)); <span style="color: #665f57;">// prints 6</span>
+</span></div>
+<h4>Curry i C#</h4>
+C# er i utgangspunktet ikke et språk hvor vi forventer å finne currying, men med Linq ble det innført mange funksjonelle godbiter, og det er nå mulig å støtte dette om man vil. Her er et eksempel:
+<pre>
+Func&lt;int, int, int&gt; add = (a, b) =&gt; a + b;
+
+Console.WriteLine(add(1,2)); // -&gt; 3
+
+Func&lt;int, int&gt; addFive = add.Curry()(5);
+
+Console.WriteLine(addFive(1)); // -&gt; 6
+</pre>
+Så hvor kommer Curry-metoden fra? Den er en <em>extension method</em> som ser slik ut:
+<pre>
+public static Func&lt;T1, Func&lt;T2, TResult&gt;&gt; Curry&lt;T1, T2, TResult&gt;(
+    this Func&lt;T1, T2, TResult&gt; f)
+{
+    return p1 =&gt; p2 =&gt; f(p1, p2);
+}
+</pre>
+Ganske stilig må jeg innrømme! Denne koden er stjålet <em>rått og brutalt</em> fra en fyr som heter Paul Stancer. For <a href="http://code.google.com/p/ximura/source/browse/trunk/Ximura/Helper/Linq/Linq_Currying.cs">et komplett sett med curry-extensions klikker du her</a>.
+<h4>Oppsummering</h4>
+<em>Currying</em> er et av de begrepene alpha-geeks har begynt å slenge rundt seg nå som funksjonelle språk har begynt å ta av også i den komersielle utvikler-sfæren. Det kan derfor være greit å vite hva det dreier seg om. Og som vanlig er det noe ganske enkelt og helt ufarlig som skjuler seg bak et litt merkelig navn.
+
+Du har blitt servert et lite knippe med muligheter for å gjøre currying i ulike språk – noen hvor currying er en naturlig del av språket, og noen hvor man kan få det til på andre måter. Jeg har ikke sagt så mye om hvordan man best utnytter disse mulighetene – når det er lurt, og hva man oppnår – det får bli en fremtidig blogpost. Har du noe å bidra med om det, eller sitter på kunnskap om currying i et språk jeg ikke brukte, håper jeg du legger igjen en kommentar.
+
+Håper maten smakte!
+
+<strong><em>PS:</em></strong> For de som er matematisk anlagt, og som ønsker å være helt presise, skal det sies at <em>currying</em> og <em>partial application</em> ikke er nøyaktig det samme. Likevel bruker jeg dem her om hverandre, og er litt vag i definisjonen. Jeg har forsøkt å være praktisk i min tilnærming, og håper jeg ikke støter dem som har en doktorgrad eller to innen funksjonell programmering. Se gjerne <a href="http://lambda-the-ultimate.org/node/2266">Currying != Generalized Partial Application?!</a> på Lambda the Ultimate.

@@ -1,0 +1,95 @@
+---
+title: Continuation løser rekursiv utfordring
+link: http://blog.kjempekjekt.com/2013/04/21/continuation-lser-rekursiv-utfordring/
+layout: post
+date: 2013-04-21 14:16:53Z
+tags:
+  - F#
+  - Trær
+  - Rekursjon
+---
+<p><img style="background-image: none; border-right-width: 0px; margin: 0px auto 16px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="rockets" border="0" alt="rockets" src="/uploads/2013/04/rockets.png" width="600" height="278"></p> <p>Hvis du aldri før har sett det jeg nå skal demonstrere, og du samtidig er klar til å forstå det, så kan du se frem til en ganske stor a-ha-opplevelse. Teknikken du vil få se er avansert og enkel på samme tid. Noen vil si det er trivielt, mens andre vil bruke lang tid på å skjønne det.</p> <p>I denne posten vil jeg bruke F# til å presentere et problem med rekursiv traversering av tre-strukturer. Jeg vil så bruke <em>continuation-passing style</em> til å løse problemet.</p> <h2>Rekursiv tre-summering</h2> <p>I blogposten <a href="http://blog.kjempekjekt.com/2013/02/15/funksjonell-lek-med-trr-i-f/">Funksjonell lek med trær i F#</a> definerte jeg en generisk tre-datatype. Jag lagde en generell funksjoner som traverserte trærne, en slags <em>fold</em> eller <em>reduce</em> for trær.</p> <p>Det jeg skal gjøre nå er omtrent det samme, men jeg har valgt å holde det enda enklere. Først definerer vi en type <code>IntTree</code> som brukes til å bygge trær. En node i treet er enten en bladnode som holder på et heltall, eller en node med to undernoder. Dette er altså et binærtre.</p><pre>type IntTree =
+    | Leaf of int
+    | Node of IntTree * IntTree</pre>
+<p>Nå kan jeg bygge et tre på denne måten:</p><pre>let tree = Node(Node(Node(Leaf 5, 
+                          Leaf 8),
+                     Leaf 2),
+                Node(Leaf 2, 
+                     Leaf 9))</pre>
+<p>Tegner vi opp dette treet grafisk ser det slik ut:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="tree" border="0" alt="tree" src="/uploads/2013/04/tree.png" width="195" height="138"></p>
+<p>Nå kan vi lage en summeringsfunksjon for slike trær. Dette er en enkelt, reksursiv funksjon som består av to regler: </p>
+<ol>
+<li>Summen av en bladnode er like verdien bladnoden holder på. 
+<li>Summen av et tre er lik summen av deltreet til venstre pluss summen av deltreet til høyre for noden vi begynner med.</li></ol>
+<p>En slik funksjon uttrykkes elegant i F#: </p><pre>let rec sumTree tree =
+    match tree with
+    | Leaf n             -&gt; n
+    | Node (left, right) -&gt; sumTree left 
+                          + sumTree right</pre>
+<p>For å teste <code>sumTree</code> hopper jeg over i F# interactive:</p><pre style="background-color: #fde48f">&gt; <b style="color: blue">sumTree tree</b>;;
+val it : int = 26</pre>
+<p>Summen rapporteres korrekt som 26.</p>
+<h2>Utfordring med dype trær</h2>
+<p><code>sumTree</code> har derimot én utfordring. Du ser at det er to rekursive kall for hver node, og at verdiene fra disse kallene plusses sammen. Vi har dermed ingen <a href="http://en.wikipedia.org/wiki/Tail_call">halerekursjon</a>, og <a href="http://en.wikipedia.org/wiki/Call_stack">kontrollstacken</a> vil vokse.</p>
+<p>For små trær er ikke dette noe problem. Og godt balanserte trær kan inneholde mange elementer før treet blir dypt. Men sett at vi har et tre som ikke er så godt balansert.</p>
+<p>La oss lage noen tall å jobbe med:</p><pre style="background-color: #fde48f">&gt;<b style="color: blue"> let rnd = new System.Random();;</b>
+
+val rnd : System.Random
+
+&gt; <b style="color: blue">let numbers =
+    List.init 100000 (fun _ -&gt; rnd.Next(-50, 51));;</b>
+
+val numbers : int list =
+  [-46; -43; -22; -3; 20; 0; -43; -19; -50; 28; 35; -26; 20;
+   40; -4; -42; 5; 37; 27; -9; 28; 38; 29; 2; -23; -4; -29;
+   41; 10; 47; 39; -23; 37; 42; 12; -10; 1; -4; -39; ...]</pre>
+<p><code>numbers</code> inneholder nå hundre tusen tall mellom –50 og 50. Jeg kan så konstuere et ubalansert tre basert på disse tallene:</p><pre style="background-color: #fde48f">&gt; <b style="color: blue">let imbalancedTree =
+     numbers |&gt; List.fold (fun currentTree num -&gt;
+        Node(Leaf num, currentTree)) (Leaf 0);;</b>
+
+val imbalancedTree : IntTree =
+  Node
+    (Leaf 49,
+     Node
+       (Leaf -3,
+        Node
+          (Leaf -38,
+           Node
+             (Leaf 42,
+              Node
+                (Leaf 11,
+                  ...</pre>
+<p>Dybden på <code>imbalancedTree</code> er nå hundre tusen. Hva skjer om jeg forsøker å summere tallene i dette treet?</p><pre style="background-color: #fde48f">&gt; <b style="color: blue">sumTree imbalancedTree;;</b>
+
+<b style="color: red">Process is terminated due to StackOverflowException.</b></pre>
+<p>Jepp, der fikk vi en <em>stack overflow</em>! Den rekursive algoritmen måtte gjøre 100.000 kall til sumTree før den kunne plusse sammen høyre og venstre deltre, og hvert kall konsumerte en liten bit av stacken. Det går ikke!</p>
+<p>Vi må finne på noe annet...</p>
+<h2>Continuation-passing style</h2>
+<p>Begrepet <a href="http://en.wikipedia.org/wiki/Continuation-passing_style">Continuation-passing style (CPS)</a> ble skapt av Gerald Jay Sussman og Guy L. Steele i 1975 da de begynte utviklingen av programmeringsspråket <strong>Scheme</strong>.</p>
+<p>En funksjon skrevet i denne stilen tar ett ekstra argument: en "continuation", det vil si en funksjon. Når CPS-funksjonen har kalkulert sitt resultat "returnerer" den dette resultatet ved å kalle continuation-funksjonen med resultatverdien som argument.</p>
+<p>Utviklere som bruker asynkrone API'er, for eksempel utviklere som programmerer for node.js, bruker mye callbacks – og det er egentlig CPS. Men teknikken har flere bruksområder. Nå skal jeg bruke CPS til å fikse problemet med den rekursive funksjonen <code>sumTree</code>. </p>
+<h2>sumTree goes CPS</h2>
+<p>Jeg skal lage en ny summeringsfunksjon. Den vil ha to parametre, og følgende signatur:</p><pre>tree:IntTree -&gt; cont:(int -&gt; 'a) -&gt; 'a</pre>
+<p>For dem som ikke er så vandt til å lese F#/ML/Haskell-signaturer:</p>
+<ul>
+<li>Første parameter <code>tree</code> er en instans av et <code>IntTree</code> 
+<li>Andre parameter <code>cont</code> er en funksjon som tar inn en integer og returnerer en verdi av den generiske typen <code>a</code> 
+<li>Funksjonen vil til slutt returnere en verdi at typen <code>a</code></li></ul>
+<p>Og her er den nye funksjonen:</p><pre>let rec sumTreeCont tree cont =
+    match tree with
+    | Leaf n -&gt; cont n
+    | Node (left, right) -&gt;
+        sumTreeCont left (fun leftSum -&gt;
+            sumTreeCont right (fun rightSum -&gt;
+                cont (leftSum + rightSum)))</pre>
+<p>Til å begynne med ser funksjonen nokså lik ut, men når vi kommer til den rekursive delen tar det litt av. Jeg gjør et rekursivt kall for det venstre deltreet, og bygger en ny continutation som jeg sender med. I den nye continuation'en er det et nytt kall til summeringsfunksjonen for det høyre deltreet, og der sender jeg med den orginale continuation-funksjonen.</p>
+<p>Har du sett slik kode før så er det ikke så vanskelig. Men om du ikke er kjent med dette så vil det sansynligvis ta litt tid å bygge opp en inuitiv følelse for hva som skjer her. Jeg har derfor forsøkt å lage en litt forenklet illustrasjon av hva som skjer om jeg skal summere tallene i et lite tre med bare én vanlig node og to bladnoder:</p>
+<p><img style="background-image: none; border-right-width: 0px; margin: 15px auto; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="cont" border="0" alt="cont" src="/uploads/2013/04/cont.png" width="518" height="627"></p>
+<p>Rekursjonen her har fire "trinn". I trinn 2 ser du at vi bare jobber med bladnoden med verdien 4, men at vi <strong>tar vare på kalkulasjonen vi må utføre siden</strong> (summering av det høyre deltreet). Når venstre side er ferdig kan vi så utføre det vi har tatt vare på (trinn 3). Helt til slutt vil den orginale continuation-funksjonen bli evaluert.</p>
+<p>Nå kan vi forsøke å summere tallene i det ubalanserte treet. Jeg sender med en continuation som vil ta summen og produsere en tekststreng som sier hva resultatet er (her bruker jeg <em>partial application</em> som jeg har snakket om mange ganger før).</p><pre style="background-color: #fde48f">&gt; <b style="color: blue">sumTreeCont imbalancedTree (sprintf "Result is: %d");;</b>
+val it : string = "Result is: 8549"</pre>
+<p>Og denne gangen fungerte det. Summeringsfunksjonen bruker nå halerekursjon, og kompilatoren kan dermed optimalisere den til å ikke "spise opp stacken".</p>
+<h2>Konklusjon</h2>
+<p>Det kan være vanskelig å få en god, intuitiv forståelse for hvordan algoritmer og funksjoner som bruker continuations fungerer. Men continuation-passing style kan løse utfordringer som det kan være svært vanskelig å løse på andre måter. Denne stilen har vært praktisert siden <a href="http://no.wikipedia.org/wiki/Vietnamkrigen">Vietnamkrigen</a> (ingen sammenheng forøvrig), og jeg ser på det som <strong>en viktig teknikk som en komplett utvikler bør ha i verktøykassen sin</strong>. </p>
+<p><em>PS: Denne blogposten er inspirert av boken </em><a href="http://www.amazon.co.uk/Real-World-Functional-Programming-With-Examples/dp/1933988924/"><em>Real-World Functional Programming</em></a><em> (med eksempler i C# og F#).</em></p>

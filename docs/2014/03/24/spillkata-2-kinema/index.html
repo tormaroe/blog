@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Basic,Scheme,Lisp,Kata">
+
+    <title>Spillkata 2: Kinema</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Spillkata 2: Kinema</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 24. mars 2014</small> 
+            <a href="/tags/basic"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Basic</span></a>
+          
+            <a href="/tags/scheme"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Scheme</span></a>
+          
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          
+            <a href="/tags/kata"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Kata</span></a>
+          </p>
+          <p><img src="/uploads/2014/03/throw_ball.jpg" class="pull-right" style="margin-left:20px;margin-bottom:8px;"/>I posten <a href="/2014/03/23/spillkata-word/">Spillkata: Word</a> startet jeg med et konsollbasert spill utviklet i BASIC i 1978, og implementerte min egen variant i Chicken Scheme. I denne posten her tar jeg for meg et nytt spill fra <a href="http://www.atariarchives.org/basicgames/">den samme kilden</a>...</p>
+<p>Spillet heter <strong>Kinema</strong>, og er på kun 34 linjer BASIC. Kinema er et kunnskapsspill hvor en ball kastes opp i luften med en gitt hastighet, og du skal svare på tre spørsmål:</p>
+<ul>
+<li>Hvor høyt går ballen?</li>
+<li>Hvor lang tid tar det før ballen har returnert?</li>
+<li>Hvilken fart har ballen etter X sekunder?</li>
+</ul>
+<p>Denne gangen vil jeg i litt mere detalj vise hvordan jeg oversetter programmet linje for linje.</p>
+<p>##Spillforløp
+Her er et eksempel på hvordan det ser ut når en kjører Kinema-spillet mitt:</p>
+<pre><code class="hljs">$ ./kinema 
+
+                   KINEMA
+  Adaption <span class="hljs-keyword">of</span> BASIC computer game <span class="hljs-keyword">from</span> <span class="hljs-number">1978</span>
+
+
+A ball <span class="hljs-keyword">is</span> thrown upwars <span class="hljs-keyword">at</span> <span class="hljs-number">30</span> meters per <span class="hljs-keyword">second</span>.
+
+How high will <span class="hljs-keyword">it</span> go (<span class="hljs-keyword">in</span> meters)? <span class="hljs-number">40</span>
+Close enough.Correct answer <span class="hljs-keyword">is</span> <span class="hljs-number">45.0</span>
+How long <span class="hljs-keyword">until</span> <span class="hljs-keyword">it</span> returns (<span class="hljs-keyword">in</span> seconds)? <span class="hljs-number">5</span>
+Not even close....Correct answer <span class="hljs-keyword">is</span> <span class="hljs-number">6</span>
+What will <span class="hljs-keyword">its</span> velocity be <span class="hljs-keyword">after</span> <span class="hljs-number">4.5</span> seconds? <span class="hljs-number">-33</span>
+Not even close....Correct answer <span class="hljs-keyword">is</span> <span class="hljs-number">-15.0</span>
+
+<span class="hljs-number">1</span> right <span class="hljs-keyword">out of</span> <span class="hljs-number">3.</span></code></pre><p>Etter at jeg er ferdig med disse tre spørsmålene genereres en ny, tilfeldig velocity, og spillet begynner på nytt.</p>
+<p>##Orginalen
+Her følger den orginale BASIC-koden. Den er ikke så veldig vanskelig å forstå. Hver linje starter med et linjenummer, og strukturen i programmet skapes gjennom kommandoene <code>GOSUB</code>, <code>GOTO</code> og <code>IF .. THEN</code>.</p>
+<pre><code class="hljs"><span class="hljs-symbol">10 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-keyword">TAB</span>(<span class="hljs-number">33</span>);<span class="hljs-string">&quot;KINEMA&quot;</span>
+<span class="hljs-symbol">20 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-keyword">TAB</span>(<span class="hljs-number">15</span>);<span class="hljs-string">&quot;CREATIVE COMPUTING  MORRISTOWN, NEW JERSEY&quot;</span>
+<span class="hljs-symbol">30 </span><span class="hljs-keyword">PRINT</span>; <span class="hljs-keyword">PRINT</span>; <span class="hljs-keyword">PRINT</span>
+<span class="hljs-symbol">100 </span><span class="hljs-keyword">PRINT</span>
+<span class="hljs-symbol">105 </span><span class="hljs-keyword">PRINT</span>
+<span class="hljs-symbol">106 </span>Q=<span class="hljs-number">0</span>
+<span class="hljs-symbol">110 </span>V=<span class="hljs-number">5</span>+<span class="hljs-keyword">INT</span>(<span class="hljs-number">35</span>*<span class="hljs-keyword">RND</span>(<span class="hljs-number">1</span>))
+<span class="hljs-symbol">111 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-string">&quot;A BALL IS THROWN UPWARDS AT&quot;</span>;V;<span class="hljs-string">&quot;METERS PER SECOND.&quot;</span>
+<span class="hljs-symbol">112 </span><span class="hljs-keyword">PRINT</span>
+<span class="hljs-symbol">115 </span>A=.<span class="hljs-number">05</span>*V^<span class="hljs-number">2</span>
+<span class="hljs-symbol">116 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-string">&quot;HOW HIGH WILL IT GO (IN METERS)&quot;</span>;
+<span class="hljs-symbol">117 </span><span class="hljs-keyword">GOSUB</span> <span class="hljs-number">500</span>
+<span class="hljs-symbol">120 </span>A=V/<span class="hljs-number">5</span>
+<span class="hljs-symbol">122 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-string">&quot;HOW LONG UNTIL IT RETURNS (IN SECONDS)&quot;</span>;
+<span class="hljs-symbol">124 </span><span class="hljs-keyword">GOSUB</span> <span class="hljs-number">500</span>
+<span class="hljs-symbol">130 </span>T=<span class="hljs-number">1</span>+<span class="hljs-keyword">INT</span>(<span class="hljs-number">2</span>*V*<span class="hljs-keyword">RND</span>(<span class="hljs-number">1</span>))/<span class="hljs-number">10</span>
+<span class="hljs-symbol">132 </span>A=V-<span class="hljs-number">10</span>*T
+<span class="hljs-symbol">134 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-string">&quot;WHAT WILL ITS VELOCITY BE AFTER&quot;</span>;T;<span class="hljs-string">&quot;SECONDS&quot;</span>;
+<span class="hljs-symbol">136 </span><span class="hljs-keyword">GOSUB</span> <span class="hljs-number">500</span>
+<span class="hljs-symbol">140 </span><span class="hljs-keyword">PRINT</span>
+<span class="hljs-symbol">150 </span><span class="hljs-keyword">PRINT</span> Q;<span class="hljs-string">&quot;RIGHT OUT OF 3.&quot;</span>;
+<span class="hljs-symbol">160 </span><span class="hljs-keyword">IF</span> Q&lt;<span class="hljs-number">2</span> <span class="hljs-keyword">THEN</span> <span class="hljs-number">100</span>
+<span class="hljs-symbol">170 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-string">&quot;  NOT BAD.&quot;</span>
+<span class="hljs-symbol">180 </span><span class="hljs-keyword">GOTO</span> <span class="hljs-number">100</span>
+<span class="hljs-symbol">500 </span><span class="hljs-keyword">INPUT</span> G
+<span class="hljs-symbol">502 </span><span class="hljs-keyword">IF</span> <span class="hljs-keyword">ABS</span>((G-A)/A)&lt;.<span class="hljs-number">15</span> <span class="hljs-keyword">THEN</span> <span class="hljs-number">510</span>
+<span class="hljs-symbol">504 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-string">&quot;NOT EVEN CLOSE....&quot;</span>
+<span class="hljs-symbol">506 </span><span class="hljs-keyword">GOTO</span> <span class="hljs-number">512</span>
+<span class="hljs-symbol">510 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-string">&quot;CLOSE ENOUGH.&quot;</span>
+<span class="hljs-symbol">511 </span>Q=Q+<span class="hljs-number">1</span>
+<span class="hljs-symbol">512 </span><span class="hljs-keyword">PRINT</span> <span class="hljs-string">&quot;CORRECT ANSWER IS &quot;</span>;A
+<span class="hljs-symbol">520 </span><span class="hljs-keyword">PRINT</span>
+<span class="hljs-symbol">530 </span><span class="hljs-keyword">RETURN</span>
+<span class="hljs-symbol">999 </span><span class="hljs-keyword">END</span></code></pre><p>Hvis du er ung og ikke har sett noe sånt som dette før så er du kanskje litt overrasket - men sånn som dette kodet altså mange for snart 40 år siden.</p>
+<p>Legg merke til at linje 500 til 530 brukes som en prosedyre (som kalles med <code>GOSUB</code> på linje 117, 124 og 136).</p>
+<p>##Direkte oversette til Scheme
+Strategien jeg velger for å implementere en versjon av spillet i Scheme, er å begynne med BASIC-varianten (utkommentert), og så implementere linje for linje så godt jeg kan.</p>
+<p>Først må jeg importere et par moduler og skrive koden for å printe ut spillets header:</p>
+<pre><code class="hljs">(<span class="hljs-keyword">use</span> srfi-13) ; String library
+(<span class="hljs-keyword">use</span> extras) ; random, printf
+
+;; 10 <span class="hljs-keyword">PRINT</span> <span class="hljs-keyword">TAB</span>(33);<span class="hljs-string">&quot;KINEMA&quot;</span>
+;; 20 <span class="hljs-keyword">PRINT</span> <span class="hljs-keyword">TAB</span>(15);<span class="hljs-string">&quot;CREATIVE COMPUTING  MORRISTOWN, NEW JERSEY&quot;</span>
+;; 30 <span class="hljs-keyword">PRINT</span>; <span class="hljs-keyword">PRINT</span>; <span class="hljs-keyword">PRINT</span>
+(<span class="hljs-keyword">display</span> (string-pad <span class="hljs-string">&quot;KINEMA\n&quot;</span> 33))
+(<span class="hljs-keyword">display</span> (string-pad 
+            <span class="hljs-string">&quot;Adaption of BASIC computer game from 1978&quot;</span> 51))
+(newline)(newline)</code></pre><p>BASIC-programmet bruker noen variabler: <code>Q</code>, <code>V</code>, <code>A</code> og <code>T</code>. Disse må jeg definere før jeg kan fortsette:</p>
+<pre><code class="hljs">;; Variables needed...
+(<span class="hljs-keyword">define</span> <span class="hljs-section">Q</span>)
+(<span class="hljs-keyword">define</span> <span class="hljs-section">V</span>)
+(<span class="hljs-keyword">define</span> <span class="hljs-section">A</span>)
+(<span class="hljs-keyword">define</span> <span class="hljs-section">T</span>)</code></pre><p>For å kunne loope programmet tilbake til start hver gang man har svart på de tre spørsmålene (<code>180 GOTO 100</code>) implementerer jeg det som en rekursiv prosedyre som hele tiden kaller seg selv som det siste den gjør. Jeg kaller prosedyren for <code>main</code>:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">main</span>)
+  <span class="hljs-comment">;; 100 PRINT</span>
+  <span class="hljs-comment">;; 105 PRINT</span>
+  (<span class="hljs-name"><span class="hljs-built_in">newline</span></span>) (<span class="hljs-name"><span class="hljs-built_in">newline</span></span>)
+  <span class="hljs-comment">; ....</span></code></pre><p>Så kommer initialiseringen av <code>Q</code> og <code>V</code>...</p>
+<pre><code class="hljs">  <span class="hljs-comment">;; 106 Q=0</span>
+  (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> Q <span class="hljs-number">0</span>)
+
+  <span class="hljs-comment">;; 110 V=5+INT(35*RND(1))</span>
+  (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> V (<span class="hljs-name"><span class="hljs-built_in">+</span></span> <span class="hljs-number">5</span> (<span class="hljs-name">random</span> <span class="hljs-number">35</span>)))</code></pre><p>...informasjon om ballen...</p>
+<pre><code class="hljs">  ;; 111 <span class="hljs-built_in">PRINT</span> <span class="hljs-string">&quot;A BALL IS THROWN UPWARDS AT&quot;</span>;V;<span class="hljs-string">&quot;METERS PER SECOND.&quot;</span>
+  ;; 112 <span class="hljs-built_in">PRINT</span>
+  (printf <span class="hljs-string">&quot;A ball is thrown upwars at ~A meters per second.\n\n&quot;</span> V)</code></pre><p>...og så kommer det første av de tre spørsmålene. </p>
+<pre><code class="hljs">  <span class="hljs-comment">;; 115 A=.05*V^2</span>
+  <span class="hljs-comment">;; 116 PRINT &quot;HOW HIGH WILL IT GO (IN METERS)&quot;;</span>
+  <span class="hljs-comment">;; 117 GOSUB 500</span>
+  (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> A (<span class="hljs-name"><span class="hljs-built_in">*</span></span> .05 (<span class="hljs-name"><span class="hljs-built_in">*</span></span> V V)))
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;How high will it go (in meters)&quot;</span>)
+  (<span class="hljs-name">sub-500</span>)</code></pre><p>Definisjonen av <code>sub-500</code> kommer litt lengre nede. Her er de to neste spørmålene:</p>
+<pre><code class="hljs">  <span class="hljs-comment">;; 120 A=V/5</span>
+  <span class="hljs-comment">;; 122 PRINT &quot;HOW LONG UNTIL IT RETURNS (IN SECONDS)&quot;;</span>
+  <span class="hljs-comment">;; 124 GOSUB 500</span>
+  (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> A (<span class="hljs-name"><span class="hljs-built_in">/</span></span> V <span class="hljs-number">5</span>))
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;How long until it returns (in seconds)&quot;</span>)
+  (<span class="hljs-name">sub-500</span>)
+
+  <span class="hljs-comment">;; 130 T=1+INT(2*V*RND(1))/10</span>
+  <span class="hljs-comment">;; 132 A=V-10*T</span>
+  <span class="hljs-comment">;; 134 PRINT &quot;WHAT WILL ITS VELOCITY BE AFTER&quot;;T;&quot;SECONDS&quot;;</span>
+  <span class="hljs-comment">;; 136 GOSUB 500</span>
+  (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> T (<span class="hljs-name"><span class="hljs-built_in">/</span></span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> <span class="hljs-number">1</span> (<span class="hljs-name"><span class="hljs-built_in">*</span></span> <span class="hljs-number">2</span> (<span class="hljs-name">random</span> V))) <span class="hljs-number">10</span>))
+  (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> A (<span class="hljs-name"><span class="hljs-built_in">-</span></span> V (<span class="hljs-name"><span class="hljs-built_in">*</span></span> <span class="hljs-number">10</span> T)))
+  (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;What will its velocity be after ~A seconds&quot;</span> T)
+  (<span class="hljs-name">sub-500</span>)</code></pre><p>Nå gjenstår det å skrive ut antall riktige svar, og å kalle <code>main</code> på nytt:</p>
+<pre><code class="hljs lisp">  <span class="hljs-comment">;; 140 PRINT</span>
+  <span class="hljs-comment">;; 150 PRINT Q;&quot;RIGHT OUT OF 3.&quot;;</span>
+  (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;\n~A right out of 3.&quot;</span> Q)
+
+  <span class="hljs-comment">;; 160 IF Q&lt;2 THEN 100</span>
+  <span class="hljs-comment">;; 170 PRINT &quot;  NOT BAD.&quot;</span>
+  <span class="hljs-comment">;; 180 GOTO 100</span>
+  (<span class="hljs-name">when</span> (<span class="hljs-name">&gt;</span> Q <span class="hljs-number">2</span>) 
+    (<span class="hljs-name">display</span> <span class="hljs-string">&quot;  not bad!&quot;</span>))
+  (<span class="hljs-name">main</span>)) <span class="hljs-comment">; END MAIN</span></code></pre><p>Og så har jeg jo sagt at det som starter på linje 500 i BASIC-koden egentlig er en prosedyre. Så da implementerer jeg den som en prosedyre i Scheme. GOTO-logikken i BASIC kan enkelt gjøres om til en vanlig <code>if</code>, og hele greiene blir til slutt slik:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">sub-500</span>)
+  <span class="hljs-comment">;; 500 INPUT G</span>
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;? &quot;</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">G</span> (<span class="hljs-name"><span class="hljs-built_in">read</span></span>)))
+    <span class="hljs-comment">;; 502 IF ABS((G-A)/A)&lt;.15 THEN 510</span>
+    <span class="hljs-comment">;; 504 PRINT &quot;NOT EVEN CLOSE....&quot;</span>
+    <span class="hljs-comment">;; 506 GOTO 512</span>
+    <span class="hljs-comment">;; 510 PRINT &quot;CLOSE ENOUGH.&quot;</span>
+    <span class="hljs-comment">;; 511 Q=Q+1</span>
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> .15 (<span class="hljs-name"><span class="hljs-built_in">abs</span></span> (<span class="hljs-name"><span class="hljs-built_in">/</span></span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> G A) A)))
+      (<span class="hljs-name"><span class="hljs-built_in">begin</span></span> 
+        (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;Close enough.&quot;</span>)
+        (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> Q (<span class="hljs-name"><span class="hljs-built_in">+</span></span> Q <span class="hljs-number">1</span>)))
+      (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;Not even close....&quot;</span>))
+
+    <span class="hljs-comment">;; 512 PRINT &quot;CORRECT ANSWER IS &quot;;A</span>
+    <span class="hljs-comment">;; 520 PRINT</span>
+    (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;Correct answer is ~A\n&quot;</span> A)
+
+    <span class="hljs-comment">;; 530 RETURN</span>
+    <span class="hljs-comment">;; 999 END</span>
+  ))</code></pre><p>Det var det - jeg har en Scheme-implementasjon av KINEMA som fungerer.</p>
+<p>Merk at jeg bruker <code>(read)</code> til å lese inn input. Dette er en prosedyre som leser gyldige Scheme-uttrykk. Spillet vil derfor tryne kraftig om det brukeren taster inn ikke er et gyldig tall.</p>
+<p>##Refakturering
+Nå kan jeg gå gjennom programmet og se om jeg kan gjøre noen forbedringer.</p>
+<p>Det første jeg tar for meg er variablene. Variabelen <code>T</code> viste seg å kun være i bruk ett sted, så jeg fjerner den globale definisjonen. I stedet bruker jeg <code>let</code>, og døper om variabelen til <code>time</code>.</p>
+<p>Variabelen <code>Q</code> døper jeg om til <code>correct-count</code>, og <code>V</code> blir til <code>velocity</code>. Den sistnevnte behøver heller ikke være global, og kan defineres med en <code>let</code> i <code>main</code>.</p>
+<p><code>sub-500</code> må også få seg et bedre navn, og jeg lander på <code>prompt-and-evaluate</code>. For å skrive ut header velger jeg et <em>here document</em>. </p>
+<p><code>A</code>-variabelen kan jeg egentlig droppe, og i stedet sende inn verdien til <code>prompt-and-evaluate</code>. Jeg kan også sende inn spørsmålet som skal stilles.</p>
+<p>###Ferdig løsning
+Når alle kommentarene er fjernet ser spillet mitt dermed slik ut:</p>
+<pre><code class="hljs">(<span class="hljs-name">use</span> srfi-13 extras)
+
+(<span class="hljs-name">printf</span> #&lt;&lt;EOF
+
+                   KINEMA
+  Adaption of BASIC computer game from <span class="hljs-number">1978</span>
+
+EOF
+)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> correct-count)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">prompt-and-evaluate</span> question answer)
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> question)
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;? &quot;</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">G</span> (<span class="hljs-name"><span class="hljs-built_in">read</span></span>)))
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> .15 (<span class="hljs-name"><span class="hljs-built_in">abs</span></span> (<span class="hljs-name"><span class="hljs-built_in">/</span></span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> G answer) answer)))
+      (<span class="hljs-name"><span class="hljs-built_in">begin</span></span> 
+        (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;Close enough.&quot;</span>)
+        (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> correct-count (<span class="hljs-name"><span class="hljs-built_in">+</span></span> correct-count <span class="hljs-number">1</span>)))
+      (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;Not even close....&quot;</span>))
+    (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;Correct answer is ~A\n&quot;</span> answer)))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">main</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">newline</span></span>) (<span class="hljs-name"><span class="hljs-built_in">newline</span></span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let*</span></span> ((<span class="hljs-name">velocity</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> <span class="hljs-number">5</span> (<span class="hljs-name">random</span> <span class="hljs-number">35</span>)))
+         (<span class="hljs-name">time</span>     (<span class="hljs-name"><span class="hljs-built_in">/</span></span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> <span class="hljs-number">1</span> (<span class="hljs-name"><span class="hljs-built_in">*</span></span> <span class="hljs-number">2</span> (<span class="hljs-name">random</span> velocity))) <span class="hljs-number">10</span>)))
+
+    (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> correct-count <span class="hljs-number">0</span>)
+    (<span class="hljs-name">printf</span> 
+      <span class="hljs-string">&quot;A ball is thrown upwars at ~A meters per second.\n\n&quot;</span> 
+      velocity)
+  
+    (<span class="hljs-name">prompt-and-evaluate</span>
+      <span class="hljs-string">&quot;How high will it go (in meters)&quot;</span>
+      (<span class="hljs-name"><span class="hljs-built_in">*</span></span> .05 (<span class="hljs-name"><span class="hljs-built_in">*</span></span> velocity velocity)))
+  
+    (<span class="hljs-name">prompt-and-evaluate</span>
+      <span class="hljs-string">&quot;How long until it returns (in seconds)&quot;</span>
+      (<span class="hljs-name"><span class="hljs-built_in">/</span></span> velocity <span class="hljs-number">5</span>))
+  
+    (<span class="hljs-name">prompt-and-evaluate</span>
+      (<span class="hljs-name">sprintf</span> <span class="hljs-string">&quot;What will its velocity be after ~A seconds&quot;</span> time)
+      (<span class="hljs-name"><span class="hljs-built_in">-</span></span> velocity (<span class="hljs-name"><span class="hljs-built_in">*</span></span> <span class="hljs-number">10</span> time)))
+  
+    (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;\n~A right out of 3.&quot;</span> correct-count)
+    (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> correct-count <span class="hljs-number">2</span>) (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;  not bad!&quot;</span>))
+    (<span class="hljs-name">main</span>)))
+
+(<span class="hljs-name">main</span>)</code></pre><p><a href="https://gist.github.com/tormaroe/9749438">Finnes også som Gist</a>..</p>
+<p>Jeg håper du synes dette var sånn passe lærerikt. Jeg synes i alle fall dette er en grei måte å gi meg selv noe å gjøre mens jeg øver meg, og anbefaler deg å gjøre det samme. Du trenger selvfølgelig ikke konvertere til <em>Scheme</em> - velg det språket <em>du</em> har lyst til å beherske bedre!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

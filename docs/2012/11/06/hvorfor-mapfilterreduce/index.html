@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Design,Polyglot,Meninger,JavaScript">
+
+    <title>Hvorfor map/filter/reduce?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hvorfor map/filter/reduce?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 6. november 2012</small> 
+            <a href="/tags/design"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Design</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/meninger"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Meninger</span></a>
+          
+            <a href="/tags/javascript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> JavaScript</span></a>
+          </p>
+          <p><strong>Map</strong>, <strong>filter</strong> og <strong>reduce </strong>er tre funksjoner jeg er veldig glad i, uansett hvilket språk jeg programmerer. Jeg har snakket om dette mange ganger. Første gang var i artikkelen jeg kalte <a href="/2010/06/09/filtrer-projiser-aggreger/">filtrer, projiser, aggreger</a>. Og sist var i artikkelen <a href="/2012/07/10/den-lille-erlanger/">Den Lille Erlanger</a>. Og nå gjør jeg det jammen meg igjen.</p>
+<p>For hva er poenget? </p>
+<p>Hvorfor skal man bruke disse funksjonene?</p>
+<p><strong><font style="background-color: #ffff00" color="#c0504d">Den viktigste grunnen er å gjøre koden enklere å lese.</font></strong> <em>"Hæ?"</em> sier du kanskje, for du synes jo det er mye enklere å lese kode med for-løkker – det er jo det <em>du</em> er vandt til.</p>
+<p>Løkker har et problem; de er veldig fleksible! En løkke kan brukes på mange forskjellige måter, og til mange forskjellige ting. For å forstå hva en løkke gjør må man ikke bare lese selve løkke-deklarasjonen, men også alt inneholdet i løkken. Parametre som brukes til å avgjøre når løkken skal avsluttes kan endres når som helst i løkke-kroppen. Kodeord som <em>continue</em> og <em>break</em> kan også radikalt endre hvordan løkken oppfører seg. Og hva er resultatet av løkken? For å svare på det må man lete etter alle mutasjoner som har skjedd underveis.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="loop_hell" border="0" alt="loop_hell" src="/uploads/2012/11/loop_hell.png" width="590" height="395"></p>
+<p>Et alternativ til løkker er rekursjon, men det kan være like vanskelig å forstå rekursiv kode.</p>
+<p>Map, filter og reduce representerer derimot tre helt konkret forskjellige måter å iterere på, tre konkrete områder man kunne brukt løkker eller rekursjon. Ved å bruke disse tar man bort litt fleksibilitet. I stedet er man tydeligere på hva hensikten med koden er.</p>
+<p>La oss se litt nærmere på hver av funksjonene. Hvilke typer løkker er det de erstatter? Eksempelkoden er i JavaScript, slik at flest mulig kan følge med.</p>
+<h2>Map</h2>
+<p>Map (kalt select i C#) er en funksjon som tar inn en liste, og returnerer en ny, like lang liste. Sett at vi har en funksjon "twice" som ganger et tall med 2. Om man skal "mappet" en liste med tall med denne funksjonen i en løkke vil det se slik ut:</p>
+<pre>var twice = function(x) {
+  return x * 2;
+};
+
+var listDoubler = function(lst) {
+  var result = [];
+  for(var i = 0; i &lt; lst.length; i++) {
+    result[i] = twice(lst[i]);
+  }
+  return result;
+};
+</pre>
+<p>Kode som dette har de fleste av oss skrevet mange ganger. Vi oppretter en liste, looper over en annen liste, og for hvert element gjør vi noe og putter resultatet i den første listen. Til slutt returnerer vi den ferdige listen.</p>
+<p>Hver gang du ser kode som det så skal du vite at det kan gjøres mye enklere ved hjelp av map:</p>
+<pre>var listDoubler2 = function(lst) {
+  return map(lst, twice);
+};
+</pre>
+<p>Som du ser er det mye enklere å lese hva som skjer i "listDoubler2". Men jeg har jukset litt, for JavaScript har i utgangspunktet ingen map-funksjon. Den må du lage selv. Men det er jo veldig enkelt, for den er nesten identisk med den første versjonen av "listDoubler":</p>
+<pre>var map = function(lst, f) {
+  var result = [];
+  for(var i = 0; i &lt; lst.length; i++) {
+    result[i] = f(lst[i]);
+  }
+  return result;
+};
+</pre>
+<h2>Filter</h2>
+<p>Filter er en funksjon som tar inn en liste, og returnerer en ny som inneholder noen utvalgte element fra orginallisten. Sett at vi har funksjonen "even" som avgjør om et tall er partall. Da kan vi bruke en løkke til å filtrere ut partallene i en liste:</p>
+<pre>var even = function(x) {
+  return x % 2 == 0;
+};
+
+var onlyEven = function(lst) {
+  var result = [];
+  for(var i = 0; i &lt; lst.length; i++) {
+    if (even(lst[i]))
+      result.push(lst[i]);
+  }
+  return result;
+};
+</pre>
+<p>Med en filter-funksjon blir det igjen mye enklere:</p>
+<pre>var onlyEven2 = function(lst) {
+  return filter(lst, even);
+};
+</pre>
+<p>Og som før er det enkelt å implementere en filter-funksjon:</p>
+<pre>var filter = function(lst, p) {
+  var result = [];
+  for(var i = 0; i &lt; lst.length; i++) {
+    if (p(lst[i]))
+      result.push(lst[i]);
+  }
+  return result;
+};
+</pre>
+<h2>Reduce</h2>
+<p>Reduce (også kjent som fold, inject, aggregate m.m.) er litt vanskeligere å få taket på. Den tar på en måte og "slår sammen" en liste til én verdi. Denne verdien <em>kan</em> være en ny liste, men trenger ikke være det. Reduce er ikke så restriktiv som map og filter, og kan dekke veldig mange itereringsbehov. Funksjonen er likevel bedre enn iterative løkker (når man blir vandt til dem), fordi den begrenser hva man kan gjøre, og derfor gir mer kode som er enklere å forstå.</p>
+<p>Sett at vi har en fuksjon som slår sammen tekst-representasjonen av to verdier. Vi kan da lage en funksjon vi kaller "stringifyList" som slår sammen alle elementene i en liste ved hjelp av nevnte funksjon:</p>
+<pre>var stringJoin = function(a, b) {
+  return a + "" + b;
+};
+
+var stringifyList = function(lst) {
+  var result = "";
+  for(var i = 0; i &lt; lst.length; i++) {
+    result = stringJoin(result, lst[i]);
+  }
+  return result;
+};
+</pre>
+<p>Og så kan vi velge å bruke reduce i stedet. Da ser det sånn ut:</p>
+<pre>var stringifyList2 = function(lst) {
+  return reduce(lst, "", stringJoin);
+};
+</pre>
+<p>Hver gang du itererer over en sekvens for å produsere en eller annen verdi så kan du bruke reduce. Begynner du å se etter slike steder så finner du dem over alt.</p>
+<p>Og her er selve implementasjonen av reduce:</p>
+<pre>var reduce = function(lst, acc, f) {
+  for(var i = 0; i &lt; lst.length; i++) {
+    acc = f(acc, lst[i]);
+  }
+  return acc;
+};
+</pre>
+<p>"acc" er en vanlig forkortelse for <em>accumulator</em>.</p>
+<h2>Map og Filter vha. Reduce</h2>
+<p>Som antydet er reduce en mer generell funksjon enn map og filter. Og nå som vi har reduce i verktøyskrinet vårt så kan vi faktisk implementere map og filter ved hjelp av denne:</p>
+<pre>var map2 = function(lst, f) {
+  return reduce(lst, [], function(acc, n) {
+    acc.push(f(n));
+    return acc;
+  });
+};
+
+var filter2 = function(lst, p) {
+  return reduce(lst, [], function(acc, n) {
+    if(p(n)) 
+      acc.push(n);
+    return acc;
+  });
+};
+</pre>
+<p>Har du sett noe så vakkert?! :)</p>
+<h2>En advarsel</h2>
+<p>Hovedpoenget med å bruke disse funksjonene er altså å skrive kode som er enklere å forstå. Den er enklere å forstå fordi man følger visse regler. Man bruke map til å "mappe", man bruker filter til å filtrere, og man bruker reduce til å redusere en liste til én ny verdi.</p>
+<p>Men i mange programmeringsspråk kan disse reglene brytes. Man kan ikke nødvendigvis avslutte en iterasjon for tidlig eller hoppe over et element, men man kan gjøre ting som har uventede sideeffekter.</p>
+<p>Dette er det viktig at man unngår. Skal man gjøre noe som bryter med konvensjonene så får man bruke et annet verktøy; en løkke eller rekursjon. Hvis ikke kan man ikke lenger gjøre de riktige antagelsene når man leser kode.., og man er like langt!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

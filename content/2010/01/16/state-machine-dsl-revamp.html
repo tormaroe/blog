@@ -1,0 +1,51 @@
+---
+title: State Machine DSL revamp
+link: http://blog.kjempekjekt.com/2010/01/16/state-machine-dsl-revamp/
+layout: post
+date: 2010-01-16 00:51:02Z
+tags:
+  - Ruby
+  - DSL
+---
+<p><a href="http://blog.kjempekjekt.com/2010/01/12/en-generisk-state-machine-i-ruby/">I min forrige blogpost</a> gikk jeg gjennom hvordan jeg laget en enkel tilstandsmaskin i <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a>. Jeg har tenkt litt mer på den, og her kommer en liten forbedring..</p>
+<p>Orginalt la jeg til rette for to ulike måter å konfigurere tilstandsmaskinen på. Først lagde jeg en enkel <em>add_transition</em> metode som jeg kunne kalle slik som dette:</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   9</span>         @state_machine.add_transition(:locked, :coin, :unlocked) { @unlock_called <span style="color: #e2e2e2">=</span> true }</p>
+</div>
+<p>Ulempen med denne er at den ikke kommuniserer så godt – god kode skrevet for mennesker bør kommunisere mer enn det der. Jeg lagde derfor et flytende grensesnitt, ala det jeg tidligere hadde laget i C#.</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   72</span>         @state_machine.configure <span style="color: #70aeed">do</span> |sm|</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   73</span>             sm.given(:locked).when(:coin).then_set_state(:unlocked).and_run { @unlock_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   74</span>             sm.given(:locked).when(:pass).then_set_state(:locked).and_run { @alarm_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   75</span>             sm.given(:unlocked).when(:coin).then_set_state(:unlocked).and_run { @thank_you_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   76</span>             sm.given(:unlocked).when(:pass).then_set_state(:locked).and_run { @lock_action_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   77</span>         <span style="color: #70aeed">end</span></p>
+</div>
+<p>Etter å ha tenkt meg litt om har jeg kommet opp med et grensesnitt jeg liker bedre. Det ligner mer på andre ting jeg har sett i Ruby, og er på en form som Rubyister gjerne refererer til som DSL-metoder. Ved å bruke en Hash (dotnet'ere kan kalle dette Dictionary) som parameter kommuniserer koden enda bedre. Det blir litt mer tekst å skrive, men på den andre siden er det også mere fleksibelt (om man f.eks. vil legge til flere parametre). Det nye grensesnittet brukes på denne måten:</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   137</span>         @state_machine.transition :if_state_is => :locked,   </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   138</span>             :when_event => :coin, :then_set_state => :unlocked <span style="color: #70aeed">do</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   139</span>             @unlock_called <span style="color: #e2e2e2">=</span> true</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   140</span>         <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   141</span>         @state_machine.transition :if_state_is => :locked,   </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   142</span>             :when_event => :pass, :then_set_state => :locked <span style="color: #70aeed">do</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   143</span>             @alarm_called <span style="color: #e2e2e2">=</span> true</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   144</span>         <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   145</span>         @state_machine.transition :if_state_is => :unlocked,   </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   146</span>             :when_event => :coin, :then_set_state => :unlocked <span style="color: #70aeed">do</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   147</span>             @thank_you_called <span style="color: #e2e2e2">=</span> true</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   148</span>         <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   149</span>         @state_machine.transition :if_state_is => :unlocked,   </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   150</span>             :when_event => :pass, :then_set_state => :locked <span style="color: #70aeed">do</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   151</span>             @lock_action_called <span style="color: #e2e2e2">=</span> true</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   152</span>         <span style="color: #70aeed">end</span></p>
+</div>
+<p>Mellom 'do' og 'end' putter man selvsagt all koden som skal trigges av tilstandsendringen – på samme måte som man kunne gjøre mellom { og } i de foregående eksemplene (dette er to ulike måter å gjøre det samme på i Ruby, hvor klammene normalt brukes når kodeblokken er på samme linje som metodekallet, og bare inneholder én statement.</p>
+<p>Selve <em>transition</em>-metoden er enkel å implementere. Den plukker ut verdiene fra Hash'en og sender dem til den tidligere definerte <em>add_transition</em>-metoden.</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   185</span> <span style="color: #70aeed">class</span> <span style="color: #a0dafc">GenericStateMachine</span> <span style="color: #136bfd">#open class definition to add another dsl method</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   186</span>     <span style="color: #70aeed">def</span> <span style="color: #a0dafc">transition</span> args, &and_run</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   187</span>         add_transition args[:if_state_is], args[:when_event], args[:then_set_state], &and_run</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   188</span>     <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">   189</span> <span style="color: #70aeed">end</span></p>
+</div>

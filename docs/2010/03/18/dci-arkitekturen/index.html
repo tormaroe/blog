@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="OO Patterns,Ruby">
+
+    <title>DCI arkitekturen</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>DCI arkitekturen</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 18. mars 2010</small> 
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p><strong>Eller: <em>Hvordan jeg fikk sansen for multippel arv.</em></strong></p>
+<p>På QCon London fikk jeg ved en tilfeldighet med meg en halv forelesning med Jim O. Coplien, som snakket om noe han kalte <em>The DCI Architecture</em>. DCI står for <strong>Data-Context-Interaction</strong>, og er ifølge Coplien en <strong><em>bedre</em></strong> måte å designe systemer på enn dagens "normale" bruk av objektorientering.</p>
+<p style="padding-left: 15px"><em>"Object-oriented programming was supposed to unify the perspectives of the programmer and the end user in computer code: a boon both to usability and program comprehension. While objects capture structure well, they fail to capture system action. DCI is a vision to capture the end user cognitive model of roles and interactions between them."</em></p>
+<p style="padding-bottom: 4px; background-color: silver; margin: 5px 5px 20px; padding-left: 10px; padding-right: 10px; padding-top: 4px"><strong>Fakta:</strong><br>Opphavsmannen til DCI er professor ved Univeritetet i Oslo <a href="http://heim.ifi.uio.no/~trygver/">Trygve Reenskaug</a>. Dette er samme nordmann som formulerte <em>model-view-controller</em> mønsteret i 1979.</p>
+<p>For å få en komplett forståelse av hva denne visjonen er for noe bør du klikke på referansene i slutten av blogposten. Det du får her er en liten demo av <em>min</em> forståelse av DCI, gjennom at jeg ved hjelp av <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a> implementerer overføring av penger mellom to kontoer. Valget av programmeringsspråk er ikke tilfeldig – for å få til DCI er jeg avhengig av støtte for multippel arv, noe Ruby har i form av <a href="http://www.tutorialspoint.com/ruby/ruby_modules.htm">mix-ins</a>. Og for at det skal bli virkelig elegant må jeg kunne påføre arven dynamisk i runtime.</p>
+<p>La oss anta at vi allerede har en Account-klasse i domenet vårt som representerer en bankkonto. Den er veldig enkel (eller <em>blodfattig</em> som mange vil si), og har bare to read-only properties: navn og balanse. I tillegg har den en en liten metode for å representere kontoen som en streng (to_s tilvarer ToString() i C#).</p>
+<div style="margin-bottom: 15px"><font face="monospace">account.rb:<br />
+<div style="background-color: black; padding-left: 5px; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">1 </font></span><font color="#96cbfe">class</font>&nbsp;<font color="#ffffb6">Account</font><br><span style="background-color: #000000"><font color="#3d3d3d">2 </font></span>&nbsp; <font color="#6699cc">attr_reader</font>&nbsp;<font color="#99cc99">:name</font>, <font color="#99cc99">:balance</font><br><span style="background-color: #000000"><font color="#3d3d3d">3 </font></span>&nbsp; <font color="#96cbfe">def</font>&nbsp;<font color="#ffd2a7">initialize</font> name, balance<br><span style="background-color: #000000"><font color="#3d3d3d">4 </font></span>&nbsp;&nbsp;&nbsp; <font color="#c6c5fe">@name</font>, <font color="#c6c5fe">@balance</font> = name, balance<br><span style="background-color: #000000"><font color="#3d3d3d">5 </font></span>&nbsp; <font color="#96cbfe">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">6 </font></span>&nbsp; <font color="#96cbfe">def</font>&nbsp;<font color="#ffd2a7">to_s</font><br><span style="background-color: #000000"><font color="#3d3d3d">7 </font></span>&nbsp;&nbsp;&nbsp; <font color="#336633">"</font><font color="#00a0a0">#{</font><font color="#c6c5fe">@name</font><font color="#00a0a0">}</font><font color="#e18964">\t</font><font color="#a8ff60">$</font><font color="#00a0a0">#{</font><font color="#c6c5fe">@balance</font><font color="#00a0a0">}</font><font color="#336633">"</font><br><span style="background-color: #000000"><font color="#3d3d3d">8 </font></span>&nbsp; <font color="#96cbfe">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">9 </font></span><font color="#96cbfe">end</font><br></div>
+<p></font></div>
+<p>Når vi nå skal implementere overføring av penger mellom kontoer rører vi <em>ikke</em> den eksisterende Account-klassen. Vi vil i stedet implementere denne nye adferden i helt egne entiteter. Det å overføre penger er i teorien et abstrakt begrep, noe som kan foregå mellom andre ting enn bare Accounts. Vi vil derfor snakke om roller i stedet – overføring av penger har to roller: sender og mottager. Først implementerer jeg senderen, som jeg kaller for MoneySource:</p>
+<div style="margin-bottom: 15px"><font face="monospace">money_tranfer.rb (del 1):<br />
+<div style="background-color: black; padding-left: 5px; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">1 </font></span><font color="#96cbfe">require</font>&nbsp;<font color="#336633">'</font><font color="#a8ff60">transaction/simple</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">2 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">3 </font></span><font color="#96cbfe">module</font>&nbsp;<font color="#ffffb6">MoneySource</font><br><span style="background-color: #000000"><font color="#3d3d3d">4 </font></span>&nbsp; <font color="#96cbfe">class</font>&nbsp;<font color="#ffffb6">InsufficientFundsError</font> &lt; <font color="#ffffb6">StandardError</font>; <font color="#96cbfe">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">5 </font></span>&nbsp; <font color="#6699cc">attr_writer</font>&nbsp;<font color="#99cc99">:recipient</font><br><span style="background-color: #000000"><font color="#3d3d3d">6 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">7 </font></span>&nbsp; <font color="#96cbfe">def</font>&nbsp;<font color="#ffd2a7">transfer</font> amount<br><span style="background-color: #000000"><font color="#3d3d3d">8 </font></span>&nbsp;&nbsp;&nbsp; validate_transfer_of amount<br><span style="background-color: #000000"><font color="#3d3d3d">9 </font></span>&nbsp;&nbsp;&nbsp; <font color="#ffffb6">Transaction</font>::<font color="#ffffb6">Simple</font>.start(<font color="#99cc99">self</font>) <font color="#6699cc">do</font> |<font color="#c6c5fe">trans</font>|<br><span style="background-color: #000000"><font color="#3d3d3d">10 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#6699cc">begin</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br><span style="background-color: #000000"><font color="#3d3d3d">11 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remove amount<br><span style="background-color: #000000"><font color="#3d3d3d">12 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#c6c5fe">@recipient</font>.receive amount<br><span style="background-color: #000000"><font color="#3d3d3d">13 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#6699cc">rescue</font><br><span style="background-color: #000000"><font color="#3d3d3d">14 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; log <font color="#336633">"</font><font color="#a8ff60">Aborting transfer of $</font><font color="#00a0a0">#{</font>amount<font color="#00a0a0">}</font><font color="#a8ff60"> from </font><font color="#00a0a0">#{</font>name<font color="#00a0a0">}</font><font color="#336633">"</font><br><span style="background-color: #000000"><font color="#3d3d3d">15 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; trans.abort_transaction<br><span style="background-color: #000000"><font color="#3d3d3d">16 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#6699cc">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">17 </font></span>&nbsp;&nbsp;&nbsp; <font color="#6699cc">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">18 </font></span>&nbsp; <font color="#96cbfe">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">19 </font></span>&nbsp; <font color="#96cbfe">def</font>&nbsp;<font color="#ffd2a7">validate_transfer_of</font> amount<br><span style="background-color: #000000"><font color="#3d3d3d">20 </font></span>&nbsp;&nbsp;&nbsp; <font color="#6699cc">raise</font>&nbsp;<font color="#ffffb6">InsufficientFundsError</font>&nbsp;<font color="#6699cc">if</font>&nbsp;<font color="#c6c5fe">@balance</font> &lt; amount<br><span style="background-color: #000000"><font color="#3d3d3d">21 </font></span>&nbsp; <font color="#96cbfe">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">22 </font></span>&nbsp; <font color="#96cbfe">def</font>&nbsp;<font color="#ffd2a7">remove</font> amount<br><span style="background-color: #000000"><font color="#3d3d3d">23 </font></span>&nbsp;&nbsp;&nbsp; <font color="#c6c5fe">@balance</font> -= amount<br><span style="background-color: #000000"><font color="#3d3d3d">24 </font></span>&nbsp;&nbsp;&nbsp; log <font color="#336633">"</font><font color="#a8ff60">Removing $</font><font color="#00a0a0">#{</font>amount<font color="#00a0a0">}</font><font color="#a8ff60"> from </font><font color="#00a0a0">#{</font><font color="#c6c5fe">@name</font><font color="#00a0a0">}</font><font color="#336633">"</font><br><span style="background-color: #000000"><font color="#3d3d3d">25 </font></span>&nbsp; <font color="#96cbfe">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">26 </font></span><font color="#96cbfe">end</font><br></div>
+<p></font></div>
+<p>MoneySource har en metode kalt <em><strong>transfer</strong></em> som tar et beløp som eneste parameter. Først valideres det at det er tilstrekkelig med penger for å foreta overføringen. Deretter startes det en transaksjon ("transaction-simple" en et lite Ruby-biblotek som gir grei, in-memory transaksjonsstøtte) hvor MoneySource først fjerner det gitte beløpet fra sin egen balanse, for deretter å sende det samme beløpet til en mottager. Transaksjonen avbrytes om noe av en eller annen grunn skulle gå galt.</p>
+<p>Merk at MoneySource ikke vet noe om Account, og Account vet ikke noe om MoneySource. Antagelsen MoneySource gjør er at den har variablene @name og @balance.., det er <em>ikke</em> tilfeldig at Account har det samme.</p>
+<p>MoneySource har også en property for å sette en mottager (@recipient), og antar at denne har en receive-metode. Det er nå på tide å implementere den andre rollen, nemlig MoneyDestination:</p>
+<div style="margin-bottom: 15px"><font face="monospace">money_tranfer.rb (del 2):<br />
+<div style="background-color: black; padding-left: 5px; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">28 </font></span><font color="#96cbfe">module</font>&nbsp;<font color="#ffffb6">MoneyDestination</font><br><span style="background-color: #000000"><font color="#3d3d3d">29 </font></span>&nbsp; <font color="#96cbfe">def</font>&nbsp;<font color="#ffd2a7">receive</font> amount<br><span style="background-color: #000000"><font color="#3d3d3d">30 </font></span>&nbsp;&nbsp;&nbsp; <font color="#c6c5fe">@balance</font> += amount<br><span style="background-color: #000000"><font color="#3d3d3d">31 </font></span>&nbsp;&nbsp;&nbsp; log <font color="#336633">"</font><font color="#a8ff60">Adding $</font><font color="#00a0a0">#{</font>amount<font color="#00a0a0">}</font><font color="#a8ff60"> to </font><font color="#00a0a0">#{</font><font color="#c6c5fe">@name</font><font color="#00a0a0">}</font><font color="#336633">"</font><br><span style="background-color: #000000"><font color="#3d3d3d">32 </font></span>&nbsp; <font color="#96cbfe">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">33 </font></span><font color="#96cbfe">end</font><br></div>
+<p></font></div>
+<p>I <em>design time</em> følger vi <strong>Single Responsibility Principle</strong> – hver modul/klasse har ett klart definert ansvar (om du lurte så er Accounts ansvar er å ha en balanse) – og vi unngår som nevnt tett kobling mellom entitetene. DCI er også en løsning som følger <strong>Open-Closed Principle</strong>, og er i høy grad en smidig arkitektur. Vi forsøker å unngå polymorfisme; alt er definert ett tydelig sted – vi har ingen virtuelle metoder som normalt gjør det vanskeligere å finne frem i koden.</p>
+<p style="padding-left: 15px"><em>"A program that follows the DCI paradigm exposes its inner workings to a reader of its code."</em>&nbsp;</p>
+<p>I runtime derimot vil vi i DCI-arkitekturen gi objektene roller i ulike kontekster, som lar dem samhandle på nye måter. Account er et data-objekt (D'en i DCI). MoneySource og MoneyDestination er roller som definerer interaskjonen (I'en i DCI) mellom objekter i en gitt kontekst (C'en i DCI). Rollene arves altså inn når de behøves.., et gitt objekt kan bekle mange, ulike roller. Det er her multippel arv kommer inn i bildet.</p>
+<p>Den siste modulen jeg trenger definerer selve konteksten: MoneyTransfer. Den har en <em>execute</em>-metode som tar tre parametre: et objekt som skal være kilde, et objekt som skal være destinasjon, og beløpet som skal overføres. Execute utvider kilden med MoneySource (linje 37: MoneySource-modulen mikses inn i source-objektet i runtime). På samme måte utvides destinasjonen med MoneyDestination. Source har nå fått en property <em>recipient</em> og en metode <em>transfer</em> (som tidligere definert i MoneySource). Disse benyttes i linje 39 og 40 til å utføre overføringen.</p>
+<div style="margin-bottom: 15px"><font face="monospace">money_tranfer.rb (del 3):<br />
+<div style="background-color: black; padding-left: 5px; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">35 </font></span><font color="#96cbfe">module</font>&nbsp;<font color="#ffffb6">MoneyTransfer</font><br><span style="background-color: #000000"><font color="#3d3d3d">36 </font></span>&nbsp; <font color="#96cbfe">def</font>&nbsp;<font color="#99cc99">self</font>.<font color="#ffd2a7">execute</font> source, target, amount<br><span style="background-color: #000000"><font color="#3d3d3d">37 </font></span>&nbsp;&nbsp;&nbsp; source.extend <font color="#ffffb6">MoneySource</font><br><span style="background-color: #000000"><font color="#3d3d3d">38 </font></span>&nbsp;&nbsp;&nbsp; target.extend <font color="#ffffb6">MoneyDestination</font><br><span style="background-color: #000000"><font color="#3d3d3d">39 </font></span>&nbsp;&nbsp;&nbsp; source.recipient = target<br><span style="background-color: #000000"><font color="#3d3d3d">40 </font></span>&nbsp;&nbsp;&nbsp; source.transfer amount<br><span style="background-color: #000000"><font color="#3d3d3d">41 </font></span>&nbsp; <font color="#96cbfe">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">42 </font></span><font color="#96cbfe">end</font><br></div>
+<p></font></div>
+<p>I denne demoen er source og target Account-objekter, men de behøver ikke være det.</p>
+<p>Her er et lite skript som bruker MoneyTransfer. De fleste detaljene er uvesentlige og er derfor utelatt.</p>
+<div style="margin-bottom: 15px"><font face="monospace">tranfer.rb:<br />
+<div style="background-color: black; padding-left: 5px; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">47 </font></span><font color="#96cbfe">require</font>&nbsp;<font color="#336633">'</font><font color="#a8ff60">account</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">48 </font></span><font color="#96cbfe">require</font>&nbsp;<font color="#336633">'</font><font color="#a8ff60">money_transfer</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">49 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">50 </font></span>setup_accounts <font color="#7c7c7c"># details omitted</font><br><span style="background-color: #000000"><font color="#3d3d3d">51 </font></span>list_accounts <font color="#7c7c7c"># details omitted</font><br><span style="background-color: #000000"><font color="#3d3d3d">52 </font></span>source = get_account <font color="#336633">'</font><font color="#a8ff60">Select account to transfer money from</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">53 </font></span>target = get_account <font color="#336633">'</font><font color="#a8ff60">Select account to transfer money to</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">54 </font></span>amount = get_amount&nbsp; <font color="#336633">'</font><font color="#a8ff60">Specify amount to transfer</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">55 </font></span><font color="#ffffb6">MoneyTransfer</font>.execute(source, target, amount)<br><span style="background-color: #000000"><font color="#3d3d3d">56 </font></span>list_accounts<br></div>
+<p></font></div>
+<p>Jeg setter opp noen kontoer, lister dem i konsollet, og ber brukeren om å spesifisere source, target og amount. Jeg kaller så MoneyTransfer.execute, og lister kontoene igjen. Her er et eksempel på en slik overføring:</p>
+<div style="margin-bottom: 15px"><font face="monospace">Sample run #1:<br />
+<div style="background-color: black; padding-left: 5px; color: #f6f3e8">
+<pre><span style="color: green">C:\Users\tormar\ruby_projects\DCI&gt;</span>transfer.rb
+0: Salery       $1000
+1: Usage        $1000
+2: Savings      $1000
+Select account to transfer money from: 1
+Select account to transfer money to: 2
+Specify amount to transfer: 800
+<span style="color: orange">Tue Mar 16 16:24:07 +0100 2010: Removing $800 from Usage
+Tue Mar 16 16:24:07 +0100 2010: Adding $800 to Savings</span>
+0: Salery       $1000
+1: Usage        $200
+2: Savings      $1800</pre>
+</div>
+<p></font></div>
+<p>Siden jeg implementerte transaksjonshåndtering vil jeg også demonstrere hva som skjer om target av en eller annen grunn skulle kaste et exception (selv om det ikke har så mye med temaet å gjøre). Den røde logge-linjen kommer fra MoneyDestination:</p>
+<div style="margin-bottom: 15px"><p><font face="monospace">Sample run #2: </p>
+<div style="background-color: black; padding-left: 5px; color: #f6f3e8">
+<pre><span style="color: green">C:\Users\tormar\ruby_projects\DCI&gt;</span>transfer.rb
+0: Salery       $1000
+1: Usage        $1000
+2: Savings      $1000
+Select account to transfer money from: 0
+Select account to transfer money to: 2
+Specify amount to transfer: 1000
+<span style="color: orange">Tue Mar 16 16:28:11 +0100 2010: Removing $1000 from Salery</span>
+<span style="color: red">Tue Mar 16 16:28:11 +0100 2010: Error: not able to receive money right now</span>
+<span style="color: orange">Tue Mar 16 16:28:11 +0100 2010: Aborting transfer of $1000 from Salery</span>
+0: Salery       $1000
+1: Usage        $1000
+2: Savings      $1000</pre>
+</div>
+<p></font></div>
+<p>DCI er altså en reaksjon på det "oppfinnerne" ser på som en gal bruk av objektorientering. De hevder at måten vi begynte å bruke <em>polymorphism, coupling, cohesion, etc</em> da vi oppdaget OO på 80- og 90-tallet strider mot objektorienteringens mål, som var å gi et bedre samsvar mellom software og folks mentale modell av virkeligheten. De vil gjøre systemets adferd mer eksplisitt ved å gjøre roller til fullverdige entiteter – løsrevet fra objektene.</p>
+<p>Dette får meg til å tenke på <a href="/2009/09/27/greg-young-slapp-ls-domenet-sitt-p-nnug-i-bergen/"><strong><em>Command Query Responsibility Segregation (CQRS)</em></strong></a> som er så i skuddet for tiden – er ikke det også på en måte en reaksjon på det samme? Der gjør man i alle fall adferden eksplisitt gjennom command-objekter, og skreddersyr øvrig domenemodell i forhold til dem.</p>
+<p>En siste tankevekker: Coplien og Reenskaug er to av dem som (såvidt jeg forstod) hardnakket hevder at språk som Java og C# ikke er orntlige, objektorienterte språk. I C# dreier egentlig alt seg om design av klasser, mens objekter har en mere sentral posisjon i språk som Ruby – hvor de f.eks. kan endre karakter fullstendig under kjøring av programmet. Man bryr seg sjelden om hvilken type et objekt har i Ruby, bare hvilke egenskaper det tilbyr. Jeg vet ikke om det er så fruktbart å stå på den barikaden, men det er interessant å diskutere forskjellen.</p>
+<p style="margin-left: 15px"><em>"Roles are about objects and how they interact to achieve some purpose. For thirty years I have tried to get them into the into the main stream, but haven't succeeded. I believe the reason is that our programming languages are class oriented rather than object oriented. So why model in terms of objects when you cannot code them? And why model at all when you cannot keep model and code synchronized?" –Trygve Reenskaug</em></p>
+<p>Til slutt må jeg få gjenta det jeg sa innledningsvis, ikke døm DCI ut fra det du har sett her. Dette har vært min tolkning, så gå til kildene for en dypere forståelse, som er: <a href="http://www.artima.com/articles/dci_vision.html">The DCI Architecture: A New Vision of Object-Oriented Programming</a> | <a href="http://folk.uio.no/trygver/2008/commonsense.pdf">The Common Sense of Object Oriented Programming (pdf)</a> | <a href="http://en.wikipedia.org/wiki/Data,_Context,_and_Interaction">DCI på wikipedia</a> | <a href="http://heim.ifi.uio.no/~trygver/">Trygve Reenskaug (UiO)</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

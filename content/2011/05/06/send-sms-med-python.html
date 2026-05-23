@@ -1,0 +1,22 @@
+---
+title: Send SMS med Python
+link: http://blog.kjempekjekt.com/2011/05/06/send-sms-med-python/
+layout: post
+date: 2011-05-06 12:39:09Z
+tags:
+  - Python
+  - PSWinCom
+  - SMS
+---
+<p>Hvis du er en Python-utvikler som lurer på hvordan du skal få til å sende SMS-meldinger fra programmene dine, så kan du slutte å lure nå. Denne uken har jeg startet open source-prosjektet <a href="https://github.com/tormaroe/pswinpy" target="_blank"><strong>pswinpy</strong></a>, som er et klientbiblotek for sending av SMS. Jeg kaller versjon 0.0.1 for en beta, men det fungerer helt fint, og lar deg sende meldinger slik som dette:</p><pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">1 </span><span class="PreProc">from</span> pswinpy <span class="PreProc">import</span> API
+<span class="lnr">2 </span>
+<span class="lnr">3 </span>api = API(<span class="String">'black_knight'</span>,<span class="String">'p@$$w0rd'</span>)
+<span class="lnr">4 </span>api.sendSms(<span class="Number">4712345678</span>, <span class="String">"It's just a flesh wound."</span>)
+</pre>
+<p>Pswinpy tilsvarer <a href="http://blog.kjempekjekt.com/2011/02/08/pswincom-ruby-gem/">pswincomgem-prosjektet</a> jeg startet for Ruby-utviklere for et par måneder siden, og krever en Gateway-konto hos <a href="http://pswin.com" target="_blank">PSWinCom</a>.&nbsp; </p>
+<p>Du kan også spesifisere avsender, bruke utsatt levering, og sende CPA- og GAS-meldinger (ta betalt for varer og tjenester) om Gateway-kontoen din støtter dette.</p>
+<h4>Noen som vil hjelpe til?</h4>
+<p>Pswinpy er mitt aller første prosjekt i Python. Det eneste jeg vet om ideomatisk Python-kode er at det aldri kan skade å inkludere en referanse til Monty Python. Derfor hadde det vært greit om noen fra Python-miljøet kunne <a href="https://github.com/tormaroe/pswinpy" target="_blank">tatt en titt på koden</a> og se over om ting ser fornuftig ut.</p>
+<p>“Fork” meg gjerne og foreslå forbedringer!</p>
+<p>Jeg fikk også til slutt til å publisere <a href="http://pypi.python.org/pypi/pswinpy/" target="_blank">pswinpy som en pakke til PyPI</a>, den sentrale indeksen over biblotek og moduler for Python. Dette var ikke like smertefritt som å publisere til RubyGems.org – og å installere Python-pakker er heller ikke så enkelt som å installere Ruby-gems, men ikke så veldig vanskelig heller når man først har lært det.</p>
+<p>PSWinCom gem’en har forresten blitt lastet ned over 240 ganger allerede. Jeg vet ikke hvor mange som faktisk bruker den, men synes det er bra uansett. Nå håper jeg utviklere i Python-miljøet vil flokke seg rundt pswinpy på samme måte.</p>

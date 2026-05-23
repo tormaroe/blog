@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="PSWinCom,SMS,Ruby">
+
+    <title>Dagens sitat via SMS</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Dagens sitat via SMS</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 22. januar 2010</small> 
+            <a href="/tags/pswincom"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> PSWinCom</span></a>
+          
+            <a href="/tags/sms"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> SMS</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p>Jeg fortsetter å rote med <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a>, og deler villig med alle som har lyst til å lære. Denne gangen har jeg laget et lite skript som henter et daglig oppdatert visdomsord fra nettet, og sender det til en distribusjonsliste på SMS via <a href="http://pswin.com">PSWinCom</a>'s <strong>SMS Gateway</strong>. Programmet illustrerer hvor enkelt det er å hente og parse en RSS-feed, bruk av konfigurasjonsfiler i YAML-format, og sending av XML til en server over TCP (ett av PSWinCom's mange integrasjonsgrensesnitt).</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="ruby_quote" border="0" alt="ruby_quote" src="/uploads/2010/01/ruby_quote.jpg" width="502" height="287"></p>
+<p>Det komplette programmet er listet ut nedenfor. La meg kjapt gå gjennom de ulike delene:</p>
+<p>Metoden <strong><em>get_quote</em></strong> (linje 5 til 11) tar inn URL'en til en RSS-feed fra <a href="http://www.brainyquote.com/" target="_blank">BrainyQuote</a> som gir meg ett nytt sitat hver dag. Jeg åpner en connection mot adressen, og parser den med RSS-parser som er en del av Ruby's grunninstallasjon. Jeg plukker ut det første elementet, slår sammen beskrivelsen (selve sitatet) og tittelen (hvem sitatet stammer fra), og returnerer dette (siste statement i en ruby-metode returneres automatisk).</p>
+<p>Metoden <strong><em>get_sms_xml</em></strong> (linje 13 til 28) tar inn nødvendige parametre og bygger opp XML'en jeg skal sende til SMS Gateway'en. Dokumentasjon av dette formatet er definert <a href="http://www.pswin.com/download/xml.pdf" target="_blank">i denne pdf'en</a>. I metoden bruker jeg noe som kalles for et <a href="http://en.wikipedia.org/wiki/Here_document" target="_blank">Here-Document</a> – en "tradisjonsrik" måte å definere strenger over flere linjer på som du også finner i PHP, Perl, Python, Unix shells, Windows Powershell etc.</p>
+<p>Metoden <strong><em>send_sms</em></strong> (linje 30 til 34) åpner en TCP socket på en gitt adresse og port, sender XML'en, og avslutter. Det er alt som skal til for å sende SMS gjennom systemet vårt.., så sant du har en konto vel-å-merke.</p>
+<div style="font-family: monospace; margin-bottom: 18px">QuoteSMS.rb:<br><br />
+<div style="padding-bottom: 2px; background-color: #000000; padding-left: 2px; padding-right: 2px; color: #f6f3e8; padding-top: 2px"><span style="background-color: #000000"><font color="#3d3d3d">1 </font></span><font color="#96cbfe">require</font>&nbsp;<font color="#336633">'</font><font color="#a8ff60">rss</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">2 </font></span><font color="#96cbfe">require</font>&nbsp;<font color="#336633">'</font><font color="#a8ff60">open-uri</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">3 </font></span><font color="#96cbfe">require</font>&nbsp;<font color="#336633">'</font><font color="#a8ff60">yaml</font><font color="#336633">'</font><br><span style="background-color: #000000"><font color="#3d3d3d">4 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">5 </font></span>def get_quote uri<br><span style="background-color: #000000"><font color="#3d3d3d">6 </font></span>&nbsp; open(uri) <font color="#6699cc">do</font> |<font color="#c6c5fe">con</font>|<br><span style="background-color: #000000"><font color="#3d3d3d">7 </font></span>&nbsp;&nbsp;&nbsp; rss = <font color="#ffffb6"><b>RSS</b></font>::<font color="#ffffb6"><b>Parser</b></font>.parse(con.read, <font color="#99cc99">false</font>)<br><span style="background-color: #000000"><font color="#3d3d3d">8 </font></span>&nbsp;&nbsp;&nbsp; quote = rss.items.first<br><span style="background-color: #000000"><font color="#3d3d3d">9 </font></span>&nbsp;&nbsp;&nbsp; <font color="#336633">"</font><font color="#00a0a0">#{</font>quote.description<font color="#00a0a0">}</font><font color="#a8ff60"> -</font><font color="#00a0a0">#{</font>quote.title<font color="#00a0a0">}</font><font color="#336633">"</font><br><span style="background-color: #000000"><font color="#3d3d3d">10 </font></span>&nbsp; <font color="#6699cc">end</font><br><span style="background-color: #000000"><font color="#3d3d3d">11 </font></span>end<br><span style="background-color: #000000"><font color="#3d3d3d">12 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">13 </font></span>def get_sms_xml gw, receivers_xml, text<br><span style="background-color: #000000"><font color="#3d3d3d">14 </font></span>&lt;&lt;<font color="#336633">EOF</font><br><span style="background-color: #000000"><font color="#3d3d3d">15 </font></span><font color="#a8ff60">&lt;?xml version="1.0"?&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">16 </font></span><font color="#a8ff60">&lt;SESSION&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">17 </font></span><font color="#a8ff60">&lt;CLIENT&gt;</font><font color="#00a0a0">#{</font>gw[:client]<font color="#00a0a0">}</font><font color="#a8ff60">&lt;/CLIENT&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">18 </font></span><font color="#a8ff60">&lt;PW&gt;</font><font color="#00a0a0">#{</font>gw[:password]<font color="#00a0a0">}</font><font color="#a8ff60">&lt;/PW&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">19 </font></span><font color="#a8ff60">&lt;MSGLST&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">20 </font></span><font color="#a8ff60">&lt;MSG&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">21 </font></span><font color="#a8ff60">&lt;TEXT&gt;</font><font color="#00a0a0">#{</font>text<font color="#00a0a0">}</font><font color="#a8ff60">&lt;/TEXT&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">22 </font></span><font color="#00a0a0">#{</font>receivers_xml<font color="#00a0a0">}</font><br><span style="background-color: #000000"><font color="#3d3d3d">23 </font></span><font color="#a8ff60">&lt;SND&gt;</font><font color="#00a0a0">#{</font>gw[:sender]<font color="#00a0a0">}</font><font color="#a8ff60">&lt;/SND&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">24 </font></span><font color="#a8ff60">&lt;/MSG&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">25 </font></span><font color="#a8ff60">&lt;/MSGLST&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">26 </font></span><font color="#a8ff60">&lt;/SESSION&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">27 </font></span><font color="#336633">EOF</font><br><span style="background-color: #000000"><font color="#3d3d3d">28 </font></span>end<br><span style="background-color: #000000"><font color="#3d3d3d">29 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">30 </font></span>def send_sms gw, xml<br><span style="background-color: #000000"><font color="#3d3d3d">31 </font></span>&nbsp; session = <font color="#ffffb6"><b>TCPSocket</b></font>.new(gw[:host], gw[:port])<br><span style="background-color: #000000"><font color="#3d3d3d">32 </font></span>&nbsp; session.write xml<br><span style="background-color: #000000"><font color="#3d3d3d">33 </font></span>&nbsp; session.close<br><span style="background-color: #000000"><font color="#3d3d3d">34 </font></span>end<br><span style="background-color: #000000"><font color="#3d3d3d">35 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">36 </font></span>settings = <font color="#ffffb6"><b>YAML</b></font>.load_file(<font color="#336633">'</font><font color="#a8ff60">settings.yml</font><font color="#336633">'</font>)<br><span style="background-color: #000000"><font color="#3d3d3d">37 </font></span><br><span style="background-color: #000000"><font color="#3d3d3d">38 </font></span>quote = get_quote settings[:quote_uri]<br><span style="background-color: #000000"><font color="#3d3d3d">39 </font></span>xml = get_sms_xml(settings[:gateway], <br><span style="background-color: #000000"><font color="#3d3d3d">40 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; settings[:receivers].map {|<font color="#c6c5fe">r</font>| <font color="#336633">"</font><font color="#a8ff60">&lt;RCV&gt;</font><font color="#00a0a0">#{</font>r<font color="#00a0a0">}</font><font color="#a8ff60">&lt;/RCV&gt;</font><font color="#336633">"</font>}, <br><span style="background-color: #000000"><font color="#3d3d3d">41 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; quote)<br><span style="background-color: #000000"><font color="#3d3d3d">42 </font></span>send_sms settings[:gateway], xml<br></div>
+</div>
+<p>I linje 36 leser jeg inn konfigurasjonsdata (mer om dette om litt). Deretter er det bare å kalle de tre metodene, og <em>hey-presto(!)</em> så er jobben gjort. Nå kan jeg for eksempel sette opp en scheduled task til å kjøre dette programmet hver dag, og "spamme" mine venner med gode sitater på telefonen.</p>
+<p>Legg merke til linje 40 som konverterer en array av telefonnumre til en XML streng array vha. metoden <em>map</em>. Dette tilsvarer å bruke <em>Select</em>-metoden i Linq i .NET:</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 1</span>&nbsp;<span style="color: #00bfff">var</span> <span style="color: #c4c4c4">list</span> <span style="color: silver">=</span> <span style="color: #00bfff">new</span> <span style="color: #00bfff">long</span>[] { <span style="color: #80ff00">4700000001</span>, <span style="color: #80ff00">4700000002</span>, <span style="color: #80ff00">4700000003</span> };</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 2</span>&nbsp; <span style="color: #7ee0ce">IEnumerable</span><span style="color: silver">&lt;</span><span style="color: #00d2d2">String</span><span style="color: silver">&gt;</span> <span style="color: #c4c4c4">xml</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">Select</span>(<span style="color: #c4c4c4">phonenumber</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 3</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: silver">=&gt;</span> <span style="color: #00bfff">string</span><span style="color: silver">.</span><span style="color: #c4c4c4">Format</span>(<span style="color: #fa8072">"&lt;RCV&gt;{0}&lt;/RCV&gt;"</span>, <span style="color: #c4c4c4">phonenumber</span>));</p>
+</div>
+<p>Det at jeg kan skyte inn arrayet i en annen streng som i linje 22, og at elementene da "flates ut" til én streng er minst like kult. Tilsvarende får du ikke til i .NET uten å eventuelt endre definisjonen av ToString() for enumerasjonen det gjelder. <em>Let's not go there…</em></p>
+<h4>YAML Ain't Markup Language</h4>
+<p>Som sagt har jeg valgt å bruke <a href="http://en.wikipedia.org/wiki/YAML" target="_blank">YAML</a> som format på konfigurasjonsfilen til dette programmet. YAML er et serialiseringsformat som er tilgjengelig for mange programmeringsspråk. Fordelen er at det er mye mere lesbart og editeringsvennlig enn XML, som har vært det mest populære formatet i noen år nå. YAML har mer til felles med <a href="http://en.wikipedia.org/wiki/JSON" target="_blank">JSON</a>.., I praksis er JSON faktisk et subset av YAML.&nbsp; </p>
+<div style="font-family: monospace; margin-bottom: 18px">settings.yml:<br><br />
+<div style="padding-bottom: 2px; background-color: #333333; padding-left: 2px; padding-right: 2px; color: #ffffff; padding-top: 2px"><font color="#ffff00">1 </font><font color="#cd5c5c">--- </font><br><font color="#ffff00">2 </font><font color="#ffdead">:</font><font color="#98fb98">gateway</font><font color="#ffdead">:</font>&nbsp;<br><font color="#ffff00">3 </font>&nbsp; <font color="#ffdead">:</font><font color="#98fb98">port</font><font color="#ffdead">:</font>&nbsp;<font color="#ffa0a0">9876</font><br><font color="#ffff00">4 </font>&nbsp; <font color="#ffdead">:</font><font color="#98fb98">client</font><font color="#ffdead">:</font> demoAccount<br><font color="#ffff00">5 </font>&nbsp; <font color="#ffdead">:</font><font color="#98fb98">password</font><font color="#ffdead">:</font> somePassw0rd <br><font color="#ffff00">6 </font>&nbsp; <font color="#ffdead">:</font><font color="#98fb98">host</font><font color="#ffdead">:</font>&nbsp;<font color="#ffa0a0">127.0</font>.<font color="#ffa0a0">0.1</font><br><font color="#ffff00">7 </font>&nbsp; <font color="#ffdead">:</font><font color="#98fb98">sender</font><font color="#ffdead">:</font> RubyQuote<br><font color="#ffff00">8 </font><font color="#ffdead">:</font><font color="#98fb98">quote_uri</font><font color="#ffdead">:</font>&nbsp;<font color="#98fb98">http</font><font color="#ffdead">:</font>//feeds.feedburner.com/brainyquote/QUOTEBR<br><font color="#ffff00">9 </font><font color="#ffdead">:</font><font color="#98fb98">receivers</font><font color="#ffdead">:</font><br><font color="#ffff00">10 </font>&nbsp; <font color="#f0e68c"><b>-</b></font>&nbsp;<font color="#ffa0a0">4790000001</font><br><font color="#ffff00">11 </font>&nbsp; <font color="#f0e68c"><b>-</b></font>&nbsp;<font color="#ffa0a0">4790000002</font><br><font color="#ffff00">12 </font>&nbsp; <font color="#f0e68c"><b>-</b></font>&nbsp;<font color="#ffa0a0">4790000003</font><br></div>
+</div>
+<p>Denne settingsfilen definerer en Hash (el. dictionary om du vil) med tre nøkler med tilhørende verdier. Som nøkler har jeg brukt symboler – de tingen som begynner med kolon i Ruby – men strenger eller andre datatyper hadde fungert like fint. Nøkkelen <em>:gateway</em> har en ny Hash som verdi, som definerer settingene for å kontakte og bruke PSWinCom gatewayen. <em>:sender</em> gir for eksempel navnet jeg har valgt på avsenderen (se bildet av mobilen tidligere i artikkelen). Og nei, dette er ikke reelle brukernavn og passord…</p>
+<p>Nøkkelen <em>:quote_uri</em> refererer til en streng som inneholder RSS-adressen. <em>:receivers </em>refererer til en array med telefonnummer. Når denne filen parses får jeg tilbake en Hash med alle disse verdiene i korrekte typer.</p>
+<p>YAML er heller ikke begrenset til primitive typer som streng, arrays osv – man kan også serialisere og deserialisere Ruby-objekter man selv definerer, uten at det ser spesielt mer komplisert ut enn filen over. Faktisk trenger det egentlig ikke eksistere noen definisjon av objektene i programmet i det hele tatt – YAML-parseren vil konstruere nye typer om det trengs basert på det som er definert i YAML-filen. Ruby er jo tross alt et dynamisk språk. Ganske <em>fiffig</em> faktisk!</p>
+<h4>Konklusjon</h4>
+<p>Du har nå sett hvor enkelt det er å hente og parse en RSS feed. Du har også sett hvor smertefritt det er å sende SMS vha litt XML og PSWinCom's SMS Gateway. Og hvis ikke du fikk lyst til å bytte ut alle XML-konfigurasjonsfilene dine med YAML så har jeg kanskje forklart litt dårlig hvor kult det er. </p>
+<p>Objektorienteringen er kanskje ikke så mye å skryte av, men for et program på <a href="http://en.wikipedia.org/wiki/42_(number)" target="_blank"><strong>42</strong></a> linjer ville det bare ha vært i veien. Håper dette inspirerte!</p>
+<p><strong>Se også:</strong> <a href="/2009/07/13/send-sms-med-soap/">Send SMS med SOAP</a> for hvordan du enkelt kan bruke PSWinCom's SOAP-grensesnitt for sending i .NET.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

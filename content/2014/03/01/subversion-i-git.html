@@ -1,0 +1,55 @@
+---
+title: Subversion i Git
+link: http://blog.kjempekjekt.com/2014/03/01/subversion-i-git/
+layout: post
+date: 2014-03-01 07:00:00Z
+tags:
+  - Git
+---
+<p>
+Vi har hatt en liten pause i Ukens Git, men nå er <a href="http://www.eikeland.se/">Stian</a> tilbake med sin gjestebloggserie. 
+</p>
+<hr>
+<h2>Subversion i Git - Ukens GIT #5</h2>
+<p>
+Er du git-tilhenger, men tvunget til å jobbe mot en trollgammel SVN på et eller flere prosjekter? Du kan faktisk sjekke ut og commite til svn fra git.
+</p>
+<h3>Bruk:</h3>
+<p>
+Gitt at SVN-repoet følger konvensjonen med <code>trunk/</code>, <code>branches/</code> og <code>tags/</code> gjør du følgende for å klone et svn repo:
+</p>
+<pre>
+$ git svn clone --stdlayout http://svnserver/prosjekt
+
+# Brukes andre navn kan du bruke
+$ git svn clone http://svnserver/prosjekt -T trunk -b branches -t tags
+
+# Du kan klone trunk direkte dersom du ikke trenger branches/tags
+$ git svn clone http://svn.example.com/project/trunk
+</pre>
+<p>
+Ting som svn sitt ignore-filter fungerer jo ikke i git, men git tilbyr en importfunksjon som løser dette for deg.
+</p>
+<pre>
+$ git-svn show-ignore &gt; .gitignore
+</pre>
+<p>
+Du kan nå bruke depotet og commite slik du er vant til. Eneste unntaket er at branching og merging er veldig tungt i SVN, så branches bør en prøve å holde lokale i din git. Dette får også et par følger for det å hente ned endringer fra SVN. En bør benytte seg av rebase (istedenfor merge/pull) når man henter ned nye endringer for å beholde en lineær historikk.
+</p>
+<pre>
+# For å hente nye endringer fra svn:
+$ git svn rebase
+</pre>
+<p>
+For å commite til svn bruker du kommandoen <code>git svn dcommit</code>, dette tar alle dine git commits og sender dem over til svn-server.
+</p>
+<h3>Annet:</h3>
+<p>
+<code>git svn</code> er veldig nyttig for å konvertere gamle svn depot til moderne git depot med historikken i behold. Lag en klone av et svn depot som over og push endringene til din nye git-server.
+</p>
+<p>
+SVN er bygget inn i git, men det finnes også tredjeparts plugins til andre versjoneringssystemer, som f.eks mercurial (git-hg).
+</p>
+<p>
+Mere Git: <a href="/tags/git">Flere tips om bruk av Git finner du her!</a>
+</p>

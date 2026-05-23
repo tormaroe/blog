@@ -1,0 +1,28 @@
+---
+title: Branching i GIT
+link: http://blog.kjempekjekt.com/2013/11/04/branching-i-git/
+layout: post
+date: 2013-11-04 14:34:11Z
+tags:
+  - Jobb
+  - Git
+---
+<p>Om du en eller annen gang skulle befinne deg på PSWinComs hovedkontor i Bergen, og du tar turen innom toalettet, så vil du oppdage at pswincomere utnytter også dotiden sin optimalt. På dodøren finner du nemlig ukens git-tips, en tjeneste fra <em>vår lokale dassinformasjonsleverandør</em>.</p> <p><img title="dolitteratur" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 20px auto; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="dolitteratur" src="/uploads/2013/11/dolitteratur.jpg" width="604" height="305"></p> <p>Mannen bak heter <strong>Stian Eikeland</strong>, som du finner på <a href="http://www.eikeland.se/">eikeland.se</a>. Jeg har fått lov til å reprodusere tipsene på programmeringsbloggen. Vi begynner ganske basic med tips nummer 1, men følg med, for jeg kan love mere spenning i ukene som kommer...</p> <hr>  <h2>Branching - Ukens GIT #1</h2> <h3>Opprette ny branch</h3><pre>$ git checkout -b nybranch         # fra gjeldene branch
+$ git checkout -b master nybranch  # fra spesifisert branch</pre>
+<h3>Gi branch nytt navn</h3><pre>$ git branch -m nyttnavn             # til gjeldende branch
+$ git branch -m gammeltnavn nyttnavn # til spesifisert branch</pre>
+<h3>Slette branch - (klassisk git WTF)</h3><pre># Slett lokal branch:
+$ git branch -d feature123
+
+# Push til remote branch med :-prefix sletter remote branch
+$ git push origin :feature123</pre>
+<h3>Håndtering av remote brancher</h3><pre># Vis status på remote brancher
+$ git remote show origin
+
+# Slett brancher (lokalt) som ikke lengre finnes eksternt
+# Typisk feature brancher som blitt merget og fjernet
+$ git remote prune
+
+# Følg remote branch med lokal branch
+$ git branch --track lokalbranch origin/remotebranch
+$ git checkout lokalbranch</pre>

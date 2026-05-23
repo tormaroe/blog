@@ -1,0 +1,73 @@
+---
+title: "Template Method del 3: Bare funksjoner"
+link: http://blog.kjempekjekt.com/2012/01/31/template-method-del-3-bare-funksjoner/
+layout: post
+date: 2012-01-31 07:58:31Z
+tags:
+  - F#
+  - Funksjonell programmering
+  - OO Patterns
+---
+<p><img style="background-image: none; border-right-width: 0px; margin: 0px 20px 22px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="tp_del3" border="0" alt="tp_del3" align="left" src="/uploads/2012/01/tp_del3.png" width="146" height="127">I <a href="http://blog.kjempekjekt.com/2012/01/30/template-method-del-1-statisk-oop/">del 1</a> og <a href="http://blog.kjempekjekt.com/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">del 2</a> har du sett meg implementere Template Method pattern i C# – først i en tradisjonell, objektorientert variant, og så i en mere fleksibel variant inspirert av funksjonell programmering. Nå er det på tide å se hvordan det samme kan gjøre kun med funksjoner. Det er på tide å finne frem F#.</p> <p>Først trenger vi selve templaten, eller algoritme-skjelettet om du vil. processLog er en funksjon som har fire andre funksjoner som parametre, og bruker disse til å prosessere loggfilen. En slik funksjon kalles en <em><a href="http://en.wikipedia.org/wiki/Higher-order_function">høyereordens funksjon</a></em>.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Keyword">let</span> processLog init read processLine cleanup <span class="Keyword">=</span>
+<span class="lnr">11 </span>    init<span class="Constant">()</span>
+<span class="lnr">12 </span>    <span class="Keyword">for</span> line <span class="Keyword">in</span> read<span class="Constant">()</span> <span class="Keyword">do</span>
+<span class="lnr">13 </span>        processLine line
+<span class="lnr">14 </span>    cleanup<span class="Constant">()</span>
+</pre>
+<p>Deretter oppretter jeg et par funksjoner for å finne og rapportere errors i loggfiler:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">22 </span><span class="Keyword">let</span> errorInit<span class="Constant">()</span> <span class="Keyword">=</span> printfn <span class="String">"Errors:"</span>
+<span class="lnr">23 </span>
+<span class="lnr">24 </span><span class="Keyword">let</span> errorLineProcessor line <span class="Keyword">=</span>
+<span class="lnr">25 </span>    <span class="Keyword">let</span> m <span class="Keyword">=</span> <span class="Constant">Regex</span><span class="Keyword">(</span><span class="String">"^(\\d{17})\\s(\\w+)\\s(.+)$"</span><span class="Keyword">)</span>.<span class="Constant">Match</span><span class="Keyword">(</span>line<span class="Keyword">)</span>
+<span class="lnr">26 </span>    <span class="Keyword">if</span> m.<span class="Constant">Success</span> <span class="Keyword">then</span>
+<span class="lnr">27 </span>        <span class="Keyword">if</span> m.<span class="PreProc">Groups</span>.<span class="Constant">Item</span><span class="Keyword">(</span><span class="Number">2</span><span class="Keyword">)</span>.<span class="Constant">Value</span> <span class="Keyword">=</span> <span class="String">"ERROR"</span> <span class="Keyword">then</span>
+<span class="lnr">28 </span>            printfn <span class="String">"%s: %s"</span>
+<span class="lnr">29 </span>                <span class="Keyword">(</span>m.<span class="PreProc">Groups</span>.<span class="Constant">Item</span><span class="Keyword">(</span><span class="Number">1</span><span class="Keyword">)</span>.<span class="Constant">Value</span><span class="Keyword">)</span>
+<span class="lnr">30 </span>                <span class="Keyword">(</span>m.<span class="PreProc">Groups</span>.<span class="Constant">Item</span><span class="Keyword">(</span><span class="Number">3</span><span class="Keyword">)</span>.<span class="Constant">Value</span><span class="Keyword">)</span>
+</pre>
+<p>Det neste jeg trenger er FTP-stegene. Nedenfor oppretter jeg en funksjon som tar som innput en URL og returnerer to funksjoner – en for Initialize-steget i algoritmen og en for Cleanup-steget. Disse to funksjonene er <em>lexical closures</em>, fordi de har tilgang til URL-variabelen (mer om dette <a href="http://blog.kjempekjekt.com/2011/08/20/message-passing-style/">mange</a> andre <a href="http://blog.kjempekjekt.com/2010/08/04/lispy-c-og-hva-er-en-closure/">steder</a> i bloggen).</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">33 </span><span class="Comment">(* Evaluates to a tuple of two closures *)</span>
+<span class="lnr">34 </span><span class="Keyword">let</span> makeFtpSteps url <span class="Keyword">=</span>
+<span class="lnr">35 </span>    <span class="Keyword">let</span> setup <span class="Keyword">=</span> <span class="Keyword">fun</span> <span class="Constant">()</span> <span class="Keyword">-&gt;</span> printfn <span class="String">"Fetching log file from %s"</span> url
+<span class="lnr">36 </span>    <span class="Keyword">let</span> teardown <span class="Keyword">=</span> <span class="Keyword">fun</span> <span class="Constant">()</span> <span class="Keyword">-&gt;</span>
+<span class="lnr">37 </span>        printfn <span class="String">"Archiving local log copy..."</span>
+<span class="lnr">38 </span>        printfn <span class="String">"Deleting log file %s"</span> url
+<span class="lnr">39 </span>    <span class="Keyword">(</span>setup, teardown<span class="Keyword">)</span>
+</pre>
+<p>Så kan jeg bruke funksjone jeg nettopp laget til å opprette de to closure'ene:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">42 </span><span class="Keyword">let</span> <span class="Keyword">(</span>ftpFetch, ftpCleanup<span class="Keyword">)</span> <span class="Keyword">=</span>
+<span class="lnr">43 </span>    makeFtpSteps <span class="String">"ftp://foobar.com/logs/my.log"</span>
+</pre>
+<h4>Å komponere funksjoner..</h4>
+<p>Jeg har nå to forskjellige funksjoner som skal kalles i Initialize-steget i templaten: <em>ftpFetch</em> og <em>errorInit</em>. <a href="http://blog.kjempekjekt.com/2012/01/30/template-method-del-1-statisk-oop/">I del 1 løste jeg dette</a> ved at FTP-initialiseringsmetoden kalte baseklassens Initialize. <a href="http://blog.kjempekjekt.com/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">I del 2 løste jeg det</a> ved å ha en builder-klasse som kunne kombinere flere Action-delegater. Nå befinner jeg meg derimot i et funksjonelt språk, og da er det ingen sak å slå sammen to funksjoner til én:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">48 </span><span class="Comment">(* Using forward composition operator to compose two functions *)</span>
+<span class="lnr">49 </span><span class="Keyword">let</span> errorInitWithFtpFetch <span class="Keyword">=</span> ftpFetch <span class="Keyword">&gt;&gt;</span> errorInit
+</pre>
+<p>errorInitWithFtpFetch er nå en ny funksjon som først evaluerer ftpFetch og deretter evaluerer errorInit. Om ftpFetch hadde hatt parametre ville den nye funksjonen også hatt det. Om ftpFetch hadde returnert noe, ville dette blitt sendt inn som argumenter til errorInit. Og om errorInit hadde hatt en returverdi så hadde dette vært returverdien til den nye metoden.</p>
+<h4>På tide å teste programmet</h4>
+<p>Da gjenstår det bare å mocke lesing av fil:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">55 </span><span class="Comment">(* Faking it as usual... *)</span>
+<span class="lnr">56 </span><span class="Keyword">let</span> read<span class="Constant">()</span> <span class="Keyword">=</span> <span class="Keyword">[</span>
+<span class="lnr">57 </span>    <span class="String">"20120125180000000 DEBUG Tick!"</span><span class="Keyword">;</span>
+<span class="lnr">58 </span>    <span class="String">"20120125180100000 DEBUG Tick!"</span><span class="Keyword">;</span>
+<span class="lnr">59 </span>    <span class="String">"20120125180132112 ERROR Some error occurred"</span><span class="Keyword">;</span>
+<span class="lnr">60 </span>    <span class="String">"20120125180133056 ERROR Some other error..."</span><span class="Keyword">;</span>
+<span class="lnr">61 </span>    <span class="String">"20120125180200000 DEBUG Tick!"</span><span class="Keyword">]</span>
+</pre>
+<p>... og å kjøre selve programmet ved å kalle processLog-funksjonen med de riktige argumentene:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">64 </span>processLog
+<span class="lnr">65 </span>    errorInitWithFtpFetch
+<span class="lnr">66 </span>    read
+<span class="lnr">67 </span>    errorLineProcessor
+<span class="lnr">68 </span>    ftpCleanup
+</pre>
+<p>Output er identisk med løsningene fra del 1 og del 2.</p>
+<h4>Konklusjon</h4>
+<p>Løsningen jeg har kommet opp med her er betydelig enklere enn det du har sett før – her har vi ingen klasser som pakker inn koden og bestemmer hva vi kan og ikke kan gjøre. Løsningen er ekstremt fleksibel, og vil la meg kombinere funksjoner akkurat slik jeg ønsker. Objektene har vist seg å være helt overflødige – <strong>dette fordi Template Method i objektorientert design egentlig er et forsøk på å gjøre det samme som higher-order funksjons allerede gjør mye bedre</strong>.</p>
+<p>Det eneste det <em>kan</em> se ut som om jeg har mistet er det å ha en LogProcessor-instans/objekt som jeg kan sende rundt og eksekvere når jeg måtte ønske. Men det løser vi selvsagt også lett. Å pakke inn et funksjonskall i en ny funksjon uten parametre slik som jeg gjør her kalles <strong><em>thunking</em></strong>:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">71 </span><span class="Comment">(* Creating a thunk *)</span>
+<span class="lnr">72 </span><span class="Keyword">let</span> logProcessor<span class="Constant">()</span> <span class="Keyword">=</span>
+<span class="lnr">73 </span>    processLog
+<span class="lnr">74 </span>        errorInitWithFtpFetch
+<span class="lnr">75 </span>        read
+<span class="lnr">76 </span>        errorLineProcessor
+<span class="lnr">77 </span>        ftpCleanup
+<span class="lnr">78 </span>
+<span class="lnr">79 </span><span class="Comment">(* Evaluating the thunk *)</span>
+<span class="lnr">80 </span>logProcessor<span class="Constant">()</span>
+</pre>
+<p>logProcessor er nå i prinsippet et objekt.</p>
+<p>I del 4 vil jeg avslutte serien om Template Method ved å se på hvordan jeg kan bruke multippel arv til å gjøre en objektorientert implementasjon like fleksibel som som den løsningen du nå fikk se.</p>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="OOP">
+
+    <title>Enkle knep for bedre objektorientering</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Enkle knep for bedre objektorientering</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 5. januar 2010</small> 
+            <a href="/tags/oop"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OOP</span></a>
+          </p>
+          <p>Konseptet <strong>objektorientering</strong> (OO) ble født allerede på 60-tallet; <a href="http://en.wikipedia.org/wiki/Simula" target="_blank">Simula</a>, som ble utviklet på <a href="http://www.nr.no/" target="_blank">Norsk Regnesentral</a> med Ole-Johan Dahl og Kristen Nygaard i spissen, var det første objektorienterte programmeringsspråket. Det var likevel ikke før på 90-tallet at OO ble <em>mainstream</em>. I dag foregår det meste av moderne systemutvikling i objektorienterte språk.</p>
+<p>Men det at man bruker et slikt språk er <em>ikke</em> det samme som at man driver med <em>god</em> objektorientering.</p>
+<div style="padding-bottom: 2px; background-color: #ffff99; padding-left: 2px; padding-right: 2px; margin-bottom: 20px; padding-top: 2px"><strong>Objektorientering er å <em>innkapsle detaljer</em>!</strong> Man skjermer andre (objekter) fra å se/vite om detaljene, slik at de ikke gjør seg avhengig av disse detaljene. På den måten blir det større rom for å gjøre endringer – løsningene blir mere fleksible fordi man enkelt kan endre detaljene uten at det får bi-effekter. God OO skjuler detaljer godt, dårlig OO skjuler detaljer mindre godt.</div>
+<p>Et ganske vanlig design som <em>ikke</em> er bra OO er systemer som inneholder to fundamentalt forskjellige typer objekter: (1) entiteter som først og fremst er bærere av data – som inneholder properties, og ikke så mye mer, og (2) objekter man typisk kaller controllere (eller handlere eller managere) som <em>bruker</em> den første typen, og som inneholder all logikken i systemet. Dette er et prosedyreorientert system, og det man bedriver kalles imperativ programmering – man instruerer hele tiden programmet om hva som skal gjøres, i stedet for å be objektene selv om å gjøre jobben.</p>
+<h4>Hvordan praktisere god OO?</h4>
+<p>Jeg forsøker hele tiden å lære både meg selv og andre hvordan man designer et system etter gode OO-prinsipper, og tror jeg har kommet frem til noen av de mest grunnleggende retningslinjene man bør følge – noen enkle huskeregler, eller knep - man bør ha i bakhodet når man programmerer. Prinsippene er ikke noe jeg selv har funnet på (langt i fra), men representerer de enkleste prinsippene man kan bruke hele tiden for å gå fra prosedyreorientering til god objektorientering.</p>
+<p>Det første prinsippet er <strong style="background-color: yellow">TELL, DON'T ASK!</strong> Si at objektet skal gjøre noe for deg, ikke spør det om informasjon. Implisit i dette er blant annet at man skal unngå <em>getters</em> og <em>setters, </em>dvs. properties i .net-klasser. Properties brukes til å spørre om et objekts tilstand, eller til å eksplisit endre tilstanden, og da skjuler man ikke lenger hvordan objektet fungerer.</p>
+<p>Hvis du har kode som tar avgjørelser basert på tilstanden til et objekt, se om du i stedet kan flytte denne koden inn i objektet selv. Har du et slikt prosedyreorientert system som jeg nettopp beskrev, så forsøk å flytte kode ut fra handlerne (type 2) til dataobjektene (type 1). Gjør du det vil du snart se at propertiene blir overflødige.</p>
+<p>Eller gå motsatt vei: Hvis du tar utgangspunkt i et objekt som nesten bare inneholder properties – undersøk hvor disse propertiesene brukes, og se om du kan flytte den koden til objektet.</p>
+<p>Her følger et banalt eksempel. Du finner sjelden kode som er så tydelig feilplassert som dette her i ditt eget design, men det illustrerer i alle fall poenget mitt:</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 1</span>&nbsp;<span style="color: #00bfff">public</span> <span style="color: #00bfff">class</span> <span style="color: #00d2d2">DogManager</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 2</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 3</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">private</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">Manage</span>(<span style="color: #00d2d2">Dog</span> <span style="color: #c4c4c4">dog</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 4</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 5</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">dog</span><span style="color: silver">.</span><span style="color: #c4c4c4">IsSleepy</span>) <span style="color: #c4c4c4">dog</span><span style="color: silver">.</span><span style="color: #c4c4c4">Sleep</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 6</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">else</span> <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">dog</span><span style="color: silver">.</span><span style="color: #c4c4c4">IsHungry</span>) <span style="color: #c4c4c4">dog</span><span style="color: silver">.</span><span style="color: #c4c4c4">Eat</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 7</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">else</span> <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">dog</span><span style="color: silver">.</span><span style="color: #c4c4c4">IsRestless</span>) <span style="color: #c4c4c4">dog</span><span style="color: silver">.</span><span style="color: #c4c4c4">BegOwnerForWalk</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 8</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">else</span> <span style="color: #c4c4c4">dog</span><span style="color: silver">.</span><span style="color: #c4c4c4">SniffSomething</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 9</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp; 10</span> }</p>
+</div>
+<p>DogManager spør hunden om dens tilstand, og tar avgjørelser om hva den skal finne på basert på dette. Koden bør flyttes til Dog:</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 1</span>&nbsp;<span style="color: #00bfff">public</span> <span style="color: #00bfff">class</span> <span style="color: #00d2d2">Dog</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 2</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 3</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">public</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">DoSomething</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 4</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 5</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">IsSleepy</span>) <span style="color: #c4c4c4">Sleep</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 6</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">else</span> <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">IsHungry</span>) <span style="color: #c4c4c4">Eat</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 7</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">else</span> <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">IsRestless</span>) <span style="color: #c4c4c4">BegOwnerForWalk</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 8</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #00bfff">else</span> <span style="color: #c4c4c4">SniffSomething</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 9</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+</div>
+<p>Et prinsipp som er nært knyttet til Tell, Don't Ask er <strong style="background-color: yellow">LAW OF DEMETER (LoD)</strong>. Denne "loven" sier at man skal begrense hva objekter vet om resten av systemet. Enheter (objekter/metoder) skal kun snakke med sine venner, ikke fremmede. Man begrenser altså koblingen mellom enhetene i systemet, og oppnår dermed blant annet færre bieffekter ved endringer.., slik som jeg var inne på tidligere.</p>
+<p>LoD sier mer konkret at man i en gitt metode (M) i et objekt (O) kun kan kalle metoder på:<br>1) Objektet O selv<br>2) Parametre som sendes til metoden M<br>3) Objekter som opprettes i metoden M<br>4) Objekter som lever i O (objektets private variabler)</p>
+<p>Man skal altså ikke kalle metoder på objekter man får returnert fra andre (via properties eller metodekall). Husker man hele tiden på dette når man koder vil man oppnå bedre OO. Her er en ny, banal illustrasjon:</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 1</span>&nbsp;<span style="color: #00bfff">private</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">WalkTheDog</span>(<span style="color: #00d2d2">Dog</span> <span style="color: #c4c4c4">theDog</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 2</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 3</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #c4c4c4">theDog</span><span style="color: silver">.</span><span style="color: #c4c4c4">Legs</span><span style="color: silver">.</span><span style="color: #c4c4c4">Move</span>(); <span style="color: #bdb76b">// violates LoD</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 4</span> }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 5</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 6</span>&nbsp;<span style="color: #00bfff">private</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">WalkTheDog2</span>(<span style="color: #00d2d2">Dog</span> <span style="color: #c4c4c4">theDog</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 7</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 8</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #c4c4c4">theDog</span><span style="color: silver">.</span><span style="color: #c4c4c4">Walk</span>(); <span style="color: #bdb76b">// makes more sense..</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">&nbsp;&nbsp;&nbsp; 9</span> }</p>
+</div>
+<p>Det gir ikke mening at denne metoden skal vite noe om hvordan hunden fungerer – at bena må bevege seg for at hunden skal gå. Be heller hunden om å gå direkte, det er hunden som selv skal vite hvordan den fungerer (detaljene skal innkapsles og skjules). </p>
+<p>Legg også merke til at brudd på LoD ofte kan gjenkjennes ved flere punktum: theDog punktum Legs punktum Move(). Dog er metodens nærmeste venn, Legs er en fremmed, og skal ikke kommuniseres med.</p>
+<p>Den tredje og siste huskeregelen som vil gjøre deg til en bedre utvikler er at <strong style="background-color: yellow">OO <em>ikke</em> nødvendigvis skal modellere virkeligheten!</strong> Dette er en vanlig misforståelse som mange av oss fikk innprentet da vi begynte å lære objektorientert programmering. Om vi begynner å designe et system ved å lage klasser av alle entitetene vi kan observere i det domenet vi skal modellere kommer vi ofte skjevt ut. Begynn i stedet med adferden du ønsker, og se hvilke objekter som "naturlig" kommer ut av det.</p>
+<p>Skal vi for eksempel designe et kontrollsystem for en bil kan det være veldig feil å starte med å lage klasser for hjul, bremser, ratt, motor, bensintank, gir og bilen selv. Et system med klasser som drivstoffregulator, bremsekraftforsterker, oljenivå og servostyring vil kanskje bli enklere og mere oversiktelig. Testdreven utvikling (TDD) vil kunne hjelpe deg til å drive frem det beste designet.</p>
+<h4>På tide med en Oppsummering</h4>
+<p>De tre huskereglene jeg har presentert, sammen med de to kanskje aller viktigste programmeringsprinsippene – <em>Single Responsibility</em> (SRP) og <em>Don't Repeat Yourself</em> (<a href="/2009/03/11/dry-dont-repeat-yourself/">DRY</a>) – vil sørge for at du designer kode som er enklere å forstå, og lar seg vedlikeholde, endre og utvide. </p>
+<p>Fortell objektene hva de skal gjøre på enklest mulig måte, ikke spør de hva de holder på med. Mange properties (eller andre typer gettere og settere) betyr sansynligvis at du kan gjøre designet bedre. Ikke la objektene dine snakke med fremmede. Og ikke begynn med å modellere virkeligheten, driv i stedet frem objekter du trenger gjennom å starte med implementering av adferd.</p>
+<p>Helt til slutt: Jeg snakker her om hvordan ideell, objektorientert kode ser ut. OO er ikke den optimale løsningen for <em>alle</em> problemer. Lager du f.eks. en enkel <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete" target="_blank">CRUD</a>-applikasjon er full objektorientering overkill. OO egner seg bedre jo mere adferd systemet skal ha. Se for eksempel <a href="/2009/09/27/greg-young-slapp-ls-domenet-sitt-p-nnug-i-bergen/">posten om Greg Young's foredrag i Bergen</a>, hvor han bruker OO på "command-siden" av systemet, men ikke på "query-delen".</p>
+<p><strong>Noen eksterne lenker:</strong> <a href="http://en.wikipedia.org/wiki/Law_of_Demeter" target="_blank">Law of Demeter</a> | <a href="http://www.pragprog.com/articles/tell-dont-ask" target="_blank">Tell, Don't Ask</a> | <a href="http://en.wikipedia.org/wiki/Object-oriented_programming" target="_blank">Object-oriented programming</a> | <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle" target="_blank">Single Responsibility Prinsiple</a> | <a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself" target="_blank">Don't Repeat Yourself</a></p>
+<p><em>PS: Denne blogposten begynte som en intern </em><a href="/2009/12/19/ziptalks-p-jobben/" target="_blank"><em>ZipTalk</em></a><em> jeg holdt for utviklingsavdelingen i </em><a href="http://pswin.com"><em>PSWinCom</em></a><em>. Tittelen var da "OO &gt; O".</em></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

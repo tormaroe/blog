@@ -1,0 +1,50 @@
+---
+title: Min nye bibel innen Smidig Design
+link: http://blog.kjempekjekt.com/2009/06/05/min-nye-bibel-innen-smidig-design/
+layout: post
+date: 2009-06-05 14:46:03Z
+tags:
+  - Bøker
+  - Uncle Bob
+---
+<a title="Agile Principles, Patterns, and Practices in C# by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3609387513/"><img style="padding-left: 20px; padding-bottom: 10px" height="240" alt="Agile Principles, Patterns, and Practices in C#" src="http://farm4.static.flickr.com/3315/3609387513_6245a94624_m.jpg" width="179" align="right" border="0" /></a>Robert C. Martin's <a href="http://www.amazon.com/Principles-Patterns-Practices-Robert-Martin/dp/0131857258"><strong><em>Agile Principles, Patterns, and Practices in C#</em></strong></a> er DEN BESTE programmeringsboken jeg noen gang har lest!!!
+
+Det er ikke så ofte man kan begynne en blogpost med en setning som det der, og bruke både <em>all-CAPS</em> og tre utropstegn uten å få en flau smak i munnen. Men denne boken fortjener det virkelig. Den gir deg både lyst og kunnskapen du behøver for å omforme deg selv til en ideell, smidig systemutvikler.
+
+Boken er full av anekdoter som virkelig får deg til å fortså hva som er galt med mange prosesser i dag, og hva som kan gjøres bedre. Og den utgjør bortimot et komplett sett med teknologi-uavhengig kunnskap om hvordan du skal gå fra en diffus problemstilling til et fungerende produkt.
+
+<strong>Section I: Agile development</strong>
+
+Den første delen av boken handler om smidig utvikling. Bob presenterer hovedtrekkene i eXtreme Programming, og går spesielt i dybden på <em>planlgging</em>, <em>testing</em> og <em>refakturering</em>. Han presenterer også en veldig bra historie som viser hvordan parprogrammering kan fungere i praksis:
+<p style="padding-left: 20px"><em>"In order to demonstrate XP practices, Bob Koss and Bob Martin will pair program a simple application while you watch like a fly on the wall. We will use test first design and a lot of refactoring to create our application. What follows is a faithful re-enactment of a programming episode that the two Bob's actually did."</em></p>
+Historien er også tilgjengelig online, riktignok implementert med Java-kode - du kan <a href="http://www.objectmentor.com/resources/articles/xpepisode.htm">lese den her</a>.
+
+<strong>Section II: Agile design</strong>
+
+Her begynner boken virkelig å ta av. Bob snakker først om hvorfor design "rotner" over tid, og bruker resten av del 2 til å forklare hvordan man skal unngå at dette skjer. Han går i dybden på en rekke prinsipper innen objektorientert design, de såkalte SOLID prinsippene, og selv om jeg hadde hørt og lest en god del om dem fra før var det først med denne boken at jeg virkelig begynte å forstå.
+
+Han forklarer hvorfor prinsippene er viktige, hvordan man skal kode for å innfri dem, og ikke minst hvilken <em>tradeoff</em> det innebærer å følge dem. Dette siste inpirerte meg til å skrive en liten blogpost jeg kalte <a href="http://blog.kjempekjekt.com/2009/05/03/nar-skal-man-bruke-solid-prinsippene/"><em>når</em> skal man følge SOLID prinsippene</a>.
+
+Bob bruker også mye av del 2 til å snakke om UML, og bruk av design-diagrammer innenfor smidig utvikling. Mange er av den oppfatning at modellering er noe man <em>ikke skal gjøre</em> når man er agile, men det kan være både feil og farlig. Bob lærer deg all den UML'en som er nødvendig for en smidig utvikler, og mener mye om hvordan man skal bruke dette "verktøyet".
+
+<strong>Section III: The Payroll case study</strong>
+
+I del 3 demonstrerer Bob hvordan man går fra noen diffuse krav til et komplett program. Han bruker TDD, og viser deg all koden han produserer - inkludert testene. Han forteller grundig hvordan han tenker, og vi får se hvordan han følger OO-prinsippene og hvordan koden utvikler seg over tid.
+
+I denne delen presenteres et hav av design patterns / mønstre, den mest forståelige forklaringen av design patterns jeg har vært borti faktisk, og vi lærer hvordan de brukes for å tilfredstille de grunnleggende prinsipene. Med fare for at den som leser boken blir <em>pattern happy</em> lærer han bort <strong>Command, Template Method, Strategy, Adapter, Monostate, Null object, Visitor, Decorator, Gateway, Proxy, State, osv., osv.</strong>
+
+Denne delen av boken inspirerte meg til å skrive om <a href="http://blog.kjempekjekt.com/2009/05/17/hvordan-bryte-avhengigheter-mellom-klasser/">hvordan man bryter avhengigheter mellom klasser</a>, hvor jeg benyttet Strategy og Adapter.
+
+<strong>Section IV: Packaging the Payroll System</strong>
+
+I del 4 fortsetter man med applikasjonen fra del 3. Bob forteller oss om hvordan man bryter opp et prosjekt i moduler basert på <strong>Cohesion</strong> og <strong>Coupling</strong>. Han presenterer flere prinsipper, og patterns for å understøtte disse prinsippene. Og han fortsetter å presentere enhetstester og kode.
+
+Denne delen inpirerte meg til å kode og blogge om hvordan man kan bruke en tilstandsmaskin til å gjøre kode mer presis og fleksibel: <a href="http://blog.kjempekjekt.com/2009/06/06/en-generisk-state-machine/">En generisk state machine i C#</a>.
+
+Mot slutten implementerer han også et grafisk brukergrensesnitt, og bruker da WinForms og <em>Model View Presenter</em>-mønsteret (MVP). Dette er det grundigste og mest forståelige eksempelet på MVP jeg noen gang har sett.
+
+Det kan tenkes at jeg leste denne boken på akkurat det riktige tidspunktet i min egen utvikling, og at den ikke vil passe like godt for alle. Jeg tør likevel å anbefale den på det sterkeste til alle utviklere som ikke allerede praktiserer best practices innen smidig utvikling (TDD, parprogrammering, etc.) og som ikke allerede er guruer innen objektorientert design og vedlikeholdbar kode.
+
+<strong>Andre <em>Uncle Bob</em>-relaterte blogposter:</strong> <a href="http://blog.kjempekjekt.com/2009/03/04/en-karriære-innen-programmering/">En karriære innen programmering</a> | <a href="http://blog.kjempekjekt.com/2009/02/22/for-mange-utviklere-som-ikke-bryr-seg/">For mange utviklere som ikke bryr seg</a>
+
+ 

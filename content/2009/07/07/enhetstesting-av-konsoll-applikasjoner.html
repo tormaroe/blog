@@ -1,0 +1,193 @@
+---
+title: Enhetstesting av konsoll-applikasjoner
+link: http://blog.kjempekjekt.com/2009/07/07/enhetstesting-av-konsoll-applikasjoner/
+layout: post
+date: 2009-07-07 09:54:11Z
+tags:
+  - Testing / TDD
+---
+I artikkelen min on <a href="http://blog.kjempekjekt.com/2009/07/05/god-test-bedre-kode/">Bellware's NDC workshop</a> inkluderte jeg en enhetstest jeg hadde skrevet for å teste output til <strong>System.Console</strong>. Her følger jeg opp med å forklare hvordan jeg gjorde det.
+
+I <a href="http://blog.kjempekjekt.com/2009/06/26/snookiepoof-pa-google-code/">Snookiepoof</a>, hvor testen var hentet fra, ønsker jeg å ha så høy test coverage som mulig. Jeg utviklet nesten alt vha TDD/BDD, men brukegrensesnittet - et tynt lag som presenterte ting til konsollet - hadde jeg ingen tester for. Etterhvert begynte dette å irritere meg, og jeg måtte finne en måte å få dette under test på.
+
+Her er et eksempel på en test jeg ønsket å kjøre:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    1</span> [<span style="color: yellow">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #2b91af">    2</span> <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_output_new_value()</p>
+<p style="margin: 0px"><span style="color: #2b91af">    3</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    4</span>     Given_a_ConsoleCreditChangedView();</p>
+<p style="margin: 0px"><span style="color: #2b91af">    5</span>     When_credit_changes_to(42);</p>
+<p style="margin: 0px"><span style="color: #2b91af">    6</span>     Output.should_contain(<span style="color: lime">"42"</span>);</p>
+<p style="margin: 0px"><span style="color: #2b91af">    7</span> }</p>
+</div>
+Jeg har et <em>ConsoleCreditChangedView</em>, en konkret implementasjon av et abstrakte <em>CreditChangedView</em>, som skriver til konsollet. Når viewet blir bedt om å vise en CreditChange med en bestemt verdi ønsker jeg å sjekke at den bestemte verdien blir skrevet ut til konsollet (linje 6).
+
+Her er resten av detaljene fra testen, men uten å avsløre hvordan jeg får tak i Output (litt tålmodighet):
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    9</span>     <span style="color: #2b91af">Action</span> Given_a_ConsoleCreditChangedView = () =></p>
+<p style="margin: 0px"><span style="color: #2b91af">   10</span>         consoleCreditChangedView = <span style="color: #ff8000">new</span> <span style="color: yellow">ConsoleCreditChangedView</span>();       </p>
+<p style="margin: 0px"><span style="color: #2b91af">   11</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   12</span>     <span style="color: #2b91af">Action</span><<span style="color: #ff8000">int</span>> When_credit_changes_to = (creditValue) =></p>
+<p style="margin: 0px"><span style="color: #2b91af">   13</span>         consoleCreditChangedView.Show(<span style="color: #ff8000">new</span> <span style="color: yellow">CreditChangedEventArgs</span>(creditValue));</p>
+<p style="margin: 0px"><span style="color: #2b91af">   14</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   15</span>     <span style="color: #ff8000">static</span> <span style="color: yellow">ConsoleCreditChangedView</span> consoleCreditChangedView;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   16</span> }</p>
+</div>
+Et naturlig valg hadde vært å abstrahere bort System.Console, og i stedet skrive til et interface, som jeg så kunne <em>mocke bort</em> i enhetstestene. Men jeg hadde brukte Console.WriteLine mange steder, og det ante meg at det fantes en annen løsning.
+
+En rask titt på msdn-dokumentasjonen viste meg at jeg kunne <strong>erstatte konsollets default input og output</strong>. Det var akkurat det jeg trengte. Under normal kjøring kunne jeg la konsollet være som det er, mens jeg i enhetstestene kunne bytte ut input og output med noe jeg kunne aksessere og manipulere i testkoden.
+
+Etter å ha prøvet og feilet litt kom jeg opp med løsningen nedenfor; én klasse for å <em>"lure ut"</em> output, én tilsvarende klasse for input, og en test fixture som kombinerte de to.
+<p style="text-align: center"><a title="ConsoleTestingFixture by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3693478661/"><img height="223" alt="ConsoleTestingFixture" src="http://farm3.static.flickr.com/2476/3693478661_e72aea8090_o.png" width="391" border="0" /></a></p>
+La oss ta en titt på ConsoleOutputFaker først:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    1</span> <span style="color: #ff8000">internal</span> <span style="color: #ff8000">class</span> <span style="color: yellow">ConsoleOutputFaker</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">    2</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    3</span>     <span style="color: #ff8000">private</span> <span style="color: yellow">StringWriter</span> _stringWriter;</p>
+<p style="margin: 0px"><span style="color: #2b91af">    4</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">    5</span>     <span style="color: #ff8000">internal</span> <span style="color: #ff8000">void</span> SwapConsoleOutput()</p>
+<p style="margin: 0px"><span style="color: #2b91af">    6</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    7</span>         _stringWriter = <span style="color: #ff8000">new</span> <span style="color: yellow">StringWriter</span>();</p>
+<p style="margin: 0px"><span style="color: #2b91af">    8</span>         System.<span style="color: yellow">Console</span>.SetOut(_stringWriter);</p>
+<p style="margin: 0px"><span style="color: #2b91af">    9</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   10</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   11</span>     <span style="color: #ff8000">internal</span> <span style="color: #ff8000">string</span> GetOutput()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   12</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   13</span>         <span style="color: #ff8000">return</span> _stringWriter.ToString();           </p>
+<p style="margin: 0px"><span style="color: #2b91af">   14</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   15</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   16</span>     <span style="color: #ff8000">internal</span> <span style="color: #ff8000">void</span> SwapBack()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   17</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   18</span>         RevertBackToOriginalOutput();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   19</span>         DisposeResources();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   20</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   21</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   22</span>     <span style="color: #ff8000">private</span> <span style="color: #ff8000">void</span> RevertBackToOriginalOutput()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   23</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   24</span>         <span style="color: #ff8000">var</span> standardOut = <span style="color: #ff8000">new</span> <span style="color: yellow">StreamWriter</span>(System.<span style="color: yellow">Console</span>.OpenStandardOutput());</p>
+<p style="margin: 0px"><span style="color: #2b91af">   25</span>         standardOut.AutoFlush = <span style="color: #ff8000">true</span>;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   26</span>         System.<span style="color: yellow">Console</span>.SetOut(standardOut);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   27</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   28</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   29</span>     <span style="color: #ff8000">private</span> <span style="color: #ff8000">void</span> DisposeResources()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   30</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   31</span>         <span style="color: #ff8000">if</span> (_stringWriter != <span style="color: #ff8000">null</span>)</p>
+<p style="margin: 0px"><span style="color: #2b91af">   32</span>         {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   33</span>             _stringWriter.Close();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   34</span>             _stringWriter = <span style="color: #ff8000">null</span>;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   35</span>         }           </p>
+<p style="margin: 0px"><span style="color: #2b91af">   36</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   37</span> }</p>
+</div>
+I linje 7 og 8 kan du se hvordan jeg erstatter konsollets normale output med en StringWriter. Når programkoden min så skriver til konsollet så skrives det egentlig til denne StringWriter'en, og jeg kan hente ut og verifisere inneholdet (linje 13).
+
+Resten av klasser er "cleanup" - linje 24 til 26 viser hvordan output settes tilbake til normalen igjen.
+
+Som lovet lagde jeg også en <em>input faker</em>:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    1</span> <span style="color: #ff8000">internal</span> <span style="color: #ff8000">class</span> <span style="color: yellow">ConsoleInputFaker</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">    2</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    3</span>     <span style="color: #ff8000">private</span> <span style="color: yellow">StringReader</span> _inputReader;</p>
+<p style="margin: 0px"><span style="color: #2b91af">    4</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">    5</span>     <span style="color: #ff8000">internal</span> <span style="color: #ff8000">void</span> SendInput(<span style="color: #ff8000">string</span> text)</p>
+<p style="margin: 0px"><span style="color: #2b91af">    6</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    7</span>         _inputReader = <span style="color: #ff8000">new</span> <span style="color: yellow">StringReader</span>(text);</p>
+<p style="margin: 0px"><span style="color: #2b91af">    8</span>         System.<span style="color: yellow">Console</span>.SetIn(_inputReader);           </p>
+<p style="margin: 0px"><span style="color: #2b91af">    9</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   10</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   11</span>     <span style="color: #ff8000">internal</span> <span style="color: #ff8000">void</span> SwapBack()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   12</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   13</span>         RevertBackToOriginalInput();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   14</span>         DisposeResources();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   15</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   16</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   17</span>     <span style="color: #ff8000">private</span> <span style="color: #ff8000">static</span> <span style="color: #ff8000">void</span> RevertBackToOriginalInput()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   18</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   19</span>         <span style="color: #ff8000">var</span> originalInput = System.<span style="color: yellow">Console</span>.OpenStandardInput();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   20</span>         <span style="color: #ff8000">var</span> originalReader = <span style="color: #ff8000">new</span> <span style="color: yellow">StreamReader</span>(originalInput);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   21</span>         System.<span style="color: yellow">Console</span>.SetIn(originalReader);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   22</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   23</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   24</span>     <span style="color: #ff8000">private</span> <span style="color: #ff8000">void</span> DisposeResources()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   25</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   26</span>         <span style="color: #ff8000">if</span> (_inputReader != <span style="color: #ff8000">null</span>)</p>
+<p style="margin: 0px"><span style="color: #2b91af">   27</span>         {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   28</span>             _inputReader.Close();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   29</span>             _inputReader = <span style="color: #ff8000">null</span>;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   30</span>         }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   31</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   32</span> }</p>
+</div>
+Som du ser er prinsippet det samme. Jeg setter konsollets input til en ny StringReader (linje 7 og 8). StringReader'en inneholder alerede teksten jeg ønsker å sende til konsollet, så nå kan jeg simulere brukerinteraksjon.
+
+Som jeg sa kombinerer jeg så de to klassene i en test fixture:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    1</span> <span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">ConsoleTestingFixture</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">    2</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    3</span>     <span style="color: #ff8000">private</span> <span style="color: #ff8000">static</span> <span style="color: yellow">ConsoleOutputFaker</span> fakeOut;</p>
+<p style="margin: 0px"><span style="color: #2b91af">    4</span>     <span style="color: #ff8000">private</span> <span style="color: #ff8000">static</span> <span style="color: yellow">ConsoleInputFaker</span> fakeIn;</p>
+<p style="margin: 0px"><span style="color: #2b91af">    5</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">    6</span>     <span style="color: #ff8000">static</span> ConsoleTestingFixture()</p>
+<p style="margin: 0px"><span style="color: #2b91af">    7</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    8</span>         fakeOut = <span style="color: #ff8000">new</span> <span style="color: yellow">ConsoleOutputFaker</span>();</p>
+<p style="margin: 0px"><span style="color: #2b91af">    9</span>         fakeIn = <span style="color: #ff8000">new</span> <span style="color: yellow">ConsoleInputFaker</span>();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   10</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   11</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   12</span>     [<span style="color: yellow">SetUp</span>]</p>
+<p style="margin: 0px"><span style="color: #2b91af">   13</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> TestSetUp()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   14</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   15</span>         fakeOut.SwapConsoleOutput();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   16</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   17</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   18</span>     <span style="color: #ff8000">protected</span> <span style="color: #ff8000">static</span> <span style="color: #ff8000">string</span> Output</p>
+<p style="margin: 0px"><span style="color: #2b91af">   19</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   20</span>         <span style="color: #ff8000">get</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">   21</span>         {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   22</span>             <span style="color: #ff8000">return</span> fakeOut.GetOutput();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   23</span>         }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   24</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   25</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   26</span>     <span style="color: #ff8000">protected</span> <span style="color: #ff8000">static</span> <span style="color: #ff8000">void</span> SendInput(<span style="color: #ff8000">string</span> text)</p>
+<p style="margin: 0px"><span style="color: #2b91af">   27</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   28</span>         fakeIn.SendInput(text);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   29</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   30</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   31</span>     [<span style="color: yellow">TearDown</span>]</p>
+<p style="margin: 0px"><span style="color: #2b91af">   32</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> TestTearDown()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   33</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   34</span>         fakeOut.SwapBack();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   35</span>         fakeIn.SwapBack();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   36</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   37</span> }</p>
+</div>
+Fixturen har en SetUp metode og en TearDown metode: Før hver enhetstest erstattes standard output med min <em>fake</em>, og etter hver enhetstest settes normal output og input tilbake til default.
+
+Fixturen tilbyr så en property for å få tilgang til output (linje 18), og en metode for å sende input (linje 26). Test-klasser som arver fra denne fixturen kan bruke SendInput til å simulere at en bruker skriver noe til konsollet, og aksessere Output for å kontrollere hva programmet skriver til brukeren.
+
+Du lurer kanskje på hvorfor jeg har brukt så mye <strong>static</strong> i test fixturen? Det kommer av måten jeg liker å skrive testklassene mine på for tiden - hvor jeg bruker Actions deklarert som instans-variabler - og da må det de skal ha tilgang til være static.
+
+Her er et eksempel på en test som simulerer input. Denne klassen arver fra ConsoleTestingFixture, og får dermed tilgang til SendInput-metoden.
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    1</span> [<span style="color: yellow">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #2b91af">    2</span> <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_be_able_to_go_back_to_game_from_summary()</p>
+<p style="margin: 0px"><span style="color: #2b91af">    3</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    4</span>     Given_a_known_ViewModel();</p>
+<p style="margin: 0px"><span style="color: #2b91af">    5</span>     When_the_summary_is_shown();</p>
+<p style="margin: 0px"><span style="color: #2b91af">    6</span>     And_the_user_types(back);</p>
+<p style="margin: 0px"><span style="color: #2b91af">    7</span>     The_user_selection_should_be(<span style="color: #2b91af">GameSummaryResult</span>.ResumeCurrentGame);</p>
+<p style="margin: 0px"><span style="color: #2b91af">    8</span> }</p>
+</div>
+Og detaljene for And_the_user_types:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    1</span> <span style="color: #2b91af">Action</span><<span style="color: #ff8000">string</span>> And_the_user_types = (input) =></p>
+<p style="margin: 0px"><span style="color: #2b91af">    2</span>     SendInput(input);      </p>
+</div>
+Så hvis du føler deg litt retro en dag og får lyst til å lage en konsoll app, så har du nå ingen unnskydning for å ikke skrive tester :)
+
+Her er en annen <a href="http://blogs.msdn.com/ploeh/archive/2006/10/21/ConsoleUnitTesting.aspx">blogpost om å erstatte Console.Out og Console.In</a> som jeg brukte som referanse når jeg implementerte min fixture. Og her <a href="http://mark.michaelis.net/Blog/UnitTestingConsoleInputOutput.aspx">er en fyr</a> som har gått for en løsning med attributter på test-metodene for å spesifisere input og forventet output.
+
+Det kan også være lurt å ta en titt på hva test-rammeverket du bruker har for støtte av konsoll-testing "out of the box". Skriver du mye konsoll-applikasjoner bør du kanskje også se på <a href="http://nconsoler.csharpus.com/">NConsoler</a>, et open source biblotek for å bygge konsoll apps som også skal ha noe støtte for enhetstester (sies det).
+
+Lurer du forresten på hvor <strong>should_contain</strong> metoden jeg kalte på Output i linje 6 i den aller første testen kommer fra? For å skrive lesbare tester er det ganske vanlig å erstatte de vanlige kallene til Assert med metodenavn som <em>flyter bedre</em>. <a href="http://code.google.com/p/snookiepoof/source/browse/trunk/src/Marosoft.Testing/FluentAsserts.cs">Klikk her for å ta en titt på min FluentAsserts.cs</a> som oversetter NUnits mange asserts til noe jeg er mere fornøyd med vha Extension methods. Koden er mer eller mindre rappet fra open source prosjektet <a href="http://code.google.com/p/coretdd/">coretdd</a>, som også inneholder tilsvarene metoder for xUnit, MbUnit og MsTest.
+
+<strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=BDD" rel="tag">BDD</a>, <a href="http://blog.kjempekjekt.com/index.php?s=NUnit" rel="tag">NUnit</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Snookiepoof" rel="tag">Snookiepoof</a>, <a href="http://blog.kjempekjekt.com/index.php?s=TDD" rel="tag">TDD</a>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Git">
+
+    <title>Git filter-branch</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Git filter-branch</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 27. november 2013</small> 
+            <a href="/tags/git"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Git</span></a>
+          </p>
+          <p><a href="http://www.eikeland.se/">Stian</a> har skrevet en ny, liten guide til en av de mange mulighetene i git. Denne gangen handler det om en feature for å gjøre større endringer i git-repositories...</p>
+<hr>
+<h2>Grenfilter - Ukens GIT #4</h2>
+<p>Har du opplevd det å sitte med et prosjekt som har vokst seg stort over tid? Så stort at det ikke er praktisk å oppbevare det i et enkelt git depot lengre - kanskje vil du skille ut f.eks backend og frontend til sine egne depoter - og helst beholde den relevante historikken for hvert depot.
+<p>Kanskje har du dummet deg ut og commitet sensitiv informasjon (f.eks passord, sertifikater eller nøkler) eller store binærfiler?
+<p>Git tilbyr kommandoen <code>filter-branch</code> som lar deg sile bort (eller utføre endringer på) commits basert på forskjellige kriterier som f.eks fil/katalog-navn, commit-melding, hvem som commitet, osv.
+<p><code>filter-branch</code> er en destruktiv kommando, den skriver om historikken (ureverserbar) og bør derfor brukes med forsiktighet.<br />
+<h3>Filtrere basert på underkatalog</h3>
+<p>Gitt at du har et depot hvor du ønsker å skille ut katalogene <code>frontend/</code> og <code>backend/</code> til egne depot som beholder kun relevant historikk.
+<pre>$ git clone git://gitserver/prosjekt.git
+$ cd prosjekt
+# Filtrer og behold kun commits og filer tilhørende backend.
+$ git filter-branch --prune-empty --subdirectory-filter backend HEAD
+Rewrite fa886d3fd7685c5b0cebfe213cb1dd5ec52c9cab (19/19)
+Ref 'refs/heads/master' was rewritten</pre>
+<p>Du kan nå f.eks dytte dette tilbake til gitserveren din som et nytt depot ved navnet prosjekt-backend. Utfør det samme på frontend så har du delt opp prosjektet ditt til to depoter med all relevant historikk i behold. </p>
+<h3>Slette en fil fra all commit-historikk</h3>
+<p>For å fjerne en fil (sensitiv informasjon, store binære filer, osv) fra et git depot kan du utføre:
+<pre># Dette fjerne filen filnavn fra all tidligere historikk:
+$ git filter-branch --index-filter 'git rm --cached --ignore-unmatch filnavn' HEAD</pre>
+<p>Du må antagelig force-pushe for å sende endringene til server etterpå. </p>
+<h3>Annet</h3>
+<p><code>filter-branch</code> er nyttig til alle mulige store og små batch operasjoner i historikken din. Noen eksempler på bruksområder: </p>
+<ul>
+<li>Retroaktivt endre epost-adresser til commit-forfatter dersom man får ny.
+<li>Fjerne all kode som er skrevet på mandager.
+<li>Flytte hele treet inn i en underkatalog istedenfor rot.
+<li>Redusere størrelse på depot ved å fjerne filer som ikke er aktuelle å ta vare på.</li>
+</ul>
+<hr>
+<p><b>Se også tidligere ukers git:</b></p>
+<ol>
+<li><a href="/2013/11/04/branching-i-git/">git branch</a>
+<li><a href="/2013/11/11/git-bisect/">git bisect</a>
+<li><a href="/2013/11/18/git-submoduler/">git submoduler</a> </li>
+</ol>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

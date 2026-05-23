@@ -1,0 +1,18 @@
+---
+title: ContikiCenter version 2.0
+link: http://blog.kjempekjekt.com/2009/04/08/contikicenter-version-20/
+layout: post
+date: 2009-04-08 12:18:56Z
+tags:
+  - Diverse prosjekter
+  - Jobb
+---
+Jeg har <a href="http://blog.kjempekjekt.com/2008/12/31/internt-overvakingssenter-i-wpf/">tidligere fortalt at jeg utvikler et overvåkningssenter</a> internt i Contiki. Versjon 1 var ferdig 31. mars, og inneholdt en modul som viser status for alle ansatte - hvor de befinner seg (på jobb, hos kunde, syk osv.). I dag slapp jeg version 2, med en modul som viser status for nattens bygg.
+
+Jeg har laget en fattigmanns-integrasjon mot vår <a href="http://cruisecontrol.net/">CruiseControl.net</a> som vi bruker til å bygge prosjektene våre, inkludert MSI pakker, språkfiler, kodesignering med mere. Jeg benyttet enkel screen scraping til å hente status og noen detaljer fra den siste build-rapporten for et bestemt build-prosjekt.
+
+Hvis alt er OK vises kun en uskyldig, liten blå boks med dato for siste bygg. Hvis ting ikke har gått som det skal derimot, slik som er tilfelle akkurat nå, blinker byggstatus-modulen faretruende og ser ut som dette:
+<p style="text-align: center;"><a title="BuildStatus by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3423789756/"><img src="http://farm4.static.flickr.com/3537/3423789756_d55d7c97f0_o.png" alt="BuildStatus" width="334" height="107" border="0" /></a></p>
+Jeg holder på med dette prosjektet for å lære meg <em>WPF</em>, og denne gangen var utfordringen først og fremst animasjoner. Jeg ønsker at meldingen skulle blinke når den var rød, men å starte og stoppe en animasjon var ikke bare enkelt. Jeg fant til slutt <a href="http://stackoverflow.com/questions/342829">en løsning på stackoverflow</a>, men den føles ikke helt god.
+
+Jeg hadde også tenkt at hvis musepekeren var over boksen så skulle blinkingen stoppe midlertidig, men der gav jeg rett og slett opp. Moralen er at WPF er vanskelig, og jeg må bruke mer tid på å sette meg grundig inn i dette.

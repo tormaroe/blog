@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content=".net ninja">
+
+    <title>Windows Communication Foundation forklart på tre minutter</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Windows Communication Foundation forklart på tre minutter</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 27. september 2006</small> 
+            <a href="/tags/net-ninja"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> .net ninja</span></a>
+          </p>
+          <p>Mens inspirasjonen etter MSDN Live fortsatt er på topp skal jeg raskt forklare hva Windows Communication Foundation er for noe.., og hva det vil bety for oss utviklere.</p>
+<p>.NET versjon 3.0 består av fire påbygninger til .NET 2.0 rammeverket, og vil bli releaset sammen med Vista ca. november. .NET 3.0 vil også fungere fint på Windows XP og på 2003 server (det er nå på høy tid å oppgradere fra 2000). De fire påbygningene - hvor jeg vil forklare den siste nærmere - er:</p>
+<ul>
+<li><strong>Windows Cardspace</strong><br />
+Microsoft's forslag til standardisering av online identitet. For mer informasjon om identitet, besøk <a href="http://identityblog.com/" target="_blank">Kim Cameron's Identity Weblog</a>.</li>
+<li><strong>Windows Workflow Foundation (WF)</strong><br />
+Arbeidsflytmotor innebygget i operativsystemet som i praksis vil gjøre at utviklere vil kode business logikk mere deklerativt enn tidligere, og mere adskilt fra øvrig kode.</li>
+<li><strong>Windows Presentation Foundation (WPF)</strong><br />
+En helt ny måte å designe/utvikle brukergrensesnitt på både for Windowsplattformen og for Web.</li>
+<li><strong>Windows Communication Foundation (WCF)</strong><br />
+En aldri så liten revolusjon i all koding av kommunikasjon mellom klient og tjeneste.</li>
+</ul>
+<div align="center"><img id="image79" src="/uploads/2006/09/netfx.jpg" alt="netfx" /></div>
+<p>Bakgrunnen for WCF (tidligere kaldt <em>Indigo</em>) er at det å f.eks. lage en web service som støtter sikkerhet, reliable messaging og transaksjoner krever mange tusen linjer kode. Og ønsker du i tillegg at tjenesten skal kunne kommunisere over TCP, ja da må du kode en god del til.</p>
+<p>WCF endrer dette til å bli <span style="text-decoration: underline;">ingen kodelinjer i det hele tatt</span>, og ved bruk av kun konfigurasjonsfiler kan du sette opp om tjenesten skal kommunisere over SOAP, nyeste web service med WS-security, WS-reliability og WS-transactions, TCP, named pipe, MSMQ, med CORBA, en-veis eller to-veis eller noe helt annet.</p>
+<p>Altså, når du i fremtiden skal lage en tjeneste så koder du IKKE en web service på gamlemåten. Det du gjør er rett og slett å dekorere metodene du ønsker å publisere med noen attributter - dette blir <em>kontrakten</em>. I konfigurasjonsfilen bestemmer du så hvilken <em>binding</em> du ønsker å benytte. Bindingen definerer hvilken protokoll, transportmetode (text, binært eller annet), sikkerhet osv. Og så er du ferdig.</p>
+<p>På klientsiden så gjør du omtrent som du er vandt til fra ASMX web servicer - du genererer en klasse på bakgrunn av tjenesten.</p>
+<p>Og så konfigurerer du opp binding på samme måte som på tjenestesiden. <strong><em>Dette er genialt</em></strong> - som utvikler kan du glemme alt som har med implementasjon av kommunikasjon, og du kan bytte protokoller, sikkerhet osv. <em>on demand</em>.</p>
+<p>Jeg anbefaler at du nå <em>sporensträks</em> tar turen innom <a href="http://wcf.netfx3.com/" target="_blank">wcf.netfx3.com</a>. Der kan du laste ned .NET 3.0 (anbefaler at du allerede har VS 2005, men ikke nødvendig) og masse kodeeksempler for WCF. Enjoy!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

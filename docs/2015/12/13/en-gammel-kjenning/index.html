@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Common Lisp">
+
+    <title>En gammel kjenning</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En gammel kjenning</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 13. desember 2015</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          </p>
+          <p>Lørdag morgen våknet jeg opp på et hotellrom med utsikt over Bergen sentrum, etter et hyggelig julebord med kolleger og ektefeller. Og noe av det første jeg gjorde var selvfølgelig å åpne luke 12 i <a href="https://julekalender.knowit.no/">Knowit sin julekalender</a>. Den inneholdt følgende oppgave:</p>
+<blockquote>
+<p>Finn summen av alle tall fra og med 1 og til og med 100 000 000 som er har 7 som en divisor, og samtidig IKKE har 5 som en divisor.</p>
+</blockquote>
+<p>Oy, det lød kjent! Det er jo <em>nesten</em> Project Euler-oppgave nummer 1, som jeg har løst snørrogførti ganger i ørten språk her på bloggen. Jeg installerte raskt <a href="http://www.sbcl.org/">Steel Bank Common Lisp</a> på Asus Transformeren jeg hadde med meg, og bruteforce-itererte hundre millioner ganger for å finne svaret:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for i from <span class="hljs-number">1</span> to <span class="hljs-number">100000000</span>
+      when (<span class="hljs-name"><span class="hljs-built_in">and</span></span> (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> i <span class="hljs-number">7</span>))
+                (<span class="hljs-name"><span class="hljs-built_in">not</span></span> (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> i <span class="hljs-number">5</span>))))
+      summing i)</code></pre><p>Dette tok 5 milliarder prosessorsykler og 3,5 sekunder. Til sammenligning kjørte jeg samme koden på Lenovo ThinkPad&#39;en min senere på dagen, og da gikk det samme unna på 0,6875 sekunder.</p>
+<h2>En forbedring: Mengder</h2>
+<p>Etter å ha fått svaret godkjent ville jeg forsøke en litt smartere løsning. Jeg tenkte på oppgaven som et mengde-problem: Mengden av alle multipler av 7 <em>minus</em> mengden av alle multipler av 7 ganger 5 (altså delelige på både 7 og 5). Dermed kunne jeg iterere over langt færre tall, og unngå alle modulo-operasjonene:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">let</span></span> (<span class="hljs-name"><span class="hljs-built_in">sum</span></span>)
+  (<span class="hljs-name">setf</span> sum (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for i = <span class="hljs-number">7</span> then (<span class="hljs-name"><span class="hljs-built_in">+</span></span> i <span class="hljs-number">7</span>) 
+                  until (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> i <span class="hljs-number">100000000</span>) 
+                  summing i))
+  (<span class="hljs-name">decf</span> sum (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for i = (<span class="hljs-name"><span class="hljs-built_in">*</span></span> <span class="hljs-number">5</span> <span class="hljs-number">7</span>) then (<span class="hljs-name"><span class="hljs-built_in">+</span></span> i (<span class="hljs-name"><span class="hljs-built_in">*</span></span> <span class="hljs-number">5</span> <span class="hljs-number">7</span>))
+                  until (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> i <span class="hljs-number">100000000</span>)
+                  summing i)))</code></pre><p>Denne gangen - fortsatt på Asus&#39;en - fant jeg løsningen 0,828125 sekunder og 1,2 milliarder sykler (0,59375 sekunder på Lenovo&#39;en).</p>
+<p>Forresten, jeg trenger ikke noen variabel til å holde på summen, jeg kan jo bare trekke den ene fra den andre direkte:</p>
+<pre><code class="hljs">(<span class="hljs-name">-</span> (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for i = <span class="hljs-number">7</span> then (<span class="hljs-name"><span class="hljs-built_in">+</span></span> i <span class="hljs-number">7</span>) 
+         until (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> i <span class="hljs-number">100000000</span>) 
+         summing i)
+   (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for i = (<span class="hljs-name"><span class="hljs-built_in">*</span></span> <span class="hljs-number">5</span> <span class="hljs-number">7</span>) then (<span class="hljs-name"><span class="hljs-built_in">+</span></span> i (<span class="hljs-name"><span class="hljs-built_in">*</span></span> <span class="hljs-number">5</span> <span class="hljs-number">7</span>))
+         until (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> i <span class="hljs-number">100000000</span>)
+         summing i))</code></pre><p>Dette gav ingen forbedret kjøretid, men er uansett enklere.</p>
+<h2>En forverring: Range-&gt;Filter-&gt;Reduce</h2>
+<p>Bare for gøy ville jeg også forsøke å bruke en mer funksjonell fremgangsmåte, hvor jeg først produserer alle multipler av 7, så filtrerer bort alle multipler av 5, og så summerer opp. Common Lisp har ingen range-funksjon, men vi kan enkelt lage en basert på loop-makroen: </p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> range (<span class="hljs-name"><span class="hljs-built_in">max</span></span> &amp;key (<span class="hljs-name"><span class="hljs-built_in">min</span></span> <span class="hljs-number">0</span>) (<span class="hljs-name">step</span> <span class="hljs-number">1</span>))
+  (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for n from min below max by step
+    collect n))</code></pre><p>Som så mange ganger før bruker jeg pakken <code>cl-arrows</code> til å kjede sammen stegene:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">-&gt;&gt;</span></span> (<span class="hljs-name"><span class="hljs-built_in">range</span></span> <span class="hljs-number">100000001</span> <span class="hljs-symbol">:step</span> <span class="hljs-number">7</span>)
+     (<span class="hljs-name">remove-if</span> (<span class="hljs-name">lambda</span> (<span class="hljs-name">x</span>) (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> x <span class="hljs-number">5</span>))))
+     (<span class="hljs-name"><span class="hljs-built_in">reduce</span></span> #&#x27;+))</code></pre><p>Denne løsningen gav meg svaret etter 2,657 sekunder. Jeg var på Lenovo&#39;en nå, så dette var altså 2 sekunder dårligere enn den første løsningen som itererte over alle tallene.</p>
+<p>Det som var mere interessant var at 1,687 av sekundene (63%) ble brukt til <em>garbage collection</em>. Og enda mer interessant - om jeg kjørte denne koden 5 eller 6 ganger etter hverandre så fikk jeg en fatal <em>Heap exhausted</em> error og meldingen <em>&quot;game over&quot;</em>! SBCL likte tydeligvis ikke denne måten å løse oppgaven på :)</p>
+<h2>Uavgjort: Rekursjon</h2>
+<p>Nå hadde jeg fått blod på tann. Jeg kunne ikke stoppe med noe som Common Lisp ikke var bra på, så nå ville jeg teste rekursjon, og lagde denne funskjonen:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> recursive-solve (<span class="hljs-name">&amp;key</span> (<span class="hljs-name">n</span> <span class="hljs-number">0</span>) (<span class="hljs-name">acc</span> <span class="hljs-number">0</span>))
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&lt;</span></span> <span class="hljs-number">100000000</span> n)
+    acc
+    (<span class="hljs-name">recursive-solve</span> 
+      <span class="hljs-symbol">:n</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> <span class="hljs-number">7</span> n)
+      <span class="hljs-symbol">:acc</span> (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">zerop</span> (<span class="hljs-name">mod</span> n <span class="hljs-number">5</span>))
+             acc
+             (<span class="hljs-name"><span class="hljs-built_in">+</span></span> acc n)))))</code></pre><p><code>(recursive-solve)</code> gav meg riktig svar på 0,7 sekunder, med bare noen få millisekunder brukt til garbage collection. <em>Basically</em> var dette like bra som første løsning, men ikke så bra som løsningen hvor jeg unngikk modulo-testene.</p>
+<p>Greit nok.</p>
+<p>Igjen har jeg klart å skrive en laaaang blogpost om en veeeeeldig enkel programmeringsoppgave, og sånn ble det bare 11 dager igjen til Jul!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

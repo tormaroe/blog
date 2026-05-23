@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Softwareutvikling,Meninger,Softskills">
+
+    <title>Egoløs programmering: De 10 Bud</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Egoløs programmering: De 10 Bud</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 28. april 2011</small> 
+            <a href="/tags/softwareutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Softwareutvikling</span></a>
+          
+            <a href="/tags/meninger"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Meninger</span></a>
+          
+            <a href="/tags/softskills"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Softskills</span></a>
+          </p>
+          <p>I dag ble jeg tipset om en artikkel av Ted Neward – <a href="http://www.code-magazine.com/Article.aspx?quickid=1105121" target="_blank"><em>Advice to a New Programmer</em></a> – med mye bra innhold om ting han og noen andre guruer skulle ønske de hadde blitt fortalt da de startet sin karriære.</p>
+<p>Artikkelen nevner blant annet hvordan <strong>testing</strong> gradvis har blitt en viktig aktivitet for programmerere gjennom det siste tiåret, og at det nå blir regnet som et grunnleggende ansvar utviklere har. Den trekker også frem betydningen av <strong>parprogrammering</strong>:</p>
+<p style="border-bottom: silver 1px solid; border-left: silver 1px solid; padding-bottom: 9px; background-color: #f0f0f0; font-style: italic; padding-left: 9px; padding-right: 9px; margin-left: 10px; border-top: silver 1px solid; margin-right: 10px; border-right: silver 1px solid; padding-top: 9px">“… when programmers actually practice pairing for a non-trivial amount of time, they quickly discover that pairing is nothing like they imagined it to be. In fact, when I talk to developers who initially resist pairing, and then give it a shot, the reactions that emerge are overwhelmingly positive …”</p>
+<p>En annen sannhet ertikkelen snakker om er at den raskeste måten å utvikle på er å gjøre det riktig. Kvalitet er lik fart!</p>
+<p style="border-bottom: silver 1px solid; border-left: silver 1px solid; padding-bottom: 9px; background-color: #f0f0f0; font-style: italic; padding-left: 9px; padding-right: 9px; margin-left: 10px; border-top: silver 1px solid; margin-right: 10px; border-right: silver 1px solid; padding-top: 9px">“… building applications “the right way” (whatever way that is) to produce a quality application is actually <strong>faster</strong> than producing an application quickly, then spending just as much time (or more) fixing the inevitable bugs and architectural changes that appear.”</p>
+<p>Men det Ted sier var viktigst å lære for ham er det som kalles <a href="http://c2.com/cgi/wiki?EgolessProgramming" target="_blank">egoløs programmering</a>, en programmeringsstil hvor personlige faktorer minimeres for å øke kvaliteten. Denne stilen har 10 bud man kan følge for å få en bedre hverdag som deltager i et utviklingsteam. Jeg har oversatt dem til norsk:</p>
+<h4>De 10 bud</h4>
+<p style="margin-left: 10px; font-size: 130%">1. Forstå og aksepter at du kommer til å gjøre feil.<br>2. Du er ikke koden din.<br>3. Samme hvor mye "karate" du kan vil det alltid være noen som kan mer.<br>4. Ikke <em>skriv om</em> kode uten konsultasjon.<br>5. Behandle folk som kan mindre enn deg med respekt, ærbødighet, og tålmodighet.<br>6. Det eneste konstante i verden er endring.<br>7. Den eneste sanne autoritet kommer fra kunnskap, ikke fra stillingen.<br>8. Kjemp for det du tror på, men akseptere nederlag på en god måte.<br>9. Ikke bli "den fyren inne på rommet der".<br>10. Kritiser <em>kode</em> i stedet for mennesker, være vennlig mot utvikleren, men ikke koden.</p>
+<p><em>(</em><a href="http://www.techrepublic.com/article/download-the-buildercom-ten-commandments-of-egoless-programming/1045782" target="_blank"><em>Kilden</em></a><em> inneholder mer utdypning av hvert bud)</em></p>
+<p>Ted Neward kommenterer:</p>
+<p style="border-bottom: silver 1px solid; border-left: silver 1px solid; padding-bottom: 9px; background-color: #f0f0f0; font-style: italic; padding-left: 9px; padding-right: 9px; margin-left: 10px; border-top: silver 1px solid; margin-right: 10px; border-right: silver 1px solid; padding-top: 9px">“… adherents to these 10 commandments will find themselves <strong>not only learning more</strong>, but gathering the <strong>respect and admiration</strong> of their peers at a shockingly accelerated rate.”</p>
+<p style="border-bottom: silver 1px solid; border-left: silver 1px solid; padding-bottom: 9px; background-color: #f0f0f0; font-style: italic; padding-left: 9px; padding-right: 9px; margin-left: 10px; border-top: silver 1px solid; margin-right: 10px; border-right: silver 1px solid; padding-top: 9px">“However, of all of these, by far the most important principle to understand is that of the first: “You are not your code.” This is a lesson I wish every developer would be forced to learn before ever being allowed to launch a compiler or interpreter, because everything else stems from that basic realization.”</p>
+<p style="border-bottom: silver 1px solid; border-left: silver 1px solid; padding-bottom: 9px; background-color: #f0f0f0; font-style: italic; padding-left: 9px; padding-right: 9px; margin-left: 10px; border-top: silver 1px solid; margin-right: 10px; border-right: silver 1px solid; padding-top: 9px">“… when somebody turns to you and says, “I think I’ve found a bug in your code,” that the right response is to say, “Oh, that’s wonderful. Where is it?” That when somebody says, “I think I have a better way of handling this particular situation,” the right response is to say, “Excellent! Show me your ideas.” And that when somebody says, “I still don’t understand how this thing works,” the right response should be, “OK, tell me what part doesn’t make sense and let’s go over it again.”</p>
+<p>Jeg anbefaler deg å lese <a href="http://www.code-magazine.com/Article.aspx?quickid=1105121" target="_blank">hele artikkelen</a>, og gjør disse budene til dine egne. Si til deg selv hver morgen når du ankommer kontoret, og hver kveld før du sovner: “Jeg er ikke koden min!”</p>
+<p>Et siste sitat med på veien:</p>
+<p>
+<dd><em>“It is amazing what one can accomplish</em>
+<dt>
+<dd><em>if one does not care who gets the credit.”</em>
+<dl>
+<dt>
+<dd>-- <a href="http://c2.com/cgi/wiki?JohnDoveIsaacs">JohnDoveIsaacs</a> (<em>attrib</em>)</dd>
+</dl>
+</dd>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

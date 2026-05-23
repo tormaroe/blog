@@ -1,0 +1,196 @@
+---
+title: Brodwall finner opp hjulet [Luke 20, 2012]
+link: http://blog.kjempekjekt.com/2012/12/20/brodwall-finner-opp-hjulet-luke-20-2012/
+layout: post
+date: 2012-12-20 07:56:46Z
+tags:
+  - C#
+  - Julekalender
+  - Webutvikling
+---
+<p><strong>Johannes Brodwall</strong> (<a href="https://twitter.com/jhannes">@jhannes</a>) har lenge vært et kjent fjes i det smidige utviklermiljøet i Norge. Han er ildsjelen bak <a href="http://www.meetup.com/oslo-xp/">Oslo XP Meetup</a>, har vært med å arrangere flere av <a href="http://smidig.no">smidig-konferansene</a>, og holder kurs om smidig utvikling, TDD og arkitektur. Johannes <a href="http://search.idg.no/index.cfm?text=Johannes+Brodwall&amp;magazine=computerworld">uttaler seg stadig vekk i Computerworld</a>, og har sin egen blogg han kaller <a href="http://johannesbrodwall.com/">Thinking Inside a Bigger Box</a>. Du finner også endel innlegg fra ham på <a href="http://sterkblanding.no/">Sterk Blanding</a>.</p> <p>I dagens bloggpost snakker Johannes om no så rart som <em>viktigheten</em> av å <strong>finne opp hjulet på nytt</strong>, med et konkret eksempel i C#.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="Johannes portrettbilde" border="0" alt="Johannes portrettbilde" src="/uploads/2012/12/Johannes-portrettbilde.jpg" width="458" height="458"></p> <p><strong>Hvem er du?<br></strong>Flakkende programmerer som var overbevist om at han aldri kunne lære å programmere før han startet på universitetet.</p> <p><strong>Hva er jobben din?<br></strong>Chief scientist og code coach i Exilesoft i Norge, Sverige og Sri Lanka.</p> <p><strong>Hva kan du?<br></strong>Få nysgjerrige programmerere til å lære nye teknikker for å programmere og for å forstå hva de skal programmere. </p> <p><strong>Hva liker du best med yrket ditt? <br></strong>At jeg kan lære meg litt om mange forskjellige problemstillinger som gjennomsyrer samfunnet og at jeg må forene den kompromissløse og kalde verdenen til maskinen med den ubesluttsomme, nyanserte verdenen til mennesker. </p> <hr>  <p>Når jeg lærte matte i barneskolen grep jeg etter kalkulatoren. Men min far sa til meg: <em>"Du får ikke bruke kalkulator før du kan klare deg uten".</em> Jeg syntes naturligvis dette var både urettferdig og upraktisk, men etter en stund fant jeg ut hvilken fordel det har å forstå grunnferdighetene før man griper etter et verktøy.  <p>For mange utviklere dreier det neste kompetansevalget seg om hvilket fancy rammeverk skal man skal lære seg. Eller hvilket programmeringsspråk som ville løse alle våre problemer (med et glimt i øye til fjorårets julekalender her i programmeringsbloggen). Før vi griper etter verktøyene kan det være nyttig å lære seg hvordan de egentlig fungerer. Mitt motto er <strong>"jeg vil ikke bruke et rammeverk jeg ikke kunne laget selv"</strong>. Det ville naturligvis vært problematisk å lage et like komplett rammeverk som mange av de som er tilgjengelig, men jeg burde i det minste klare å løse alle problemene under normale omstendigheter selv.  <p>Fordelen med å ha gjort det samme som et rammeverk gjør er at da skjønner jeg hvordan denne koden må være implementert. Jeg får en større intuitiv forståelse for hvordan jeg skal bruke rammeverket, jeg skjønner raskerer hva som er problemet når ting ikke fungere og ikke minst: Jeg skjønner når rammeverket gir meg mer problemer enn hjelp.  <p>Et eksempel jeg har likt å bruke mye er å lage en webapplikasjon i Java uten webrammeverk. Jeg bruker gjerne et enkelt eksempel med en adressebok der man kan registrere kontakter og søke etter disse kontaktene. Til ære for C#-utviklere som leser denne bloggen har jeg løst den samme oppgaven i C#: Hvordan ville du laget en webapplikasjon som verken brukte MVC, ASP.NET eller en gang IIS?  <p>Personlig er jeg veldig avhengig av TDD for å tenke. (Jeg har gjort et unntak fra den overnevnte kalkulatorregelen for tester og bruker SimpleBrowser.WebDriver, FluentAssertions og NUnit). For å starte, har jeg skrevet en test som demonstrerer hva webapplikasjonen skal gjøre: <pre>[Test]
+public void ShouldFindSavedPerson()
+{
+    // Start a web server INSIDE THE TEST :-D
+    var server = new My.Application.WebServer();
+    server.Start();
+
+    var browser = new SimpleBrowser.WebDriver.SimpleBrowserDriver();
+    browser.Url = server.BaseUrl;
+
+    // Navigate to the "add contact" page
+    browser.FindElement(By.LinkText("Add contact")).Click();
+	
+    // Add a new contact
+    browser.FindElement(By.Name("fullName")).SendKeys("Darth Vader");
+    browser.FindElement(By.Name("address")).SendKeys("Death Star");
+    browser.FindElement(By.Name("saveContact")).Submit();
+
+    // Navigate to the "find contact" page
+    browser.FindElement(By.LinkText("Find contact")).Click();
+
+    // Execute some queries:
+    browser.FindElement(By.Name("nameQuery")).SendKeys("vader");
+    browser.FindElement(By.Name("nameQuery")).Submit();
+    browser.FindElement(By.CssSelector("#contacts li")).Text
+           .Should().Be("Darth Vader (Death Star)");
+    browser.FindElement(By.Name("nameQuery")).SendKeys("anakin");
+    browser.FindElement(By.Name("nameQuery")).Submit();
+    browser.FindElements(By.CssSelector("#contacts li"))
+           .Should().BeEmpty();
+}</pre>
+<p>Når jeg kjører denne testen første gang, vil den feile allerede på linjen <code>browser.Url = server.BaseUrl</code>, fordi det er ikke noen faktisk server.</p>
+<p>For å implementere WebServer har jeg brukt en liten artig klasse som kommer med .NET: System.Net.HttpListener. Her er den essensielle koden:</p><pre>class WebServer
+{
+    public void Start()
+    {
+        var listener = new System.Net.HttpListener();
+        listener.Prefixes.Add(BaseUrl);
+        listener.Start();
+        new Thread(HttpThread).Start(listener);
+    }
+
+    private void HttpThread(object listenerObj)
+    {
+        HttpListener listener = (HttpListener)listenerObj;
+        while (true)
+        {
+            var context = listener.GetContext();
+            using (context.Response)
+            {
+            }
+        }
+    }
+}</pre>
+<p>Jeg kjører testen igjen og kommer et skritt videre. Denne gangen får jeg beskjed om at testen ikke finner linken til "Add contact". Ikke så rart, vi produserer ikke noe HTML! En liten endring i koden over:</p><pre>var context = listener.GetContext();
+using (context.Response)
+{
+    new AddressBookController().Service(context);
+}</pre>
+<p>Og så må vi bare implementere AddressBookController.Service:</p><pre>class AddressBookController
+{
+    internal void Service(HttpListenerContext context)
+    {
+        var html = "&lt;html&gt;" +
+            "&lt;p&gt;&lt;a href='/contact/create'&gt;Add contact&lt;/a&gt;&lt;/p&gt;" +
+            "&lt;p&gt;&lt;a href='/contact/'&gt;Find contact&lt;/a&gt;&lt;/p&gt;" +
+            "&lt;/html&gt;";
+        var buffer = Encoding.UTF8.GetBytes(html);
+        context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+    }
+}</pre>
+<p>Testen kommer et skritt videre. Vi ser at vi får opp hovedsiden med valgene "Add Contact" og "Find contact". Når vi klikker på "Add contact" finner vi naturligvis ikke feltet "fullName" fordi vi ikke har laget skjemaet enda. Metoden "HandleGetRequest" sjekker URL'en for å bestemme hvilken side som skal vises:</p><pre>internal void Service(HttpListenerContext context)
+{
+    var html = HandleGetRequest(context.Request);
+    var buffer = Encoding.UTF8.GetBytes(html);
+    context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+}
+
+private string HandleGetRequest(HttpListenerRequest request)
+{
+    if (request.Url.LocalPath == "/contact/create")
+    {
+        return "&lt;html&gt;" +
+            "&lt;form method='post' action='/contact/create'&gt;" +
+            "&lt;p&gt;&lt;input type='text' name='fullName'/&gt;&lt;/p&gt;" +
+            "&lt;p&gt;&lt;input type='text' name='address'/&gt;&lt;/p&gt;" +
+            "&lt;p&gt;&lt;input type='submit' name='saveContact' value='Save'/&gt;&lt;/p&gt;" +
+            "&lt;/form&gt;" +
+            "&lt;/html&gt;";
+    }
+    else
+    {
+        // som før
+    }
+}</pre>
+<p>Vi er nesten ferdig med å registrere kontakter. Nå finner vi ikke linken "Find contact" etter at vi har postet formen. Metoden "Service" må håndtere POST requester med redirect:</p><pre>internal void Service(HttpListenerContext context)
+{
+    if (context.Request.HttpMethod == "GET")
+    {
+        var html = HandleGetRequest(context.Request);
+        var buffer = Encoding.UTF8.GetBytes(html);
+        context.Response.OutputStream.Write(buffer, 0, buffer.Length);
+    }
+    else
+    {
+        context.Response.Redirect(context.Request.Url.GetLeftPart(UriPartial.Authority));
+    }
+}</pre>
+<p>Nå mangler skjema for å søke etter personer. Her hjelper copy-paste pattern oss:</p><pre>private string HandleGetRequest(HttpListenerRequest request)
+{
+    if (request.Url.LocalPath == "/contact/create") ...
+    else if (request.Url.LocalPath == "/contact/")
+    {
+        return "&lt;html&gt;" +
+            "&lt;form method='get' action='/contact/'&gt;" +
+            "&lt;p&gt;&lt;input type='text' name='nameQuery'/&gt;&lt;/p&gt;" +
+            "&lt;p&gt;&lt;input type='submit' value='Find'/&gt;&lt;/p&gt;" +
+            "&lt;/form&gt;" +
+            "&lt;/html&gt;";
+    }
+    else ...
+}</pre>
+<p>Feilen nå er åpenbar: Vi har ikke med svaret med kontakter:</p><pre>    class Contact
+    {
+        public string FullName { get; set; }
+        public string Address { get; set; }
+    }
+
+    private static List&lt;Contact&gt; contacts = new List&lt;Contact&gt;();
+
+    private string HandleGetRequest(HttpListenerRequest request)
+    {
+        else if (request.Url.LocalPath == "/contact/")
+        {
+            var contactsHtml = string.Join("", 
+                contacts.Select(c =&gt; "&lt;li&gt;" + c.FullName + " (" + c.Address + ")&lt;/li&gt;")))
+            return string.Format("&lt;html&gt;" + ...
+                "&lt;ul id='contacts'&gt;{0}&lt;/ul&gt;" +
+                "&lt;/html&gt;", contactsHtml);
+
+        }</pre>
+<p>Så gjenstår det bare å ta vare på kontaktene når vi gjør en POST fra "Add contact" skjemaet:</p><pre>internal void Service(HttpListenerContext context)
+{
+    if (context.Request.HttpMethod == "GET") ...
+    else
+    {
+        // Read the parameters from the POST body (Request.InputStream)
+        var request = context.Request;
+        var encoding = context.Request.ContentEncoding;
+        var reader = new StreamReader(context.Request.InputStream, encoding);
+        var parameters = HttpUtility.ParseQueryString(reader.ReadToEnd(), encoding);
+
+        context.Response.Redirect(HandlePostRequest(request, parameters));
+    }
+}
+
+private string HandlePostRequest(HttpListenerRequest request, NameValueCollection parameters)
+{
+    contacts.Add(new Contact() { FullName = parameters["fullName"], Address = parameters["address"] });
+    return request.Url.GetLeftPart(UriPartial.Authority);
+}</pre>
+<p>En siste test feiler: Vi filterer ikke kontaktene basert på søket.</p><pre>private string HandleGetRequest(HttpListenerRequest request)
+{
+    if (request.Url.LocalPath == "/contact/create") ...
+    else if (request.Url.LocalPath == "/contact/")
+    {
+        var query = request.QueryString["nameQuery"];
+        var contactsHtml = string.Join("", 
+            contacts
+                .Where(c =&gt; query == null || c.FullName.ToLower().Contains(query.ToLower()))
+                .Select(c =&gt; "&lt;li&gt;" + c.FullName + " (" + c.Address + ")&lt;/li&gt;"));
+        return string.Format("&lt;html&gt;" +
+                ...
+                "&lt;ul id='contacts'&gt;{0}&lt;/ul&gt;" +
+                "&lt;/html&gt;", contactsHtml);
+    }
+    else ...
+}</pre>
+<p>Nå gjenstår det bare å lagre personene til en ordentlig database og å rette den åpenbare sikkerhetssårbarheten ved vising av kontaktene. AddressBookWebServer bør også få en Main metode, slik at du faktisk kan kjøre koden. Men det overlater jeg til deg, kjære leser.</p>
+<h2>Og nå kommer vi til moralen</h2>
+<p>I denne artikkelen har du lært hvordan HTTP egentlig fungerer og hvordan rammeverk som ASP.NET MVC fungerer bak kulissene. Det er mange detaljer vi er glade for å slippe å håndtere, slik som konvertering mellom tegnsett og lesing av innholdet i en POST request. Og det er mange ting som slett ikke er så vanskelig, som for eksempel å gjøre ordentlig "redirect-on-post". Jeg har på mer enn ett prosjekt innsett at etter at jeg hadde gjort et par dagers investering for å forstå den underleggende teknologien klarte jeg å levere prosjektet bedre uten de åpenbare, populære rammeverkene som alle anbefaler at man skal bruke.</p>
+<p>Har jeg funnet opp hjulet på nytt her? Det er mulig å argumentere for det, men jeg ønsker å strekke "finne opp hjulet på nytt" metaforen så langt som den lar seg strekke:</p>
+<p>Min erfaring er at det er mange "biler" i dag som har skjeive hjul der akslingen ikke er i midten. Det kan være at hjulet er dårlig eller det kan være at hjulet bare er montert feil. Så merker vi kanskje at bilen humper fordi vi har to hjul som begge har akslingen montert feil. Og så bruker vi masse innsats på å få justert disse to hjulene slik at de humper i takt.</p>
+<p>Dersom vi har erfaring med i det minste å lage et "hjul" eller to, kan det hende vi klarer å identifisere de egentlige problemene med de "hjulene" som vi blir gitt, slik at vi kan finne ut hvilke "hjul" som er bra og hvilke som er dårlige, og ikke minst: Hvordan å bruke dem riktig.</p>
+<p>Finn opp på nytt de hjulene du ikke forstår, ikke bruk et rammeverk du ikke kunne laget selv og ikke bruk en kalkulator før du forstår matematikken.</p>
+<p>God (h)jul!</p>

@@ -1,0 +1,25 @@
+---
+title: Første erfaring med Dynamic Data
+link: http://blog.kjempekjekt.com/2008/11/19/f%c3%b8rste-erfaring-med-dynamic-data/
+layout: post
+date: 2008-11-19 20:36:44Z
+tags:
+  - Databaser
+  - Webutvikling
+---
+I Contiki bruker vi en velprøv metode tuftet på velkjent teknologi for å holde rede på våre kunder og deres installasjoner av vårt produkt - nemlig en flatfil i Excel.
+
+Nå har endelig noen blitt så trøtte av denne løsningen at man har bestem at noe må gjøres. Jon Arild kom da i dag med den lure ideen at vi kunne bruke Dynamic Data (<a href="http://blog.kjempekjekt.com/2008/09/10/wpf-eller-silverlight-presentation-model-kanonbra-design/">tidligere omtalt her</a>) til å smelle opp en rask webløsning som publisere rdataene og gir editeringsmuligheter til dem som trenger dem. Så her er hva vi gjorde, og hvor lang tid det tok:
+<ol>
+	<li>Analyserte Excel-filen, og identifiserte hvordan den burde brytes opp i databasetabeller. <strong>15 minutter</strong>.</li>
+	<li>Forbedringer av Excel-filen for å gjøre det enklere å generere en database fra den. Omtrent <strong>60 minutter</strong>.</li>
+	<li>Importerte Excel-filen til en Access database. Et tungvindt grensesnitt og merkelig oppførsel gjorde at dette tok omtrent <strong>45 minutter</strong>.</li>
+	<li>Exporterte Access-basen til SQL server. <strong>30 sekunder</strong>.</li>
+	<li>Fikset opp i rare avgjørelser utført av eksporten. <strong>2 minutter</strong>.</li>
+	<li>Opprettet en ASP.NET DybamicData Web Site. Nesten <strong>10 sekunder</strong>.</li>
+	<li>Opprettet en LINQ to SQL modell basert på basen. <strong>12 sekunder</strong>.</li>
+	<li>Konfigurasjon av DynamicData-løsningen. Omtrent <strong>ett minutt</strong>. (Måtte lete litt nemlig. Trodde den ene linjen som skulle endres befant seg i web.config, men den var i stedet i global.asax.)</li>
+	<li>Konfigurere siten til å bruke Forms based authentication. La til bruker, roller og tilgangsrettigheter. <strong>2 minutter</strong>.</li>
+	<li>Opprettet en spliter ny påloggings-side. "Add new item" + drag'n'drop av login-kontroll tok kanskje <strong>15 sekunder</strong>.</li>
+</ol>
+Vi hadde egentlig en fungerende løsning etter punkt 8, men vi ønsket også en uathentiseringsløsning, så da måtte vi jobbe litt til. Men det som tok tid var altså å massere dataene våre for å få en fornuftig base. Selve løsningen, med fullstendig CRUD GUI for hele basen, tok under fire minutter å sette opp.

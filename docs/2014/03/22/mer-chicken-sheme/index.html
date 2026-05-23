@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Scheme,Lisp">
+
+    <title>Mer Chicken Scheme</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Mer Chicken Scheme</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 22. mars 2014</small> 
+            <a href="/tags/scheme"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Scheme</span></a>
+          
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          </p>
+          <p>Jeg fortsetter å leke meg med programmeringsspråket <strong>Scheme</strong> (<a href="/2014/03/20/hello-scheme/">se begynnelsen her</a>). Nå har jeg begynt å ta for meg <a href="http://wiki.call-cc.org/man/4/Supported%20language">manualen</a>, og eksperimenterer med det meste.</p>
+<p>I denne bloggposten dokumenterer jeg noen av de tingene jeg gjør som jeg tenker kan være interessante for andre som vil lære litt Scheme. Artikkelen forutsetter nok litt forståelse for Lisp og/eller funksjonell programmering.</p>
+<p>##apply, compose og partial
+Scheme har såvidt jeg vet ingen standard <code>compose</code>-funksjon (ala <code>&gt;&gt;</code> i F# eller <a href="http://clojuredocs.org/clojure_core/1.2.0/clojure.core/comp"><code>comp</code> i Clojure</a>). Men ved å bruke <code>apply</code> kan vi lage en enkel en:</p>
+<pre><code class="hljs">(<span class="hljs-name">define</span> (<span class="hljs-name">compose</span> f g)
+  (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> args
+    (<span class="hljs-name">f</span> (<span class="hljs-name"><span class="hljs-built_in">apply</span></span> g args))))
+
+(<span class="hljs-name"><span class="hljs-built_in">filter</span></span> (<span class="hljs-name">compose</span> not zero?) 
+        &#x27;(<span class="hljs-number">0</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">0</span> <span class="hljs-number">5</span>))
+<span class="hljs-comment">; ===&gt;  (2 3 5)</span></code></pre><p>Jeg tenkte også jeg skulle forsøke å lage en funksjon for <em>partial application</em>:</p>
+<pre><code class="hljs">(<span class="hljs-name">define</span> partial
+  (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (<span class="hljs-name">f</span> . args)
+    (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> args2
+      (<span class="hljs-name"><span class="hljs-built_in">apply</span></span> f 
+        (<span class="hljs-name">append</span> args args2)))))
+
+<span class="hljs-comment">;; Test: Lag en increment-funksjon</span>
+(<span class="hljs-name">define</span> <span class="hljs-number">1</span>+ (<span class="hljs-name">partial</span> + <span class="hljs-number">1</span>))
+
+(<span class="hljs-number">1</span>+ <span class="hljs-number">3</span> <span class="hljs-number">4</span>)        <span class="hljs-comment">; ===&gt;  8</span>
+
+<span class="hljs-comment">;; Test: Lag en sum-funksjon</span>
+(<span class="hljs-name">define</span> sum (<span class="hljs-name">partial</span> fold + <span class="hljs-number">0</span>))
+
+(<span class="hljs-name"><span class="hljs-built_in">sum</span></span> &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span>))  <span class="hljs-comment">; ===&gt;  6</span></code></pre><p>##do-iterator
+En av de første tingene jeg kom over i manualen i dag var en iterator som kalles <a href="http://api.call-cc.org/doc/scheme/do"><code>do</code></a>. Jeg har aldri sette denne før, så jeg vet ikke hvor utbredt den er bruk. Den minner meg egentlig litt om Common Lisp sin <code>loop</code> i bruk, men den er langt mindre leservennlig.</p>
+<p>Her er en løsning på Euler oppgave #1 ved hjelp av <code>do</code>:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">euler-1</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">do</span></span> ((<span class="hljs-name">sum</span> <span class="hljs-number">0</span>)
+       (<span class="hljs-name">i</span> <span class="hljs-number">1</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> i <span class="hljs-number">1</span>)))
+      ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> i <span class="hljs-number">1000</span>) sum)
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">multiple-of-3-or-5?</span> i)
+      (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> sum (<span class="hljs-name"><span class="hljs-built_in">+</span></span> sum i)))))</code></pre><p><code>sum</code> og <code>i</code> opprettes som to variabler med initiell verdi henholdvis 0 og 1. For <code>i</code> definerer vi også et steg (inkrementer med 1) for hver iterasjon.</p>
+<p>Loopen stoppes når <code>(= i 1000)</code>, og da returneres <code>sum</code>.</p>
+<p>Og for hver iterasjon tester jeg om <code>i</code> er en multippel av 3 eller 5. Hvis så er tilfelle legger jeg <code>i</code> til <code>sum</code>.</p>
+<p>##set!
+I koden over brukte jeg <code>set!</code>, og det er en ganske spennende operator. Første argument kan være en variabel, men det kan også være et uttrykk som aksesserer en del av en datastruktur. </p>
+<p>La meg demonstrere:</p>
+<pre><code class="hljs">(<span class="hljs-name">define</span> foo &#x27;()) <span class="hljs-comment">; en tom liste</span>
+
+<span class="hljs-comment">; Set foo til en liste med tall</span>
+(<span class="hljs-name">set!</span> foo &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">0</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">10</span>))
+
+<span class="hljs-comment">; For å hente ut f.eks. tredje element..</span>
+(<span class="hljs-name">caddr</span> foo) <span class="hljs-comment">;  ===&gt; 0</span>
+
+<span class="hljs-comment">; Set tredje element</span>
+(<span class="hljs-name">set!</span> (<span class="hljs-name">caddr</span> foo) <span class="hljs-number">3</span>)
+
+foo <span class="hljs-comment">; ===&gt; (1 2 3 4 5 6 7 8 9 10)</span></code></pre><p>##Association lists
+En <em>aliste</em> (association list) er en liste av par. Dette er klassisk Lisp-bruk av cons-celler for å lage omtrent det samme som hashmaps (dictionary, kall det hva du vil).</p>
+<p>I eksempelet bruker jeg dette for å konvertere et tall til ord. For å få til dette måtte jeg også slå opp i dokumentasjonen for å finne endel hjelpefunksjoner for strengbehandling.</p>
+<pre><code class="hljs">(<span class="hljs-name">use</span> srfi-13)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> dict &#x27;(( <span class="hljs-number">1</span> one   ) ( <span class="hljs-number">6</span> six   )
+               ( <span class="hljs-number">2</span> two   ) ( <span class="hljs-number">7</span> seven )
+               ( <span class="hljs-number">3</span> three ) ( <span class="hljs-number">8</span> eigth )
+               ( <span class="hljs-number">4</span> four  ) ( <span class="hljs-number">9</span> nine  )
+               ( <span class="hljs-number">5</span> five  ) ( <span class="hljs-number">0</span> zero  )))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">digitchar-&gt;word</span> c)
+  <span class="hljs-comment">;; Example: </span>
+  <span class="hljs-comment">;;  (digitchar-&gt;word #\1) -&gt; one</span>
+  <span class="hljs-comment">;;  (digitchar-&gt;word #\2) -&gt; two</span>
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">digit</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> (<span class="hljs-name"><span class="hljs-built_in">char-&gt;integer</span></span> c) <span class="hljs-number">48</span>)))
+    (<span class="hljs-name"><span class="hljs-built_in">cadr</span></span> (<span class="hljs-name"><span class="hljs-built_in">assv</span></span> digit dict))))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">integer-&gt;words</span> n)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">word-list</span> 
+          (<span class="hljs-name">string-fold-right</span> 
+            (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (c acc)
+              (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> (<span class="hljs-name">digitchar-&gt;word</span> c) acc))
+            &#x27;()
+            (<span class="hljs-name"><span class="hljs-built_in">number-&gt;string</span></span> n))))
+    (<span class="hljs-name">string-join</span> 
+      (<span class="hljs-name"><span class="hljs-built_in">map</span></span> symbol-&gt;string word-list) 
+      <span class="hljs-string">&quot; &quot;</span>)))
+
+(<span class="hljs-name"><span class="hljs-built_in">display</span></span> (<span class="hljs-name">integer-&gt;words</span> <span class="hljs-number">1337</span>))
+<span class="hljs-comment">; ===&gt;  one three three seven</span></code></pre><p>Funksjonen som behandler <em>alisten</em> som en oppslagstabell er <code>assv</code>. <a href="http://api.call-cc.org/doc/scheme/assoc">Se også <code>assq</code> og <code>assoc</code></a>. </p>
+<p>##Promises
+Scheme støtter <em>lazy</em> evaluering gjennom prosedyrene <code>delay</code> og <code>force</code>. Dette kan for eksempel brukes til å definere en uendelig liste, og så plukke ut noen elementer derfra:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> a-stream
+  (<span class="hljs-name"><span class="hljs-built_in">letrec</span></span> ((<span class="hljs-name">next</span>
+            (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (n)
+              (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> n (<span class="hljs-name"><span class="hljs-built_in">delay</span></span> (<span class="hljs-name">next</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> n <span class="hljs-number">1</span>)))))))
+    (<span class="hljs-name">next</span> <span class="hljs-number">0</span>)))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> head car)
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> tail
+  (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (stream) (<span class="hljs-name"><span class="hljs-built_in">force</span></span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> stream))))
+
+(<span class="hljs-name">head</span> (<span class="hljs-name">tail</span> (<span class="hljs-name">tail</span> a-stream))) 
+<span class="hljs-comment">; ===&gt;  2  </span></code></pre><p>##Makroer
+Makroer er så spennende fordi det gir Lisp en styrke som andre språk ikke har - med makroer kan du lage <em>&quot;ny syntaks&quot;</em>. </p>
+<p>Scheme har en spennende måte å definere makroer på som skiller seg ganske mye fra det jeg er vandt til fra Common Lisp og Clojure. Jeg har ikke satt meg orntlig inn i alt enda, men her er noen eksperimenter...</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define-syntax</span></span> n-times
+  (<span class="hljs-name"><span class="hljs-built_in">syntax-rules</span></span> ()
+     <span class="hljs-comment">; Et mønster... </span>
+    ((<span class="hljs-name">n-times</span> n expression)
+     <span class="hljs-comment">; Hva det skal gjøres om til...</span>
+     (<span class="hljs-name"><span class="hljs-built_in">let</span></span> loop ((<span class="hljs-name">x</span> n))
+        (<span class="hljs-name"><span class="hljs-built_in">unless</span></span> (<span class="hljs-name"><span class="hljs-built_in">zero?</span></span> x)
+          expression
+          (<span class="hljs-name">loop</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> x <span class="hljs-number">1</span>)))))))
+
+(<span class="hljs-name">n-times</span> <span class="hljs-number">10</span> 
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;X&quot;</span>))
+<span class="hljs-comment">;                ===&gt;  XXXXXXXXXX</span></code></pre><p>Det var alt for denne gang (på tide å legge seg). Men det kommer til å komme mer Scheme på bloggen, det er helt sikkert.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

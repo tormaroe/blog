@@ -1,0 +1,54 @@
+---
+title: Betterave
+link: http://blog.kjempekjekt.com/2011/12/16/betterave/
+layout: post
+date: 2011-12-16 08:03:15Z
+tags:
+  - Julekalender
+  - Polyglot
+  - WTF
+  - Esoteriske språk
+  - Betterave
+---
+<p><strong><em>Betterave</em></strong> er et såkalt esoterisk programmeringsspråk, sånn som <a href="http://blog.kjempekjekt.com/2011/12/08/unlambda/"><em>Unlambda</em> som jeg snakket om i luke 8</a>, eller <a href="http://blog.kjempekjekt.com/2011/05/14/brainfck/"><em>Brainf*ck</em> som jeg skrev om tidligere i år</a>. Men slapp av, det er ikke like grufullt som dem. Selv om Betterave ved første øyekast ser helt uforståelig ut, er det egentlig ganske enkelt. Så her har du et språk det er en stor sjangse for at du kan lære deg, og bruke til å imponere dine nerdevenner ;)</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="betterave" border="0" alt="betterave" src="/uploads/2011/12/betterave.jpg" width="450" height="286"></p> <p>Betterave består av funksjonsuttrykk på samme måte som Lisp/Scheme. Språket har en prefix-notasjon, men ulikt Lisp slipper man alle parantesene – hver funksjon "vet selv" hvor mange parametre det har. Dermed kan man også trekke paralleller til <a href="http://blog.kjempekjekt.com/2011/12/15/rebol/">Rebol</a>, som egentlig fungerer på samme måte.</p> <h4>Litt kode</h4> <p>Og da skal du få se ditt første Betterave-program. Igjen finner jeg <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">summen av alle tall under 1000 som er multipler av 3 eller 5</a>. Siden ingen funksjoner i Betterave er lengre enn én bokstav får hele programmet fint plass på én linje:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; font-size: 120%; padding-top: 6px"><span class="lnr"> 1 </span>L-***83679N0S0[N+n1T+=0%n3=0%n5?&gt;t0S+sn!|&lt;nl].s
+</pre>
+<p>Enkelt, ikke sant? Du skjønte dette?</p>
+<p>Som sagt, det er ikke så vanskelig som det ser ut – og å lære det er ganske givende. Mere givende enn å spille minesveiper eller soduku i alle fall, så da er det verdt tiden til de fleste av oss.</p>
+<p>Selv om programmet <em>kan</em> skrives på én linje, så <em>må</em> det ikke det. Ved å bryte det litt opp og legge på noen kommentarer tror jeg det skal være ganske enkelt å forstå hvordan det virker. Men du må vite et par ting først...</p>
+<h4>Tall</h4>
+<p>Det er ikke mulig å uttrykke tall som er større enn 9 i Betterave direkte. Når vi skriver 9 i koden er det egentlig en parameterløs funksjon som returnerer tallet 9, og siden ingen funksjoner kan bestå av mer enn ett tegn finnes det ingen 10-funksjon. Så hvordan lager jeg da for eksempel tallet 999, som jeg trenger for å løse oppgaven min?</p>
+<p>Jo, jeg må regne litt! 8 ganger 3 er lik 24. I Betterave skrives det som <strong>*83</strong>. Altså funskjonskallet * (stjerne/multipliser) som tar to argumenter: resultatet av funksjonen 8 og resultatet av funksjonen 3.</p>
+<p>Videre er 24 ganger 6 lik 144. Dette kan jeg nå uttrykke som <strong>**836</strong>. Og ganger jeg dette med 7, og trekker fra 9, så står jeg igjen med 999. Funksjonsuttrykket blir da <strong>–***83679</strong>.</p>
+<h4>Variabler</h4>
+<p>I Betterave har programmene tilgang til å bruke 27 variabler, en for hver bokstav i det engelske alfabetet. Stor bokstav, for eksempel <strong>A</strong>, er en funksjon som tar ett argument og lagrer argumentet som verdi i variabelen. Liten bokstav, for eksempel <strong>a</strong>, er en funksjon uten parametre, som returnerer verdien i variabelen.</p>
+<p>Nå har du lært nesten alle tingene jeg har brukt i programmet du så i starten. Det eneste som manger er muligheter for å ta avgjørelser og å lage løkker.</p>
+<h4>Programflyt</h4>
+<p>Jeg har brukt to strukturer for programflyt i programmet mitt. Den første er <strong>[ xxx | yyy ]</strong>. Den fungerer sånn at hvis yyy er noe annet enn verdien 0, så hopper programmet tilbake til startklammen – altså [. Det er altså en veldig enkel <em>do-while</em> løkke.</p>
+<p>Den andre strukturen er <strong>? xxx yyy !</strong>. Denne fungerer sånn at hvis verdien av xxx er 0 så vil programmet hoppe til utropstegnet, og altså ikke evaluere yyy. Dette er altså en enkel if-setning.</p>
+<h4>Kildekoden med struktur og kommentarer</h4>
+<p>Hvis du har fulgt med skal du nå være i stand til å forstå det hele:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span>L -***83679       <span class="String">~ storing 999 in L (limit)      ~</span>
+<span class="lnr">11 </span>N 0               <span class="String">~ setting N to 0                ~</span>
+<span class="lnr">12 </span>S 0               <span class="String">~ setting S (sum) to 0          ~</span>
+<span class="lnr">13 </span>
+<span class="lnr">14 </span>[                 <span class="String">~ loop                          ~</span>
+<span class="lnr">15 </span>  N +n1           <span class="String">~ increment N                   ~</span>
+<span class="lnr">16 </span>
+<span class="lnr">17 </span>  <span class="String">~ set T to the sum of the modulo tests          ~</span>
+<span class="lnr">18 </span>  T + =0%n3 =0%n5
+<span class="lnr">19 </span>
+<span class="lnr">20 </span>  ? &gt;t0           <span class="String">~ if T is larger than 0         ~</span>
+<span class="lnr">21 </span>    S+sn          <span class="String">~ add N to S (sum)              ~</span>
+<span class="lnr">22 </span>  !               <span class="String">~ end if ~</span>
+<span class="lnr">23 </span>|
+<span class="lnr">24 </span>  &lt;nl             <span class="String">~ while N is less than L (limit)~</span>
+<span class="lnr">25 </span>]                 <span class="String">~ end loop                      ~</span>
+<span class="lnr">26 </span>
+<span class="lnr">27 </span>.s                <span class="String">~ print value of S              ~</span>
+</pre>
+<p>Jeg sa jo at det var enkelt!</p>
+<h4>Hvorfor bruke tid på Betterave</h4>
+<p>Du skal bruke tid på Betterave og andre esoteriske programmeringsspråk fordi det gjør at du må tenke. Dette er rett og slett problemløsning hvor du tvinges til å sette deg inn i et sett med regler, og hvor du må finne ut hvordan du får systemet disse reglene representerer til å gjøre noe for deg. Dette stimulerer deg og gir deg ferdigheter du som en utvikler behøver.</p>
+<p>Dessuten er det gøy!!!</p>
+<h4>Hvordan komme igang</h4>
+<p>All informasjon du behøver om <a href="http://esolangs.org/wiki/Betterave">Betterave finner du på esolangs.org</a>. Denne wikien er også en god kilde til andre, lignende språk du kan forsøke deg på.</p>
+<p>Selve tolkeren til Betterave er skrevet i Ruby, og er ikke mange linjene. Jeg måtte modifisere den litt for at den skulle virke slik som jeg ønsket (dvs. at den kunne ta en betterave-fil som et argument og så kjøre denne), og <a href="https://gist.github.com/1472353">min versjon finner du her</a>. Har du Ruby installert allerede er det bare å lagre ned koden, og så kan du kjøre betterave-filer ved å sende dem til tolkeren i kommandolinjen din.</p>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Diverse prosjekter,Spill">
+
+    <title>Nytt prosjekt: SharpBrain</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Nytt prosjekt: SharpBrain</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 5. oktober 2009</small> 
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          
+            <a href="/tags/spill"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Spill</span></a>
+          </p>
+          <p>Jeg begynte et nytt hobbyprosjekt i helgen – et 2D brettspill i WPF jeg har valgt å kalle <strong>SharpBrain</strong>, eller <strong>#Brain</strong> om du vil. Denne gangen tror jeg at jeg har et brukbart konsept, og at det vil være noe jeg kan fullføre. Her er et foreløpig screenshot – en del av grunnlogikken ble ganske raskt klar, men den eneste visuelle sålangt er selve spillbrettet:</p>
+<p><img style="display: block; float: none; margin-left: auto; margin-right: auto; border-width: 0px;" title="CropperCapture[39]" src="/uploads/2009/10/CropperCapture39.png" alt="CropperCapture[39]" width="500" height="273" border="0" /></p>
+<p>SharpBrain vil i utgangspunktet bli et ganske enkelt spill mellom to eller flere "styrker" plassert på et hexagonalt rutenett. Styrken din vokser for hver runde, og man kan spre styrkene ved å bevege seg rundt og angripe/konsumere andre styrker. Det mest interessante i Sharpbrain vil derimot bestå av diverse "pluggable" moduler:</p>
+<p>-- For det første vil spillet vil ha et utvidbart sett med <strong><em>game actions</em></strong> – handlinger spilleren kan utføre når det er hans tur. Den grunnleggende handlinger er <em>move</em>, men vil bli utvidet med diverse andre, som <em>teleport</em>, <em>shoot</em>, <em>shield</em>, <em>explode</em>, etc. De ulike handlingene kan ha ulike <em>conditions </em>som gjør at de blir tilgjengelige.</p>
+<p>-- Sharpbrain vil også kunne endre karakter ganske drastisk gjennom et sett med <strong><em>game rules</em></strong>. Tanken er at dette skal være moduler som kjøres for hver celle etter hver spillers tur, og kan gi spilleren ulike fordeler eller ulemper basert på spillets gang, hvor mange styrker spilleren har i den bestemte cellen o.l.</p>
+<p>-- Videre vil jeg implementere ulike <strong><em>game judges</em></strong>, som avgjør hvordan man vinner spillet. Et scenario vil for eksempel være at man skal utslette alle andre styrker. Et annet kan være at man skal okkupere en eller flere predefinerte celler i en eller flere runder.., et slags <em>"capture and hold"</em> modus.</p>
+<p>-- Til slutt vil jeg implementere ulike <strong><em>AI'er</em></strong>, sånn at man kan spille mot maskinen, som kan benytte ulike strategier for å forsøke å slå deg. Jeg tror dette kan bli den mest utfordrende delen av utviklingen – selv om spillet i utgangspunktet er ganske enkelt, så åpner det opp for ekstremt mange muligheter i løpet av spillets gang – ikke minst når man legger til flere actions, rules og judges. Drømmen er at folk får lyst til å bidra med utvidelser når jeg er ferdig med grunnimplementasjonen av spillet. Jeg skal i alle fall sørge for å gjøre det relativt enkelt å legge til ny plug-ins. Dessuten vet jeg at det er mange som har sansen for å lage AI's, og dette vil kunne bli en brukbar plattform for å kjøre <em>"robot battles"</em> mellom dem. Kanskje kunne jeg lagt opp muligheten for å lage AI's i IronRuby og IronPython – det hadde vært konge!</p>
+<p>Følg med fremover på hvordan dette (forhåpentligvis) utvikler seg..</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

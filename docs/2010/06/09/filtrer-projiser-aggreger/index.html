@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Funksjonell programmering,F#,C#,Ruby">
+
+    <title>filtrer, projiser, aggreger</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>filtrer, projiser, aggreger</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 9. juni 2010</small> 
+            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+          
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p>Det siste året har jeg knyttet intim bekjentskap til bruk av såkalte <a href="http://en.wikipedia.org/wiki/Higher-order_function"><strong><em>higher order functions</em></strong></a>; først da jeg virkelig tok i bruk LINQ og lambda i C# 3.0, deretter da jeg lærte meg <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a>, og til sist nå når jeg lærer meg å bruke språk som Erlang og F# i den funksjonelle paradigmen. Jeg har lært om <a href="http://en.wikipedia.org/wiki/Lambda_calculus">Lambda calculus</a>, og hva en <a href="http://en.wikipedia.org/wiki/Closure_(computer_science)">closure</a> er for noe – ting jeg nå mener <em>alle</em> utviklere burde ha et forhold til.</p>
+<p>For å gi deg, kjære leser, et bedre innblikk i noe av dette, vil jeg snakke litt om noen av disse funksjonene av "høyere orden". Higher order function betyr i bunn og grunn bare en funksjon som tar som innput en annen funskjon som spesifiserer en del av hva den skal utføre.</p>
+<h4>Filtrer</h4>
+<p><strong><em>Filter</em></strong> er en av de mest vanlige, høyere orden funskjonene som brukes på lister eller andre datastrukturer. Gitt en liste og et predikat så brukes filter-funksjonen til å returnere de elementene i listen som tilfredstiller predikatet. Jeg sier "filter" fordi det er det funksjonen heter i de fleste programmeringsspråkene. I C# heter derimot filter-funksjonen for IEnumerable&lt;T&gt; <strong><em>Where</em></strong>, og den kan for eksempel brukes slik:</p>
+<pre>
+var aList = new []{1, 2, 3, 5, 8, 13, 21, 33, 54};
+var evenNumbers = aList.Where(n =&gt; n % 2 == 0);
+// array contains: 2, 8, 54
+</pre>
+<p>Filter-funksjonen for Enumerations i Ruby heter <strong><em>select</em></strong> (evt. <em>find_all</em>). Her er samme eksempel i Ruby:</p>
+<div style="padding-bottom: 10px; background-color: black; padding-left: 10px; padding-right: 10px; margin-bottom: 20px; color: #f6f3e8; padding-top: 10px"><font face="monospace"><span style="background-color: #000000"><font color="#3d3d3d">1 </font></span><font color="#c6c5fe">$a_list</font> = [<font color="#ff73fd">1</font>, <font color="#ff73fd">2</font>, <font color="#ff73fd">3</font>, <font color="#ff73fd">5</font>, <font color="#ff73fd">8</font>, <font color="#ff73fd">13</font>, <font color="#ff73fd">21</font>, <font color="#ff73fd">33</font>, <font color="#ff73fd">54</font>]<br><span style="background-color: #000000"><font color="#3d3d3d">2 </font></span><font color="#c6c5fe">$even_numbers</font> = <font color="#c6c5fe">$a_list</font>.select {|<font color="#c6c5fe">n</font>| n % <font color="#ff73fd">2</font> == <font color="#ff73fd">0</font>}<br><span style="background-color: #000000"><font color="#3d3d3d">3 </font></span><font color="#7c7c7c"># array contains: 2, 8, 54</font><br></font></div>
+<h4>Projiser</h4>
+<p>Den neste av de mest brukte, høyere orden funksjonene er <strong><em>Map</em></strong>. Denne funksjonen tar en liste eller lignende, samt en funksjon for å omforme ("mappe") elementene i listen til en ny type elementer. Dette kaller vi også en projisering (<em>projection</em>). C#-varianten av map heter <strong><em>Select</em></strong> (og er altså ikke det samme som <em>select</em> i Ruby). Ønsker jeg for eksempel å konvertere listen med tall om til en liste med strenger kan jeg gjøre det slik:</p>
+<pre>
+var evenNumbersAsString = evenNumbers.Select(n =&gt; n.ToString());
+</pre>
+<p>I de fleste andre språk heter funksjonen <em>map</em>, men i Ruby har man også et alias som heter <em><strong>collect</strong></em>.</p>
+<h4>Aggreger</h4>
+<p>Filter og map er fine funksjoner som er anvendelige og lette å forstå og å huske på. En som ikke er fullt så mye brukt, blant utviklere innenfor den imperative paradigmen i alle fall, er <strong><em>Fold</em></strong>. For å forvirre oss fremstår også denne funksjonen med ulike navn i de ulike språkene – som for eksempel <strong><em>Reduce</em></strong>, <strong><em>Accumulate</em></strong>, <strong><em>Compress</em></strong> og <strong><em>Inject</em></strong>. Og i .NET heter den <strong><em>Aggregate</em></strong>:</p>
+<pre>
+Console.Write(evenNumbersAsString.Aggregate(
+    "", (accumulator, next) =&gt; accumulator + next + " "));
+// prints "2 8 54 "
+</pre>
+<p>Ser du hvordan den virker? I motsetning til de andre funksjonene som returnerer lister, så returnerer Aggregate én verdi. En verdi som er bygget opp ved å kalle det spesifiserte lambda-uttrykket for hvert element i listen. <em>Accumulator </em>er både output og input til lamdaen. For det første elementet vil accumulator ha verdien som ble spesifisert som den første parameteren til Aggregate, altså en tom streng. Når funksjonen kalles igjen for det andre elementet vil accumulator ha verdien som ble returnert fra den første. Og så fortsetter det til listen er tom, og accumulator returneres.</p>
+<p>Her er nesten samme eksempel i Ruby, hvor fold heter <em>inject</em> (eller <em>reduce</em> om du ønsker å bruke det):</p>
+<div style="padding-bottom: 10px; background-color: black; padding-left: 10px; padding-right: 10px; margin-bottom: 20px; color: #f6f3e8; padding-top: 10px"><font face="monospace"><span style="background-color: #000000"><font color="#3d3d3d">5 </font></span><font color="#c6c5fe">$foo</font> = <font color="#c6c5fe">$even_numbers</font>.inject(<font color="#336633">''</font>) {|<font color="#c6c5fe">acc</font>,<font color="#c6c5fe">next</font>| <font color="#336633">"</font><font color="#00a0a0">#{</font>acc<font color="#00a0a0">}#{</font>next.to_s<font color="#00a0a0">}</font><font color="#a8ff60">, </font><font color="#336633">"</font>}<br><span style="background-color: #000000"><font color="#3d3d3d">6 </font></span>puts <font color="#c6c5fe">$foo</font>[<font color="#ff73fd">0</font>..-<font color="#ff73fd">3</font>] <font color="#7c7c7c"># outputs "2, 8, 54"</font><br></font></div>
+<p>Har du aldri brukt en slik funksjon ser dette sikkert ganske gresk ut. Den er på kanten til å være uleselig, og hvis du jobber i et team som ikke er så godt kjent med fold/aggregate så bør du kanskje være forsiktig med å bruke den. Men jeg lover deg at om du venner deg til denne funksjonen så vil du i mange tilfeller kunne produsere mere kompakt og elegant kode.</p>
+<h4>Oppsummering i F#</h4>
+<p>Her er et oppsummerende eksempel i F#. Jeg oppretter en liste, og bruker pipelining til å sende listen gjennom <em>filter</em>, <em>map</em> (projiser) og <em>fold</em> (aggreger), for til slutt å skrive ut den resulterende strengen.</p>
+<pre>
+open System
+ 
+let aList = [1; 2; 3; 5; 8; 13; 21; 33; 54]
+ 
+aList |&gt; List.filter (fun n -&gt; n % 2 = 0)
+      |&gt; List.map    (fun n -&gt; n.ToString())
+      |&gt; List.fold   (fun acc n -&gt; acc + n + " ") String.Empty
+      |&gt; Console.WriteLine
+</pre>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

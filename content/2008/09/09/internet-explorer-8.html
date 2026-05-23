@@ -1,0 +1,31 @@
+---
+title: Internet Explorer 8
+link: http://blog.kjempekjekt.com/2008/09/09/internet-explorer-8/
+layout: post
+date: 2008-09-09 20:29:38Z
+tags:
+  - Webutvikling
+---
+<img id="image355" style="padding-left: 15px; padding-bottom: 5px" alt="ie8.jpg" src="/uploads/2008/09/ie8.jpg" align="right" />Hvis du er litt treig (evt. ikke nerd) så har du kanskje ikke fått med deg at <a href="http://www.microsoft.com/windows/internet-explorer/beta/default.aspx">Internet Explorer 8</a> er sluppet i beta. På MSDN Live i Bergen i dag holdt <a href="http://andersnoras.com/">Anders Nordås</a> et foredrag om dette nye vindunderet - her er noen høydepunkt.
+
+Anders tok oss med på en <em>syretripp</em> gjennom browsernes historie, som ender med IE8, som endelig er <strong>en browser fra Microsoft som støtter standardene!</strong> Det har vi ventet lenge på, og er en kjempefin nyhet. Fra nå av skal vi kunne kode websider med <em>ett</em> sett med javascript og <em>ett</em> sett med CSS, og så fungerer det likt i IE8, FF, Opera, Safari osv. Knallbra, velkommen i det gode selskapet, IE.
+
+Eneste skåret i gleden er at enkelte av våre kunder selvsagt fortsatt kommer til å bruke både IE7 og IE6, og at vi derfor må fortsette å teste alt vi lager på disse :(
+
+Videre fortalte Anders om bl.a. disse nye featurene:
+
+I IE7 og FF2 fikk man search providers, og det er jo kult, men nå har man tatt det minst tre hakk videre: <strong><a href="http://www.microsoft.com/windows/internet-explorer/beta/features/accelerators.aspx">IE8 Accelerators</a></strong> er en kul ting som man som leverandør kan benytte for å øke brukerens opplevelse.., det samme er <strong><a href="http://www.microsoft.com/windows/internet-explorer/beta/features/web-slices.aspx?tabid=1&catid=1">web slices</a></strong>. Begge deler kan man også benytte i FireFox (med extensions), så man utvikler ikke utelukkende for IE om man benytter disse nyvinningene.
+
+Det er derimot ikke tilfelle om man ønsker å benytte seg av AJAX utvidelsene i IE8, som f.eks:
+<ul>
+	<li><strong>cross domain requests</strong></li>
+	<li><strong>cross document messaging</strong></li>
+	<li><strong>ajax navigation</strong> (mulighet for god "back" funksjonalitet vha et nytt onHashChange event)</li>
+	<li><strong>ajax dom storage</strong> (superman cookies - dette er et forslag fra W3C, men ikke implementert i andre browsere enda)</li>
+	<li><strong>connectivity events</strong> (events og properties for å informere/sjekke om man er online/offline)</li>
+</ul>
+Her innfører man altså igjen IE spesifik kode og muligheter, og det var jo det vi ville unngå, var det ikke? Skal de da aldri lære?
+
+Det som derimot så veldig bra ut var den innebygde <strong>JavaScript debuggeren</strong> og verktøyet for å inspisere og modifisere DOM'en, CSS'en o.l. Spesielt debugging av JavaScript har aldri fungert helt bra - det nermeste man kommer er en plug-in i FireFox som er sånn passe. I IE8 får man full debuggings-opplevelse tilsvarende Visual Studio, og dette bør være insentiv nok for webutviklere til å installere <em>betaen</em> med en eneste gang.
+
+Men det aller mest imponerende var vel egentlig at Anders Nordås klarte å forelese i en hel time om noe så skjedelig som IE8 - og faktisk gjøre det både morsomt og spennende. To tomler opp til deg!

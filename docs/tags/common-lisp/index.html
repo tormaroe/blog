@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Common Lisp | Programmeringsbloggen</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-12">
+          <h1><span class="glyphicon glyphicon-tag"></span> Common Lisp <small>relaterte bloggposter</small></h1>
+
+          <div class="table-responsive">
+          <table class="table table-condensed table-striped">
+          
+            <tr>
+              <td>2017</td>
+              <td>28. mars</td>
+              <td><a href="/2017/03/28/csv-json-node-lisp/"><span class="glyphicon glyphicon-link"></span> CSV, json, node, lisp, utf8 og closures</a></td>
+              <td class="text-right">
+          <a href="/tags/nodejs"><span class="label label-success">Node.js</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2017</td>
+              <td>12. februar</td>
+              <td><a href="/2017/02/12/mine-forste-linjer-rust/"><span class="glyphicon glyphicon-link"></span> Mine første linjer Rust</a></td>
+              <td class="text-right">
+          <a href="/tags/rust"><span class="label label-success">Rust</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2016</td>
+              <td>11. februar</td>
+              <td><a href="/2016/02/11/basic-til-cl-kompilator/"><span class="glyphicon glyphicon-link"></span> En BASIC til Common Lisp kompilator</a></td>
+              <td class="text-right">
+          <a href="/tags/basic"><span class="label label-success">Basic</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>31. desember</td>
+              <td><a href="/2015/12/31/ropy-i-common-lisp/"><span class="glyphicon glyphicon-link"></span> Ropy får en tolker i Common Lisp</a></td>
+              <td class="text-right">
+          <a href="/tags/diverse-prosjekter"><span class="label label-success">Diverse prosjekter</span></a>
+        
+          <a href="/tags/esoteriske-språk"><span class="label label-success">Esoteriske språk</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>28. desember</td>
+              <td><a href="/2015/12/28/declare-optimize-speed/"><span class="glyphicon glyphicon-link"></span> Optimalisering og gradvis typing i Common Lisp</a></td>
+              <td class="text-right">
+          <a href="/tags/ytelse"><span class="label label-success">Ytelse</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>17. desember</td>
+              <td><a href="/2015/12/17/parallellprosessering/"><span class="glyphicon glyphicon-link"></span> Parallellprosessering i Common Lisp</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        
+          <a href="/tags/samtidighet"><span class="label label-success">Samtidighet</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>16. desember</td>
+              <td><a href="/2015/12/16/rekursiv-skattejakt/"><span class="glyphicon glyphicon-link"></span> Rekursiv skattejakt</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        
+          <a href="/tags/perl"><span class="label label-success">Perl</span></a>
+        
+          <a href="/tags/rekursjon"><span class="label label-success">Rekursjon</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>15. desember</td>
+              <td><a href="/2015/12/15/opp-ned-tall/"><span class="glyphicon glyphicon-link"></span> Opp-ned-tall</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>13. desember</td>
+              <td><a href="/2015/12/13/en-gammel-kjenning/"><span class="glyphicon glyphicon-link"></span> En gammel kjenning</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>12. desember</td>
+              <td><a href="/2015/12/12/luke89101112/"><span class="glyphicon glyphicon-link"></span> Luke 8, 9, 10, 11 og 12</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>7. desember</td>
+              <td><a href="/2015/12/07/sms-med-common-lisp/"><span class="glyphicon glyphicon-link"></span> Send SMS med Common Lisp</a></td>
+              <td class="text-right">
+          <a href="/tags/lisp"><span class="label label-success">Lisp</span></a>
+        
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        
+          <a href="/tags/sms"><span class="label label-success">SMS</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>6. desember</td>
+              <td><a href="/2015/12/06/compose/"><span class="glyphicon glyphicon-link"></span> cl-utilities</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>5. desember</td>
+              <td><a href="/2015/12/05/dna-analyse/"><span class="glyphicon glyphicon-link"></span> DNA-analyse med Common Lisp</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        
+          <a href="/tags/esoteriske-språk"><span class="label label-success">Esoteriske språk</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>4. desember</td>
+              <td><a href="/2015/12/04/sirkulaere-lister/"><span class="glyphicon glyphicon-link"></span> Sirkulære lister</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>4. desember</td>
+              <td><a href="/2015/12/04/common-lisp/"><span class="glyphicon glyphicon-link"></span> Common Lisp</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        
+          <a href="/tags/lisp"><span class="label label-success">Lisp</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>3. desember</td>
+              <td><a href="/2015/12/03/cl-arrow/"><span class="glyphicon glyphicon-link"></span> cl-arrow</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        
+          <a href="/tags/rekursjon"><span class="label label-success">Rekursjon</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2015</td>
+              <td>2. desember</td>
+              <td><a href="/2015/12/02/knowit-split-secuence-cl-ppcre/"><span class="glyphicon glyphicon-link"></span> Knowit provoserer frem split-sequence og cl-ppcre</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        
+          <a href="/tags/regex"><span class="label label-success">Regex</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2012</td>
+              <td>2. februar</td>
+              <td><a href="/2012/02/02/template-method-del-4-multippel-arv/"><span class="glyphicon glyphicon-link"></span> Template Method del 4: Multippel arv</a></td>
+              <td class="text-right">
+          <a href="/tags/oo-patterns"><span class="label label-success">OO Patterns</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2011</td>
+              <td>24. november</td>
+              <td><a href="/2011/11/24/hello-world-euler-style/"><span class="glyphicon glyphicon-link"></span> Hello World, Euler style</a></td>
+              <td class="text-right">
+          <a href="/tags/julekalender"><span class="label label-success">Julekalender</span></a>
+        
+          <a href="/tags/csharp"><span class="label label-success">C#</span></a>
+        
+          <a href="/tags/clojure"><span class="label label-success">Clojure</span></a>
+        
+          <a href="/tags/polyglot"><span class="label label-success">Polyglot</span></a>
+        
+          <a href="/tags/ruby"><span class="label label-success">Ruby</span></a>
+        </td>
+            </tr>
+          
+            <tr>
+              <td>2011</td>
+              <td>15. juli</td>
+              <td><a href="/2011/07/15/hvorfor-ser-alle-websider-om-common-lisp-ut-som-om-de-ble-laget-i-1993/"><span class="glyphicon glyphicon-link"></span> Hvorfor ser alle websider om Common Lisp ut som om de ble laget i 1993?</a></td>
+              <td class="text-right">
+          <a href="/tags/wtf"><span class="label label-success">WTF</span></a>
+        </td>
+            </tr>
+          
+          </table>
+          </div>
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

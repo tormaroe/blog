@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Webutvikling">
+
+    <title>Charts on demand fra Google</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Charts on demand fra Google</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 7. desember 2007</small> 
+            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+          </p>
+          <p><a href="http://google-code-updates.blogspot.com/2007/12/embed-charts-in-webpages-with-one-of.html">Google lanserte i går</a> nok en kul "dings" - Google Chart. Nå er det veldig kjapt å greit å publisere grafer på web, uten at man har tilgang til noen spesiell chart kontroll. Med Google Chart kan man nemlig med en link som f.eks.:</p>
+<p style="color: green">http://chart.apis.google.com/chart?<br />
+cht=p3<br />
+&chd=s:GHBGB<br />
+&chs=300x100<br />
+&chl=Sover|På jobb|I bilen|Ser på TV|Spiser</p>
+<p>få google til å produsere en graf som ser slik ut:</p>
+<p align="center"><img src="http://chart.apis.google.com/chart?cht=p3&chd=s:GHBGB&chs=300x100&chl=Sover|P%C3%A5%20jobb|I%20bilen|Ser%20p%C3%A5%20TV|Spiser" /></p>
+<p>Kult? Bildet over produseres altså av Google hver gang noen ser på denne siden. De støtter line charts, scatter plots, bar charts, venn diagrammer og pie charts som vist her. Er du interessert tar du turen til <a href="http://code.google.com/apis/chart/">Google Chart API</a>. Ta en titt på eksemplene, mulighetene er store.</p>
+<p>Produktet startet orginalt som et 20% prosjekt. Google's ansatte har nemlig anledning til å bruke 20% av arbeidstiden sin på å utvikle "hva de selv vil", og ofte resulterer det i nyttige ting som dette her. Et spennende konsept spør du meg..</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

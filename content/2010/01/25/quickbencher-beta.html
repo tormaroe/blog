@@ -1,0 +1,41 @@
+---
+title: QuickBencher (beta)
+link: http://blog.kjempekjekt.com/2010/01/25/quickbencher-beta/
+layout: post
+date: 2010-01-25 09:33:20Z
+tags:
+  - Diverse prosjekter
+  - QuickBencher
+  - C#
+---
+<img id="image540" src="/uploads/2010/01/logo_small.png" align="right" style="padding-left:18px;padding-bottom:8px;" />I går lanserte jeg versjon 0.1 av et lite open source bibliotek jeg har valgt å kalle <strong><em>QuickBencher</em></strong>. Dere finner det på <a href="http://quickbencher.codeplex.com/">quickbencher.codeplex.com</a>. Formålet er å gjøre det litt enklere å måle hvor lang tid ting tar, og kjøre sammenligninger på ulike større eller mindre kodesnutter. Her er et eksempel:
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    1</span> <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">list</span> <span style="color: silver">=</span> <span style="color: #00bfff">new</span> <span style="color: #00d2d2">List</span><span style="color: silver"><</span><span style="color: #00bfff">string</span><span style="color: silver">></span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    2</span> <span style="color: #00bfff">for</span> (<span style="color: #00bfff">int</span> <span style="color: #c4c4c4">i</span> <span style="color: silver">=</span> <span style="color: #80ff00">0</span>; <span style="color: #c4c4c4">i</span> <span style="color: silver"><</span> <span style="color: #80ff00">10000000</span>; <span style="color: #c4c4c4">i</span><span style="color: silver">++</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    3</span>     <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">Add</span>(<span style="color: #c4c4c4">i</span><span style="color: silver">.</span><span style="color: #c4c4c4">ToString</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    4</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    5</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">dummy</span>;</p>
+</div>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    6</span> <span style="color: #00d2d2">Benchmark</span><span style="color: silver">.</span><span style="color: #c4c4c4">Bm</span>(<span style="color: #c4c4c4">x</span> <span style="color: silver">=></span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span>     <span style="color: #c4c4c4">x</span><span style="color: silver">.</span><span style="color: #c4c4c4">Report</span>(<span style="color: #fa8072">"For:"</span>, ()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    9</span>         <span style="color: silver">=></span> { <span style="color: #00bfff">for</span> (<span style="color: #00bfff">int</span> <span style="color: #c4c4c4">i</span> <span style="color: silver">=</span> <span style="color: #80ff00">0</span>; <span style="color: #c4c4c4">i</span> <span style="color: silver"><</span> <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">Count</span>; <span style="color: #c4c4c4">i</span><span style="color: silver">++</span>) <span style="color: #c4c4c4">dummy</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">list</span>[<span style="color: #c4c4c4">i</span>]; });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   10</span>     <span style="color: #c4c4c4">x</span><span style="color: silver">.</span><span style="color: #c4c4c4">Report</span>(<span style="color: #fa8072">"While:"</span>, ()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   11</span>         <span style="color: silver">=></span> { <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">enu</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">GetEnumerator</span>(); <span style="color: #00bfff">while</span>(<span style="color: #c4c4c4">enu</span><span style="color: silver">.</span><span style="color: #c4c4c4">MoveNext</span>()) <span style="color: #c4c4c4">dummy</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">enu</span><span style="color: silver">.</span><span style="color: #c4c4c4">Current</span>; });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span>     <span style="color: #c4c4c4">x</span><span style="color: silver">.</span><span style="color: #c4c4c4">Report</span>(<span style="color: #fa8072">"Foreach:"</span>, ()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   13</span>         <span style="color: silver">=></span> { <span style="color: #00bfff">foreach</span> (<span style="color: #00bfff">var</span> <span style="color: #c4c4c4">item</span> <span style="color: #00bfff">in</span> <span style="color: #c4c4c4">list</span>) <span style="color: #c4c4c4">dummy</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">item</span>; });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   14</span>     <span style="color: #c4c4c4">x</span><span style="color: silver">.</span><span style="color: #c4c4c4">Report</span>(<span style="color: #fa8072">"Lambda:"</span>, ()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   15</span>         <span style="color: silver">=></span> { <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">ForEach</span>(<span style="color: #c4c4c4">s</span> <span style="color: silver">=></span> <span style="color: #c4c4c4">dummy</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">s</span>); });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   16</span> });</p>
+</div>
+<div style="margin-bottom: 15px"><font face="monospace">Output:
+<div style="background-color: #000000; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">  </font></span>                user     system      total        real
+<span style="background-color: #000000"><font color="#3d3d3d">  </font></span>For:        0.140401   0.000000   0.140401 (  0.147000)
+<span style="background-color: #000000"><font color="#3d3d3d">  </font></span>While:      0.124801   0.000000   0.124801 (  0.122000)
+<span style="background-color: #000000"><font color="#3d3d3d">  </font></span>Foreach:    0.124801   0.000000   0.124801 (  0.121000)
+<span style="background-color: #000000"><font color="#3d3d3d">  </font></span>Lambda:     0.062400   0.000000   0.062400 (  0.093000)</div>
+<p /></font></div>
+Mens jeg holdt på å lære meg <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a> kom jeg over en <a href="http://ruby-doc.org/core/classes/Benchmark.html" target="_blank">modul som heter Benchmark</a>. <em>"En sånn modul skulle jeg hatt i verktøyskrinet mitt når jeg utvikler i C#,"</em> tenkte jeg, og siden det ikke så ut som om noen hadde gjort det før så lagde jeg den.
+
+Ta en titt på <a href="http://quickbencher.codeplex.com/">prosjektsiden på CodePlex</a> for mer info og for å laste ned v0.1. Den skal fungere mer eller mindre som tiltenkt, men det hadde vært kjekt å få litt tilbakemelding på om den fungerer for andre enn meg. Jeg tar gladelig imot forbedringsforslag, og hvis noen har lyst til å bidra på andre måter så er dere velkomne til det.

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="C#,WTF">
+
+    <title>Hva er det jeg driver med nå da?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hva er det jeg driver med nå da?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 18. januar 2010</small> 
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/wtf"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> WTF</span></a>
+          </p>
+          <p>Her om dagen skrev jeg denne lille metoden:</p>
+<div style="padding-bottom: 6px; padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt; padding-top: 6px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #00bfff">private</span> <span style="color: #00bfff">static</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">SetDuration</span>(<span style="color: #00d2d2">TimeSpan</span> <span style="color: #c4c4c4">start</span>, <span style="color: #00d2d2">TimeSpan</span> <span style="color: #c4c4c4">end</span>, <span style="color: yellow">Action</span><span style="color: silver"><</span><span style="color: #00bfff">double</span><span style="color: silver">></span> <span style="color: #c4c4c4">doWithResult</span>)</p>
+<p style="line-height: 11pt; margin: 0px">{</p>
+<p style="line-height: 11pt; margin: 0px">    <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">executionDuration</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">end</span> <span style="color: silver">-</span> <span style="color: #c4c4c4">start</span>;</p>
+<p style="line-height: 11pt; margin: 0px">    <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">diffInSeconds</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">executionDuration</span><span style="color: silver">.</span><span style="color: #c4c4c4">TotalMilliseconds</span> <span style="color: silver">/</span> <span style="color: #80ff00">1000d</span>;</p>
+<p style="line-height: 11pt; margin: 0px">    <span style="color: #c4c4c4">doWithResult</span>(<span style="color: #c4c4c4">diffInSeconds</span>);</p>
+<p style="line-height: 11pt; margin: 0px">}</p>
+</div>
+<p>.. som jeg brukte på denne måten:</p>
+<div style="padding-bottom: 6px; padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt; padding-top: 6px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #c4c4c4">SetDuration</span>(<span style="color: #c4c4c4">userProcessorTimeStart</span>, <span style="color: #c4c4c4">userProcessorTimeEnd</span>, (<span style="color: #c4c4c4">d</span>) <span style="color: silver">=></span> <span style="color: #c4c4c4">measurement</span><span style="color: silver">.</span><span style="color: #c4c4c4">UserTime</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">d</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #c4c4c4">SetDuration</span>(<span style="color: #c4c4c4">privilegedProcessorTimeStart</span>, <span style="color: #c4c4c4">privilegedProcessorTimeEnd</span>, (<span style="color: #c4c4c4">d</span>) <span style="color: silver">=></span> <span style="color: #c4c4c4">measurement</span><span style="color: silver">.</span><span style="color: #c4c4c4">SystemTime</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">d</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #c4c4c4">SetDuration</span>(<span style="color: #c4c4c4">totalProcessorTimeStart</span>, <span style="color: #c4c4c4">totalProcessorTimeEnd</span>, (<span style="color: #c4c4c4">d</span>) <span style="color: silver">=></span> <span style="color: #c4c4c4">measurement</span><span style="color: silver">.</span><span style="color: #c4c4c4">TotalTime</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">d</span>);</p>
+</div>
+<p>Det er lett for at det går litt krøll under topplokket når man driver og lærer seg nye programmeringsspråk og teknikker, og begynner å rote og blande det sammen med det man allerede kan. I <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a> bruker man mye kodeblokker – som til en viss grad tilsvarer lambda-uttrykk i C# – og jeg har nok blitt litt <em>vel</em> opptatt av hvordan dette lar seg utnytte. </p>
+<p>Når man lærer nye ting er det ganske vanlig at man går gjennom en periode hvor man gjør ting unødvendig komplisert, rett og slett for å få erfaring med å bruke teknikkene, og jeg har faktisk brukt tilsvarende fremgangsmåte som dette til å lage noen ganske fine API'er tidligere, men denne gangen har jeg rett og slett glemt ut at metoder faktisk kan returnere verdier. Metoden skulle selvfølgelig se slik ut:</p>
+<div style="padding-bottom: 6px; padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt; padding-top: 6px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #00bfff">private</span> <span style="color: #00bfff">static</span> <span style="color: #00bfff">double</span> <span style="color: #c4c4c4">GetDuration</span>(<span style="color: #00d2d2">TimeSpan</span> <span style="color: #c4c4c4">start</span>, <span style="color: #00d2d2">TimeSpan</span> <span style="color: #c4c4c4">end</span>)</p>
+<p style="line-height: 11pt; margin: 0px">{</p>
+<p style="line-height: 11pt; margin: 0px">    <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">executionDuration</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">end</span> <span style="color: silver">-</span> <span style="color: #c4c4c4">start</span>;</p>
+<p style="line-height: 11pt; margin: 0px">    <span style="color: #00bfff">return</span> <span style="color: #c4c4c4">executionDuration</span><span style="color: silver">.</span><span style="color: #c4c4c4">TotalMilliseconds</span> <span style="color: silver">/</span> <span style="color: #80ff00">1000d</span>;</p>
+<p style="line-height: 11pt; margin: 0px">}</p>
+</div>
+<p>.. og brukes slik:</p>
+<div style="padding-bottom: 6px; padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt; padding-top: 6px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #c4c4c4">measurement</span><span style="color: silver">.</span><span style="color: #c4c4c4">UserTime</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">GetDuration</span>(<span style="color: #c4c4c4">userProcessorTimeStart</span>, <span style="color: #c4c4c4">userProcessorTimeEnd</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #c4c4c4">measurement</span><span style="color: silver">.</span><span style="color: #c4c4c4">SystemTime</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">GetDuration</span>(<span style="color: #c4c4c4">privilegedProcessorTimeStart</span>, <span style="color: #c4c4c4">privilegedProcessorTimeEnd</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #c4c4c4">measurement</span><span style="color: silver">.</span><span style="color: #c4c4c4">TotalTime</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">GetDuration</span>(<span style="color: #c4c4c4">totalProcessorTimeStart</span>, <span style="color: #c4c4c4">totalProcessorTimeEnd</span>);</p>
+</div>
+<p>Håper du fikk deg en god latter. Eller kanskje du fikk en idé til hvordan dette kan benyttes i andre sammenhenger?</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

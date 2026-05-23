@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Erlang">
+
+    <title>Hvem bruker Erlang?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hvem bruker Erlang?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 27. april 2010</small> 
+            <a href="/tags/erlang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Erlang</span></a>
+          </p>
+          <p>For at du skal være villig til å bruke tid på et nytt programmeringsspråk er du sikkert interessert i å vite noe om hvor modent det er, og om det er noe som er brukende i praksis. Du vil ha bevis for at andre har brukt det. Erlang er ikke like stort som .Net, Java, Ruby eller Python, men det finnes likevel mange suksesshistorier.</p>
+<p><img style="border-right-width: 0px; margin: 0px 15px 0px 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="ericsson" border="0" alt="ericsson" align="left" src="/uploads/2010/04/ericsson.jpg" width="100" height="75"> Erlang var et internt språk hos teleselskapet Ericsson fra 1986 til 1998. De brukte språket til å programmere hardware brukt i GPRS og 3G nettverk verden over. I 1998 bestemte de seg for at de ikke lenger ville kode i et proprietært språk, og åpnet derfor opp kildekoden. Problem solved!</p>
+<p>Andre brukere i tele-sektoren er <strong>T-Mobile</strong>, som bruker Erlang i sine SMS og autentiserings-systemer, og <strong>Motorola</strong>, som bruker Erlang i prosessering av samtaler knyttet til <em>public safety</em> (kilde: StackOverflow).</p>
+<p><img style="border-right-width: 0px; margin: 0px 0px 0px 15px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="couchdb-logo" border="0" alt="couchdb-logo" align="right" src="/uploads/2010/04/couchdblogo.png" width="100" height="91"> Flere bedrifter i andre bransjer, som også har behov for å utvikle systemer med høy ytelse og kapasitet, og med minimal eller <em>ingen</em> nedetid, har i de siste årene tatt i bruk Erlang. Av de mest profilerte prosjektene kan jeg nevne <a href="http://couchdb.apache.org/"><strong>CouchDB</strong></a> (dokumentbasert database), <a href="http://www.rabbitmq.com/"><strong>RabbitMQ</strong></a> (meldingskø-system) og <a href="http://www.ejabberd.im/"><strong>ejabberd</strong></a> (instant messaging server, bl.a. brukt i <strong>Facebook</strong>). <strong>Amazon</strong> har også brukt Erlang til å implementere <a href="http://en.wikipedia.org/wiki/Amazon_SimpleDB">SimpleDB</a>, som tilbyr databasetjenester i Amazon Elastic Compute Cloud (EC2). Og <strong>Yahoo!</strong> har brukt Erlang i implementasjonen av sin sosiale bokmerke-tjeneste <a href="http://delicious.com/">Delicious</a>.</p>
+<p><img style="border-right-width: 0px; margin: 0px 15px 0px 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="rabbitmqlogonostrap" border="0" alt="rabbitmqlogonostrap" align="left" src="/uploads/2010/04/rabbitmqlogonostrap.png" width="140" height="25"> Erlang egner seg svært godt til å implementere server-software. Språket er designet fra grunnen av med tanke på skalerbarhet, stabilitet og høy ytelse. Man kan oppgradere kode <em>mens</em> systemet kjører, man kan sette opp noder på ulike maskiner som snakker enkelt sammen, og plattformen har til og med en innebygget, distribuert databaseløsning laget med fokus på høy grad av tilgjengelighet og ytelse.</p>
+<p>Damien Katz, utvikler av CouchDB, sier om sine erfaringer med Erlang: </p>
+<p style="padding-left: 20px"><em>"The code is typically much more compact, elegant and reliable than it would be in more conventional languages."</em></p>
+<p><img style="border-right-width: 0px; margin: 0px 0px 0px 15px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="dd795202.AXUM_banne_new(en-us,MSDN.10)" border="0" alt="dd795202.AXUM_banne_new(en-us,MSDN.10)" align="right" src="/uploads/2010/04/dd795202.AXUM_banne_newenusMSDN.10.png" width="240" height="83"> Katz bemerker derimot at det også er en rekke områder hvor han <em>ikke </em>ville benyttet Erlang. Han sier språket egner seg mindre bra til ting hvor man er mere avhengig av state, som i programmering av brukergrensesnitt, og han sa han slet noe voldsomt med å skrive enhetstester i Erlang (en erfaring jeg foreløpig <em>ikke</em> deler – enhetstester i Erlang er helt konge!). <a href="http://damienkatz.net/2008/03/what_sucks_abou.html">Her er blogposten hvor han forteller om Erlangs mange feil</a>.</p>
+<p>Erlang har også påvirket andre språk - ifølge wikipedia har både Clojure og Scala hentet inspirasjon derfra. Det har også Microsoft gjort i sitt inkubasjons-prosjekt <a href="http://msdn.microsoft.com/en-us/devlabs/dd795202.aspx">Axum</a>, som muligens kan utvikle seg til å bli .NET's beste svar på utfordringene rundt parallell programmering.</p>
+<p>Så hvis du vurderer å ta i bruk Erlang, så skal du vite at selv om språket i seg selv ikke er en tungvekter i bransjen, så er det mange tungvektere som bruker det. Oppmerksomheten rundt Erlang er sterkt voksende, samtidig som teknologien har vært vel utprøvd i mange år.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

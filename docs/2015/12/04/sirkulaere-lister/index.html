@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Julekalender">
+
+    <title>Sirkulære lister</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Sirkulære lister</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 4. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <img src="/uploads/2015/12/circular.jpg" alt="Circular list" />
+
+<p>Denne bonus-posten beskriver hvordan jeg løste den tredje oppgaven i <a href="https://julekalender.knowit.no/">Knowit sin julekalender</a> med Common Lisp. Oppgaven gikk ut på å telle antall forekomster av &quot;programmerernes dag&quot; på fredager, fra år 1 til og med 2015, gitt normale skuddårsregler. Programmerernes dag er dag nummer 256 i året.</p>
+<p>Først klarte jeg ikke å løse den - svaret mitt ville ikke godtas. Men så ble det kommentert at vi skulle begynne å telle dagene i året fra dag null, og da ble det riktig.</p>
+<p>Jeg bruker disse oppgavene til å lære meg nye ting i Common Lisp, og denne gangen prøvde jeg meg på sirkulære lister. Jeg tenkte det kunne være en ideell datastrukture for å representere dagene: En uke består av syv dager, men etter søndag kommer mandag igjen, i en uendelig syklus.</p>
+<p>Her er en funksjon som gitt en rekke elementer produserer en linket liste hvor siste celle peker tilbake på starten:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> circular (<span class="hljs-name"><span class="hljs-built_in">first</span></span> &amp;rest rest)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">items</span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> first rest)))
+    (<span class="hljs-name">setf</span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> (<span class="hljs-name"><span class="hljs-built_in">last</span></span> items)) items)))</code></pre><p>Og sånn oppretter jeg listen:</p>
+<pre><code class="hljs">(<span class="hljs-name">defvar</span> *days*
+  (<span class="hljs-name">circular</span> <span class="hljs-symbol">:friday</span> <span class="hljs-comment">;; 01.01.0001</span>
+              <span class="hljs-symbol">:saturday</span>
+              <span class="hljs-symbol">:sunday</span>
+              <span class="hljs-symbol">:monday</span>
+              <span class="hljs-symbol">:tuesday</span>
+              <span class="hljs-symbol">:wednesday</span>
+              <span class="hljs-symbol">:thursday</span>))</code></pre><p>Oppgaven sa at 1. januar i år 1 skulle være en fredag, så da var det like greit at listen startet der.</p>
+<p>Jeg trengte også noen funksjoner som finner ut om et år er et skuddår eller ikke, og basert på det hvor mange dager det er i året:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> divisiblep (<span class="hljs-name">dividend</span> divisor)
+  (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">rem</span></span> dividend divisor)))
+
+(<span class="hljs-name">defun</span> leapyearp (<span class="hljs-name">year</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">cond</span></span> ((<span class="hljs-name"><span class="hljs-built_in">not</span></span> (<span class="hljs-name">divisiblep</span> year <span class="hljs-number">4</span>)) <span class="hljs-literal">nil</span>)
+          ((<span class="hljs-name"><span class="hljs-built_in">not</span></span> (<span class="hljs-name">divisiblep</span> year <span class="hljs-number">100</span>)) t)
+          ((<span class="hljs-name"><span class="hljs-built_in">not</span></span> (<span class="hljs-name">divisiblep</span> year <span class="hljs-number">400</span>)) <span class="hljs-literal">nil</span>)
+          (<span class="hljs-name">t</span> t)))
+
+(<span class="hljs-name">defun</span> days-in-year (<span class="hljs-name">year</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">leapyearp</span> year) <span class="hljs-number">366</span> <span class="hljs-number">365</span>))</code></pre><p>Nå kan vi også lage en hjelpefunksjon som sjekker om en dag er <em>programmerernes dag</em>:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> programmerdayp (<span class="hljs-name">day-num</span> day-of-week)
+  (<span class="hljs-name"><span class="hljs-built_in">and</span></span> (<span class="hljs-name"><span class="hljs-built_in">=</span></span> day-num <span class="hljs-number">257</span>) <span class="hljs-comment">; Start counting at zero!</span>
+       (<span class="hljs-name">eq</span> day-of-week <span class="hljs-symbol">:friday</span>)))</code></pre><p>Det var her jeg måtte justere litt for å få riktig svar, basert på at vi skulle starte på null.</p>
+<p>Løsningen min inneholder også en liten convenience macro for å forkorte noen av if-teste mine. <code>inc-if</code> incrementerer en verdi hvis en verdi er sann, hvis ikke returneres verdien som den er. Jeg gjorde dette mest for å trene på makroer, som er viktige i Lisp.</p>
+<pre><code class="hljs">(<span class="hljs-keyword">defmacro</span> <span class="hljs-title">inc-if</span> (<span class="hljs-name">p</span> x)
+  `(<span class="hljs-name"><span class="hljs-built_in">if</span></span> <span class="hljs-punctuation">,</span>p (<span class="hljs-number">1</span>+ <span class="hljs-punctuation">,</span>x) <span class="hljs-punctuation">,</span>x))</code></pre><p>Med denne kan jeg for eksempel redefinere <code>days-in-year</code> slik:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> days-in-year (<span class="hljs-name">year</span>)
+  (<span class="hljs-name">inc-if</span> (<span class="hljs-name">leapyearp</span> year) <span class="hljs-number">365</span>))</code></pre><p>Selve funksjonen som søker seg frem til løsningen er rekursiv og itererer over alle dager fra start til vi når år 2016. Merk at jeg ikke bruker noe form for datobjekt (jeg tror ikke Common Lisp i utgangspunktet har det), men holder track på hvilket år vi holder på med, hvilken dag i året vi er på, hvor mange dager det er i året, hvilken ukedag det er, osv. Skikkelig brute force gjennomspoling altså. </p>
+<p>Siden jeg har så mange som fem parametre så bruker jeg <em>keyword-parametre</em> for å gjøre det mere leservennlig.</p>
+<pre><code class="hljs">(defun process-days (&amp;key year days-in-year day-num days acc)
+  (if (= year 2016)
+    acc
+    (let* ((new-year-p (= day-num days-in-year))
+           (next-year (inc-if<span class="hljs-built_in"> new-year-p </span>year)))
+      (process-days 
+       <span class="hljs-keyword"> :year</span> next-year
+       <span class="hljs-keyword"> :days</span>-in-year (if<span class="hljs-built_in"> new-year-p </span>
+                        (days-in-year next-year) 
+                        days-in-year)
+       <span class="hljs-keyword"> :day</span>-num (if<span class="hljs-built_in"> new-year-p </span>1 (1+ day-num))
+       <span class="hljs-keyword"> :days</span> (cdr days)
+       <span class="hljs-keyword"> :acc</span> (inc-if (programmerdayp day-num (car days)) acc)))))</code></pre><p>Mye pirk der. Løsningen hadde nok blitt vakrere om jeg hadde definert ett eller annet objekt som holdt track på itererings-tilstanden. Men la gå..., nå gjenstår det bare å finne svaret:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;Answer is ~A~%&quot;</span>
+  (<span class="hljs-name"><span class="hljs-built_in">time</span></span>
+    (<span class="hljs-name">process-days</span> <span class="hljs-symbol">:year</span> <span class="hljs-number">1</span>
+                  <span class="hljs-symbol">:days-in-year</span> (<span class="hljs-name">days-in-year</span> <span class="hljs-number">1</span>)
+                  <span class="hljs-symbol">:day-num</span> <span class="hljs-number">1</span>
+                  <span class="hljs-symbol">:days</span> *days* <span class="hljs-comment">; Den sirkulære listen..</span>
+                  <span class="hljs-symbol">:acc</span> <span class="hljs-number">0</span>)))</code></pre><p>Som gav output:</p>
+<pre><code class="hljs"><span class="hljs-comment">;; Evaluation took:</span>
+<span class="hljs-comment">;;   0.025 seconds of real time</span>
+<span class="hljs-comment">;;   0.031250 seconds of total run time (0.031250 user, 0.000000 system)</span>
+<span class="hljs-comment">;;   124.00% CPU</span>
+<span class="hljs-comment">;;   69,211,168 processor cycles</span>
+<span class="hljs-comment">;;   0 bytes consed</span>
+<span class="hljs-comment">;; </span>
+<span class="hljs-comment">;; Answer is 288</span></code></pre><p>Rekursjon i Common Lisp er i alle fall ikke tregt ;)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

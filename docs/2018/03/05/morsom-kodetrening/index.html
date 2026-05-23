@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Clojure,Kata">
+
+    <title>Morsom kodetrening</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Morsom kodetrening</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 6. mars 2018</small> 
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          
+            <a href="/tags/kata"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Kata</span></a>
+          </p>
+          <p>Synes du det er gøy å kode, men du mangler oppgaver å løse? Det finnes mange ressurser på nettet som tilbyr programmeringsoppgaver i ulik vanskelighetsgrad. Tidligere har jeg brukt <a href="https://projecteuler.net/">Project Euler</a> endel, men de oppgavene du finner der blir kanskje litt for matematiske for mange. Jeg bestemte meg for å ta en titt på hva som er de mest spennende av disse ressursene akkurat nå.</p>
+<p><strong><a href="https://www.codingame.com">CodinGame</a></strong> er kanskje den mest <em>fancy</em> ressursen jeg har funnet. Dette er rett og slett et spill hvor du må programmere for å vinne. Du velger selv mellom 26 ulike programmeringsspråk, og alt du trenger av utviklingsmiljø får du i nettleseren. Du får en god del hjelp i starten, og finner raskt ut hvordan du skal styre din pod racer rundt på en bane. Det vanskelige er å finne den optimale taktikken for å vinne mot alle de andre pilotene.</p>
+<img src="/uploads/2018/03/codingame.png" alt="CodinGame screenshot" /> 
+
+<p><strong><a href="https://codefights.com">Codefights</a></strong> er en annen ressurs som også bruker gamification for å motivere deg til å programmere. Her kan du velge mellom hele 38 språk, og du får oppgaver i stigende vanskelighetsgrad. Igjen får du en god del veiledning, en bra online editor, samt et batteri med enhetstester for hver oppgave som du må gjøre grønne.</p>
+<img src="/uploads/2018/03/codefight.png" alt="Codefights screenshot" /> 
+
+<p><strong><a href="https://hackattic.com/">Hackattic</a></strong> (eller bare <strong>h^</strong>) er en mindre ambisiøs ressurs med langt færre oppgaver, men den er vel så spennende for dem som har litt lengre fartstid. Her blir du utfordret til å utforske ting du sansynligvis ikke har så mye erfaring med.</p>
+<img src="/uploads/2018/03/hackattic.jpg" alt="Hackattic screenshot" />
+
+<p>Den første oppgaven jeg har løst på Hackattic heter <a href="https://hackattic.com/challenges/websocket_chit_chat">WebSocket chit chat</a>. Den er ikke spesielt vanskelig, men en grei treningsoppgave hvor man må lage en WebSocket-klient og kommunisere med Hackattic-serveren.</p>
+<p>Jeg valgte å bruke Clojure denne gangen, og det tok meg omtrent en time å løse oppgaven. Programmet jeg kom opp med følger i sin helhet nedenfor. </p>
+<p>Bortsett fra hvordan jeg bruker WebSockets fra bibloteket <a href="https://github.com/stalefruits/gniazdo">Gniazdo</a>, er <code>checkpoint!</code> kanskje den mest spennende funksjonen. Den er en <em>closure</em> (en <em><a href="https://letoverlambda.com/">let over lambda</a></em>) som husker hva klokken var sist den ble evaluert, og som returnerer forskjellen mellom det tidspunktet og nå i millisekunder.</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">ns</span></span> tman.hackattic.chit-chat
+  (<span class="hljs-symbol">:require</span> [cheshire.core <span class="hljs-symbol">:refer</span> <span class="hljs-symbol">:all</span>] <span class="hljs-comment">; json lib</span>
+            [gniazdo.core <span class="hljs-symbol">:as</span> ws] <span class="hljs-comment">; websocket lib</span>
+            [org.httpkit.client <span class="hljs-symbol">:as</span> http]
+            [clojure.string <span class="hljs-symbol">:as</span> str])
+  (<span class="hljs-symbol">:gen-class</span>))
+
+(<span class="hljs-keyword">def</span> <span class="hljs-title">base-url</span> <span class="hljs-string">&quot;https://hackattic.com/challenges/websocket_chit_chat/&quot;</span>)
+(<span class="hljs-keyword">def</span> <span class="hljs-title">ws-address</span> <span class="hljs-string">&quot;wss://hackattic.com/_/ws/&quot;</span>)
+(<span class="hljs-keyword">def</span> <span class="hljs-title">access-token</span> <span class="hljs-string">&quot;secret provided by hackattic..&quot;</span>)
+(<span class="hljs-keyword">def</span> <span class="hljs-title">problem-token</span> (<span class="hljs-name"><span class="hljs-built_in">atom</span></span> <span class="hljs-string">&quot;&quot;</span>))
+(<span class="hljs-keyword">def</span> <span class="hljs-title">socket</span> (<span class="hljs-name"><span class="hljs-built_in">atom</span></span> <span class="hljs-literal">nil</span>))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">now</span> []
+  (<span class="hljs-name"><span class="hljs-built_in">.</span></span> System (<span class="hljs-name">nanoTime</span>)))
+
+(<span class="hljs-keyword">def</span> <span class="hljs-title">checkpoint!</span>
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> [last-checkpoint (<span class="hljs-name"><span class="hljs-built_in">atom</span></span> <span class="hljs-number">0</span>)]
+    (<span class="hljs-name"><span class="hljs-built_in">fn</span></span> []
+      (<span class="hljs-name"><span class="hljs-built_in">let</span></span> [old-value @last-checkpoint
+            now-value (<span class="hljs-name">now</span>)]
+        (<span class="hljs-name"><span class="hljs-built_in">swap!</span></span> last-checkpoint (<span class="hljs-name"><span class="hljs-built_in">fn</span></span> [_] now-value))
+        (/ (<span class="hljs-name"><span class="hljs-built_in">double</span></span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> now-value old-value))
+           <span class="hljs-number">1000000.0</span>)))))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">get-guess</span> [duration]
+  (<span class="hljs-name"><span class="hljs-built_in">condp</span></span> &gt; duration
+    <span class="hljs-number">1100</span> <span class="hljs-string">&quot;700&quot;</span>
+    <span class="hljs-number">1750</span> <span class="hljs-string">&quot;1500&quot;</span>
+    <span class="hljs-number">2250</span> <span class="hljs-string">&quot;2000&quot;</span>
+    <span class="hljs-number">2750</span> <span class="hljs-string">&quot;2500&quot;</span>
+    <span class="hljs-string">&quot;3000&quot;</span>))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">handle-ping</span> []
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> [duration (<span class="hljs-name">checkpoint!</span>)
+        guess (<span class="hljs-name">get-guess</span> duration)]
+    (<span class="hljs-name">println</span> <span class="hljs-string">&quot;Duration&quot;</span> duration <span class="hljs-string">&quot;msec -&gt; My guess&quot;</span> guess)
+    (<span class="hljs-name">ws/send-msg</span> @socket guess)))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">grab-token</span> []
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> [url (<span class="hljs-name"><span class="hljs-built_in">str</span></span> base-url <span class="hljs-string">&quot;problem?access_token=&quot;</span> access-token)
+        res (<span class="hljs-name">http/get</span> url)
+        token (<span class="hljs-symbol">:token</span> (<span class="hljs-name">parse-string</span> (<span class="hljs-symbol">:body</span> @res) <span class="hljs-literal">true</span>))]
+    (<span class="hljs-name"><span class="hljs-built_in">swap!</span></span> problem-token
+           (<span class="hljs-name"><span class="hljs-built_in">fn</span></span> [_] token))))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">post-solution</span> [secret]
+  (<span class="hljs-name">println</span> <span class="hljs-string">&quot;Secret:&quot;</span> secret)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> [url (<span class="hljs-name"><span class="hljs-built_in">str</span></span> base-url <span class="hljs-string">&quot;solve?access_token=&quot;</span> access-token)
+        json (<span class="hljs-name">generate-string</span> {<span class="hljs-symbol">:secret</span> secret})
+        res (<span class="hljs-name">http/post</span> url {<span class="hljs-symbol">:body</span> json
+                            <span class="hljs-symbol">:content-type</span> <span class="hljs-symbol">:json</span>})]
+    (<span class="hljs-name">println</span> <span class="hljs-string">&quot;Result:&quot;</span>
+             (<span class="hljs-symbol">:status</span> @res)
+             (<span class="hljs-symbol">:body</span> @res))))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">handle-secret</span> [m]
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> [secret (<span class="hljs-name">subs</span> m
+                     (<span class="hljs-name"><span class="hljs-built_in">count</span></span> <span class="hljs-string">&quot;congratulations! the solution to this challenge is \&quot;&quot;</span>)
+                     (<span class="hljs-name"><span class="hljs-built_in">-</span></span> (<span class="hljs-name"><span class="hljs-built_in">count</span></span> m) <span class="hljs-number">1</span>))]
+    (<span class="hljs-name">post-solution</span> secret)))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">handle-message</span> [m]
+  (<span class="hljs-name">println</span> <span class="hljs-string">&quot;&lt;&lt; &quot;</span> m)
+  (<span class="hljs-name"><span class="hljs-built_in">cond</span></span>
+    (<span class="hljs-name"><span class="hljs-built_in">=</span></span> m <span class="hljs-string">&quot;ping!&quot;</span>) (<span class="hljs-name">handle-ping</span>)
+    (<span class="hljs-name">str/starts-with?</span> m <span class="hljs-string">&quot;congratulations!&quot;</span>) (<span class="hljs-name">handle-secret</span> m)))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">connect</span> [address]
+  (<span class="hljs-name">ws/connect</span>
+    address
+    <span class="hljs-symbol">:on-receive</span> #&#x27;handle-message
+    <span class="hljs-symbol">:on-error</span> #(<span class="hljs-name">println</span> <span class="hljs-string">&quot;ERROR&quot;</span> %)
+    <span class="hljs-symbol">:on-close</span> #(<span class="hljs-name">println</span> <span class="hljs-string">&quot;Connection closed&quot;</span> %<span class="hljs-number">1</span> %<span class="hljs-number">2</span>)))
+
+(<span class="hljs-keyword">defn</span> <span class="hljs-title">-main</span>
+  [&amp; args]
+  (<span class="hljs-name">println</span> (<span class="hljs-name">grab-token</span>))
+  (<span class="hljs-name"><span class="hljs-built_in">swap!</span></span> socket
+         (<span class="hljs-name"><span class="hljs-built_in">fn</span></span> [_]
+           (<span class="hljs-name">connect</span> (<span class="hljs-name"><span class="hljs-built_in">str</span></span> ws-address @problem-token))))
+  (<span class="hljs-name">checkpoint!</span>))
+</code></pre><p>Om du vil ha det litt gøy og samtidig trene på programmeirngsferdighetene dine så anbefaler jeg deg å teste ut en eller flere av disse ressursene.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

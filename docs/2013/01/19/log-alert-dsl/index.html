@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="DSL,Ruby">
+
+    <title>Log alert DSL</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Log alert DSL</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 19. januar 2013</small> 
+            <a href="/tags/dsl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DSL</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p>Jeg eksperimenterer MYE med ulike måter å lage og eksekvere programmeringsspråk på for tiden. Denne gangen har jeg gjort et <em>proof-of-concept</em> på å lage et lite domenespesifikt språk. Med dette språket skal en kunne definere opp regler for overvåking og trigging av alarmer basert på logfiler.</p>
+<p>Dette er bare en kjapp blogpost hvor jeg vil dokumentere litt av hvordan jeg gjør det.</p>
+<h2>1. Språket</h2>
+<p>Dette er et <em>veldig</em> enkelt eksempel på hvordan en overvåkingsdefinisjon kan se ut:</p>
+<pre>Alert definition
+  When line matches /\[ERROR\]/
+  When next matches /NRDB/
+  Trigger MEDIUM alert "NRDB seem to be down"
+end
+
+Alert definition
+  When line matches /\[ERROR\]/
+  Trigger CRITICAL alert "#{ line }"
+end
+</pre>
+<p><em>PS: NRDB er den nasjonale databasen over alle norske telefonnummer – noe vi bruker flittig i SMS-bransjen.</em></p>
+<p>DSL'en bør være grei å forstå – en alarm består av en eller flere regler, og reglene har regulære uttrykk som vil brukes til å matche mot linjene i loggfilen. Alarmdefinisjonen vil også ha en eller flere triggere som avgjør hvordan det logges. Definisjonene listes i prioritert rekkefølge, og hvis en av dem slår til skal ikke noen andre trigge en alarm på den linjen.</p>
+<p>Her er et eksempel på en ekstremt enkel logfil som jeg har brukt til å teste med:</p>
+<pre>[DEBUG] Some stuff
+[DEBUG] Some more stuff
+[ERROR] in log file
+  The errror is in NRDB
+[ERROR] some other error
+[DEBUG] foo bar quux
+</pre>
+<h2>2. Lexing</h2>
+<p>Jeg har implementert en ganske <a href="http://en.wikipedia.org/wiki/Lexical_analysis">standard lexer</a> i Ruby basert på regulære uttrykk. <a href="https://gist.github.com/4571604">Koden for Lexeren og alle de andre delene av DSL-implementasjonen kan du se her</a> – ta en titt nå eller etter at du har les hele blogposten.</p>
+<p>Hvis jeg bruker Lexeren til å parse eksempelloggen på denne måten:</p>
+<pre>code = File.read("logalert_1.txt")
+p Lexer.new.tokenize(code)</pre>
+<p>..får jeg følgende resultat:</p>
+<pre>[ [:ALERT, "Alert"], 
+  [:DEFINITION, "definition"], 
+  [:WHEN, "When"], 
+  [:LINE, "line"], 
+  [:MATCHES, "matches"], 
+  [:REGEX, /\[ERROR\]/], 
+  [:WHEN, "When"], 
+  [:NEXT, "next"], 
+  [:MATCHES, "matches"], 
+  [:REGEX, /NRDB/], 
+  [:TRIGGER, "Trigger"], 
+  [:MEDIUM, "MEDIUM"], 
+  [:ALERT, "alert"], 
+  [:STRING, "Comoyo: NRDB error"], 
+  [:END, "end"], 
+  [:ALERT, "Alert"], 
+  [:DEFINITION, "definition"], 
+  [:WHEN, "When"], 
+  [:LINE, "line"], 
+  [:MATCHES, "matches"], 
+  [:REGEX, /\[ERROR\]/], 
+  [:TRIGGER, "Trigger"], 
+  [:CRITICAL, "CRITICAL"], 
+  [:ALERT, "alert"], 
+  [:STRING, "\#{ line }"], 
+  [:END, "end"]
+]
+</pre>
+<h2>3. Parsing</h2>
+<p>For å parse token-listen jeg har fått via lexingen, og bygge et <a href="http://en.wikipedia.org/wiki/Abstract_syntax_tree">abstrakt syntakstre</a> (AST), har jeg benyttet en Ruby gem som heter <strong><a href="https://github.com/tenderlove/racc">Racc</a></strong>. Racc er en såkalt LALR(1) parser generator. LALR står for <em>Look-Ahead, Left to Right,</em> og denne teknikken for å bygge syntakstrær ble funnet opp på 60-tallet. Noen mere kjente slike generatorer er <a href="http://en.wikipedia.org/wiki/Yacc">Yacc</a> og <a href="http://en.wikipedia.org/wiki/GNU_Bison">GNU Bison</a>.</p>
+<p>Det Racc trenger er en grammar-fil. Den er også endel av <a href="https://gist.github.com/4571604">det du ser her</a>. Jeg bruker så Racc til å generere en parser-klasse i Ruby. Når jeg tester denne parseren på følgende måte:</p>
+<pre>code = File.read("logalert_1.txt")
+p Parser.new.parse(code)</pre>
+<p>..får jeg følgende resultat:</p>
+<pre>#&lt;Alerts:0x28926d8 @nodes=[
+  #&lt;Alert:0x2892798 
+    @when_rules=[
+      #&lt;WhenRule:0x2892900 @order=0, @regex=/\[ERROR\]/&gt;, 
+      #&lt;WhenRule:0x2892870 @order=1, @regex=/NRDB/&gt;], 
+    @trigger_rules=[
+      #&lt;TriggerRule:0x2892810 @severity="MEDIUM", 
+        @message="Comoyo: NRDB error"&gt;]&gt;, 
+  #&lt;Alert:0x28925d0 
+    @when_rules=[
+      #&lt;WhenRule:0x28926a8 @order=0, @regex=/\[ERROR\]/&gt;], 
+    @trigger_rules=[
+      #&lt;TriggerRule:0x2892630 @severity="CRITICAL", 
+        @message="\#{ line }"&gt;]&gt;]&gt;
+</pre>
+<h2>4. Evaluering</h2>
+<p>Dette er (foreløpig) en ganske enkel DSL, og jeg bestemte meg for at det enkleste var å evaluere AST'en direkte. Alternativt kunne jeg definert det Martin Fowler kaller en <strong>semantisk modell</strong> i Ruby, og eksekvert denne. Jeg lager også en "runtime" som tre-nodene kan benytte når de skal evalueres.</p>
+<p><a href="https://gist.github.com/4571604">Igjen finner du alle detaljer her</a> – se <strong>nodes_eval.rb</strong> for evalueringskoden, og <strong>Logalert.rb</strong> for runtimen.</p>
+<p>Når jeg så kjører Logalert fra kommandolinjen med eksempelfilen som parameter, får jeg følgende output:</p>
+<pre>MEDIUM ALERT: NRDB seem to be down
+CRITICAL ALERT: [ERROR] some other error</pre>
+<p>Her er selvsagt tanken at alarmene ikke skal skrives til konsollet, men sendes til et sentralt overvåkingssystem.</p>
+<h2>Konklusjon så langt</h2>
+<p>Å lage dette her var ganske enkelt. Lexing er en smal sak, og parsingen ble også enkel når jeg brukte en parser generator. Jeg tror jeg nå har et brukbart utgangspunktet får å kunne lage en fleksibel og samtidig enkel DSL for å definere komplekse overvåkingsregler.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

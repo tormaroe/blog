@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content=".net ninja">
+
+    <title>.NET Ninja Restrospective - Q1 2009</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>.NET Ninja Restrospective - Q1 2009</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 6. april 2009</small> 
+            <a href="/tags/net-ninja"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> .net ninja</span></a>
+          </p>
+          <p>Tre måneder etter at jeg startet <a href="/2008/12/28/a-bli-en-net-ninja/">.net ninja initiativet</a> - min plan for å jobbe målrettet og strukturert med å bli en bedre programmerer - er det på tide å ta en titt på <a href="/2009/01/02/ninja-backlog-q1-2009/">backloggen jeg lagde meg for første kvartal</a>, og vurdere hvordan det har gått.</p>
+<p><strong>Hva gikk bra?</strong></p>
+<p>Det er utrolig mye som har gått bra. Jeg har rett og slett gått gjennom en forvandling de siste månedene, lært utrolig mye, eksperimentert med mye rart, og klart å holde motivasjonen oppe hele tiden. Et tydelig eksempel på dette er denne bloggen, som har gjennomgått en aldri så liten forvandling. Jeg har også klart å skrive <a href="/2009/01/05/t-mans-ukentlige-tips/">et nytt tips til utviklerne i Contiki hver uke</a> (det føles som om jeg har holdt på med det mye lengre enn 12 uker).</p>
+<p>Det er faktisk ikke så mange ting fra backloggen jeg har fått gjort - mer om det under neste heading. Men jeg har fått gjort mye annet. Jeg har oppdaget <strong>objektdatabasene</strong>, og holdt et foredrag om dette på NNUG i februar (referat <a href="/2009/02/26/objekt-orienterte-databaser-del-1/">del 1</a> og <a href="/2009/02/27/objekt-orienterte-databaser-del2-db4objects/">del 2</a>). Jeg har også tatt objektdatabaser i bruk i flere prosjekter, som f.eks. <a href="/2009/02/04/en-applikasjon-pa-en-dag/">ContikiException</a>, et verktøy jeg laget til bruk på jobben.</p>
+<p>Jeg har også kommet mye bedre inn i <em>.NET communityet</em>. Jeg har <a href="/2009/01/15/nytt-styremedlem-i-nnug-bergen/">blitt med i NNUG styret i Bergen</a>, og vi har hatt tre flotte møter til nå i år. <a href="/2009/03/10/geekbeer-geeksquad-og-msdnlive/">MsdnLive</a> var også et bra arrangement, for ikke å snakke om GeekBeer samlingen vi hadde kvelden før.</p>
+<p>Andre ting jeg har lyst til å nevne er at jeg har trent litt på ting som dependency injection, labda-utrykk i C#, LINQ og TDD. Det siste gjorde jeg bl.a. gjennom å gjøre en <a href="/2009/02/16/code-kata/">code kata</a>. Jeg fikk oss også til å starte med <a href="/2009/03/05/parprogrammering-ansikt-til-ansikt/">parprogrammering i Contiki</a>. Jeg har lest <a href="/2009/03/08/en-komplett-handbok-i-koding/">Code Complete</a> og <a href="/2009/03/23/l%c3%a6r-tdd-gjennom-eksempler/">Kent Becks bok om TDD</a>, og har startet på et par spennende bøker til. Og jeg har begynt å se på ASP.NET MVC.</p>
+<p><strong>Hva gikk ikke så bra?</strong></p>
+<p>Som du skjønner føler jeg at de tre første månedene vært en stor suksess. Det jeg er minst fornøyd med er hvor lite jeg har fått gjort på <a href="/2008/12/31/internt-overvakingssenter-i-wpf/">Contiki Center applikasjonen</a>, noe jeg lager delvis for/på jobben og delvis privat/for egen vinning. Jeg nådde minstekravet om en første release før 1. april, men det var langt i fra hva jeg håpet på. Jeg klarte f.eks. ikke å sette meg nok inn i MVVM mønsteret for WPF applikasjoner.</p>
+<p>Generelt sett fulgte jeg for dårlig opp de ulike prosjektene jeg startet underveis i perioden. Jeg burde ha fullført <a href="/2009/01/06/vil-du-bli-en-net-ninja-spillet/">Vil Du Bli en .Net Ninja-spillet</a>, og jeg burde klart å bruke mer tid på <a href="/?s=The+Forecast+Exchange">The Forecast Exchange</a>.</p>
+<p>Jeg hadde også en plan om å følge bedre med på <a href="/2009/03/01/gode-feeds-for-utviklere/">noen utvalgte RSS feeds</a>, men det gikk ikke som planlagt.</p>
+<p><strong>Hva kan jeg gjøre bedre?</strong></p>
+<p>Det jeg vil gjøre anderledes i de kommende tre månedene er å fokusere mer på to bestemte ting. For det første vil jeg lese mer. Jeg har flere bøker liggende, og venter på et par til fra Amazon. Og for det andre vil jeg kode mer. Dette vil gå på bekostning av en del tid jeg normalt bruker på å holde meg oppdatert på hva som skjer i miljøet (via Twitter, RSS feeds etc.), noe som er helt greit. Jeg ofrer gjerne litt bredde for å øke kvaliteten på det jeg gjør.</p>
+<p style="text-align: center"><a title="tidsfordeling_q1 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3399631138/"><img height="209" alt="tidsfordeling_q1" src="http://farm4.static.flickr.com/3545/3399631138_0ce378d1ea_o.png" width="464" border="0" /></a></p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=Objektdatabase" rel="tag">Objektdatabase</a>, <a href="/index.php?s=NNUG" rel="tag">NNUG</a>, <a href="/index.php?s=MsdnLive" rel="tag">MsdnLive</a>, <a href="/index.php?s=GeekBeer" rel="tag">GeekBeer</a>, <a href="/index.php?s=The+Forecast+Exchange" rel="tag">The Forecast Exchange</a>, <a href="/index.php?s=TDD" rel="tag">TDD</a>, <a href="/index.php?s=CodeKata" rel="tag">CodeKata</a>, <a href="/index.php?s=Podcast" rel="tag">Podcast</a>, <a href="/index.php?s=Parprogrammering" rel="tag">Parprogrammering</a>, <a href="/index.php?s=Bøker" rel="tag">Bøker</a>, <a href="/index.php?s=DDD" rel="tag">DDD</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

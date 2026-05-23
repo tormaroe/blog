@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Kata,Scheme,Lisp,Basic">
+
+    <title>Spillkata: Word</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Spillkata: Word</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 23. mars 2014</small> 
+            <a href="/tags/kata"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Kata</span></a>
+          
+            <a href="/tags/scheme"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Scheme</span></a>
+          
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          
+            <a href="/tags/basic"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Basic</span></a>
+          </p>
+          <p>Boken <strong>BASIC Computer Games</strong> ble publisert i 1978. Den inneholdt skildekoden til 100 små tekstbaserte spill. Og alt sammen er <a href="http://www.atariarchives.org/basicgames/">scannet og tilgjengelig online</a>. For en gullgruve for utviklere som er interesserte i å se hva man gjorde for snart 40 år siden!</p>
+<p>En annen ting du kan gjøre med denne kilden er å re-implementere gamle klassikere i et annet programmeirngsspråk. For øvelsens skyld. Og det har jeg bestemt meg for å gjøre. Denne bloggposten inneholder mitt første spill fra <em>BASIC Computer Games</em>, og for å implementere det har jeg valgt Chicken Scheme.</p>
+<p class="text-center"><img src="/uploads/2014/03/basiccomputergames.jpg"></p>
+
+<p>##Word
+Spillet <em>Word</em> minner om <em>mastermind</em>, men i Word skal man gjette seg frem til et ord. <a href="http://www.atariarchives.org/basicgames/showpage.php?page=181">Orginalen kan du se her.</a> Her følger et spillforløp:</p>
+<pre><code class="hljs">$ csc gamekata<span class="hljs-params">-word.csm</span> &amp;&amp; ./gamekata<span class="hljs-params">-word</span>
+--------------------------------------------------------------------
+                                 WORD
+Adaption of original game <span class="hljs-keyword">in</span> BASIC <span class="hljs-keyword">by</span> Charles Reid of Lexington High
+School, Massachusetts. Scheme version <span class="hljs-keyword">by</span> Torbjørn Marø, <span class="hljs-number">2014.</span>
+--------------------------------------------------------------------
+
+I am thinking of a word -- you guess it. I will give you clues <span class="hljs-keyword">to</span>
+help you get it. Good luck!!
+You are starting a <span class="hljs-literal">new</span> game<span class="hljs-params">...</span>
+
+Guess a five letter word? abcde
+There were <span class="hljs-number">0</span> matches <span class="hljs-literal">and</span> the common letters were<span class="hljs-params">...</span>
+From the exact letter matches, you know<span class="hljs-params">...</span><span class="hljs-params">...</span><span class="hljs-params">...</span><span class="hljs-params">...</span>.-----
+
+<span class="hljs-keyword">If</span> you give up, <span class="hljs-keyword">type</span> <span class="hljs-string">&#x27;?&#x27;</span> for your next guess.
+
+Guess a five letter word? fghij
+There were <span class="hljs-number">2</span> matches <span class="hljs-literal">and</span> the common letters were<span class="hljs-params">...</span><span class="hljs-keyword">IF</span>
+From the exact letter matches, you know<span class="hljs-params">...</span><span class="hljs-params">...</span><span class="hljs-params">...</span><span class="hljs-params">...</span>.F----
+
+<span class="hljs-keyword">If</span> you give up, <span class="hljs-keyword">type</span> <span class="hljs-string">&#x27;?&#x27;</span> for your next guess.
+
+Guess a five letter word? fight
+There were <span class="hljs-number">3</span> matches <span class="hljs-literal">and</span> the common letters were<span class="hljs-params">...</span>TIF
+From the exact letter matches, you know<span class="hljs-params">...</span><span class="hljs-params">...</span><span class="hljs-params">...</span><span class="hljs-params">...</span>.FI-<span class="hljs-params">-T</span>
+
+<span class="hljs-keyword">If</span> you give up, <span class="hljs-keyword">type</span> <span class="hljs-string">&#x27;?&#x27;</span> for your next guess.
+
+Guess a five letter word? first
+There were <span class="hljs-number">5</span> matches <span class="hljs-literal">and</span> the common letters were<span class="hljs-params">...</span>FRSIT
+From the exact letter matches, you know<span class="hljs-params">...</span><span class="hljs-params">...</span><span class="hljs-params">...</span><span class="hljs-params">...</span>.FIRST
+You have guessed the word. It took <span class="hljs-number">4</span> guesses!
+Want <span class="hljs-keyword">to</span> play again? no
+
+Thanks for playing - bye bye!</code></pre><p>##Implementasjon</p>
+<p>Jeg har ikke sett så nøye på hvordan Charles Reid orginalt implementerte spillet. Fokuset mitt var å øve meg på Scheme. Blant annet måtte jeg finne endel prosedyrer for strengbehandling.</p>
+<p>Jeg er sånn passe fornøyd med resultatet. Spillet kunne nok hatt godt av litt refakturering for å gjøre det mere leservennlig, men jeg tror det er bra nok til at det kan se <em>dagens lys</em> her på bloggen.</p>
+<p>Så her er det i all sin prakt:</p>
+<pre><code class="hljs">(<span class="hljs-name">use</span> srfi-13 extras)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> header #&lt;&lt;EOF
+--------------------------------------------------------------------
+                                 WORD
+Adaption of original game in BASIC by Charles Reid of Lexington High
+School, Massachusetts. Scheme version by Torbjørn Marø, <span class="hljs-number">2014</span>.
+--------------------------------------------------------------------
+
+I am thinking of a word -- you guess it. I will give you clues to
+help you get it. Good luck!!
+EOF
+)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> words 
+  &#x27;(<span class="hljs-string">&quot;SMOKE&quot;</span> <span class="hljs-string">&quot;CANDY&quot;</span> <span class="hljs-string">&quot;DINKY&quot;</span> <span class="hljs-string">&quot;WATER&quot;</span> <span class="hljs-string">&quot;TRAIN&quot;</span> <span class="hljs-string">&quot;NIGHT&quot;</span> <span class="hljs-string">&quot;MIGHT&quot;</span> <span class="hljs-string">&quot;FIRST&quot;</span>
+    <span class="hljs-string">&quot;CHAMP&quot;</span> <span class="hljs-string">&quot;WOULD&quot;</span> <span class="hljs-string">&quot;CLUMP&quot;</span> <span class="hljs-string">&quot;DOPEY&quot;</span> <span class="hljs-string">&quot;CRUSH&quot;</span> <span class="hljs-string">&quot;EXTRA&quot;</span> <span class="hljs-string">&quot;BASIC&quot;</span> <span class="hljs-string">&quot;EIGHT&quot;</span>))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">random-elem</span> lst)
+  (<span class="hljs-name"><span class="hljs-built_in">list-ref</span></span> lst (<span class="hljs-name">random</span> (<span class="hljs-name"><span class="hljs-built_in">length</span></span> lst))))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">random-sort</span> l)
+  (<span class="hljs-name">sort</span> l
+        (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (x y)
+          (<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> <span class="hljs-number">0</span> (<span class="hljs-name">random</span> <span class="hljs-number">2</span>)))))
+
+<span class="hljs-comment">;;; The GAME-STATE data type</span>
+
+(<span class="hljs-name">define-record</span> game-state word
+                          current-guess
+                          continue
+                          matches
+                          exact-matches
+                          guess-count)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">init-game</span>)
+  (<span class="hljs-name">make-game-state</span> 
+    (<span class="hljs-name">random-elem</span> words) <span class="hljs-comment">; word</span>
+    <span class="hljs-string">&quot;     &quot;</span>             <span class="hljs-comment">; current-guess</span>
+    <span class="hljs-literal">#t</span>                  <span class="hljs-comment">; continue</span>
+    &#x27;()                 <span class="hljs-comment">; matches</span>
+    <span class="hljs-string">&quot;-----&quot;</span>             <span class="hljs-comment">; exact-matches</span>
+    <span class="hljs-number">0</span>))                 <span class="hljs-comment">; guess-count</span>
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">game-state-correct?</span> state)
+  (<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> (<span class="hljs-name">game-state-exact-matches</span> state)
+          (<span class="hljs-name">game-state-word</span> state)))
+
+<span class="hljs-comment">;;; REPL logic</span>
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">game-read</span> state)
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;\nGuess a five letter word? &quot;</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">input</span> (<span class="hljs-name">read-line</span>)))
+    (<span class="hljs-name"><span class="hljs-built_in">cond</span></span> ((<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> input <span class="hljs-string">&quot;?&quot;</span>) 
+           (<span class="hljs-name">game-state-current-guess-set!</span> state <span class="hljs-string">&quot;?&quot;</span>)
+           state)
+          ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> <span class="hljs-number">5</span> (<span class="hljs-name"><span class="hljs-built_in">string-length</span></span> input))
+           (<span class="hljs-name">game-state-current-guess-set!</span> state 
+             (<span class="hljs-name">string-upcase</span> input))
+           (<span class="hljs-name">game-state-guess-count-set!</span> state 
+             (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">game-state-guess-count</span> state) <span class="hljs-number">1</span>))
+           state)
+          (<span class="hljs-name"><span class="hljs-built_in">else</span></span>
+            (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;Bad input length! &quot;</span>) 
+            (<span class="hljs-name">game-read</span> state)))))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">find-matches</span> state)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> loop ((<span class="hljs-name">i</span> <span class="hljs-number">0</span>) (<span class="hljs-name">matches</span> &#x27;()) (<span class="hljs-name">exact</span> <span class="hljs-string">&quot;-----&quot;</span>))
+    (<span class="hljs-name"><span class="hljs-built_in">cond</span></span> 
+      ((<span class="hljs-name"><span class="hljs-built_in">&lt;</span></span> i <span class="hljs-number">5</span>)
+       (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">c</span> (<span class="hljs-name"><span class="hljs-built_in">substring</span></span> (<span class="hljs-name">game-state-word</span> state) i (<span class="hljs-name"><span class="hljs-built_in">+</span></span> i <span class="hljs-number">1</span>)))
+             (<span class="hljs-name">guess</span> (<span class="hljs-name">game-state-current-guess</span> state)))
+         (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name">string-contains</span> guess c)
+           (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> matches (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> c matches))
+           (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name"><span class="hljs-built_in">=</span></span> i (<span class="hljs-name">string-index</span> guess (<span class="hljs-name">string-&gt;char-set</span> c)))
+             (<span class="hljs-name"><span class="hljs-built_in">set!</span></span> exact (<span class="hljs-name">string-replace</span> exact c i (<span class="hljs-name"><span class="hljs-built_in">+</span></span> i <span class="hljs-number">1</span>))))))
+       (<span class="hljs-name">loop</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> i <span class="hljs-number">1</span>) matches exact))
+      (<span class="hljs-name"><span class="hljs-built_in">else</span></span>
+       (<span class="hljs-name">game-state-matches-set!</span> state (<span class="hljs-name">random-sort</span> matches))
+       (<span class="hljs-name">game-state-exact-matches-set!</span> state exact)))))
+      
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">game-eval</span> state)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">guess</span> (<span class="hljs-name">game-state-current-guess</span> state)))
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> guess <span class="hljs-string">&quot;?&quot;</span>)
+      (<span class="hljs-name">game-state-continue-set!</span> state <span class="hljs-literal">#f</span>)
+      (<span class="hljs-name">find-matches</span> state)))
+  state)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">game-print</span> state)
+  (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name">game-state-continue</span> state)
+    (<span class="hljs-name">printf</span> 
+      <span class="hljs-string">&quot;There were ~A matches and the common letters were.. ~A~%&quot;</span>
+      (<span class="hljs-name"><span class="hljs-built_in">length</span></span> (<span class="hljs-name">game-state-matches</span> state))
+      (<span class="hljs-name"><span class="hljs-built_in">apply</span></span> string-append (<span class="hljs-name">game-state-matches</span> state)))
+    (<span class="hljs-name">printf</span> 
+      <span class="hljs-string">&quot;From the exact letter matches, you know........... ~A~%&quot;</span>
+      (<span class="hljs-name">game-state-exact-matches</span> state))
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">game-state-correct?</span> state)
+      (<span class="hljs-name">printf</span> 
+        <span class="hljs-string">&quot;You have guessed the word. It took ~A guesses!~%&quot;</span>
+        (<span class="hljs-name">game-state-guess-count</span> state))
+      (<span class="hljs-name">printf</span> 
+        <span class="hljs-string">&quot;~%If you give up, type &#x27;?&#x27; for your next guess.~%&quot;</span>)))
+  state)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">start-game</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;\nYou are starting a new game...\n&quot;</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> loop ((<span class="hljs-name">state</span> (<span class="hljs-name">init-game</span>)))
+    (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name"><span class="hljs-built_in">and</span></span> (<span class="hljs-name">game-state-continue</span> state)
+               (<span class="hljs-name"><span class="hljs-built_in">not</span></span> (<span class="hljs-name">game-state-correct?</span> state)))
+      (<span class="hljs-name">loop</span> (<span class="hljs-name">game-print</span> 
+              (<span class="hljs-name">game-eval</span> 
+                (<span class="hljs-name">game-read</span> state)))))))
+
+<span class="hljs-comment">;;; MAIN</span>
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">yes-or-no</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> <span class="hljs-string">&quot;Y&quot;</span> (<span class="hljs-name">string-upcase</span> (<span class="hljs-name"><span class="hljs-built_in">substring</span></span> (<span class="hljs-name">read-line</span>) <span class="hljs-number">0</span> <span class="hljs-number">1</span>))))
+
+(<span class="hljs-name"><span class="hljs-built_in">display</span></span> header)
+(<span class="hljs-name"><span class="hljs-built_in">let</span></span> loop ()
+  (<span class="hljs-name">start-game</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;Want to play again? &quot;</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">yes-or-no</span>)
+    (<span class="hljs-name">loop</span>)
+    (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;\nThanks for playing - bye bye!\n\n&quot;</span>)))</code></pre><p>Det var så gøy som jeg hadde håpet å implementere spillet. Det var også litt frustrerende fordi det å analysere forsøkene brukeren taster inn var sånn passe komplekst. Jeg føler jeg fortsatt har MASSE å lære om hvordan jeg bruker Scheme på en god måte, og vil nok bruke det på et par spillkataer til i nær fremtid.</p>
+<p>Koden er også <a href="https://gist.github.com/tormaroe/9716815">tilgjengelig som en gist</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

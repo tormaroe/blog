@@ -1,0 +1,80 @@
+---
+title: "Kalenderluke 22: Når begynner krigen?"
+link: http://blog.kjempekjekt.com/2013/12/23/kalenderluke-22-nr-begynner-krigen/
+layout: post
+date: 2013-12-23 07:41:03Z
+tags:
+  - Julekalender
+---
+<p>Spenningen er til å ta og føle på! Luke 22 er unnagjort, men det er fortsatt veldig gjevnt i toppen. Her er en fremstilling av hvordan den første timen så ut søndag morgen:</p> <p><img title="luke22_photofinish" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 20px auto; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke22_photofinish" src="/uploads/2013/12/luke22_photofinish.png" width="506" height="649"></p> <p>Daniel T Johansen imponerte igjen med raskeste korrekte svar. Magnar overtok ledelsen, mens Stian og Eivind praktisk talt deler andreplassen.</p> <h2>Oppgaven</h2> <p>Oppgaven denne gangen er interessant - den virker vanskelig, men i det øyeblikket den er løst virker den ganske enkel. Oppgaven var å avgjøre det minste tallet <code>dbdcaacdbccdadccbdbcbaaaaaaaaa</code> kunne representere, gitt at hvert ulikt tegn representerer et unikt siffer, at vi ikke vet hvilken radiks det er, og at tallet ikke starter med null.</p> <p>Her kommer et forsøk på en forklaring på hvordan man bør tenke, skrveet i Ruby.</p><pre># Vi begynner med et utenomjordisk nummer..
+NUMBER = 'dbdcaacdbccdadccbdbcbaaaaaaaaa'
+</pre>
+<p>Hvor mange unike tegn har vi?</p><pre># Splitt opp strengen så vi kan jobbe med den..
+digits = NUMBER.split ''
+unique_digits = digits.uniq
+puts "DIGITS: #{unique_digits}"
+</pre>
+<p>Output er <code>DIGITS: ["d", "b", "c", "a"]</code></p><pre># Hvor mange fingre har de utenomjordiske?
+# Minimum radiks (basert på antall unike siffer) 
+# gir minimum verdi, så det trenger vi å vite..
+base = unique_digits.size
+puts "MINIMUM BASE: #{base}"
+</pre>
+<p>Output er <code>MINIMUM BASE: 4</code></p><pre># Laveste siffer (bortsett fra 0) bør komme først
+# for å lage et minimalt tall...
+min_sequence = [1, 0] + (2..(base-1)).to_a
+puts "MINIMUM DIGIT SEQUENCE: #{min_sequence}"
+</pre>
+<p>Output er <code>MINIMUM DIGIT SEQUENCE: [1, 0, 2, 3]</code></p><pre># Kombineeerer vi dette med tegnene fra det
+# utenomjordiske nummeret (i riktig rekkefølge),
+# får vi den optimale (minimalle) betydningen
+# avvv tegnene...
+digit_hash = Hash[unique_digits.zip(min_sequence)]
+puts "DIGIT REPRESENTATION: #{digit_hash}"
+</pre>
+<p>Output er <code>DIGIT REPRESENTATION: {"d"=&gt;1, "b"=&gt;0, "c"=&gt;2, "a"=&gt;3}</code></p><pre># For hvert tegn i tallet (fra høyre), finn verdien
+# basert på posisjonen, og summer!
+puts "#{NUMBER} = " + 
+  digits.
+  reverse.
+  each_with_index.
+  inject(0) { |memo, (d, i)|
+    puts "#{
+      NUMBER[(-1*i)..-1].rjust(NUMBER.size)
+    } = #{memo}" if i &gt; 0
+    memo + digit_hash[d] * base**i 
+}.to_s
+</pre>
+<p>Gir output:</p><pre>                             a = 3
+                            aa = 15
+                           aaa = 63
+                          aaaa = 255
+                         aaaaa = 1023
+                        aaaaaa = 4095
+                       aaaaaaa = 16383
+                      aaaaaaaa = 65535
+                     aaaaaaaaa = 262143
+                    baaaaaaaaa = 262143
+                   cbaaaaaaaaa = 2359295
+                  bcbaaaaaaaaa = 2359295
+                 dbcbaaaaaaaaa = 19136511
+                bdbcbaaaaaaaaa = 19136511
+               cbdbcbaaaaaaaaa = 556007423
+              ccbdbcbaaaaaaaaa = 2703491071
+             dccbdbcbaaaaaaaaa = 6998458367
+            adccbdbcbaaaaaaaaa = 58538065919
+           dadccbdbcbaaaaaaaaa = 127257542655
+          cdadccbdbcbaaaaaaaaa = 677013356543
+         ccdadccbdbcbaaaaaaaaa = 2876036612095
+        bccdadccbdbcbaaaaaaaaa = 2876036612095
+       dbccdadccbdbcbaaaaaaaaa = 20468222656511
+      cdbccdadccbdbcbaaaaaaaaa = 161205711011839
+     acdbccdadccbdbcbaaaaaaaaa = 1005630641143807
+    aacdbccdadccbdbcbaaaaaaaaa = 4383330361671679
+   caacdbccdadccbdbcbaaaaaaaaa = 13390529616412671
+  dcaacdbccdadccbdbcbaaaaaaaaa = 31404928125894655
+ bdcaacdbccdadccbdbcbaaaaaaaaa = 31404928125894655
+dbdcaacdbccdadccbdbcbaaaaaaaaa = <strong>319635304277606399</strong>
+</pre>
+<p>Som vanlig er det gøy om andre deler hvordan de løste oppgaven!</p>
+<p>PS: Både denne luken og <a href="http://blog.kjempekjekt.com/2013/12/22/kalenderluke-21-sty-p-linjen/">oppgaven i luke 21</a> er basert på oppgaver fra <a href="https://code.google.com/codejam/">Google Code Jam</a> – en interessant konkurranse for dem som liker denne typen problemer og programmeringskonkurranser.</p>

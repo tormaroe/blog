@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Perl">
+
+    <title>Perl 6 er endelig her - er det interessant?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Perl 6 er endelig her - er det interessant?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 28. desember 2015</small> 
+            <a href="/tags/perl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Perl</span></a>
+          </p>
+          <p><strong><a href="http://perl6.org/">Perl 6</a></strong> er endelig sluppet i en stabil versjon. Perl har aldri vært et viktig språk for meg, men versjon 6 - som egentlig er et helt nytt språk - har potensiale. Jeg føler det er viktig å ta en titt, så her følger noen tanker og smakebiter...</p>
+<img src="/uploads/2015/12/perl6.png" alt="Perl6" />
+
+<h2>Litt historie</h2>
+<p>Larry Wall startet å utvikle Perl i 1987. Det ble etterhvert et viktig språk, ikke minst under internett-revolusjonen på 90-tallet. I starten ble det sagt at &quot;Internett kjørte på Perl&quot;.</p>
+<p>Perl var også en viktig inspirasjonskilde for både Python, PHP og Ruby, som etterhvert overtok mye av Perls rolle og popularitet.</p>
+<p>Perl er kjent for å være et litt kryptisk språk; det har <em>mye</em> syntaks og &quot;magiske variabler&quot; som gjør at du kan uttrykke <em>mye</em> med få tegn, og det er alltid mange forskjellige måter å gjøre det samme på. Dette har gjort at Perl har fått et rykte for å være kryptisk (at Larry Wall har vunnet IOCCC - <em><a href="https://en.wikipedia.org/wiki/International_Obfuscated_C_Code_Contest">International Obfuscated C Code Content</a></em> - to ganger forklarer kanskje endel). Språkets motto er at <strong>enkle ting skal være enkelt, og vanskelige ting skal være mulig</strong>.</p>
+<p>Lisp-hacker <a href="http://hoytech.com/about">Doug Hoyte</a> (forfatter av <em><a href="http://letoverlambda.com/">Let Over Lambda - 50 Years of Lisp</a></em>) sier at etter Lisp og C så er Perl det viktigste språket å lære seg - ikke bare fordi det er umåtelig praktisk, men også på grunn av filosofien:</p>
+<blockquote>
+<p>&quot;If Lisp is the result of taking syntax away, Perl is the result of taking syntax all the way.&quot;</p>
+</blockquote>
+<h2>Perl 6</h2>
+<blockquote>
+<p>&quot;The Perl 6 community has been working toward this release over the last 15 years.&quot;
+<small><a href="https://perl6advent.wordpress.com/2015/12/25/christmas-is-here/">Christmas is here, by Coke</a></small></p>
+</blockquote>
+<p>Arbeidet som nå endelig har blitt til Perl 6 startet i år 2000. Versjonen er <em>ikke</em> bakoverkompatibel med Perl 5. Men hva er det som nå er klart?</p>
+<p>Det som nettopp har blitt publisert er først og fremst to ting: Den første deler er språkets spesifikasjon, som består av 120 000 enhetstester. Den andre er en Perl 6 kompilator som heter <strong>Rakudo</strong>. <a href="http://perl6intro.com/">Dokumentasjonen er også oppdatert</a>, og du kan nå ta språket i bruk uten å være redd for at språket vil endre seg under føttene på deg.</p>
+<p>Derimot må vi nok forvente at det vil jobbes mye med ytelsesforbedringer fremover, og antallet tilgjengelige moduler vil nok være noe begrenset i en periode. Det er nå likevel på tide å ta en titt på hva språket har å tilby.</p>
+<h2>Features</h2>
+<p>Perl 6 er et moderne og rikt språk, så det er mye å sette seg inn i. Her nevner jeg kun noen høydepunkt...</p>
+<p>Perl 6 er et multiparadigmespråk, og støtter objektorientering, funksjonell programmering inkludert lazy lists, prosedyrebasert kode, og samtidighetsprogrammering. Språket har også gode fasiliteter for å kalle C/C++ kode, og man kan embedde Perl 5 inline.</p>
+<p>Regulære uttrykk har alltid vært en viktig del av Perl, og Perl 6 utvider hva du kan gjøre med dem. Med Perl 6 kan du definere uttrykk kraftige nok til å parse Perl 6 selv. </p>
+<p>Noe som er veldig spennende er at Perl 6 har &quot;gradvis typing&quot;. Du kan begynne med et dynamisk typet program, og så spesifisere typer utvalgte steder for å gjøre koden tryggere og raskere.</p>
+<p>Du kan også definere operatorer (prefix, postfix, infix og circumfix), og som i Ruby har du blokker med kode. Dette kan du for eksempel kobinere til å definere en <code>times</code> operasjon:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">sub</span> <span class="hljs-title">infix</span>:&lt;<span class="hljs-title">times</span>&gt;(<span class="hljs-title">Int</span> $<span class="hljs-title">n</span>, <span class="hljs-title">Block</span> $<span class="hljs-title">r</span>) </span>{
+  <span class="hljs-keyword">for</span> ^<span class="hljs-variable">$n</span> {
+    <span class="hljs-variable">$r</span>();
+  }
+}
+
+<span class="hljs-number">3</span> <span class="hljs-keyword">times</span> -&gt; { <span class="hljs-keyword">say</span> <span class="hljs-string">&quot;hello&quot;</span> }; <span class="hljs-comment">#=&gt; hello</span>
+                            <span class="hljs-comment">#=&gt; hello</span>
+                            <span class="hljs-comment">#=&gt; hello</span></code></pre><p><em>Circumfix</em> er forresten et interesant konsept som gjør at du kan eksperimentere med syntaks på nye og uante måter. Et eksempel:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">sub</span> <span class="hljs-title">circumfix</span>:&lt;[ ]&gt;(<span class="hljs-title">Int</span> $<span class="hljs-title">n</span>) </span>{
+  <span class="hljs-variable">$n</span> ** <span class="hljs-variable">$n</span>
+}
+
+<span class="hljs-keyword">say</span> [<span class="hljs-number">5</span>]; <span class="hljs-comment">#=&gt; 3125</span></code></pre><p>Vi har også varianten <em>postcircumfix</em>:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">sub</span> <span class="hljs-title">postcircumfix</span>:&lt;</span>{ }&gt;(Str <span class="hljs-variable">$s</span>, Int <span class="hljs-variable">$idx</span>) {
+  <span class="hljs-comment"># post-circumfix is</span>
+  <span class="hljs-comment"># &quot;after a term, around something&quot;</span>
+  <span class="hljs-variable">$s</span>.substr(<span class="hljs-variable">$idx</span>, <span class="hljs-number">1</span>);
+}
+
+<span class="hljs-keyword">say</span> <span class="hljs-string">&quot;abc&quot;</span><span class="hljs-string">{1}</span>; <span class="hljs-comment">#=&gt; b</span></code></pre><p>Mye av Perl 6 er bygget opp av disse operatorene, men de kan altså også defineres av oss <em>brukere</em>, som gjør Perl 6 til en kraftig syntax-verktøykasse. </p>
+<p>Videre har Perl 6 ulike måter å kalle funksjoner på, mye likt hva du finner i for eksempel <a href="/tags/nimrod/">Nim</a>. Her er et eksempel på to linjer som uttrykker det samme:</p>
+<pre><code class="hljs"><span class="hljs-keyword">my</span> <span class="hljs-variable">@final</span>-array = <span class="hljs-keyword">reverse</span>(<span class="hljs-keyword">sort</span>(unique(<span class="hljs-variable">@array</span>)));
+
+<span class="hljs-keyword">my</span> <span class="hljs-variable">@final</span>-array = <span class="hljs-variable">@array</span>.unique.sort.<span class="hljs-keyword">reverse</span>;</code></pre><p>En annen måte å kjede sammen operasjoner på kalles <em>forward feed</em>:</p>
+<pre><code class="hljs">my @<span class="hljs-keyword">array</span> = &lt;<span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">4</span> <span class="hljs-number">3</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span>&gt;;
+@<span class="hljs-keyword">array</span> ==&gt; unique()
+       ==&gt; sort()
+       ==&gt; reverse()
+       ==&gt; my @<span class="hljs-keyword">final</span>-<span class="hljs-keyword">array</span>;
+say @<span class="hljs-keyword">final</span>-<span class="hljs-keyword">array</span>;</code></pre><p>Og så har vi <em>backward feed</em>:</p>
+<pre><code class="hljs"><span class="hljs-attribute">my</span> @array = &lt;<span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">4</span> <span class="hljs-number">3</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span>&gt;;
+<span class="hljs-attribute">my</span> @final-array-v2 &lt;== reverse()
+                   <span class="hljs-section">&lt;== sort()
+                   &lt;== unique()
+                   &lt;== @array;
+say @final-array-v2;</span></code></pre><p>Perl 6 har også noe de kaller <em>hyper operator</em> - <code>&gt;&gt;</code> - som jeg ville sagt var det samme som <em>map</em>. For å skrive ut alle primtall fra et array:</p>
+<pre><code class="hljs"><span class="hljs-attribute">my</span> @array = &lt;<span class="hljs-number">0</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span> <span class="hljs-number">10</span>&gt;;
+<span class="hljs-attribute">say</span> @array&gt;&gt;.is-prime;</code></pre><p>Og her skraper vi altså bare litt i overflaten.., jeg ville bare gi deg et lite inntrykk av hvordan det ser ut.</p>
+<h2>Hva jeg tenker..</h2>
+<p>Akkurat nå er hodet mitt fullt av andre ting - som <a href="/tags/common-lisp/">Common Lisp</a> for eksempel - så jeg ser ikke for meg at det blir noe dypdykk i Perl med det første. Men jeg synes språket er spennende. I dag bruker jeg typisk Python eller Ruby om jeg trenger å raske sammen et script som parser noen filer eller lignende. Jeg tror Perl 6 kunne vært vel så bra til dette formålet.</p>
+<h2>Ressurser</h2>
+<p>Språket lever på <a href="http://perl6.org/">perl6.org</a>, og <a href="http://perl6intro.com/">perl6intro.com</a> er sansynligvis den beste ressursen for å lære det grundig. <a href="https://learnxinyminutes.com/docs/perl6/">Learn perl6 in Y minutes</a> kan gi deg en rask oversikt, om du liker den slags.</p>
+<p>Og <a href="http://pl6anet.org/">pl6anet.org</a> virker å være et greit sted å holde seg oppdatert på community news.</p>
+<h2>Larry Wall sitat</h2>
+<img src="/uploads/2015/12/Larry_Wall_YAPC_2007.jpg" alt="Larry Wall" />
+
+<p>Larry Wall er en fasinerende mann; utdannet lingvist, utpreget religiøs, og flommer over av både dype tanker, sterke meninger, og mye humor! Jeg fikk lyst til å avslutte med et Larry-sitat om hvor fantastiske (og lite fantastiske) språk er:</p>
+<blockquote>
+<p>I simultaneously believe that languages are wonderful and awful. You have to hold both of those. Ugly things can be beautiful. And beautiful can get ugly very fast. You know, take Lisp. You know, it&#39;s the most beautiful language in the world. At least up until Haskell came along. But, you know, every program in Lisp is just ugly. I don&#39;t figure how that works.</p>
+</blockquote>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

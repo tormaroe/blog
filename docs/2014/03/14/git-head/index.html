@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Git">
+
+    <title>HEAD@^~</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>HEAD@^~</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 14. mars 2014</small> 
+            <a href="/tags/git"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Git</span></a>
+          </p>
+          <p>Her følger ukens GIT #7 fra <a href="http://www.eikeland.se/">Stian</a>.</p>
+<p>Du har sikkert sett referanser til <code>HEAD@</code>, <code>HEAD~</code>, <code>HEAD^</code> og lignende, men vet du hva alle disse egentlig er? La oss begynne med selve <code>HEAD</code>: <code>HEAD</code> er rett og slett en peker til <em>hvor du er nå</em>. Et Git-depot inneholder som du nok vet en tre-lignende graf (egentlig en DAG), og commits er noder i &quot;treet&quot;. <code>HEAD</code> er en peker til noden som er utsjekket for øyeblikket.</p>
+<p>Utover <code>HEAD</code> finnes det også andre navngitte referanser (noder du kan referere med navn), for eksempel greiner (<code>master</code>), tags/merker (<code>v1.0</code>), eksterne greiner (<code>origin/master</code>). Depotes navngitte referanser og hvor de peker til finner du ved å ta en titt på <code>git show-ref</code></p>
+<h2>HEAD@, head@, master@ og @</h2>
+<p>Som vi så i tipset om <code>git reflog</code> <a href="/2014/03/08/git-reflog/">i forrige uke</a>, så kan man bruke @ til å referere relativt i historien fra vår navigering rundt i depoet. Med andre ord, <em>hvor vi er nå og stegene vi sekvensielt utførte for å komme oss hit</em>.</p>
+<pre><code class="hljs"><span class="hljs-comment"># Reflog lar oss se historikk på våre operasjoner</span>
+<span class="hljs-variable">$ </span>git reflog head   <span class="hljs-comment"># Se global historikk</span>
+<span class="hljs-variable">$ </span>git reflog master <span class="hljs-comment"># Se historikk for master-greinen</span>
+
+<span class="hljs-comment"># @ lar oss navigere bakover i historikken</span>
+<span class="hljs-variable">$ </span>git show master@{<span class="hljs-number">1</span>}             <span class="hljs-comment"># En operasjon bakover på master</span>
+<span class="hljs-variable">$ </span>git show head@{<span class="hljs-number">2</span>}               <span class="hljs-comment"># To operasjoner bakover (globalt)</span>
+<span class="hljs-variable">$ </span>git show master@{<span class="hljs-string">&quot;yesterday&quot;</span>}   <span class="hljs-comment"># Alternativt på tid/dato</span>
+
+<span class="hljs-comment"># Første operasjon som er minst X gammel på gjeldene branch</span>
+<span class="hljs-variable">$ </span>git show @{<span class="hljs-string">&quot;1 week 2 days ago&quot;</span>}
+
+<span class="hljs-variable">$ </span>git show @{<span class="hljs-number">-1</span>}                  <span class="hljs-comment"># Forrige branch du sjekket ut</span>
+
+<span class="hljs-comment"># Atomløsningen for tirsdag morgen,</span>
+<span class="hljs-comment"># revert alle mandagscommits på master (mellom søndag og nå)</span>
+<span class="hljs-variable">$ </span>git revert master@{<span class="hljs-string">&quot;last sunday&quot;</span>}..master@{<span class="hljs-string">&quot;today at 8:00&quot;</span>}
+
+<span class="hljs-comment"># Diff gjeldende branch (master) med forrige utsjekket (gren).</span>
+<span class="hljs-variable">$ </span>git checkout gren
+<span class="hljs-variable">$ </span>git checkout master
+<span class="hljs-variable">$ </span>git diff @{<span class="hljs-number">-1</span>}
+
+<span class="hljs-comment"># Historikk fra master i går (med tidspunkter):</span>
+<span class="hljs-variable">$ </span>git reflog master@{<span class="hljs-string">&quot;yesterday&quot;</span>}
+<span class="hljs-number">525</span>ddab master@{<span class="hljs-title class_">Fri</span> <span class="hljs-title class_">Nov</span> <span class="hljs-number">1</span> <span class="hljs-number">18</span><span class="hljs-symbol">:</span><span class="hljs-number">18</span><span class="hljs-symbol">:</span><span class="hljs-number">49</span> <span class="hljs-number">2013</span> +<span class="hljs-number">0100</span>}: <span class="hljs-symbol">commit:</span> <span class="hljs-title class_">Mer</span> fizz
+<span class="hljs-number">423</span>efd9 master@{<span class="hljs-title class_">Fri</span> <span class="hljs-title class_">Nov</span> <span class="hljs-number">1</span> <span class="hljs-number">17</span><span class="hljs-symbol">:</span><span class="hljs-number">07</span><span class="hljs-symbol">:</span><span class="hljs-number">27</span> <span class="hljs-number">2013</span> +<span class="hljs-number">0100</span>}: <span class="hljs-symbol">commit:</span> <span class="hljs-title class_">Fjernet</span> buzz
+<span class="hljs-number">050</span>d410 master@{<span class="hljs-title class_">Fri</span> <span class="hljs-title class_">Nov</span> <span class="hljs-number">1</span> <span class="hljs-number">17</span><span class="hljs-symbol">:</span><span class="hljs-number">01</span><span class="hljs-symbol">:</span><span class="hljs-number">36</span> <span class="hljs-number">2013</span> +<span class="hljs-number">0100</span>}: <span class="hljs-symbol">pull:</span> <span class="hljs-title class_">Fast</span>-forward
+
+<span class="hljs-comment"># Hva er forskjellen før og etter en pull?</span>
+<span class="hljs-variable">$ </span>git pull
+<span class="hljs-variable">$ </span>git diff master master@{<span class="hljs-number">1</span>}</code></pre><h2>HEAD^ og HEAD~</h2>
+<img style="float:left" style="margin-right:10px;" src="/uploads/2014/03/grener.svg" />
+
+<p>Som vi så kunne vi bruke <code>@</code>-operatoren til å navigere i historikken vår. Nå skal vi se på <code>^</code> og <code>~</code> som lar oss referere relativt i commit-treet.</p>
+<h4>HEAD^</h4>
+<p><code>^</code> er en foreldre-velger, den lar oss velge blant nodene som er direkte foreldre til en gitt node. I figuren ser vi at master/A har to foreldre, i dette tilfelle vil vi kunne nå <code>B</code> med <code>A^1</code> og <code>C</code> med <code>A^2</code>. Dersom bare <code>^</code> er angitt antas <code>^1</code>, mao <code>A^=B</code>.</p>
+<p>Flere operatorer kan slåes sammen for å navigere oppover i treet. <code>A^^ = A^1^1 = A-&gt;B-&gt;D</code> for å nå D fra A.</p>
+<h4>HEAD~</h4>
+<p><code>~</code> lar oss navigere i generasjoner, den vil alltid velge første forelder. <code>A~ = A~1 = B</code>, vi navigerer en generasjon oppover i treet via første forelder. <code>A~2 = A-&gt;B-&gt;D</code> - to generasjoner bakover, alltid via første forelder.</p>
+<h2>Quiz</h2>
+<pre><code class="hljs">$ git reflog
+<span class="hljs-number">0</span>dfbba3 HEAD@{<span class="hljs-number">0</span>}: checkout: moving from fizzbuzz to <span class="hljs-keyword">master</span>
+<span class="hljs-title">525ddab</span> HEAD@{<span class="hljs-number">1</span>}: checkout: moving from <span class="hljs-keyword">master</span> <span class="hljs-title">to</span> fizzbuzz</code></pre><ol>
+<li><code>A~3 = ?</code></li>
+<li><code>master^2 = ?</code></li>
+<li><code>master^2^2^ = ?</code></li>
+<li><code>fizzbuzz^~ = ?</code></li>
+<li><code>HEAD^2~2 = ?</code></li>
+<li><code>HEAD@{1} = ?</code></li>
+<li><code>HEAD@{1}~2 = ?</code></li>
+<li><code>HEAD@{-1}^2~ = ?</code></li>
+<li><code>0dfbba3^^^ = ?</code></li>
+<li><code>525ddab^2 = ?</code></li>
+</ol>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

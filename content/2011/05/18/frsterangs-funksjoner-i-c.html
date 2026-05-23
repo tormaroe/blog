@@ -1,0 +1,79 @@
+---
+title: Førsterangs funksjoner i C#
+link: http://blog.kjempekjekt.com/2011/05/18/frsterangs-funksjoner-i-c/
+layout: post
+date: 2011-05-18 20:44:46Z
+tags:
+  - C#
+---
+<p>I dag brukte jeg <strong><em>førsterangs funksjoner</em></strong> (<a href="http://en.wikipedia.org/wiki/First-class_function" target="_blank">first-class functions</a>) i C# på en måte jeg følte det var verdt å skive en liten blogpost om. Jeg bruker lambda-uttrykk til mye rart hele tiden, men jeg kan faktisk ikke huske at jeg har brukt <a href="http://www.dotnetperls.com/func" target="_blank">Funcs</a> til å referere til metoder på objekter før.</p> <p>Jeg skulle bruke et tredjeparts API hvor jeg skulle kalle en av to ulike metoder avhengig av en boolsk tilstandsvariabel. Metodene hadde mange parametre, men signaturen var lik på begge. Her er hvordan koden først så ut (navnene er endret for å “beskytte de skyldige”):</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Type">private</span> CustomerInfo CreateOrRemove(FooWebService client,
+<span class="lnr">11 </span>                                    <span class="Type">int</span> customerId,
+<span class="lnr">12 </span>                                    <span class="Type">string</span> phoneNumber,
+<span class="lnr">13 </span>                                    <span class="Type">bool</span> create)
+<span class="lnr">14 </span>{
+<span class="lnr">15 </span>  <span class="Conditional">if</span> (create)
+<span class="lnr">16 </span>    <span class="Statement">return</span> client.CreateFoo(<span class="String">"some constant"</span>,
+<span class="lnr">17 </span>                            customerId,
+<span class="lnr">18 </span>                            phoneNumber,
+<span class="lnr">19 </span>                            <span class="Type">string</span>.Empty,
+<span class="lnr">20 </span>                            <span class="Statement">this</span>.someField,
+<span class="lnr">21 </span>                            <span class="Type">string</span>.Empty,
+<span class="lnr">22 </span>                            <span class="Statement">this</span>.someOtherField);
+<span class="lnr">23 </span>  <span class="Conditional">else</span>
+<span class="lnr">24 </span>    <span class="Statement">return</span> client.RemoveFoo(<span class="String">"some constant"</span>,
+<span class="lnr">25 </span>                            customerId,
+<span class="lnr">26 </span>                            phoneNumber,
+<span class="lnr">27 </span>                            <span class="Type">string</span>.Empty,
+<span class="lnr">28 </span>                            <span class="Statement">this</span>.someField,
+<span class="lnr">29 </span>                            <span class="Type">string</span>.Empty,
+<span class="lnr">30 </span>                            <span class="Statement">this</span>.someOtherField);
+<span class="lnr">31 </span>}
+</pre>
+<p>Det er det at metodene tar 7 parametre som gjør koden stygg. En bedre løsning hadde selvfølgelig vært å bruke ett objekt som inneholdt de syv variablene som argument til metodene – men med tredjeparts API’er kan man ikke alltid få det som man vil.</p>
+<p>Men jeg hater denne typen kodeduplisering. I gamledager hadde jeg latt koden forbli som dette, men etter å ha jobbet mye i funksjonelle språk i det siste er det derimot en simpel sak å fikse på problemet. Jeg var ikke helt sikker på om C# sin <a href="http://www.dotnetperls.com/func" target="_blank">Func</a> støttet det jeg ville, men det funket heldigvis helt fint (pun intended):</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">33 </span><span class="Type">private</span> CustomerInfo CreateOrRemove(FooWebService client,
+<span class="lnr">34 </span>                                    <span class="Type">int</span> customerId,
+<span class="lnr">35 </span>                                    <span class="Type">string</span> phoneNumber,
+<span class="lnr">36 </span>                                    <span class="Type">bool</span> create)
+<span class="lnr">37 </span>{
+<span class="lnr">38 </span>  Func&lt;<span class="Type">string</span>, <span class="Type">int</span>?, <span class="Type">string</span>, <span class="Type">string</span>, <span class="Type">string</span>, <span class="Type">string</span>, <span class="Type">string</span>, CustomerInfo&gt; operation;
+<span class="lnr">39 </span>
+<span class="lnr">40 </span>  <span class="Conditional">if</span> (create)
+<span class="lnr">41 </span>    operation = client.CreateFoo;
+<span class="lnr">42 </span>  <span class="Conditional">else</span>
+<span class="lnr">43 </span>    operation = client.RemoveFoo;
+<span class="lnr">44 </span>
+<span class="lnr">45 </span>  <span class="Statement">return</span> operation(<span class="String">"some constant"</span>,
+<span class="lnr">46 </span>                   customerId,
+<span class="lnr">47 </span>                   phoneNumber,
+<span class="lnr">48 </span>                   <span class="Type">string</span>.Empty,
+<span class="lnr">49 </span>                   <span class="Statement">this</span>.someField,
+<span class="lnr">50 </span>                   <span class="Type">string</span>.Empty,
+<span class="lnr">51 </span>                   <span class="Statement">this</span>.someOtherField);
+<span class="lnr">52 </span>}
+</pre>
+<p>Det er ikke akkurat vakkert å spesifisere funksjonssignaturen på denne måten, men det gjør jobben – dupliseringen er borte, og koden kommuniserer faktisk litt bedre hva den gjør (etter min mening).</p>
+<p>Trekker jeg ut valget av create/remove i en egen metode blir det enda bedre:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">54 </span><span class="Type">private</span> <span class="Type">static</span> Func&lt;<span class="Type">string</span>, <span class="Type">int</span>?, <span class="Type">string</span>, <span class="Type">string</span>,
+<span class="lnr">55 </span>        <span class="Type">string</span>, <span class="Type">string</span>, <span class="Type">string</span>, CustomerInfo&gt;
+<span class="lnr">56 </span>        GetOperation(FooWebService client, <span class="Type">bool</span> create)
+<span class="lnr">57 </span>{
+<span class="lnr">58 </span>  <span class="Conditional">if</span> (create)
+<span class="lnr">59 </span>    <span class="Statement">return</span> client.CreateFoo;
+<span class="lnr">60 </span>  <span class="Conditional">else</span>
+<span class="lnr">61 </span>    <span class="Statement">return</span> client.RemoveFoo;
+<span class="lnr">62 </span>}
+<span class="lnr">63 </span>
+<span class="lnr">64 </span><span class="Type">private</span> CustomerInfo CreateOrRemove(FooWebService client,
+<span class="lnr">65 </span>                                    <span class="Type">int</span> customerId,
+<span class="lnr">66 </span>                                    <span class="Type">string</span> phoneNumber,
+<span class="lnr">67 </span>                                    <span class="Type">bool</span> create)
+<span class="lnr">68 </span>{
+<span class="lnr">69 </span>  <span class="Statement">return</span> GetOperation(client, create)(<span class="String">"some constant"</span>,
+<span class="lnr">70 </span>                                      customerId,
+<span class="lnr">71 </span>                                      phoneNumber,
+<span class="lnr">72 </span>                                      <span class="Type">string</span>.Empty,
+<span class="lnr">73 </span>                                      <span class="Statement">this</span>.someField,
+<span class="lnr">74 </span>                                      <span class="Type">string</span>.Empty,
+<span class="lnr">75 </span>                                      <span class="Statement">this</span>.someOtherField);
+<span class="lnr">76 </span>}
+</pre>
+<p>Så det var altså dagens mest spennende kode. Har du gjort noe spenstig med Funcs i det siste? Del dine erfaringer da vel!</p>

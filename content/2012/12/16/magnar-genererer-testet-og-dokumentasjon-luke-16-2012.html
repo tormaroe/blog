@@ -1,0 +1,122 @@
+---
+title: Magnar genererer testet og dokumentasjon [Luke 16, 2012]
+link: http://blog.kjempekjekt.com/2012/12/16/magnar-genererer-testet-og-dokumentasjon-luke-16-2012/
+layout: post
+date: 2012-12-16 06:15:32Z
+tags:
+  - Julekalender
+  - Lisp
+---
+<p><strong>Magnar Sveen</strong> er en meget hyggelig fyr jeg <a href="http://blog.kjempekjekt.com/2011/09/02/flgefredag-magnars/">har presentert en gang tidligere</a> på denne bloggen. I sommer klarte han med sin editor-magi å <em>nesten</em> få meg til å konvertere fra Vim til Emacs. Som Emacs-hacker programmerer Magnar endel Lisp, og i dagens blogpost deler han av sin erfaring omkring dette. Du behøver <em>ikke</em> kunne Lisp for å få utbytte av artikkelen, kun et åpent sinn – Magnar forklarer det meste underveis.</p> <p><strong><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="magnar" border="0" alt="magnar" src="/uploads/2012/12/magnar.jpg" width="420" height="420"></strong></p> <p><strong>Hvem er du? <br></strong>En glad utvikler som knaster taster på toget mellom Oslo og Fredrikstad hver dag. </p> <p><strong>Hva er jobben din? <br></strong>Framsieutvikler og partner i Kodemaker.  <p><strong>Hva kan du? <br></strong>Trives godt i hele stacken - oftest solgt inn som frontend.  <p><strong>Hva liker du best med yrket ditt? <br></strong>Å bygge ting.  <hr>  <h2>Eksempler i Lisp: Kode som genererer tester og dokumentasjon</h2> <p>Jeg fikk til noe kult her om dagen.  <p>Som du vet så er ikke dokumentasjon det morsomste å skrive. Og det er skremmende lett å glemme å oppdatere dokumentasjonen når du gjør endringer.  <p>Så når jeg skulle lage et <a href="https://github.com/magnars/dash.el">liste</a>- og et <a href="https://github.com/magnars/s.el">string</a>-bibliotek til Emacs, så fant jeg en fet løsning på akkurat det problemet.  <p>Se her:<pre><code>(defexamples s-dashed-words
+  "some words" =&gt; "some-words"
+  "under_scored_words" =&gt; "under-scored-words"
+  "camelCasedWords" =&gt; "camel-cased-words")
+</code></pre>
+<p>Her definerer jeg noen eksempler på hvordan en funksjon fungerer. Det kule er at jeg ut i fra disse genererer <em>både tester og dokumentasjon</em>. 
+<p>La oss starte med det første: 
+<h3>Generere tester</h3>
+<p>Slik må testen se ut for at testrammeverket skal forstå den:<pre><code>(ert-deftest s-dashed-words ()
+  (should (equal (s-dashed-words "some words") "some-words"))
+  (should (equal (s-dashed-words "under_scored_words") "under-scored-words"))
+  (should (equal (s-dashed-words "camelCasedWords") "camel-cased-words")))
+</code></pre>
+<p>Så nå skal vi ta eksempelkoden øverst og bygge om til denne testkoden programatisk. Det gjør vi med makroer. 
+<h3>Noen introduksjoner</h3>
+<ul>
+<li>
+<p><strong>Makroer</strong> bygger ny kode. Du gir dem argumenter som så brukes til å sette sammen den endelige koden før den kjøres.</p>
+<li>
+<p><strong>Homoikonisitet</strong> betyr at språket er definert ved hjelp av sine datastrukturer. Altså kan kode både kjøres, men også undersøkes, manipuleres og bygges på samme måte som annen data i applikasjonen.</p></li></ul>
+<p>Homoikonisitet er essensielt for å få bunnsolide makroer. 
+<p>I lisp får vi dette fordi et funksjonskall er en liste:<pre><code>(* 2 4)
+</code></pre>
+<p>Dette er en liste med tre elementer (<code>*</code>, <code>2</code> og <code>4</code>), og når den evalueres så blir det første elementet i listen kalt som en funksjon, og resten som parametere til den funksjonen - og vi får <code>8</code>.</p>
+<h3>Anatomien til en makro</h3>
+<p>I lisp så er altså jobben til en makro å lage en liste som skal evalueres. Du kan lage listen akkurat slik du selv vil, men det finnes noen triks for å gjøre det lettere. La oss starte med et enkelt eksempel:<pre><code>(defmacro multiply (a b)
+  (list '* a b))
+</code></pre>
+<p>Denne tar i mot to argumenter, og bygger en liste på tre elementer. Hvis du stusser over fnutten foran <code>*</code> så er det en quote. Det er slik man sørger for at symbolet ikke blir evaluert, men får stå som det er. 
+<p>Altså vil <code>(multiply 2 4)</code> bygge koden <code>(* 2 4)</code> som deretter evalueres til <code>8</code>. 
+<p>Vi kan også quote hele lister, slik:<pre><code>'(* 2 4)
+</code></pre>
+<p>Denne blir ikke evaluert til <code>8</code>, men fortsetter å være listen på tre elementer. Det kan vi bruke når vi skal lage makroer:<pre><code>(defmacro multiply (a b)
+  '(* a b))
+</code></pre>
+<p>men det fungerer ikke helt. Dette vil returnere lista akkurat slik, altså <code>(* a b)</code> - så når denne skal evalueres så er <code>a</code> og <code>b</code> ikke lengre bundet. Men det peker mot trikset:<pre><code>(defmacro multiply (a b)
+  `(* ,a ,b))
+</code></pre>
+<p>Backtick lar oss quote lista, men hvor vi kan evaluere deler av uttrykket. Kommaet escaper ut av quotingen, slik at verdiene i <code>a</code> og <code>b</code> settes inn. Tenk ruby eller python sin string interpolation. 
+<p>Kanskje skulle multiply kunne ta flere argumenter? Vi prøver:<pre><code>(defmacro multiply (&amp;rest numbers)
+  `(* ,numbers))
+</code></pre>
+<p>Nøkkelordet <code>&amp;rest</code> betyr at resten av argumentene havner i lista <code>numbers</code>. Men dette gir ikke ønsket resultat. Vi ender opp med <code>(* (2 4 6))</code>. 
+<p>Istedet skriver vi:<pre><code>(defmacro multiply (&amp;rest numbers)
+  `(* ,@numbers))
+</code></pre>
+<p>Escapingen <code>,@</code> tar lista i <code>numbers</code> og splicer inn. Da får vi <code>(* 2 4 6)</code> som ønsket. 
+<p>Og med det er vi klare for å generere testene: 
+<h3>Generere tester, take two</h3>
+<p>Vi vil altså at dette:<pre><code>(defexamples s-dashed-words
+  "some words" =&gt; "some-words"
+  "under_scored_words" =&gt; "under-scored-words"
+  "camelCasedWords" =&gt; "camel-cased-words")
+</code></pre>
+<p>skal transformeres til dette:<pre><code>(ert-deftest s-dashed-words ()
+  (should (equal (s-dashed-words "some words") "some-words"))
+  (should (equal (s-dashed-words "under_scored_words") "under-scored-words"))
+  (should (equal (s-dashed-words "camelCasedWords") "camel-cased-words")))
+</code></pre>
+<p>Og det gjør vi ved å definere <code>defexamples</code> slik:<pre><code>(defmacro defexamples (fn &amp;rest examples)
+  `(ert-deftest ,fn ()
+     ,@(map (partial 'example-to-should fn) (partition 3 examples))))
+</code></pre>
+<p>Den tar i mot funksjonen vi tester som <code>fn</code>, og en liste med eksempler. Jeg stykker opp <code>examples</code> i tripletter, som da ser slik ut:<pre><code>0: "some words"
+1: =&gt;
+2: "some-words"
+</code></pre>
+<p>Disse mapper jeg over en <code>example-to-should</code> som ved hjelp av <code>partial</code> har fått satt første parameter til <code>fn</code>allerede. 
+<p>Her er den:<pre><code>(defun example-to-should (fn example)
+  (let ((actual (nth 0 example))
+        (expected (nth 2 example)))
+    `(should (equal (,fn ,actual) ,expected))))
+</code></pre>
+<p>Som du ser så tar den første og siste element i lista, og bygger opp should-uttrykket. <code>=&gt;</code> blir bare ignorert. 
+<p>Ved hjelp av kun disse to, en liten funksjon <code>example-to-should</code> og en liten makro <code>defexamples</code>, så gjør jeg eksemplene om til tester og kjører dem. 
+<p>Men det som gjør dette fett, er jo at de samme eksemplene brukes til å generere dokumentasjonen. 
+<h3>Generere dokumentasjon</h3>
+<p>Ta en titt på <a href="https://github.com/magnars/s.el#documentation-and-examples">den genererte dokumentasjonen her</a>. Slik ser én entry ut: 
+<hr>
+
+<h5>s-dashed-words <code>(s)</code></h5>
+<p>Convert <code>s</code> to dashed-words.<pre>(s-dashed-words "some words") ;; =&gt; "some-words"
+(s-dashed-words "under_scored_words") ;; =&gt; "under-scored-words"
+(s-dashed-words "camelCasedWords") ;; =&gt; "camel-cased-words"
+</pre>
+<hr>
+
+<p>Som du ser så er eksemplene der, men også funksjonens parameterliste og en forklarende tekst. Hvor kommer de fra?</p>
+<h3>Homoikonisitetens vidundere</h3>
+<p>Se her:<pre><code>(symbol-function 's-dashed-words)
+</code></pre>
+<p>Slik får jeg tak i funksjonen som symbolet <code>s-dashed-words</code> peker på. 
+<p>Jeg kan kalle den:<pre><code>(funcall (symbol-function 's-dashed-words) "camelCase")
+
+;; =&gt; "camel-case"
+</code></pre>
+<p>Men det sprø her er at funksjonen <em>er</em> en liste som jeg kan grave meg inn i. Slik ser den ut:<pre><code>(lambda (s)
+  "Convert S to dashed-words."
+  (s-join "-" (map 'downcase (s-split-words s))))
+</code></pre>
+<p>Det jeg <code>funcall</code>'er der oppe er ikke en peker til noe kompilert i minnet. Det <em>er</em> denne listen. 
+<p>Så når jeg kaller<pre><code>(nth 0 (symbol-function 's-dashed-words))
+</code></pre>
+<p>får jeg ut <code>lambda</code>. Og når jeg kaller<pre><code>(nth 1 (symbol-function 's-dashed-words))
+</code></pre>
+<p>får jeg ut <code>(s)</code>. Og når jeg kaller<pre><code>(nth 2 (symbol-function 's-dashed-words))
+</code></pre>
+<p>får jeg ut <code>"Convert S to dashed-words."</code>. 
+<p>Og det er ved å kombinere eksemplene, og ved å grave meg inn i datastrukturen som definerer funksjonene at jeg setter sammen dokumentasjonen. 
+<p>Koden for det er litt mer omfattende, men hvis du er nysgjerrig så finner du den <a href="https://github.com/magnars/dash.el/blob/master/examples-to-docs.el">her på github</a>. 
+<h3>Til slutt</h3>
+<p>Det aller kuleste er at dokumentasjonen aldri går ut på dato. Hvis navn eller signaturer endrer seg, så gjenspeiles det øyeblikkelig i dokumentasjonen. Og eksemplene er alltid riktig. 
+<p>Konge.</p>

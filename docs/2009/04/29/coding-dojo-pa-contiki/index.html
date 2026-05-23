@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Jobb,CodingDojo">
+
+    <title>Coding Dojo på Contiki</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Coding Dojo på Contiki</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 29. april 2009</small> 
+            <a href="/tags/jobb"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Jobb</span></a>
+          
+            <a href="/tags/codingdojo"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> CodingDojo</span></a>
+          </p>
+          <p>I går arrangerte jeg min første <strong>Coding Dojo</strong>. Jeg har <a href="/2009/03/01/alternativer-til-nnugs-normale-møteform/">tidligere skrevet om at jeg har lyst til å prøve ut dette formatet på NNUG</a>, men tenkte det ville være et bra første steg å forsøke det på jobben.</p>
+<p>En Coding Dojo er et møte hvor en gruppe utviklere jobber sammen for å løse en programmeringsoppgave. Fokuset er å lære seg og praktisere teknikker. Man bruker testdrevet utvikling og parprogrammering, og utviklere av ulike erfaringsnivåer skal føle seg velkomne til å bidra. Hvert femte til syvende minutt rullerer man, slik som dette:</p>
+<p style="text-align: center"><a title="Coding Dojo: Randori Kata by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3485959503/"><img height="366" alt="Coding Dojo: Randori Kata" src="http://farm4.static.flickr.com/3660/3485959503_acdc40c696.jpg" width="500" border="0" /></a></p>
+<p><em>Dojo</em> er japansk, og er navnet på et sted hvor man lærer kampkunst, som for eksempel Judo og Karate. Innenfor disse disiplinene foregår læring gjennom <em>eksempel</em>; man observerer hvordan de som er høyest gradert utfører sine teknikker, og forsøker så selv gjennom å imitere det man har sett. Dette prinsippet kan også fungere innenfor programmering.</p>
+<p>Jeg valgte en oppgave designet for Coding Dojo's kalt <strong>KataTexasHoldEm</strong>, <a href="http://codingdojo.org/cgi-bin/wiki.pl?KataTexasHoldEm">beskrevet her</a>. Jeg hadde forsøkt meg på samme oppgaven kvelden før, og skjønte raskt at oppgaven sansynligvis var for omfattende for de to timene vi satte av til dette. Men jeg håpte likevel den ville gi oss endel erfaring både med parprogrammering og TDD, samtidig som det var et passe spennende domene å modellere.</p>
+<p>Det er meningen at publikum skal kunne komme med kommentarer til paret som programmerer. Vi var derimot bare fire utviklere som deltok, og dette førte til at vi i praksis var én <em>driver</em> og tre <em>navigators</em> som uttrykte meningene sine i munnen på hverandre. Kvartett-programmering viste seg å være noe langsommere enn parprogrammering, men også veldig stimulerende. For fremtiden vil jeg likevel forsøke å kontrollere publikum bedre.</p>
+<p><strong>Jeg følte vi lærte mest om TDD.</strong> Vi så blant annet flere ganger hvordan vi tok for store steg, som gjorde at vi mistet kontrollen noen ganger. Jeg la stor vekt på at man skal få testene grønne så raskt som mulig, og så bruke mer tid på å forbedre og refakturere koden - noe som ble klart for meg etter at jeg leste <a href="/2009/03/23/l%c3%a6r-tdd-gjennom-eksempler/">Kent Becks TDD bok</a>. Vi gjorde også refaktureringer som virket unødvendige.</p>
+<p>Etter at vi var ferdige (dvs etter at tiden var ute) snakket vi om hvordan det hadde gått, og vi sammenlignet også løsningen med det jeg hadde gjort kvelden før. Vi ble bl.a. enige om at vi hadde hatt for lite fokus på å skrive tester som førte til fremdrift, og i stedet fokusert for mye på unntakshåndtering - en vanlig feil som ofte fører til at man missliker TDD. Det er viktig å huske at TDD ikke dreier seg om testing, men å bruke tester til å <em>drive design av kode</em>. Dette var nok grunnen til at jeg hadde hatt fått implementert en større del av løsningen i løpet av samme tid.</p>
+<p>Jeg lærte forsåvidt endel av å gjøre oppgaven alene også. Det var spennende å se hvordan designet mitt endret seg for hver ny test jeg skrev - endringer jeg ikke hadde forventet. Jeg fikk også tatt i bruk en annen ting jeg blogget om for en stund siden, nemlig <a href="/2009/03/20/t-man-tipser-om-specification-pattern/">Specification pattern</a>. Her er for eksempel objektet som implementerer regelen for om en pokerhånd inneholder <em>ett par</em>:</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">OnePairSpecification</span> : <span style="color: #2b91af">ISpecification</span><<span style="color: yellow">Hand</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: lime">// Constructor hidden to save space..</span></p>
+<p style="margin: 0px">
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: yellow">Hand</span> <span style="color: #f8ffc6">candidate</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">for</span> (<span style="font-weight: bold; color: #eaeaac">int</span> <span style="color: #f8ffc6">i</span> = <span style="color: #8acccf">0</span>; <span style="color: #f8ffc6">i</span> < <span style="color: #f8ffc6">candidate</span>.<span style="color: #f8ffc6">Count</span>; <span style="color: #f8ffc6">i</span>++)           </p>
+<p style="margin: 0px">        {</p>
+<p style="margin: 0px">            <span style="font-weight: bold; color: #eaeaac">for</span> (<span style="font-weight: bold; color: #eaeaac">int</span> <span style="color: #f8ffc6">j</span> = <span style="color: #8acccf">0</span>; <span style="color: #f8ffc6">j</span> < <span style="color: #f8ffc6">candidate</span>.<span style="color: #f8ffc6">Count</span>; <span style="color: #f8ffc6">j</span>++)</p>
+<p style="margin: 0px">            {</p>
+<p style="margin: 0px">                <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">i</span> != <span style="color: #f8ffc6">j</span></p>
+<p style="margin: 0px">                    && <span style="color: #f8ffc6">candidate</span>[<span style="color: #f8ffc6">i</span>].<span style="color: #f8ffc6">IsSameRankAs</span>(<span style="color: #f8ffc6">candidate</span>[<span style="color: #f8ffc6">j</span>]))</p>
+<p style="margin: 0px">                {</p>
+<p style="margin: 0px">                    <span style="font-weight: bold; color: #eaeaac">return</span> <span style="font-weight: bold; color: #eaeaac">true</span>;</p>
+<p style="margin: 0px">                }</p>
+<p style="margin: 0px">            }</p>
+<p style="margin: 0px">        }</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="font-weight: bold; color: #eaeaac">false</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+<p>Å implementere forretningsregler som objekter er utrolig kraftig.., absolutt noe jeg anbefaler.</p>
+<p>Så, for å oppsummere: Coding Dojo var absolutt en suksess. Mine kollegaer syntes det var et par spennende timer, det var lærerikt, og gav oss inspirasjon. Og jeg har fått enda mer tro på at dette er noe som kan egne seg som et alternativt format på brukergruppemøter i NNUG.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=Coding+Dojo" rel="tag">Coding Dojo</a>, <a href="/index.php?s=Contiki" rel="tag">Contiki</a>, <a href="/index.php?s=NNUG" rel="tag">NNUG</a>, <a href="/index.php?s=parprogrammering" rel="tag">parprogrammering</a>, <a href="/index.php?s=Specification+Pattern" rel="tag">Specification Pattern</a>, <a href="/index.php?s=TDD" rel="tag">TDD</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

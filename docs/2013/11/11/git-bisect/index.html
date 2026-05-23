@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Git">
+
+    <title>GIT bisect</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>GIT bisect</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 11. november 2013</small> 
+            <a href="/tags/git"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Git</span></a>
+          </p>
+          <p>Ukens GIT er skrevet av <a href="http://www.eikeland.se/">Stian Eikeland</a>, og forteller om en veldig kul feature i git som det sikkert er mange som ikke har fått med seg. Gikk du glipp av ukens GIT #1? Se <a href="/2013/11/04/branching-i-git/">Brancing i GIT</a>..</p>
+<h2>Hvor gikk det galt? – Ukens GIT #2</h2>
+<p>En eller annen gang mellom nå og en evighet siden oppstod en intrikat regresjonsfeil. Funksjonalitet du vet virket før, virker ikke lengre. Feilen er dessuten vanskelig å knytte til noen spesifikk kode. Hvor, når og hva var det egentlig som gikk galt? <strong>Git bisect</strong> kan hjelpe deg å finne svaret. Git bisect lar deg utføre binærsøk i historikken din.<br />
+<h3>Manuelt søk:</h3>
+<pre>$ git bisect start           # Start et nytt søk.
+$ git bisect bad             # Gjeldende commit fungerer ikke.
+$ git bisect good HEAD~100   # 100 commits tidligere virket.
+Bisecting: 49 revisions left to test after this (roughly 6 steps)</pre>
+<p>Git finner så frem commits i tur og orden hvor du må svare på om dette er en good commit (uten regresjonen) eller en bad commit (med regresjonen).
+<pre>$ git bisect bad             # Merker denne som dårlig.
+Bisecting: 24 revisions left to test after this (roughly 5 steps)
+$ git bisect good            # Merker denne som bra.
+Bisecting: 12 revisions left to test after this (roughly 4 steps)</pre>
+<p>Til slutt sitter du igjen med en utsjekket commit hvor det faktisk gikk åt skogen.
+<pre>$ git bisect good
+7974f24dc57dfe7f1f91a4479af8b654a2f86c9e is the first bad commit
+$ git bisect reset           # Avslutt.</pre>
+<h3>Automatisk søk</h3>
+<p>Letingen kan også automatiseres dersom det er veldig mange commits som skal sjekkes. Lage et lite program eller script som sjekker etter feilen for deg.
+<pre>#!/usr/bin/env python
+import sys
+import kalkulator
+if kalkulator.summer(2, 2) != 4:
+    sys.exit(1)
+sys.exit(0)</pre>
+<p>La git bisect kjøre scriptet, og den finner frem til stedet hvor regresjonen ble innført
+<pre>$ git bisect start HEAD HEAD~100    # Søk fra HEAD til HEAD~100.
+$ git bisect run ./testscript.py
+51b3d63432203898d4d58710f0dcf1178cce1d7e is the first bad commit
+bisect run success</pre>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

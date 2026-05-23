@@ -1,0 +1,42 @@
+---
+title: "Lambda til kaffen (del 2: tall)"
+link: http://blog.kjempekjekt.com/2013/09/19/lambda-til-kaffen-del-2-tall/
+layout: post
+date: 2013-09-19 14:33:56Z
+tags:
+  - Polyglot
+  - CoffeeScript
+  - Lambda
+---
+<p>I denne posten skal vi definere tall i lambda calculus. <a href="http://blog.kjempekjekt.com/2013/09/19/lambda-til-kaffen-del-1/">Du bør lese del 1 først</a>, om du ikke har gjort det allerede.</p> <p>Som med bolske verdier må også tallene være funksjoner – funksjoner er tross alt det vi har å jobbe med. Forslaget er da som følger:</p> <h2>Tallet 0</h2> <p>Vi lar alle tall være funksjoner som har 2 parametre (igjen skal vi egentlig bare ha funksjoner med ett parameter, men det løser vi med funksjoner som returnerer funksjoner). Vi bestemmer videre at funksjonen representerer tallet 0 om den, når den blir kalt, returnerer sitt andre argument. Vi kan definere dette slik:</p><pre>ZERO = (f) -&gt; (x) -&gt; x</pre>
+<h2>Tallet 1</h2>
+<p>For tallet 1 derimot bestemmer vi at resultatet skal være lik resultatet av et kall til det første argumentet med det andre argumentet som parameter. Sagt mye enklere slik:</p><pre>ONE  = (f) -&gt; (x) -&gt; f(x)</pre>
+<p>Foreløpig er dette ganske vilkårlig, men det gir mening snart..</p>
+<h2>Tallet 2</h2>
+<p>For tallet 2 gjør vi det samme som for 1, men vi vil kalle det første argumentet enda en gang på resultatet av det første kallet. Altså slik:</p><pre>TWO  = (f) -&gt; (x) -&gt; f(f(x))</pre>
+<p>Hver gang vi plusser på 1 ønsker vi et ekstra kall til f. Det spiller ingen rolle hva f og x er, poenget er at et tall i vår bruk av lambda calculus er en funksjon som kommer til å kalle f så mange ganger som tallet representerer.</p>
+<h2>Hjelpefunksjon: toNumber</h2>
+<p>Det kan være greit å lage seg en liten hjelpefunksjon nå, slik at vi enkelt kan oversette et lambda-tall til et "vanlig" tall. Jeg håper du ser hvordan den fungerer:</p><pre>toNumber = (n) -&gt; n((i) -&gt; i+1)(0)</pre>
+<p>Hvis n er en funksjon som representerer tallet 0 så skal den returnere sitt andre argument. I toNumber-funksjonen er det nettopp tallet 0.</p>
+<p>Hvis n representerer 1 vil den kalle inkrementeringsfunksjonen (i) –&gt; i+1 med 0 som argument. 0+1 er som kjent lik 1.</p>
+<p>Og hvis n representerer et tall større enn 1 vil inkrementeringsfunksjonen kalles flere ganger...</p><pre>show toNumber(ZERO)
+show toNumber(ONE)
+show toNumber(TWO)</pre>
+<p>Denne testen skriver derfor ut 0, 1 og 2.</p>
+<h2>Null-test</h2>
+<p>For å løse oppgaven jeg har tenkt å løse (summen av alle multipler av 3 eller 5 under 1000) trenger jeg å kunne teste om et tall er 0. La oss lage en lambda-funksjon for det:</p><pre>IS_ZERO = (n) -&gt; n((x) -&gt; FALSE)(TRUE)</pre>
+<p>Den er ganske link toNumber egentlig. Hvis n er 0 vil den returnere FALSE (lambda-representasjonen av false). Hvis n er større enn 0 vil funksjon i første argument bli brukt (en eller flere ganger), og den returnerer alltid FALSE.</p><pre>show toBool(IS_ZERO(ZERO))
+show toBool(IS_ZERO(ONE))</pre>
+<p>Dette skriver ut henholdsvis "true" og "false".</p>
+<p>PS: Som du så brukte jeg TRUE og FALSE i min definisjon av IS_ZERO. Dette er egentlig ikke tillat i lambda calculus, men en forenkling for at det skal være mulig å forstå for oss dødelige mennesker. Den faktiske implementasjonen av IS_ZERO burde se slik ut:</p><pre>IS_ZERO = (n)-&gt;n((x)-&gt;(x)-&gt;(y)-&gt;y)((x)-&gt;(y)-&gt;x)</pre>
+<p>Dette er alt for vanskelig å forholde seg til, så vi fortsetter på den måten vi har gjort det til nå.</p>
+<h2>Inkrementere tall</h2>
+<p>Det siste jeg vil vise er hvordan vi kan lage nye tall ved å inkrementere tall vi allerede har.</p><pre>INCREMENT = (n) -&gt; (f) -&gt; (x) -&gt; f(n(f)(x))</pre>
+<p>Ved å kalle INCREMENT med et argument n (som representerer et tall), vil vi få ut en ny funksjon som tar parametrene f og x, og returnerer resultatet av n-tallet med et ekstra kall til f (antall kall til f bestemmer jo hvor stort tallet er).</p><pre>THREE = INCREMENT(TWO)
+FOUR = INCREMENT(INCREMENT(TWO))
+
+show toNumber(THREE)
+show toNumber(FOUR)</pre>
+<p>Dette skriver ut "3" og "4".</p>
+<h2>Neste gang</h2>
+<p>I <a href="http://blog.kjempekjekt.com/2013/09/20/lambda-til-kaffen-del-3-modulo/">neste kaffepause</a> vil jeg vise deg hvordan vi laget flere numeriske operasjoner som <em>pluss, minus</em> og <em>gange</em> i lambda calculus, og vi vil implementere <em>modulo</em>, som jeg også trenger for å finne ut om et tall er et multippel av 3 eller 5.</p>

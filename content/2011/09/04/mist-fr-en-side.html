@@ -1,0 +1,65 @@
+---
+title: Mist får en side
+link: http://blog.kjempekjekt.com/2011/09/04/mist-fr-en-side/
+layout: post
+date: 2011-09-04 12:51:47Z
+tags:
+  - Diverse prosjekter
+  - Ruby
+  - Mist
+  - Webutvikling
+---
+<p>Denne blogposten presenterer den nye websiden jeg har laget for programmeringsspråket Mist, samt de rundt 20 linjene Ruby-kode som skulle til for å generere siden.</p> <p>Ethvert programmeringsspråk trenger en egen side – i alle fall om andre enn designeren selv skal bruke det. Og nå har jeg som sagt begynt på en side for Mist. Den har ikke så mye innhold enda, men design og struktur er på plass. Her er et screenshot (klikk for å gå til siden):</p> <p><a href="http://tormaroe.github.com/mist/"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="mist_page" border="0" alt="mist_page" src="/uploads/2011/09/mist_page.png" width="504" height="398"></a></p> <p>Siden skiller seg bort fra ting jeg har gjort tidligere på flere punkter. Blant annet har jeg innsett at HTML <em>ikke</em> er XML, og har nå gått for mere pragmatisk HTML5, hvor jeg blant annet har droppet ting som HTML, HEAD og BODY-tags (de skal faktisk være helt unødvendige). Jeg har også brukt mye absolutt posisjonering, og til og med litt <em>fixed</em>. Jeg har satset på rent design og ren markup, og er ikke nervør om noen skulle velge å <a href="http://tormaroe.github.com/mist/">titte på koden</a>.</p> <p>Jeg har også oppdaget <a href="http://www.google.com/webfonts">Google Web Fonts</a>, som lar meg inkludere et hav av ulike skrifttyper på sidene uten store problemer. Eneste faren er at jeg kanskje går litt for langt, sånn som man ofte gjør når man får et nytt leketøy. Synes du jeg har gjort det?</p> <h4>Generering av statiske websider med Ruby</h4> <p>Mist-siten er hostet som <a href="http://pages.github.com/">Github Pages</a>, tilknyttet Github repositorien. Sider som serves på denne måten må være statiske html-sider. Jeg ville derimot basere siten min på en template, så for å ikke måtte repetere meg selv måtte jeg generere sidene før jeg lastet dem opp. </p> <p>For dette formålet støtter Github Pages et verktøy som heter <a href="https://github.com/mojombo/jekyll/">Jekyll</a>, som jeg har brukt tidligere, og som lar deg generere statiske websider basert på maler. Denne gangen valgte jeg likevel å lage mitt eget opplegg basert på kun noen få linjer Ruby.</p> <p>Først lagde jeg en fil som jeg kalte <strong>genlib.rb</strong>. Den inneholder to funksjoner: Den første leser malen som er lagret i filen template.html, og returnerer den som en streng. Den andre – <strong>generate</strong> - tar inn en hash med parametre, henter ut malen, fletter inn det som er sidespesifikt i malen, og lagrer resultatet som en html-fil.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="PreProc">def</span> <span class="Function">template</span>
+<span class="lnr">11 </span>  template = <span class="rubyStringDelimiter">''</span>
+<span class="lnr">12 </span>  <span class="Type">File</span>.open(<span class="rubyStringDelimiter">'</span><span class="String">template.html</span><span class="rubyStringDelimiter">'</span>, <span class="rubyStringDelimiter">"</span><span class="String">r</span><span class="rubyStringDelimiter">"</span>) <span class="rubyControl">do</span> |<span class="Identifier">file</span>|
+<span class="lnr">13 </span>    <span class="Statement">while</span> (line = file.gets)
+<span class="lnr">14 </span>      template += line
+<span class="lnr">15 </span>    <span class="Statement">end</span>
+<span class="lnr">16 </span>  <span class="rubyControl">end</span>
+<span class="lnr">17 </span>  <span class="rubyControl">return</span> template
+<span class="lnr">18 </span><span class="PreProc">end</span>
+<span class="lnr">19 </span>
+<span class="lnr">20 </span><span class="PreProc">def</span> <span class="Function">generate</span> args
+<span class="lnr">21 </span>  name = args[<span class="Constant">:file</span>] + <span class="rubyStringDelimiter">"</span><span class="String">.html</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">22 </span>  <span class="Type">File</span>.open(name, <span class="rubyStringDelimiter">"</span><span class="String">w</span><span class="rubyStringDelimiter">"</span>) <span class="rubyControl">do</span> |<span class="Identifier">file</span>|
+<span class="lnr">23 </span>    file.puts template.
+<span class="lnr">24 </span>      gsub(<span class="rubyRegexpDelimiter">/</span><span class="Special">\{</span><span class="rubyRegexp">CONTENT</span><span class="Special">\}</span><span class="rubyRegexpDelimiter">/</span>, args[<span class="Constant">:content</span>]).
+<span class="lnr">25 </span>      gsub(<span class="rubyRegexpDelimiter">/</span><span class="Special">\{</span><span class="rubyRegexp">QUOTE</span><span class="Special">\}</span><span class="rubyRegexpDelimiter">/</span>, args[<span class="Constant">:quote</span>]).
+<span class="lnr">26 </span>      gsub(<span class="rubyRegexpDelimiter">/</span><span class="Special">\{</span><span class="rubyRegexp">TITLE</span><span class="Special">\}</span><span class="rubyRegexpDelimiter">/</span>, args[<span class="Constant">:title</span>])
+<span class="lnr">27 </span>  <span class="rubyControl">end</span>
+<span class="lnr">28 </span>  puts <span class="rubyStringDelimiter">"</span><span class="String">Generated file </span><span class="rubyInterpolationDelimiter">#{</span>name<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">29 </span><span class="PreProc">end</span>
+</pre>
+<p>For hver siden jeg skal generere lager jeg så en ny fil som skal kalle generate-funksjonen. Nedenfor er <strong>gen_download.rb</strong>, som genererer download.html. Den definerer ønsket filnavn (linje 13), sidetittel (14), et sitat som skal brukes i toppen av siden (16-23) og selve innholdet på siden (25-33). Til slutt kaller den generate, og siden blir produsert.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="PreProc">require</span> <span class="rubyStringDelimiter">"</span><span class="String">./genlib</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">11 </span>
+<span class="lnr">12 </span>page = {}
+<span class="lnr">13 </span>page[<span class="Constant">:file</span>] = <span class="rubyStringDelimiter">"</span><span class="String">download</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">14 </span>page[<span class="Constant">:title</span>] = <span class="rubyStringDelimiter">"</span><span class="String">Download Mist</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">15 </span>
+<span class="lnr">16 </span>page[<span class="Constant">:quote</span>] = &lt;&lt;<span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">17 </span><span class="String">&lt;p class="quote"&gt;</span>
+<span class="lnr">18 </span><span class="String">    "Language designers are not intellectuals.&lt;br/&gt;</span>
+<span class="lnr">19 </span><span class="String">    They're not as interested in thinking as you might hope.&lt;br/&gt;</span>
+<span class="lnr">20 </span><span class="String">    They just want to get a language done and start using it."&lt;br/&gt;</span>
+<span class="lnr">21 </span><span class="String">    - Dave Moon</span>
+<span class="lnr">22 </span><span class="String">&lt;/p&gt;</span>
+<span class="lnr">23 </span><span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">24 </span>
+<span class="lnr">25 </span>page[<span class="Constant">:content</span>] = &lt;&lt;<span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">26 </span>
+<span class="lnr">27 </span><span class="String">&lt;h1&gt;Download Mist&lt;/h1&gt;</span>
+<span class="lnr">28 </span><span class="String">&lt;p&gt;</span>
+<span class="lnr">29 </span><span class="String">  No downloads here yet! Get the source from </span>
+<span class="lnr">30 </span><span class="String">  &lt;a href="<a href="https://github.com/tormaroe/mist">https://github.com/tormaroe/mist</a>"&gt;Github&lt;/a&gt; </span>
+<span class="lnr">31 </span><span class="String">  if you're interested.</span>
+<span class="lnr">32 </span><span class="String">&lt;/p&gt;</span>
+<span class="lnr">33 </span><span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">34 </span>
+<span class="lnr">35 </span>generate page
+</pre>
+<p>Til slutt laget jeg en fil jeg kalte gen.rb. Den henter ut og kjører alle filer som har et navn som begynner på "gen_". Ved å kjøre gen.rb vil jeg dermed få generert opp alle de statiske sidene mine, klare for opplasting til serveren.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">1 </span><span class="Conditional">if</span> <span class="Constant">__FILE__</span> == <span class="Identifier">$0</span>
+<span class="lnr">2 </span>  <span class="Type">Dir</span>.foreach(<span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>) {|<span class="Identifier">f</span>| f.match(<span class="rubyRegexpDelimiter">/</span><span class="rubyRegexp">gen_</span><span class="rubyRegexpDelimiter">/</span>) { <span class="PreProc">load</span> f } }
+<span class="lnr">3 </span><span class="Conditional">end</span>
+</pre>
+<p>Alternativt kunne jeg har brukt <a href="http://www.ruby-doc.org/stdlib/libdoc/erb/rdoc/classes/ERB.html">Ruby ERB templating</a> (ala klassisk ASP eller PHP), eller kanskje et annet templating system, for å generere filene. Men for mitt formål valgte jeg altså denne gangen en mere <em>basic</em> løsning.</p>
+<p>Har du noen bemerkninger til Mist, webdesignet, det kommende innholdet, eller til Ruby-koden min? Nøl ikke med å legge igjen en kommentar! </p>

@@ -1,0 +1,40 @@
+---
+title: Send SMS med Soap
+link: http://blog.kjempekjekt.com/2009/07/13/send-sms-med-soap/
+layout: post
+date: 2009-07-13 13:26:51Z
+tags:
+  - Jobb
+  - Software/verktøy
+---
+Mens jeg vurderte å begynne å jobbe for <a href="http://pswin.com">PSWinCom</a> fikk jeg blant annet tilgang til deres SMS Gateway produkt, slik at jeg selv kunne teste hvor enkelt og bra det var. PSWinCom lar deg sende SMS gjennom mange integrasjonspunkter, som XML over TCP, HTTP/HTTPS post, SMTP, og SOAP web services, i tillegg til deres webgrensesnitt. Jeg bestemte meg for å teste ut SOAP i C#.
+
+Først fant jeg adressen til wsdl'en, opprettet en ny konsollapplikasjon, og la til en web service referanse i Visual Studio.
+
+<img width="410" height="342" title="CropperCapture[53]" style="display: block; float: none; margin-left: auto; margin-right: auto; border-width: 0px" alt="CropperCapture[53]" src="/uploads/2009/07/CropperCapture53.png" border="0" />
+
+Den genererte proxyen gav meg alt jeg trengte. Jeg opprettet en ny SoapClient, instantierte en ny SMSMessage, og på under to minutter hadde jeg sendt min første SMS fra kode.
+<div style="padding-left: 5px; font-family: courier new; margin-bottom: 16px; background: black; color: white; font-size: 9pt">
+<p style="margin: 0px"><span style="color: #2b91af">    1</span> <span style="color: #ff8000">using</span> (<span style="color: yellow">SMSServiceSoapClient</span> client = <span style="color: #ff8000">new</span> <span style="color: yellow">SMSServiceSoapClient</span>())</p>
+<p style="margin: 0px"><span style="color: #2b91af">    2</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    3</span>     <span style="color: #ff8000">string</span> username = <span style="color: lime">"torbjorn"</span>;</p>
+<p style="margin: 0px"><span style="color: #2b91af">    4</span>     <span style="color: #ff8000">string</span> password = <span style="color: lime">"n0tth3r331passw03d"</span>;</p>
+<p style="margin: 0px"><span style="color: #2b91af">    5</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">    6</span>     <span style="color: yellow">SMSMessage</span> message = <span style="color: #ff8000">new</span> <span style="color: yellow">SMSMessage</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">    7</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    8</span>         ReceiverNumber = <span style="color: lime">"004755560122"</span>,</p>
+<p style="margin: 0px"><span style="color: #2b91af">    9</span>         SenderNumber = <span style="color: lime">"004755596698"</span>,</p>
+<p style="margin: 0px"><span style="color: #2b91af">   10</span>         Text = <span style="color: lime">"Les om SMS via SOAP på http://kjempekjekt.com !"</span>,</p>
+<p style="margin: 0px"><span style="color: #2b91af">   11</span>         Tariff = 0,</p>
+<p style="margin: 0px"><span style="color: #2b91af">   12</span>         TimeToLive = 0</p>
+<p style="margin: 0px"><span style="color: #2b91af">   13</span>     };</p>
+<p style="margin: 0px"><span style="color: #2b91af">   14</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   15</span>     <span style="color: yellow">ReturnValue</span> returnValue = client.SendSingleMessage(</p>
+<p style="margin: 0px"><span style="color: #2b91af">   16</span>         username,</p>
+<p style="margin: 0px"><span style="color: #2b91af">   17</span>         password,</p>
+<p style="margin: 0px"><span style="color: #2b91af">   18</span>         message);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   19</span> }</p>
+</div>
+ReturnValue-objektet har en <em>Code</em> property med verdien 200 om alt gikk bra, 100 om meldingen ble forkastet (detaljert beskrivelse blir gitt i Description propertien), og 500 ved SOAP interface error.
+
+Så enkelt er det altå å integrere systemet sitt om man vil sende SMS med PSWinCom's Gateway.

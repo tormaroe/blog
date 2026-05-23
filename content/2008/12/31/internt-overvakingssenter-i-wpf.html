@@ -1,0 +1,18 @@
+---
+title: Internt overvåkingssenter i WPF
+link: http://blog.kjempekjekt.com/2008/12/31/internt-overvakingssenter-i-wpf/
+layout: post
+date: 2008-12-31 02:00:33Z
+tags:
+  - Diverse prosjekter
+  - Jobb
+---
+Jeg har satt igang et sideprosjekt på jobben. <strong>Contiki Center</strong> er et slags overvåkingssenter, en slags kiosk-applikasjoner, som skal stå et sted hvor den er synlig for alle på kontoret og vise status for ulike ting. Her kan man se status på vår nattlige build fra CruiseControl.NET, status fra continous integration serveren (TeamCity), support status, sprint burndown for alle utviklingsteam m.m.
+<p align="center"><img id="image383" src="/uploads/2008/12/ContikiCenter1o.png" alt="ContikiCenter1o.png" /></p>
+Skjermdumpen over viser et WPF shell i full screen mode med noen dynamisk lastede moduler. Foreløpig lite matnyttig, men rammeverket er på plass.
+
+Jeg kunne gjort dette mye enklere, men har valgt å bruke dette behovet til å lære best practices rundt Windows Presentation Foundation. Så jeg baserer hele løsningen min på <a href="http://www.codeplex.com/CompositeWPF"><strong>Prism</strong></a>, som er <em>patterns &amp; practices</em>-teamets referanseapplikasjon for å bygge "composite applications" i WPF og Silverlight. Dette tilsvarer den gode, gamle CAB'en (Composite Application Block) for WinForms.
+
+Jeg har også funnet en feiende flott graf-kontroll for Silverlight og WPF som er open source, nemlig <a href="http://www.visifire.com/">Visifire</a>. Anbefales!
+
+Nå forbereder jeg meg på å ta et dypdukk ned i de ulike mønstrene (patterns) som anbefales for presentasjonslaget. Det er noe som kalles <strong>M-V-VM</strong> som alle snakker om for tiden: <strong>Model-View-ViewModel</strong>. Prism refererer ikke til dette, men snakker om Model-View-Presenter, Presentation Model og Supervising Controller. Så nå må jeg lese litt, og få alt dette til å henge sammen.

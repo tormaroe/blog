@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="F#,Polyglot,Lister,Rekursjon">
+
+    <title>Funksjonell lek med lister i F#</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Funksjonell lek med lister i F#</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 14. februar 2013</small> 
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/lister"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lister</span></a>
+          
+            <a href="/tags/rekursjon"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rekursjon</span></a>
+          </p>
+          <p>I kveld har jeg lekt meg litt med F#. Det er ikke et språk jeg kan så veldig godt, så da er det greit å øve på helt basic ting. Noe jeg ofte gjør er å implementere grunnleggende funksjoner som jobber på lister – som map, filter og fold. Du husker kanskje at jeg gjorde det samme i posten <a href="/2012/07/10/den-lille-erlanger/">Den Lille Erlanger</a>?</p>
+<p>Og nå vil jeg dele hva jeg gjorde..</p>
+<h2>Lenkede lister</h2>
+<p>I stedet for å bruke F#'s innebygde liste-type så ville jeg denne gangen lage min egen. Dette er altså ingen instruksjon i hvordan man bør bruke F#, men jeg lærte endel av å gjøre denne øvelsen.</p>
+<p>En lenket liste består av det vi kaller for cons-celler. Jeg endte opp med å bruke en såkalt <a href="http://en.wikibooks.org/wiki/F_Sharp_Programming/Discriminated_Unions">discriminated union</a> til å definere en cons-celle:</p>
+<pre>type Cell&lt;'T&gt; =
+    | Cons of 'T * Cell&lt;'T&gt;
+    | Nil</pre>
+<p>som jeg så kan bygge lister med:</p>
+<pre>let aList = Cons("one", Cons("two", Cons("three", Nil)))</pre>
+<p>En <code>Cell</code> er altså en generisk type som kan bestå av enten en <code>Cons</code> eller <code>Nil</code>. En <code>Cons</code> består av en tuplet av en verdi av den generiske typen pluss en ny <code>Cons</code> (som kan være <code>Nil</code>). <code>Nil</code> er rett og slett en tom liste, og brukes som du ser over til å terminere listen. Dette er <em>Computer Science 101</em>.</p>
+<h2>Kan F# bli til Lisp?</h2>
+<p>Cons-celler er hentet fra programmeringsspråket Lisp, og det slo meg at ved å lage en liten funksjon som jeg kaller cons kan jeg få konstruksjonen av lister til å se ut som om det var Lispkode jeg skrev. Her er funksjonen:</p>
+<pre>let cons a b = Cons(a, b)</pre>
+<p>Og når jeg bruker den for å lage en liste med ordene "one", "two" og "three" ser det slik ut:</p>
+<pre>let aList' = (cons "one" (cons "two" (cons "three" Nil)))</pre>
+<h2>Transformering av lister</h2>
+<p>Nå er det på tide å definere funksjonen <code>map</code> for denne listetypen jeg har laget. Den er rekursiv (legg merke til nøkkelordet <code>rec</code>) og den bruker pattern matching til å skille mellom en Cons og Nil. For hvert kall til map blir det laget en ny cons-celle.</p>
+<pre>let rec map f lst =
+    match lst with
+    | Cons(head, tail) -&gt; Cons(f head, map f tail)
+    | Nil              -&gt; Nil</pre>
+<p>Nå kan jeg for eksempel bruke map til å transformere alle elementene i listen min til store bokstaver:</p>
+<pre>let aListUppercase = map (fun (s: string) -&gt; s.ToUpper()) aList</pre>
+<p>PS: Her blir det bonuspoeng til dem som la merke til at map-funksjonen min ikke brukte <a href="http://en.wikipedia.org/wiki/Tail_call">hale-rekursjon</a>. Mer om det senere...</p>
+<h2>Hvor mange elementer har jeg?</h2>
+<p>Ved å lage en funksjon som teller antall elementer i en cons-basert liste får jeg vist frem hvordan man kan lage og bruke indre funksjoner i en funksjon.</p>
+<pre>let length lst =
+    let rec length' lst acc =
+        match lst with
+        | Cons(head, tail) -&gt; length' tail acc + 1
+        | Nil              -&gt; acc
+    length' lst 0</pre>
+<p>For å finne lengden på en liste gjør jeg da slik:</p>
+<pre>let listLength = length aList</pre>
+<h2>Fold – den beste funksjonen av dem alle</h2>
+<p>Fold (også kjent som reduce, aggregate, accumulate, inject, compress m.m.) er en grunnleggende liste-funksjon. Den tar som argumenter en funksjon (f), en startverdi (acc) og en liste (lst). f kalles på acc og hvert element fra listen i tur og orden, og resultatet tas hele tiden vare på i en oppdatert versjon av acc.</p>
+<pre>let rec fold f acc lst =
+    match lst with
+    | Cons(head, tail) -&gt; fold f (f acc head) tail
+    | Nil              -&gt; acc</pre>
+<p>Denne versjonen av fold kalles ofte <code>foldl</code>, eller <em>left fold</em>. Her er en illustrasjon av hva den gjør:</p>
+<pre>  :                            f
+ / \                          / \
+a   :       foldl f acc      f   c
+   / \    -------------&gt;    / \
+  b   :                    f   b 
+     / \                  / \
+    c  []                acc a</pre>
+<p>Ett problem med fold er at om den skal brukes til å produsere en ny liste (for eksempel om den brukes som grunnlag for map), så vil listen være reversert i forhold til input-listen.</p>
+<p>Det går også an å lage en <code>foldr</code> – <em>right fold – </em>som ikke har dette revers-problemet:</p>
+<pre>let rec foldr f acc lst =
+    match lst with
+    | Cons(head, tail) -&gt; f (foldr f acc tail) head
+    | Nil              -&gt; acc</pre>
+<p>Den er kanskje litt enklere å forså i forhold til hva den produserer:</p>
+<pre>  :                         f
+ / \                       / \
+a   :       foldr f acc   a   f
+   / \    -------------&gt;     / \
+  b   :                     b   f
+     / \                       / \
+    c  []                     c   acc</pre>
+<p>Foldr har derimot et annet problem – den bruker ikke hale-rekursjon. Det rekursive kaller er nemlig ikke det siste som skjer i hvert kall, og det gjør at den raskt kan spise opp stacken om man behandler lange lister.</p>
+<p>Men uansett, la oss bruke fold til noe fornuftig. Hva med å summere en liste? Her lager jeg først en liste med tall, deretter en sum-funksjon basert på fold, og finner til slutt summen som jeg tar vare på i sumNumbers:</p>
+<pre>let numbers = (cons 1 (cons 2 (cons 3 Nil)))
+let sum = fold (fun x y -&gt; x + y) 0 
+let sumNumbers = sum numbers</pre>
+<p>For litt siden lagde jeg en funksjon for å telle antall elementer i en liste. Den kan jeg lage på nytt nå som jeg har fold i verktøybeltet mitt:</p>
+<pre>let length2 = fold (fun acc _ -&gt; acc + 1) 0</pre>
+<h2>Reversere en liste</h2>
+<p>Det neste jeg gjorde var å lage en funksjon for å reversere en liste. Det kan være nyttig å ha, spesielt om man skal bruke den halerekursive fold-varianten mye. Som i den første length-funksjonen bruker jeg en indre funksjon, og pattern matchingen har nå blitt bittelitt mere avansert:</p>
+<pre>let reverse lst = 
+    let rec reverse' lst acc = 
+        match lst with
+        | Cons(head, Nil)  -&gt; cons head acc
+        | Cons(head, tail) -&gt; reverse' tail &lt;| cons head acc
+        | Nil              -&gt; Nil
+    reverse' lst Nil</pre>
+<p>Logikken her kan være litt vrien å skjønne, så forsøk verifiser for deg selv hva som foregår. Jeg plukker ett og ett element fra listen, og bygger opp en ny liste (acc) av disse. Når jeg sier <code>reverse' tail &lt;| cons head acc</code> betyr det at resultatet av <code>cons head acc</code> sendes inn som andre argument til <code>reverse'</code>.</p>
+<h2>Filtrering</h2>
+<p>Funksjonen jeg sålangt mangler er den vi som regel kaller filter. Den filtrerer ut elementer fra en liste basert på resultatet av en predikatfunksjon (en funksjon som returnerer true eller false). Jeg kan implementere funksjonen slik som dette:</p>
+<pre>let filter p lst =
+    let f acc x = 
+        if p x then cons x acc
+        else acc
+    foldr f Nil lst</pre>
+<p>Men her har jeg brukt <code>foldr</code>, og det er jo ikke bra! La oss bruke <code>fold</code> i stedet, og reversere listen igjen til slutt (slik at den opprinnelige rekkefølgen beholdes):</p>
+<pre>let filter2 p lst =
+    let f acc x = 
+        if p x then cons x acc
+        else acc
+    fold f Nil lst |&gt; reverse</pre>
+<p>Nå kan jeg lage et lite predikat som sjekker om et tall er et oddetall, og filtrere numrene mine med den:</p>
+<pre>let odd x = x % 2 &lt;&gt; 0
+let oddNumbers = filter2 odd numbers</pre>
+<h2>Oppsummering</h2>
+<p>Jammen ble det nok en blogpost om grunnleggende, funksjonelle liste-teknikker. Men det er viktige ting å ha kontroll på, og det gir meg alltid noe å bruke disse øvelsene når jeg skal lære meg nye språk – eller bare friske opp igjen gammel kunnskap. Jeg oppfordrer deg derfor til å gjøre det samme.</p>
+<p>Og når du har god kontroll på lenkede lister kan du gå videre med trær, og deretter grafer (eller nettverk om du vil kalle dem det). Lister har du nesten alltid god støtte for i språk du bruker, men operasjoner på trær og grafer må man ofte lage på egen hånd. Kanskje jeg gjør det selv i morgen kveld, og at det da kommer en ny post snart om det. Den som følger med får se!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

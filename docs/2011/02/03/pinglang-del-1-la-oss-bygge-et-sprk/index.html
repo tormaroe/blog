@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="DSL,PingLang,Actor model">
+
+    <title>PingLang del 1: La oss bygge et språk</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>PingLang del 1: La oss bygge et språk</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 3. februar 2011</small> 
+            <a href="/tags/dsl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DSL</span></a>
+          
+            <a href="/tags/pinglang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> PingLang</span></a>
+          
+            <a href="/tags/actor-model"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Actor model</span></a>
+          </p>
+          <p><strong>I denne dokumentarserien vil vi bygge et programmeringsspråk sammen.</strong> <strong>Det blir kun et lite språk, et såkalt <a href="http://en.wikipedia.org/wiki/Domain-specific_language" target="_blank">domenespesifikt språk</a> (DSL). Teknikkene du får se er derimot generelle, og kan brukes til å implementere mange, ulike DSLer, og også generelle programmeringsspråk om du ønsker det.</strong></p>
+<p>I fjor høst kjørte jeg en annen artikkelserie på denne bloggen som het <a href="/2010/09/04/ping-ring-del-1-introduksjon/">Ping Ring</a>. Her løste jeg en passe enkel programmeringsoppgave i en rekke forskjellige språk, for å studere ulikhetene, og for å se om noen av språkene var bedre egnet enn andre.</p>
+<p>Nå vil jeg utvikle et nytt språk vi vil kalle <strong><em>PingLang</em></strong>, som er spesialdesignet for å løse Ping Ring og lignende oppgaver. <a href="http://vimeo.com/19406560">Du har sett teaseren allerede</a>, og her er den offisielle verdenspremiæren:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="helloworld" border="0" alt="helloworld" src="/uploads/2011/02/helloworld.png" width="434" height="293"></p>
+<p>Det du ser over er verdens første PingLang-program. Du har aldri sett noe annet skrevet i dette språket, men det er likevel ganske enkelt å forstå, ikke sant? Når HelloWorld starter vil det først printe ut <em>“Hello, world”</em>, deretter vente i fem sekunder, før det printer ut <em>“Take care now!”</em>.</p>
+<p>Målet mitt med PingLang er å designe et språk som på enkelte punkter skiller seg fra alle andre programmeringsspråk jeg har vært borti. Jeg ønsker også at det skiller seg fra typiske eksempler på DSL’er. For å løse selve Ping Ring-oppgaven er det selvsagt <strong><em>overkill</em></strong> å implementere et språk som dette, men målet er å lære noe, og det tror jeg at oppgaven legger til rette for.</p>
+<p>Merk også at PingLang er implementert som en ekstern DSL. Jeg har implementert flere interne DSLer tidligere, men da snakker vi om å utnytte fleksibiliteten i et eksisterende språk til å skape et slags API hvor man bedre kan uttrykke mening for et bestemt domene. En ekstern DSL er i mye større grad et fullverdig språk, for å si det sånn. Mer om dette siden..</p>
+<h4>Syntaks</h4>
+<p>La oss ta en litt grundigere titt på syntaksen jeg har kommet opp med:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="syntaxstructure" border="0" alt="syntaxstructure" src="/uploads/2011/02/syntaxstructure.png" width="504" height="267"></p>
+<p>PingLang er ikke et vanlig objektorientert språk. Det følger det som heter Actor Model (de som kjenner meg vet at jeg er fasinert av implementasjonen av Actor Model i Erlang). Et PingLang-program inneholder en eller flere actors. En actor begynner med et navn, og avsluttes med et punktum.</p>
+<p>Deretter følger null eller flere linjer med opsjoner for actoren. HelloWorld hadde ingen av disse.</p>
+<p>Så følger en eller flere eventhandlere, som definerer kodeblokker som skal utføres når diverse events intreffer. HelloWorld-programmet hadde én av disse som håndterte <em>starting</em>-eventet.</p>
+<p>Syntaksen er litt mer fleksibel enn det vi er vandt til fra vanlige programmeringsspråk. F.eks. kan en enkel actor med bare én eventhandler og bare en handling skives på én linje slik som dette:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="minimalactor" border="0" alt="minimalactor" src="/uploads/2011/02/minimalactor.png" width="414" height="193"></p>
+<h4>Hva du kan forvente deg videre</h4>
+<p>Gjennom denne dokumentaren vil du se meg implementere en sexy editor for det nye språket, med innebygget fargelegging av syntakselementer og en enkel intellisense. Du vil få se hvordan jeg implementerer en parser for PingLang, hvordan jeg omformer kildekoden til et abstrakt syntakstre, og hvordan jeg til slutt implementerer en tolker (interpreter) som vil kjøre programmene skrevet i språket.</p>
+<p>Implementasjonen av alle komponentene vil bli gjort i C#, og PingLang kjører på .NET-plattformen. Jeg vil vise endel av koden, men ikke alt. Den komplette implementasjonen vil være tilgjengelig på Github, slik at du både kan lese den der, og laste den ned og kjøre den selv om du ønsker det.</p>
+<p>I stedet for å diskutere alle detaljene i implementasjonen, vil jeg bruke artiklene til å snakke litt rundt de ulike elementene man må få på plass når man utvikler et språk, hvilke valg jeg har tatt, og hvilke andre valg man har. Det finnes mange veier til målet, og PingLang vil bare representere én slik vei.</p>
+<p>Min egen motivasjon for serien er å lære mer om parser-teknologi, eksperimentere litt med syntaks, samt se litt på hvordan man kan implementere et <em>actor model</em>-rammeverk. Jeg håper du blir med meg på ferden!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

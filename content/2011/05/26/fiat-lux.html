@@ -1,0 +1,61 @@
+---
+title: Fiat lux
+link: http://blog.kjempekjekt.com/2011/05/26/fiat-lux/
+layout: post
+date: 2011-05-26 13:03:41Z
+tags:
+  - Clojure
+  - WTF
+---
+<p>Det er ikke fredag i dag, men likevel, jeg gir dere <em>“Universet, første alpha-versjon”</em>… </p><pre style="padding-bottom: 15px; background-color: #000000; padding-left: 15px; padding-right: 15px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; font-weight: bold; padding-top: 15px"><span class="Delimiter">(</span>ns genesis
+    <span class="String">"Book of Genesis, </span>
+<span class="String">    Version 0.0.1-SNAPSHOT"</span><span class="Delimiter">)</span>
+
+<span class="Comment">; Some universal plumbing..</span>
+<span class="Delimiter">(</span>def darkness <span class="Number">0</span><span class="Delimiter">)</span>
+<span class="Delimiter">(</span>def light <span class="Delimiter">(</span>inc darkness<span class="Delimiter">))</span>
+<span class="Delimiter">(</span>def be <span class="Statement">identity</span><span class="Delimiter">)</span>
+
+<span class="Comment">; The main character..</span>
+<span class="Delimiter">(</span>def God
+     <span class="Delimiter">(</span>fn [miracle something]
+         <span class="Delimiter">(</span>condp <span class="Statement">=</span> miracle
+             <span class="Type">:create</span> <span class="Delimiter">(</span><span class="Statement">symbol</span> <span class="Delimiter">(</span>name something<span class="Delimiter">))</span>
+             :see    <span class="Delimiter">(</span><span class="Statement">if</span> <span class="Delimiter">(</span><span class="Statement">=</span> something light<span class="Delimiter">)</span> :good :evil<span class="Delimiter">)</span>
+             :say    <span class="Delimiter">(</span>println <span class="String">"GOD:"</span> something<span class="Delimiter">))))</span>
+
+<span class="Comment">; In the beginning</span>
+<span class="Delimiter">(</span>defn in-the-beginning [darkness god]
+
+   <span class="Comment">; God created the heaven and the earth.</span>
+   <span class="Delimiter">(</span><span class="Statement">let</span> [heaven <span class="Delimiter">(</span>god <span class="Type">:create</span> :heaven<span class="Delimiter">)</span>
+         earth  <span class="Delimiter">(</span>god <span class="Type">:create</span> :earth<span class="Delimiter">)</span> ]
+     <span class="Delimiter">(</span><span class="Statement">assert</span> <span class="Delimiter">(</span><span class="Statement">and</span> <span class="Delimiter">(</span><span class="Statement">=</span> heaven <span class="Delimiter">'</span><span class="Identifier">heaven</span><span class="Delimiter">)</span>
+                  <span class="Delimiter">(</span><span class="Statement">=</span> earth <span class="Delimiter">'</span><span class="Identifier">earth</span><span class="Delimiter">)))</span>
+
+     <span class="Comment">; And God said,</span>
+     <span class="Delimiter">(</span>god :say
+          <span class="Delimiter">(</span>pr-str
+            <span class="Comment">; Let there be light:</span>
+            <span class="Delimiter">(</span><span class="Statement">let</span> [there <span class="Delimiter">(</span>be light<span class="Delimiter">)</span>]
+
+              <span class="Comment">; and there was light.</span>
+              <span class="Delimiter">(</span><span class="Statement">assert</span> <span class="Delimiter">(</span><span class="Statement">=</span> there light<span class="Delimiter">))</span>
+
+              <span class="Comment">; And God saw the light,</span>
+              <span class="Delimiter">(</span><span class="Statement">assert</span> <span class="Delimiter">(</span><span class="Statement">=</span> <span class="Delimiter">(</span>god :see light<span class="Delimiter">)</span>
+                         <span class="Comment">; and it was good.</span>
+                         :good<span class="Delimiter">))</span>
+
+              <span class="Comment">; And God divided the light from the darkness.</span>
+              <span class="Delimiter">(</span>try <span class="Delimiter">(</span><span class="Statement">/</span> light darkness<span class="Delimiter">)</span>
+                   <span class="Delimiter">(</span><span class="Statement">catch</span> java.lang.ArithmeticException ex
+                          <span class="Delimiter">(</span>god :say
+                               <span class="Delimiter">(</span>str <span class="String">"Ah, can't devide by zero, "</span>
+                                    <span class="String">"genesis postponed!"</span><span class="Delimiter">)))))))))</span>
+
+<span class="Delimiter">(</span>in-the-beginning darkness God<span class="Delimiter">)</span>
+<span class="Comment">;=&gt; GOD: Ah, can't devide by zero, genesis postponed!</span>
+<span class="Comment">;=&gt; GOD: nil</span>
+<span class="Comment">;=&gt; nil</span>
+</pre>

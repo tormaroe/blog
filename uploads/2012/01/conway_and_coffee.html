@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<script type="text/javascript" src="https://github.com/jashkenas/coffee-script/raw/master/extras/coffee-script.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+<script type="text/coffeescript">
+
+  #parse = (data) -> parseLine line for line in data.split "\n"
+
+  #parseLine = (line) -> cell is "*" for cell in line.split ""
+
+  nextGeneration = (grid) ->
+      grid.aliveCount = (y, x) -> if this[y] and this[y][x] then 1 else 0
+      growEdgesWhereNeeded grid
+      next = (nextGenerationLine(i, line, grid) for line, i in grid)
+      removeEmptyEdges next
+
+  growLineIfNeeded = (line, f, grid) ->
+      for cell, i in line
+          if cell and line[i+1] and line[i+2]
+              grid[f] _.map(_.range(line.length), (x) -> no)
+              break
+
+  growColIfNeeded = (x, f, grid) ->
+      for line, i in grid
+          if grid[i+2] and line[x] and grid[i+1][x] and grid[i+2][x]
+              line[f] no for line in grid
+              break
+
+  growEdgesWhereNeeded = (grid) ->
+      growLineIfNeeded grid[0], "unshift", grid
+      growLineIfNeeded grid[grid.length - 1], "push", grid
+
+      growColIfNeeded 0, "unshift", grid
+      lastColIndex = grid[0].length - 1 if grid[0]
+      growColIfNeeded lastColIndex, "push", grid
+
+      grid
+
+  removeEmptyEdges = (grid) ->
+      do grid.shift if _(grid[0]).all (x) -> not x
+      do grid.pop if _(grid[grid.length - 1]).all (x) -> not x
+      
+      if _(grid).all((x) -> not x[0])
+          do line.shift for line in grid
+      
+      if _(grid).all((x) -> not x[x.length - 1])
+          do line.pop for line in grid
+
+      grid
+
+  nextGenerationLine = (lineNum, line, grid) ->
+      nextGenerationCell state, lineNum, colNum, grid for state, colNum in line
+
+  adjacentModifiers = [[-1, +1], [0, +1], [+1, +1], [-1, -1], [0, -1], [+1, -1], [-1, 0], [+1, 0]]
+
+  nextGenerationCell = (state, y, x, grid) ->
+      aliveFriends = (grid.aliveCount (y+a), (x+b) for [a, b] in adjacentModifiers)
+      aliveFriendsCount = 0
+      aliveFriendsCount += n for n in aliveFriends
+
+      if state
+          return no unless 4 > aliveFriendsCount > 1
+
+      return state or aliveFriendsCount == 3
+
+  randomGrid = (width, height, density) ->
+      for y in [1..width]
+          for x in [1..height]
+              Math.random() > density
+
+  paint = (grid, board) ->
+      do board.children().remove
+      for line in grid
+          for cell in line
+              board.append "<div class=\"cell#{if cell then " alive" else ""}\">"
+          board.append "<div class=spacer>"
+
+  generation = 0
+
+  gameLoop = (grid, board) ->
+      $("#generationNumber").text generation += 1
+      $("#y").text grid.length
+      $("#x").text if grid[0] then grid[0].length else 0
+      paint grid, board
+      grid = nextGeneration grid
+      setTimeout (-> gameLoop grid, board), 200
+      
+  $ -> gameLoop randomGrid(20, 20, 0.2), $("#board")
+      
+</script>
+<style>
+  .cell {
+    width: 5px; height: 5px; margin: 1px;
+    float: left;
+    background-color: white;
+  }
+  .alive {
+    background-color: black !important;
+  }
+  div.spacer {
+    clear: both; height: 0px;
+  }
+
+
+
+</style>
+<h2>Conway's Game of Life</h2>
+<h3>Generation <span id="generationNumber"></span> 
+  (<span id="y"></span> by <span id="x"></span> cells)</h3>
+<div id="board">

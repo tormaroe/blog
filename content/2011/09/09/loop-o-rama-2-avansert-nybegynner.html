@@ -1,0 +1,21 @@
+---
+title: "Loop-o-rama 2: Avansert nybegynner"
+link: http://blog.kjempekjekt.com/2011/09/09/loop-o-rama-2-avansert-nybegynner/
+layout: post
+date: 2011-09-09 12:39:01Z
+tags:
+  - Polyglot
+---
+ <p>Historien om løkker fortsetter! Vi er fortsatt på nybegynnerstadiet, og jeg håper mine lesere holder ut. I dag skal vi bare bruke et minutt eller to til å se på forskjellen mellom <em>for</em> og <em>while</em>...</p> <p>Gikk du glipp av begynnelsen? <a href="http://blog.kjempekjekt.com/2011/09/08/loop-o-rama-1-nybegynner/">Del 1 finner du her</a>.</p> <h4>While med for og for med while</h4> <p>For å bli mer fortrolig med løkker, og for å bli god på å velge riktig type, kan man se på hvordan man kan bytte på å bruke <em>while</em> og <em>for</em>. Som et eksempel kan vi skrive ut tallene 1 til 5 med en while-løkke:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">int i = 1; <i>// initializer</i>
+while(i &lt;= 5) <i>// test</i>
+{
+    Console.WriteLine(i);
+    i++; <i>// step</i>
+}
+</pre>
+<p>Som du ser trenger vi egentlig ikke for-løkker sålenge vi har while, men for-løkke-syntaksen er mere kompakt og enklere å lese. Vi kan også implementere en typisk while-løkke ved hjelp av for – enten slik:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">for( ; some_boolean_condition ; ) {
+    do_something;
+}
+</pre>
+<p>.. eller slik:</p><pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 16px; color: #333333; padding-top: 6px">for( ; some_boolean_condition ; do_something) { }
+</pre>

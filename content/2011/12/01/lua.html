@@ -1,0 +1,47 @@
+---
+title: Lua
+link: http://blog.kjempekjekt.com/2011/12/01/lua/
+layout: post
+date: 2011-12-01 08:36:47Z
+tags:
+  - Julekalender
+  - Polyglot
+  - Lua
+---
+<p>Nå skal du få møte et søtt, lite programmeringsspråk som sitter inne i andre programmer og drar i de viktige trådene for å få ting til å skje. Si hei til <em>Lua</em>! </p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="lua" border="0" alt="lua" src="/uploads/2011/12/lua.jpg" width="500" height="438"></p> <p>Første versjon dukket opp i 1993, og hentet inspirasjon fra mange forskjellige kilder som C++, CLU, Modula, Scheme og SNOBOL. Lua er skreddersydd for å <em>embeddes</em> i andre programmer. Derfor er det lite og enkelt, men samtidig også både kraftig og raskt.</p> <p>Lua er også robust, og har bevist at det holder mål på mange forskjellige plattformer og til ulike formål. Blant annet er Lua det mest bruke scriptspråket i spill-verden. For eksempel finner du Lua i <em>SimCity, World of Warcraft, Adobe Photoshop Lightroom, Wireshark, Squeezebox Jive Platform, MySQL Proxy, LEGO Mindstorm, PlayStation Home, teksteditoren SciTE,</em> og i Kennedy Space Center sitt <em>Space Shuttle Hazardous Gas Detection System</em>.</p> <h4>Lua er multi-paradigmisk</h4> <p>Som veldig mange av språkene som har blitt laget de senere årene er Lua multi-paradigmisk. Det er <strong>dynamisk typet</strong>, og støtter både <strong>imperativ</strong> programmering og <strong>funksjonell</strong> programmering. Lua støtter også <strong>prototypebasert</strong> objektorientering ala. JavaScript og Io.</p> <p>Semantisk er språket faktisk veldig likt <em>Scheme</em> (en <a href="http://blog.kjempekjekt.com/category/lispclojure/">Lisp</a>), men syntaksen er ganske anderledes og mye enklere og greiere å lære for dem som er vandt til mere populære/vanlige språk&nbsp; som C++, Java, Ruby o.l.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="lua_legacy" border="0" alt="lua_legacy" src="/uploads/2011/12/lua_legacy.png" width="500" height="165"></p> <h4>Lua er et kompromiss</h4> <p>Lua forsøker å være kraftig og anvendelig samtidig som det skal ha et lite footprint og være ekstremt raskt. Designerne har derfor valgt å skreller bort mange egenskaper man er vandt til å finne i andre språk, men som man som regel kan klare seg uten. </p> <p>Blant annet vil du oppdage at Lua kun har noen få datatyper. I bunn finner du boolean, tall, og strenger. I tillegg har lua en datastruktur som heter <strong>Table</strong>. Dette er rett og slett et assosiativt array (eller map, eller dictionary – avhengig av hvor du kommer fra), og brukes til alt. Der hvor du normalt ville hatt et vanlig array, et sett, en liste, eller en record-type bruker du Table i Lua. Du bruker det også til å lage objekter.</p> <h4>Litt kode</h4> <p>Som <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">jeg har forberedt dere på</a> har jeg implementert en løsning på Euler problem #1 – <em>hvordan man summerer opp alle tall under 1000 som er multipler av 3 eller 5</em>. Først lager jeg en liten funksjon som bruker modulo til å sjekke om x er delelig på y:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 3 </span><span class="Function">function</span> multiple_of(x,y)
+<span class="lnr"> 4 </span>  <span class="Statement">return</span> x % y == <span class="Number">0</span>
+<span class="lnr"> 5 </span><span class="Function">end</span>
+</pre>
+<p>Som du ser er syntaksen enkel og grei. Lua er dynamisk, så jeg spesifiserer ingen typer. Merk at jeg heller ikke behøver å avslutte linjer med semikolon, som enkelte er veldig vandt til å gjøre.</p>
+<p>Deretter kan jeg lage en funskjon som sjekker om et tall er delelig på enten 3 eller 5:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 7 </span><span class="Function">function</span> multiple_of_3_or_5(i)
+<span class="lnr"> 8 </span>  <span class="Statement">return</span> multiple_of(i,<span class="Number">3</span>) <span class="Operator">or</span> multiple_of(i,<span class="Number">5</span>)
+<span class="lnr"> 9 </span><span class="Function">end</span>
+</pre>
+<p>Lua skal ifølge ryktene være greit å bruke for ikke-utviklere også, så her bruker vi <strong><em>or</em></strong> og ikke <strong>||</strong>.</p>
+<p>Den neste funksjonen illustrerer at man kan sende funksjoner inn som parametre til andre funksjoner. f<strong>ilter_and_sum_range</strong> gjør akkurat det navnet sier:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">11 </span><span class="Function">function</span> filter_and_sum_range(start, maximum, filter)
+<span class="lnr">12 </span>  <span class="Comment">-- warning: skipping "local" would create global variable</span>
+<span class="lnr">13 </span>  <span class="Statement">local</span> sum = <span class="Number">0</span>
+<span class="lnr">14 </span>  <span class="Statement">for</span> i=start,maximum <span class="Statement">do</span>
+<span class="lnr">15 </span>    <span class="Conditional">if</span> filter(i) <span class="Conditional">then</span>
+<span class="lnr">16 </span>      sum = sum + i
+<span class="lnr">17 </span>    <span class="Conditional">end</span>
+<span class="lnr">18 </span>  <span class="Statement">end</span>
+<span class="lnr">19 </span>  <span class="Statement">return</span> sum
+<span class="lnr">20 </span><span class="Function">end</span>
+</pre>
+<p>Legg merke til at for-løkke-syntaksen ikke er hentet fra C, men i stedet er kompakt og enkel. Merk også det jeg sier i kommentaren på linje 12 – hvis man ikke sier <em>local</em> forran variabeldeklerasjoner opprettes de i det globale navnerommet (scope). Dette synes jeg høres veldig skummelt ut..</p>
+<p>Til slutt viser jeg i en one-liner hvordan jeg bruker funksjonene mine til å finne løsningen på oppgaven:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">22 </span><span class="Identifier">print</span>(filter_and_sum_range(<span class="Number">0</span>, <span class="Number">999</span>, multiple_of_3_or_5))
+</pre>
+<p>Man kan også opprette anonyme funksjoner i Lua. La oss f.eks. si at jeg ikke hadde opprettet funksjonen <em>multiple_of_3_or_5</em>. Da kunne jeg i stedet funnet løsningen ved å gjøre følgende:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">25 </span><span class="Identifier">print</span>(filter_and_sum_range(<span class="Number">0</span>, <span class="Number">999</span>,
+<span class="lnr">26 </span>  <span class="Function">function</span> (i)
+<span class="lnr">27 </span>    <span class="Statement">return</span> multiple_of(i,<span class="Number">3</span>) <span class="Operator">or</span> multiple_of(i,<span class="Number">5</span>)
+<span class="lnr">28 </span>  <span class="Function">end</span>))
+</pre>
+<p>Her oppretter jeg altså en anonym funksjon direkte i funksjonskallet hvor jeg skal filtrere og summere. Ikke helt ulikt hvordan JavaScript ofte brukes og ser ut dette her.</p>
+<h4>Hvorfor bruke tid på Lua?</h4>
+<p>For det første kan det tenkes du faktisk har et reelt behov for å lære Lua – fordi du trenger å skripte et av programmene eller spillene som bruker Lua til dette formålet. Som utvikler er det dessuten interessant å kunne embedded språket i sine egne programmer eller systemer. Det finnes selvsagt mange andre språk som kan brukes på denne måten i dag, men få som er så til de grader optimalisert for det.</p>
+<p>Personlig synes jeg Lua også er et ganske interessant språk i seg selv. Man kan lære et og annet av enkelheten man finner her. Dessuten er språket svært fleksibelt, så man kan bruke det på mange ulike måter.</p>
+<h4>Hvordan komme i gang?</h4>
+<p>Du finner det meste du trenger på <a href="http://www.lua.org/"><strong>lua.org</strong></a>. Bruker du Windows som meg anbefaler jeg at du laster ned <a href="http://code.google.com/p/luaforwindows/">Lua for Windows</a>, som er en pakke med "batteries included". Her får du selve Lua, samt en rekke bibloteker, et SciTE-basert utviklingsmiljø (IDE/editor), og en rekke kodeeksempler.</p>
+<p>Du finner også en masse <a href="http://lua-users.org/wiki/SampleCode">eksempler og tutorials online her</a> på Lua's wiki.</p>
+<p>For å begynne å lære anbefaler jeg rett og slett at du leser <a href="http://www.lua.org/manual/5.1/"><em>Lua 5.1 Reference Manual</em></a> – Lua er et lite språk, og det går raskt å konsumere alt sammen. Deretter er det bare å begynne å kode!</p>

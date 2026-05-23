@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="DevOps,Software/verktøy">
+
+    <title>Kjør kommandoer på mange maskiner med Fabric</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kjør kommandoer på mange maskiner med Fabric</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 15. mai 2015</small> 
+            <a href="/tags/devops"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DevOps</span></a>
+          
+            <a href="/tags/software-verktøy"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Software/verktøy</span></a>
+          </p>
+          <img src="/uploads/2015/05/fabric.png" alt="Fabric logo" />
+
+<p><strong><a href="http://www.fabfile.org/">Fabric</a></strong> er et Python-bibliotek og kommandolinjeverktøy som lar deg kjøre shell-kommandoer over SSH til et sett med servere. Systemadministratorer kan for eksempel bruke fabric til å utføre identiske operasjoner på alle noder i et cluster.</p>
+<p>Fabric er et nokså populært prosjekt på Github med 5275 stjerner, 942 forks og 107 bidragsytere. Det ble påbegynt julen 2007, og har vært gjevnt aktivt helt frem til nå.</p>
+<p>Jeg har ingen erfaring med fabric fra før, men i denne bloggposten vil jeg teste det ut for et konkret scenario hvor jeg kunne tenke meg å bruke det. Testingen gjøres i <a href="https://www.vagrantup.com/">vagrant</a>.</p>
+<h2>Mitt scenario: Lastbalanserer med redundans</h2>
+<p>Tenk deg at du har en webløsning installert på to identiske webservere. Forran disse har vi en server som distribuerer requests til webserverne - altså en lastbalanserer. For å øke kapasiteten og tilgjengelighetsgarantien til systemet kan vi legge til flere webservere i klusteret.</p>
+<p>Men lastbalansereren er et <em>single point of failure</em>. Derfor har vi en sekundær lastbalanserer som tar over om den første blir utilgjengelig. Denne står i <strong>hot standby</strong>, som vil si at den allerede kjører og er klar for trafikk, og derfor må være identisk med den primære til enhver tid.</p>
+<img src="/uploads/2015/05/fabric_scenario.png" alt="Scenariodiagram" />
+
+<p>Tenk videre at vi av og til har behov for å midlertidig endre hvilke webservere lastbalansereren fordeler trafikk til. Dette gjør vi typisk når vi oppgraderer. Vi tar en webserver ut av clusteret, oppgraderer den, setter den inn igjen, og fortsetter med neste. Måten vi gjør dette på er å editere en konfigurasjonsfil, som har en liste av webnoder. Vi kommenterer rett og slett ut IP-adressen til serveren som skal midlertidig disables. Deretter sier vi til lastbalanserer-programvaren at den skal laste konfigurasjonen på nytt.</p>
+<p>For tiden logger vi inn på lastbalansereren med SSH og gjør dette manuelt. Og da bør vi også logge inn på den sekundære og gjøre endringen der - i tilfelle denne lastbalansereren tar over mens vi holder på med oppgraderingen av en webserver. Dette er tungvint, og jeg vil nå i stedet bruke fabric til å holde lastbalansererne i synk.</p>
+<p><em>(PS: Måten vi oppgraderer clusteret på her vil ikke alltid være mulig om vi har mer enn to webnoder. Da er det ofte nødvendig å vente med å sette nodene inn igjen til den siste noden er tatt ut - for å unngå at man har noder med ulike versjoner med i clusteret samtidig. Men i dette scenariet kan du se bort fra dette.)</em></p>
+<h2>Vagrant setup</h2>
+<p>Dette er ikke en Vagrant-tutorial, men jeg inkluderer likevel filen som setter opp de to serverne jeg har brukt i eksperimentet. Kort oppsummert lages det to Ubuntu-bokser med hver sin statiske IP. Jeg installerer python-pip, som jeg så bruker til å installere fabric. Til slutt oppretter jeg filen <code>somedomain.conf</code> på hver av serverne. Det er denne filen jeg skal bruke fabric til å modifisere (jeg later som om det er en konfigurasjonsfil for nginx eller noe tilsvarende).</p>
+<pre><code class="hljs"># -*- <span class="hljs-keyword">mode</span>: <span class="hljs-keyword">ruby</span> -*-
+# <span class="hljs-keyword">vi</span>: <span class="hljs-keyword">set</span> ft=<span class="hljs-keyword">ruby</span> :
+VAGRANTFILE_API_VERSION = <span class="hljs-string">&quot;2&quot;</span>
+
+$bootstrap = &lt;&lt;SCRIPT
+
+apt-<span class="hljs-built_in">get</span> <span class="hljs-keyword">update</span>
+apt-<span class="hljs-built_in">get</span> install -<span class="hljs-keyword">y</span> <span class="hljs-keyword">python</span>-pip
+pip install fabric
+
+<span class="hljs-keyword">cat</span> &lt;&lt;EOF &gt; somedomain.<span class="hljs-keyword">conf</span>
+somedomain config
+<span class="hljs-number">192.168</span>.<span class="hljs-number">36.25</span>
+<span class="hljs-number">192.168</span>.<span class="hljs-number">36.26</span>
+EOF
+
+SCRIPT
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) <span class="hljs-keyword">do</span> |config|
+  config.<span class="hljs-keyword">vm</span>.box = <span class="hljs-string">&quot;ubuntu/trusty64&quot;</span>
+  config.<span class="hljs-keyword">vm</span>.define <span class="hljs-string">&quot;fabric_A&quot;</span> <span class="hljs-keyword">do</span> |n1|
+    n1.<span class="hljs-keyword">vm</span>.network <span class="hljs-string">&quot;private_network&quot;</span>, ip: <span class="hljs-string">&quot;172.20.20.10&quot;</span>
+  end
+  config.<span class="hljs-keyword">vm</span>.define <span class="hljs-string">&quot;fabric_B&quot;</span> <span class="hljs-keyword">do</span> |n2|
+    n2.<span class="hljs-keyword">vm</span>.network <span class="hljs-string">&quot;private_network&quot;</span>, ip: <span class="hljs-string">&quot;172.20.20.11&quot;</span>
+  end
+  config.<span class="hljs-keyword">vm</span>.provision <span class="hljs-string">&quot;shell&quot;</span>, inline: $bootstrap
+end</code></pre><h2>fabfile</h2>
+<p>Kommandoene som jeg skal kjøre via Fabric defineres i en fil jeg kaller <code>fabfile.py</code>. Filen er på ca 30 linjer, men la meg bryte det opp og beskrive del for del. Aller først må jeg importere funksjonene jeg trenger fra fabric.</p>
+<pre><code class="hljs"><span class="hljs-keyword">from</span> fabric.api import task, <span class="hljs-keyword">run</span><span class="language-bash">, <span class="hljs-built_in">sudo</span></span></code></pre><p>Deretter definerer jeg to varabler: <code>conf</code> holder på stien til konfigurasjonsfilen som kommandoene skal jobbe mot, mens <code>nodes</code> er en dictionary som inneholder IP-adressene til alle webserverne. Nøkkelen er et tall som vi kommer til å bruke når vi skal fortelle fabric hvilken node vi ønsker å ta ut av clusteret.</p>
+<pre><code class="hljs"><span class="hljs-attribute">conf</span> = <span class="hljs-string">&#x27;/home/vagrant/somedomain.conf&#x27;</span>
+nodes = {
+    <span class="hljs-string">&#x27;1&#x27;</span>: <span class="hljs-string">&#x27;192.168.36.25&#x27;</span>,
+    <span class="hljs-string">&#x27;2&#x27;</span>: <span class="hljs-string">&#x27;192.168.36.26&#x27;</span> 
+}</code></pre><p>La oss så definere vår første <em>task</em>. Jeg kaller den <code>config</code>, og sier at den skal være <em>default</em> - det vil si at fabric vil kjøre denne om jeg ikke spesifiserer en konkret task. Det <code>config</code> gjør er å returnere innholdet i konfigurasjonsfilen.</p>
+<pre><code class="hljs">@task(<span class="hljs-attribute">default</span>=<span class="hljs-literal">True</span>)
+def config():
+    <span class="hljs-built_in">run</span>(<span class="hljs-string">&quot;cat &quot;</span> + conf)</code></pre><p>Før jeg definerer tasken for å ta ut en node fra clusteret trenger jeg et par hjelpefunksjoner for å editere konfigurasjonsfilen: Én som kommenterer ut en IP-adresse fra filen, og en som kommenterer inn en IP-adresse. For å gjøre filendringene bruker jeg standard Unix <strong><a href="http://en.wikipedia.org/wiki/Sed">sed</a></strong> <em>(stream editor)</em>. </p>
+<pre><code class="hljs">def _enable(<span class="hljs-keyword">node</span><span class="hljs-title">):
+    sudo</span>(<span class="hljs-string">&quot;sed -i &#x27;s/^#{0}/{0}/&#x27; {1}&quot;</span>.format(<span class="hljs-keyword">node</span><span class="hljs-title">, conf</span>))
+
+def _disable(<span class="hljs-keyword">node</span><span class="hljs-title">):
+    sudo</span>(<span class="hljs-string">&quot;sed -i &#x27;s/^{0}/#{0}/&#x27; {1}&quot;</span>.format(<span class="hljs-keyword">node</span><span class="hljs-title">, conf</span>))</code></pre><p>Nå kan jeg opprette tasken <code>disable</code>. Den tar inn en parameter <code>node</code> som er nøkkelen til en av IP-adressene. Tasken itererer over alle webnodene, og sålenge det ikke er snakk om noden som skal ut av clusteret så sørger tasken for at de enables. Dermed vil vi kun ha én webnode disablet av gangen.</p>
+<p>Etter å ha enablet alle andre, kaller jeg så <code>_disable</code> med den riktige IP-adressen. Til slutt kan jeg gjøre en reload av serveren basert på den oppdaterte konfigurasjonen (simulerer bare det her med en <em>echo</em>).</p>
+<pre><code class="hljs">@task
+def disable(<span class="hljs-keyword">node</span><span class="hljs-title">):
+    for</span> n <span class="hljs-keyword">in</span> nodes.keys():
+        if n != <span class="hljs-keyword">node</span><span class="hljs-title">:
+            _enable</span>(nodes[n])
+    _disable(nodes[<span class="hljs-keyword">node</span><span class="hljs-title">])
+    sudo</span>(<span class="hljs-string">&quot;echo server reload&quot;</span>) <span class="hljs-comment"># just faking it..</span></code></pre><p>Jeg legger også til en <code>enable_all</code> task, som nå bør være selvforklarende:</p>
+<pre><code class="hljs"><span class="hljs-variable">@task</span>
+def <span class="hljs-built_in">enable_all</span>():
+    for n in nodes.<span class="hljs-built_in">keys</span>():
+        <span class="hljs-built_in">_enable</span>(nodes[n])
+    <span class="hljs-built_in">sudo</span>(<span class="hljs-string">&quot;echo server reload&quot;</span>) # just faking it..</code></pre><p>Jeg må kanskje få poengtere at denne filen kun befinner seg på én av lastbalansererne. Nå burde selvsagt serverne vært identiske (best practise for failover), men poenget er at man ikke trenger å ha noe spesielt på serverne hvor taskene skal kjøres. Fabric kunne for eksempel vært kjørt fra en egen sysadm-server i stedet.</p>
+<h2>På tide å kjøre fab</h2>
+<p>Jeg er nå logget inn på den primære lastbalansereren (127.20.20.10) med SSH. Jeg står i katalogen hvor fabfile.py ligger, og er klar for å kjøre tasks via <code>fab</code> (som befinner seg i /usr/local/bin).</p>
+<h3>Default task</h3>
+<p>Først vil jeg kjøre tasken <code>config</code> - som var definert som <em>default</em>. Jeg bruker opsjon <code>-H</code> for å spesifisere hvilke servere tasken skal kjøres på. Her ser du en dump av kommandoen og output:</p>
+<pre><code class="hljs">$ fab -H <span class="hljs-number">172.20</span><span class="hljs-number">.20</span><span class="hljs-number">.10</span>,<span class="hljs-number">172.20</span><span class="hljs-number">.20</span><span class="hljs-number">.11</span>
+[<span class="hljs-meta">172.20.20.10</span>] Executing task <span class="hljs-string">&#x27;config&#x27;</span>
+[<span class="hljs-meta">172.20.20.10</span>] run: cat /home/vagrant/somedomain.conf
+[<span class="hljs-meta">172.20.20.10</span>] Login password <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;vagrant&#x27;</span>:
+[<span class="hljs-meta">172.20.20.10</span>] <span class="hljs-keyword">out</span>: somedomain config
+[<span class="hljs-meta">172.20.20.10</span>] <span class="hljs-keyword">out</span>: <span class="hljs-number">192.168</span><span class="hljs-number">.36</span><span class="hljs-number">.25</span>
+[<span class="hljs-meta">172.20.20.10</span>] <span class="hljs-keyword">out</span>: <span class="hljs-number">192.168</span><span class="hljs-number">.36</span><span class="hljs-number">.26</span>
+[<span class="hljs-meta">172.20.20.10</span>] <span class="hljs-keyword">out</span>:
+
+[<span class="hljs-meta">172.20.20.11</span>] Executing task <span class="hljs-string">&#x27;config&#x27;</span>
+[<span class="hljs-meta">172.20.20.11</span>] run: cat /home/vagrant/somedomain.conf
+[<span class="hljs-meta">172.20.20.11</span>] <span class="hljs-keyword">out</span>: somedomain config
+[<span class="hljs-meta">172.20.20.11</span>] <span class="hljs-keyword">out</span>: <span class="hljs-number">192.168</span><span class="hljs-number">.36</span><span class="hljs-number">.25</span>
+[<span class="hljs-meta">172.20.20.11</span>] <span class="hljs-keyword">out</span>: <span class="hljs-number">192.168</span><span class="hljs-number">.36</span><span class="hljs-number">.26</span>
+[<span class="hljs-meta">172.20.20.11</span>] <span class="hljs-keyword">out</span>:
+
+Done.
+Disconnecting <span class="hljs-keyword">from</span> <span class="hljs-number">172.20</span><span class="hljs-number">.20</span><span class="hljs-number">.11</span>... done.
+Disconnecting <span class="hljs-keyword">from</span> <span class="hljs-number">172.20</span><span class="hljs-number">.20</span><span class="hljs-number">.10</span>... done.</code></pre><p>Jeg får se hvilke kommandoer som kjøres hvor, og hva output fra disse er. Underveis måtte jeg også taste et passord.., det er sikkert måter å komme unna det på, men det kan nå være greit at det er sånn også.</p>
+<p>Som du ser er begge webnodene i utgangspunktet med i clusteret.</p>
+<h3>Ta ut en node</h3>
+<p>Nå kan vi forsøke å kjøre tasken <code>disable</code> for å ta ut en webnode fra clusteret. Jeg må da kalle <code>fab</code> igjen med listen av servere tasken skal kjøres på, men slenger nå også på tasknavnet, og et kolon etterfulgt av node-nøkkelen (husker du dictionarien <code>nodes</code>?).</p>
+<pre><code class="hljs">$ fab -H <span class="hljs-number">172.20</span>.<span class="hljs-number">20.10</span>,<span class="hljs-number">172.20</span>.<span class="hljs-number">20.11</span> disable:<span class="hljs-number">1</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> Executing task <span class="hljs-string">&#x27;disable&#x27;</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^#192.168.36.26/192.168.36.26/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> Login password <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;vagrant&#x27;</span>:
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^192.168.36.25/#192.168.36.25/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: echo server reload
+<span class="hljs-selector-attr">[172.20.20.10]</span> out: server reload
+<span class="hljs-selector-attr">[172.20.20.10]</span> out:
+
+<span class="hljs-selector-attr">[172.20.20.11]</span> Executing task <span class="hljs-string">&#x27;disable&#x27;</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^#192.168.36.26/192.168.36.26/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^192.168.36.25/#192.168.36.25/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: echo server reload
+<span class="hljs-selector-attr">[172.20.20.11]</span> out: server reload
+<span class="hljs-selector-attr">[172.20.20.11]</span> out:
+
+Done.
+Disconnecting from <span class="hljs-number">172.20</span>.<span class="hljs-number">20.11</span>... done.
+Disconnecting from <span class="hljs-number">172.20</span>.<span class="hljs-number">20.10</span>... done.</code></pre><p>Det ser ut til å ha gått greit. Kjører jeg tasken <code>config</code> kan jeg få det bekreftet.</p>
+<p>Etter at jeg er ferdig med å gjøre det jeg skal med node 1 (oppdatere et eller annet sansynligvis), kan jeg så disable node 2 (og dermed implisit enable node 1 igjen):</p>
+<pre><code class="hljs">$ fab -H <span class="hljs-number">172.20</span>.<span class="hljs-number">20.10</span>,<span class="hljs-number">172.20</span>.<span class="hljs-number">20.11</span> disable:<span class="hljs-number">2</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> Executing task <span class="hljs-string">&#x27;disable&#x27;</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^#192.168.36.25/192.168.36.25/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> Login password <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;vagrant&#x27;</span>:
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^192.168.36.26/#192.168.36.26/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: echo server reload
+<span class="hljs-selector-attr">[172.20.20.10]</span> out: server reload
+<span class="hljs-selector-attr">[172.20.20.10]</span> out:
+
+<span class="hljs-selector-attr">[172.20.20.11]</span> Executing task <span class="hljs-string">&#x27;disable&#x27;</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^#192.168.36.25/192.168.36.25/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^192.168.36.26/#192.168.36.26/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: echo server reload
+<span class="hljs-selector-attr">[172.20.20.11]</span> out: server reload
+<span class="hljs-selector-attr">[172.20.20.11]</span> out:
+
+Done.
+Disconnecting from <span class="hljs-number">172.20</span>.<span class="hljs-number">20.11</span>... done.
+Disconnecting from <span class="hljs-number">172.20</span>.<span class="hljs-number">20.10</span>... done.</code></pre><h3>Enable alle noder</h3>
+<p>Og til slutt kan jeg gjenopprette clusteret med <code>enable_all</code>..</p>
+<pre><code class="hljs">$ fab -H <span class="hljs-number">172.20</span>.<span class="hljs-number">20.10</span>,<span class="hljs-number">172.20</span>.<span class="hljs-number">20.11</span> enable_all
+<span class="hljs-selector-attr">[172.20.20.10]</span> Executing task <span class="hljs-string">&#x27;enable_all&#x27;</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^#192.168.36.25/192.168.36.25/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> Login password <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;vagrant&#x27;</span>:
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^#192.168.36.26/192.168.36.26/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.10]</span> sudo: echo server reload
+<span class="hljs-selector-attr">[172.20.20.10]</span> out: server reload
+<span class="hljs-selector-attr">[172.20.20.10]</span> out:
+
+<span class="hljs-selector-attr">[172.20.20.11]</span> Executing task <span class="hljs-string">&#x27;enable_all&#x27;</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^#192.168.36.25/192.168.36.25/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: sed -<span class="hljs-selector-tag">i</span> <span class="hljs-string">&#x27;s/^#192.168.36.26/192.168.36.26/&#x27;</span> /home/vagrant/somedomain<span class="hljs-selector-class">.conf</span>
+<span class="hljs-selector-attr">[172.20.20.11]</span> sudo: echo server reload
+<span class="hljs-selector-attr">[172.20.20.11]</span> out: server reload
+<span class="hljs-selector-attr">[172.20.20.11]</span> out:
+
+Done.
+Disconnecting from <span class="hljs-number">172.20</span>.<span class="hljs-number">20.11</span>... done.
+Disconnecting from <span class="hljs-number">172.20</span>.<span class="hljs-number">20.10</span>... done.</code></pre><h2>Konklusjon</h2>
+<p>Fabric var smertefritt å installere på Ubuntu. Å definere taskene var også enkelt, og <a href="http://docs.fabfile.org/en/1.10/">dokumentasjonen</a> var upåklagelig. Å ha hele Python tilgjengelig i fabfilen var veldig kjekt. Og alt sammen ser ut til å ha virket som jeg håpte. </p>
+<p>Så hvis du har behov for å gjøre nøyaktig samme operasjoner på mer enn én boks, så virker det altså som om Fabrik er et bra verktøy for det.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

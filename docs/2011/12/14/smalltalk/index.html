@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Polyglot,SmallTalk">
+
+    <title>Smalltalk</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Smalltalk</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 14. desember 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/smalltalk"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> SmallTalk</span></a>
+          </p>
+          <p>Det finnes en håndfull språk som har hatt en enorm betydning for utviklingen av programmeringsspråk generelt. Jeg tenker da på språk som Algol, Lisp og C. Et annet språk som vi er nødt til å inkludere er <strong>Smalltalk</strong> – utviklet av <a href="/2010/12/22/informatisk-julekalender-luke-22/">Alan Key</a> og <a href="/2010/03/21/coders-at-work/">Dan Ingalls</a> med flere ved <a href="http://en.wikipedia.org/wiki/PARC_(company)">Xerox PARC</a> på 60/70-tallet.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="smalltalk" border="0" alt="smalltalk" src="/uploads/2011/12/smalltalk.jpg" width="300" height="452"></p>
+<p>Smalltalk har påvirket oss på fire hovedområder: For det første har det influert <u>syntaksen og semantikken</u> til mange programmeringsspråk som har kommet senere – de som vises i figuren nedenfor er kun et lite utvalg. For det andre var Smalltalk en prototype på en programmeringsstil jeg har snakket om tidligere som kalles <a href="/2011/08/20/message-passing-style/"><u>message passing style</u></a> – en viktig modell for god objektorientert programmering (det var Alan Key som "fant opp" OOP-begrepet).</p>
+<p>For det tredje inspirerte brukergrensesnittet utviklingen av <u>grafiske operativsystem</u>. Vinduene i den første Macintoshen var <em>så og si identiske</em> med vinduene i Smalltalk-80, den første offisielle releasen av språket. Og til slutt har Smalltalks integrerte utviklingsmiljø inspirert utviklingen av det vi i dag kjenner som <u>IDE'er</u>; visuelle programmeringsverktøy med kodebrowsere, debuggere osv.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="smalltalk_legacy" border="0" alt="smalltalk_legacy" src="/uploads/2011/12/smalltalk_legacy.png" width="500" height="165"></p>
+<p>Smalltalk er et minimalistisk og elegant språk. Absolutt alt er objekter, og syntaksen er enkel og konsis. Som i Lisp finnes det ingen spesielle strukturer eller kodeord for å lage løkker eller ta avgjørelser – alt er kun metodekall, eller <em>"sending av meldinger til objekter"</em> som Smalltalkere sier.</p>
+<h4>Integrert utviklingsmiljø</h4>
+<p>Smalltalk skiller seg nok fra de språkene du har brukt før ved det spesielle utviklingsmiljøet. Man koder <em>ikke</em> Smalltalk i tekstfiler som så enten tolkes eller kompileres for å kunne kjøre programmet. Smalltalk er et program i seg selv, som kjører hele tiden. Objektene lever i minnet, og man kan bruke en utforsker til å studere dem og endre dem.</p>
+<p>Når man avslutter Smalltalk lagres alt sammen i et <em>image;</em> vi sier at Smalltalk er <u>et image-basert utviklingsmiljø</u>. Du kan lagre flere images, som i praksis blir ulike versjoner av Smalltalk, hvor du har gjort forskjellige endringer i hver av dem. Når du starter opp laster du ett av disse, som da altså både er språket, utviklingsmiljøet og programmet ditt.</p>
+<p>Versjonen av Smalltalk som jeg har brukt har i tillegg til diverse utforskere, debugger og lignende også integrerte tutorials, integrert enhetstesting (SUnit) og støtte for avansert refakturering.</p>
+<h4>Og nå er du sikkert klar for litt kode</h4>
+<p>Som forklart tidligere forsøker jeg å løse <a href="/2011/11/24/hello-world-euler-style/">Euler problem nummer 1</a> i alle nye språk jeg tester ut – altså <em>hvordan man finner summen av alle tall under 1000 som er multipler av 3 eller 5</em>. Her følger min første løsning i Smalltalk:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr"> 1 </span>((<span class="Type">1</span> <span class="Statement">to:</span> <span class="Type">999</span>) select: [<span class="Identifier">:x |</span>
+<span class="lnr"> 2 </span>  ((x rem: <span class="Type">3</span>) == <span class="Type">0</span>) | ((x rem: <span class="Type">5</span>) == <span class="Type">0</span>)
+<span class="lnr"> 3 </span>]) fold: [<span class="Identifier">:memo :x |</span> memo + x].
+</pre>
+<p>Jeg oppretter først et intervall fra 1 til 999. Så sender jeg meldingen <strong>select:</strong> til dette intervall-objektet, og sender med en kodeblokk som argument. Resultatet er at intervallet filtreres og jeg står igjen med en kolleksjon av tall som er multipler av 3 eller 5. Til slutt sender jeg meldingen <strong>fold:</strong> til kolleksjonen med en ny kodeblokk som plusser tallene sammen.</p>
+<p>Sammenlign dette med denne løsningen i Ruby:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">2 </span>(<span class="Number">1</span>..<span class="Number">999</span>).select {|<span class="Identifier">x</span>|
+<span class="lnr">3 </span>  x.modulo(<span class="Number">3</span>) == <span class="Number">0</span> <span class="rubyControl">or</span> x.modulo(<span class="Number">5</span>) == <span class="Number">0</span>
+<span class="lnr">4 </span>}.reduce {|<span class="Identifier">memo</span>, <span class="Identifier">x</span>| memo + x}
+</pre>
+<p>Likheten bør være tydelig. Ruby er nok det språket som er nærmest Smalltalk i dag. Det er noen syntaksforskjeller, spesielt knyttet til hvordan man sender meldinger til objekter (med dot-operatoren i Ruby), men ellers er disse to løsningene egentlig helt like.</p>
+<p>Etter å ha browset litt i objektene i Smalltalk klarte jeg å rafinere løsningen litt, og kom opp med dette:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr"> 5 </span>((<span class="Type">1</span> <span class="Statement">to:</span> <span class="Type">999</span>)
+<span class="lnr"> 6 </span>  select: [<span class="Identifier">:x |</span> (x isDivisibleBy: <span class="Type">3</span>) <span class="Identifier">or:</span> (x isDivisibleBy: <span class="Type">5</span>) ]) sum
+</pre>
+<p>Det viste seg altså at Number-objektene allerede hadde en <strong>isDivisibleBy</strong>-metode (oppdaget dette da jeg skulle til å lage den selv), og at Collection hadde en <strong>sum</strong>-metode. Generelt sett har Smalltalk et veldig rikt API som har blitt bygget opp gjennom mange år.</p>
+<p>Om du ikke er helt komfortabel med denne koden fordi det skjer mye på en gang har jeg brytt det opp litt for at det skal bli enklere å fordøye. Nedenfor lager jeg to temporære variabler: <em>filter</em> og <em>range</em>. Og så løser jeg oppgaven steg for steg, før jeg til slutt skriver ut svaret i det såkalte Transcript-vinduet (mer om det snart).</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Identifier">| filter range |</span>
+<span class="lnr">11 </span>range := (<span class="Type">1</span> <span class="Statement">to:</span> <span class="Type">999</span>).
+<span class="lnr">12 </span>filter := [<span class="Identifier">:x |</span> (x isDivisibleBy: <span class="Type">3</span>) <span class="Identifier">or:</span> (x isDivisibleBy:  <span class="Type">5</span>)].
+<span class="lnr">13 </span>range := range select: filter.
+<span class="lnr">14 </span>range := range sum.
+<span class="lnr">15 </span>Transcript show: range.
+</pre>
+<h4>Mer om utviklingsmiljøet</h4>
+<p>Det finnes en rekke open source-versjoner av Smalltalk. <a href="http://squeak.org/"><strong>Squeak</strong></a> er kanskje den mest kjente, og er mye brukt til undervisning. <a href="http://smalltalk.gnu.org/">GNU Smalltalk</a> er <em>ikke</em> et komplett Smalltalk-miljø, men tilbyr i stedet en mer tradisjonell tolker for Smalltalk-kode. <a href="http://amber-lang.net/">Amber</a> er en Smalltalk-implementasjon laget i JavaScript, og gjør mye samme nytten som <a href="/2011/12/13/coffeescript/">CoffeeScript som jeg snakket om i en tidligere luke</a>.</p>
+<p>Jeg valgte derimot å bruke en Smalltalk som heter <a href="http://www.pharo-project.org/"><strong>Pharo</strong></a>, som kjører på Unix/Linux, MacOS og Windows, og ser helt likt ut alle steder. Nedenfor ser du et screenshot av hvordan det ser ut i bruk. Det du ser er en slags desktop med flere vinduer. Vinduet øverst til venstre er et arbeidsområde hvor jeg har skrevet litt kode (løsningen på oppgaven vår). Under dette vinduet er Transcript-vinduet, hvor jeg skriver ut resultatet. </p>
+<p>Vinduet til høyre er en klasse/objekt-browser: Her har jeg navigert meg frem til <em>isDevisableBy</em>-metoden på <em>Number</em>-klassen. Selve koden for metoden vises nederst. Her kan jeg også foreta endringer om jeg ønsker det.</p>
+<p><a href="/uploads/2011/12/SmallTalk_Euler.png"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="SmallTalk_Euler" border="0" alt="SmallTalk_Euler" src="/uploads/2011/12/SmallTalk_Euler_thumb.png" width="504" height="248"></a></p>
+<p>Smalltalk's grafiske brukergrensesnitt lar deg kommunisere med objektene dine på en mye mer direkte måte enn hva som er mulig i de fleste andre programmeringsspråk. Dette bør du oppleve!</p>
+<h4>Kulturkonflikt</h4>
+<p>Om du er en Java, C#, C++ –utvikler eller lignende så er Smalltalk-verden i konflikt med deg. Smalltalkerne sier det er de som driver med ekte objektorientering, C++ er ikke orntlig OO. Smalltalk var trolig også en viktig drivkraft og inspirasjonsskilde til den smidige revolusjonen for ca 10 år siden. Flere kjente Agile-forkjempere drev med Smalltalk, som for eksempel Martin Fowler, og <a href="http://en.wikipedia.org/wiki/Kent_Beck">Kent Beck</a>, mannen bak TDD.</p>
+<p>Smalltalk hadde sin storhetstid, men så tok det slutt. Kanskje det var det at de følte seg bedre enn alle andre? C++ dro i alle fall fra, og ble for en liten periode en defacto standard for objektorientering. Siden har andre språk som Ruby kommet til, og plukket opp igjen arven fra Smalltalk.</p>
+<p>Så hvordan er Smalltalk forskjellig fra C++?</p>
+<p>Vel, det er mange forskjeller. Smalltalk er dynamisk, C++ er statisk. Smalltalk er laget med utvikleren i fokus, mens C++ er sterkere knyttet til datamaskinen, og hvordan den fungerer. Men for å forstå Smalltalk er det spesielt to sentrale ting du må vite:</p>
+<p>For det første: <strong>ALT ER OBJEKTER!</strong> Absolutt alt! C++ har mye som ikke er det; grunnleggende datatyper, klasser, kontrollstrukturer osv. Men i Smalltalk er alt bygget på samme lest, og samme hvor langt du graver finner du objekter.</p>
+<p>For det andre: <strong>ALL KODE HAR ÉN FAST KONSEPTUELL FORM:</strong> <strong><u>object messageSentToIt</u></strong>. All koden du skriver i Smalltalk sender meldinger til objekter!</p>
+<p>Og Smalltalkerne sier at hvis du ønsker å fortsette å kode i C++, eller Java, eller C#, så må du forsikre deg om at du aldri forstår hva disse to tingene betyr og innebærer. Hvis det begynner å gi mening for deg så må du slutte å lære deg Smalltalk med en eneste gang, for det finnes ingen vei tilbake :D</p>
+<h4>Er Smalltalk verdt å bruke tid på?</h4>
+<p>Ja, det er det. Smalltalk er historisk viktig, spesielt innenfor utviklingen av objektorientert tankegang. Utviklingsmiljøet er også fasinerende, og noe det er verdt å bruke tid på å forstå. Om du aldri kommer til å bruke Smalltalk til noe fornuftig, er det likevel berikende å se hvordan det fungerer.</p>
+<p>Og om du liker det, men ønsker å bruke et mere levende språk som støttes av et aktivt community, så kan du jo gå over til Ruby etterpå!</p>
+<h4>Hvordan komme igang</h4>
+<p>Jeg foreslår du laster ned <a href="http://www.pharo-project.org">Pharo</a> og bare fyrer det opp – ingen installasjon er nødvendig. I Pharo vil du finne en integrert, interaktiv tutorial som vil få deg så smått igang. Du kan også ta en titt på boken <em><a href="http://pharobyexample.org/">Pharo by Example</a></em>, som kan lastes ned som PDF.</p>
+<p>Lykke til!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

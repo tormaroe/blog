@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Softwareutvikling,Smidig">
+
+    <title>Hva er smidig utvikling?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hva er smidig utvikling?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 24. februar 2012</small> 
+            <a href="/tags/softwareutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Softwareutvikling</span></a>
+          
+            <a href="/tags/smidig"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Smidig</span></a>
+          </p>
+          <p>Jeg følte bloggen min manglet en post som dette. Med fare for at jeg egentlig er 10 år for sent ute så har jeg likevel lyst til å dele noen tanker om smidig utvikling – sette foten ned og si hvor jeg står!</p>
+<p>Det er mange som har forsøkt å definere hva smidig utvikling er for noe. Vi har jo det <a href="http://agilemanifesto.org/">smidige manifestet</a>, og vi kan si at smidig utvikling er å følge det. Eller man kan si at smidig er å bruke Scrum, å bruke Kanban, eller å følge eXtreme Programming.</p>
+<p>Og <a href="http://en.wikipedia.org/wiki/Agile_software_development">WikiPedia sier</a>: <em>"Agile software development is a group of software development methodologies based on iterative and incremental development, where requirements and solutions evolve through collaboration between self-organizing, cross-functional teams."</em></p>
+<p>For meg er smidig egentlig ganske enkelt. Det er å innse og deretter ta følgende av disse tre sannhetene:</p>
+<ul style="margin-left: 30px">
+<li><strong>Du vil aldri klare å samle alle krav til en løsning før du begynner! <br>&nbsp;</strong>
+<li><strong>Kravene vil garantert komme til å endre seg underveis! <br>&nbsp;</strong>
+<li><strong>Det vil alltid være mer å gjøre enn man har tid til!</strong></li>
+</ul>
+<p>Når man innser betydningen av disse påstandene følger resten naturlig av seg selv: </p>
+<ul>
+<li style="margin-left: 30px">Man må utvikle noe som fungerer så raskt som mulig, sånn at man kan se det, vise det til andre, og gjennom det <u>oppdage</u> veien videre. <br>&nbsp;<br />
+<li style="margin-left: 30px">Man må <u>ikke få panikk</u> når veien endrer seg – det spiller liten rolle hva man tenkte for en uke siden hvis det ikke er det man trenger i dag. <br>&nbsp;<br />
+<li style="margin-left: 30px">Man må utvikle systemer på en måte som gjør at de kan <u>endres</u> – for eksempel ved å bruke <a href="/category/testing-tdd/">testdrevet utvikling</a>, og vet at alle er med og tar <u>ansvar</u>. <br>&nbsp;<br />
+<li style="margin-left: 30px">Man må sørge for at teamet har nok, delt kunnskap om løsningen og hvordan veien endrer seg, siden man ikke kan ha en ferdig plan å jobbe ut fra. Dette krever tett og hyppig <u>kommunikasjon</u>. Parprogrammering hjelper veldig.<br>&nbsp;<br />
+<li style="margin-left: 30px">Og man må <u>prioritere hardt</u> og gjøre det viktigste først, samtidig som man alltid har noe som er testet og fungerer – sånn at arbeidet ikke er bortkastet når tiden og pengene tar slutt.</li>
+</ul>
+<p>Å jobbe smidig er mere krevende enn tradisjonell fossefallsutvikling. En smidig utvikler må beherske flere egenskaper enn programmering, han må i stor grad overta oppgavene til alle rollene som normalt sett kom både før og etter selve utviklingssteget. Dine oppgaver som en smidig utvikler er:</p>
+<ul style="margin-left: 30px">
+<li><strong>Kravanalyse og kundekontakt:</strong> Å hele tiden jobbe med å forsøke å forstå behovet til "kunden"<br>&nbsp;
+<li><strong>Prosjektplanlegging:</strong> Å hele tiden tenke smart i forhold til hva neste steg optimalt sett bør være<br>&nbsp;
+<li><strong>Design og Arkitektur:</strong> Å hele tiden tenke på hvordan løsningen bør designes for å være mest mulig fleksibel<br>&nbsp;
+<li><strong>Prosjektstyring:</strong> Å hele tiden kommunisere med alle andre team-medlemmer om endringene som skjer<br>&nbsp;
+<li><strong>Implementasjon:</strong> Å hele tiden tilføre verdi gjennom å kode løsningen med så høy kvalitet som mulig<br>&nbsp;
+<li><strong>Quality Assurance:</strong> Å hele tiden tenke kritisk og teste løsningen så effektivt som mulig</li>
+</ul>
+<p>I tillegg flyter den smidige utvikleren også ofte over i en driftsrolle, fordi man ofte vil rulle ut løsningen hyppigere for å utnytte verdien som allerede finnes i systemet. En smidig utvikler er altså en generalist og en multi-tasker, med en mye mere interessant hverdag enn den tradisjonelle utvikleren. </p>
+<p>Og med mye mere stress om man ikke fullt og helt aksepterer hva smidig egentlig betyr!</p>
+<p>Det var alt jeg hadde å si om den saken. Les også <a href="/2010/12/07/forvirring-rundt-smidig-utvikling/">Forvirring rundt smidig utvikling</a> eller <a href="/2009/04/10/utviklerprofiler-og-fire-ferdighetskategorier/">Utviklerprofiler og fire ferdighetskategorier</a>. </p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

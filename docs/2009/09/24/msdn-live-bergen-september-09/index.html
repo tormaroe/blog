@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="MSDN Live,Webutvikling">
+
+    <title>MSDN Live Bergen – september 09</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>MSDN Live Bergen – september 09</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 24. september 2009</small> 
+            <a href="/tags/msdn-live"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> MSDN Live</span></a>
+          
+            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+          </p>
+          <p><img style="display: block; float: none; margin-left: auto; margin-right: auto; border-width: 0px;" title="Einar presenterer WPF og Silverlight på MSDN Live i Bergen" src="/uploads/2009/09/einar_at_msdnlive.jpg" alt="Einar presenterer WPF og Silverlight på MSDN Live i Bergen" width="500" height="241" border="0" /></p>
+<p>Denne uken var det i Bergen igjen tid for å ta imot <strong>MSDN Live</strong> - Microsoft's road show for utviklere. Som <a href="/2009/09/19/bergen-net-triatlon/">nevnt tidligere</a> var det tre foredragholdere denne gangen, Børge Hansen, Einar Ingebrigtsen og Fredrik Kalseth. Jeg minglet litt først på dagen, så jeg fikk ikke med meg Børge sine presentasjoner av hva som er nytt i VS 2010 og C# 4.0, men her er min oppsummering av de andre foredragene..</p>
+<h4>WPF 4</h4>
+<p>I sommer har Einar vært med og utviklet en <a href="http://www.microsoft.com/surface/" target="_blank">Microsoft Surface</a> applikasjon for underholdningsprogrammet <a href="http://www.nrk.no/programmer/sider/de_ukjente/" target="_blank">De Ukjente på NRK1</a>, og han startet med en presentasjon av det, og snakket litt om erfaringene fra prosjektet. Deretter tok han for seg noen utvalgte områder i WPF 4 – han snakket litt om <strong>multitouch</strong>, demonstrerte <strong>ribbons</strong> (som han nevte også kan benyttes i WPF 3.5), viste hvordan man lager <strong>jumplists</strong> for Windows 7, og til slutt avlørte han noen nye databindingsteknikker.</p>
+<p>Demonstrasjonen ble desverre noe preget av at Einar hadde lastet ned siste versjon av Visual Studio 2010, som krasjet i tide og utide. Jeg antar de klarer å gjøre IDE'en stabil igjen før den endelige releasen, men inntrykket vi fikk under demoen var ikke bra, og førte til at Einar ikke rakk å vise oss WPF's nye <strong>Visual State Manager</strong>.</p>
+<h4>Silverlight 3</h4>
+<p>Silverlight-sesjonen gikk mye bedre. Versjon 3 inneholder et hav av nye ting, og også her valgte Einar ut et lite sett av de mest spennende tingene. Han demonstrerte en skygge-effekt som bruker Silverlights <strong>pixel shader</strong> støtte, han viste oss hvordan <strong>Out of Browser</strong> fungerer, demonstrerte deler av navigasjons-støtten som er bygget inn (<strong>deep linking</strong>), og hvordan databinding har blitt mere likt slik det er i WPF.</p>
+<p>Det var kanskje mest spennende mot slutten, da han bruke <a href="http://www.google.no/search?q=.net+RIA+services" target="_blank">.NET RIA services</a>. Jeg er kjent med hva dette er for noe fra diverse podcasts, men hadde faktisk aldri sett det før – og jeg ser nå at dette er noe jeg absolutt bør se nærmere på. RIA services ser ut til å være en veldig naturlig komponent i enhver løsning som har mye funskjonalitet i browseren (Silverlight eller AJAX-heavy web site), og jeg skulle gjerne ha sett et eget foredrag på MSDN Live dedikert til dette rammeverket.</p>
+<p>Einar nevnte også <a href="http://silverlight.codeplex.com/" target="_blank">Silverlight Toolkit</a>, en samling av kontroller man kan laste ned fra codeplex, og demonstrerte også en av dem som heter <strong>Dataform</strong>. Denne verktøykassen inneholder mye bra som man bør ta en titt på om man skal utvikle noe i Silverlight.</p>
+<p>Til slutt fortalte Einar litt om <a href="http://www.codeplex.com/Balder" target="_blank">Balder</a>, 3D motoren han laget for Silverlight, som etterhvert har/skal utvikle seg til å bli en spillmotor også for Xna og OpenGL. Balder er "hovedpersonen" i en bok som lanseres i disse dager: <a href="http://www.packtpub.com/3d-game-development-with-microsoft-silverlight-3-beginners-guide/book" target="_blank">3D Game Development with Microsoft Silverlight 3: Beginner's Guide</a>. Sikkert spennende lesestoff om du går med en liten spillutvikler i magen.</p>
+<h4>ASP.NET 4</h4>
+<p>Fredrik viste seg å være en meget solid foreleser. I sitt første foredrag brukte han endel slides til å raskt gå over en rekke nye ting i ASP.NET versjon 4: Slankere web.config, cache providers, preload providers, session state compression, viewstate mode, client id mode, encoding-forbedringer, rendering-forbedringer for å støtte XHTML, MSDeploy, JSONP, m.m.</p>
+<p>Deretter gikk han mer i dybden på et par ting, nemlig <strong>routing</strong> – som begynner å bli ganske kjent nå – og <strong>client template rendering</strong>. I demoen brukte han et "full-fledged" web prosjekt som bl.a. inneholdt enhetstester, bruk av IoC container (<a href="http://ninject.org/" target="_blank">Ninject</a>), repository pattern, og god seperasjon av ansvar i presentasjonslaget. Jeg synes dette fungerte veldig bra, og gav foredraget en ekstra dimensjon i forhold til en typisk demo av hva som er nytt i ASP.NET. Vi måtte holde 100% fokus på hva som skjedde på skjermen for å ikke falle av, for Fredrik holdt et ganske bra tempo, og gav oss mye "valuta for pengene".</p>
+<p>Han gav oss også et par andre tips til ting det kan være verdt å se på. Først og fremst var dette <strong>ASP.NET Chart Controls</strong> pakken fra Microsoft (<a href="http://weblogs.asp.net/scottgu/archive/2008/11/24/new-asp-net-charting-control-lt-asp-chart-runat-quot-server-quot-gt.aspx" target="_blank">presentert av ScottGu her</a>). Her har de laget en flott, gratis chart-pakke som kan erstatte mye av behovet for tredjepartskontroller.</p>
+<p>Det andre tipset var et lite javascript biblotek som heter <em><a href="http://www.datejs.com/" target="_blank">datejs</a></em> – noe jeg gjerne kommer til å bruke selv nå som jeg vet om det.</p>
+<h4>Smidig utvikling i Visual Studio</h4>
+<p>Den siste forelesningen til Fredrik fikk jeg bare delvis med meg (måtte rydde NNUG-standen), men likevel var det den jeg likte aller best. Her snakket han nemlig om flere av mine "hjertebarn"; han gav bl.a. en god introduksjon til <a href="/2009/09/17/onion-architecture/">Onion Architecture og Inversion of Control</a>, og snakket om god utviklingsprosess med bruk av testdreven utvikling, branching, continuous integration, automatisk deploy til test og staging-miljø, automatisk kjøring av funksjonelle tester vha <a href="http://seleniumhq.org/" target="_blank">selenium</a>, m.m.</p>
+<p>Han brukte flere, nye features i Visual Studio og Team Foundation Server, og viste bl.a. hvordan de nå har tatt i bruk Workflow Foundation for å lage build- og deployment-prosesser, noe som virket ganske bra. Fredrik brukte det samme web prosjektet som han  viste oss i den første sesjonen, og jeg tror som sagt dette gav dem som hørte på noe ekstra, ved at de fikk se et fullverdig prosjekt gjort på den "riktige" måten.</p>
+<h4>Oppsummering</h4>
+<p>Dagen ble bedre enn forventet. Beskrivelsen av agendaen, med fokus på Microsoft's produkter, gav et for snevert inntrykk av hva foredragene inneholdt. Jeg ble spesielt imponert over Fredrik sine presentasjoner, og jeg synes vi absolutt bør forsøke å få ham til å komme og holde noen foredrag for oss på NNUG i Bergen – de fleste utviklere kan lære noe av hvordan han gjør saker og ting.</p>
+<p>Holder du til i Oslo kan du forøvrig fortsatt få med deg disse foredragene, da <a href="http://www.microsoft.com/norge/msdn_technet_live/msdnLive.aspx" target="_blank">MSDN Live</a> kommer til Oslo Kongressenter tirsdag 29. september.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+title: "Kalenderluke 8: To DNA-sekvenser"
+link: http://blog.kjempekjekt.com/2013/12/09/kalenderluke-8-to-dna-sekvenser/
+layout: post
+date: 2013-12-08 23:05:29Z
+tags:
+  - Julekalender
+---
+<p><img title="luke8_stillingen" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 0px auto 20px; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke8_stillingen" src="/uploads/2013/12/luke8_stillingen.png" width="544" height="426"></p> <p>Luke 8 ser ut til å ha vært den vanskeligste luken sålangt i kalenderen. <strong>Terje Tjervaag</strong> fra Bouvet klarte likevel å løse den 2 minutt og 33 sekunder. Magnar brukte 4 minutter og 39 sekunder, og beholder dermed ledelsen sammenlagt.</p> <p>Oppgaven gikk ut på å finne den lengste <em>sammenhengende</em> rekken med nukleinsyrer som var felles i to DNA-sekvenser. Det korrekte svaret var <strong>TACTTCGATCG</strong>. Dette problemet er kjent som <a href="http://en.wikipedia.org/wiki/Longest_common_substring_problem">Longest Common Substring</a>, og du finner løsninger i mange språk på nettet. Her er en implementasjon i Ruby:</p><pre>def find_longest_common_substring(s1, s2)
+  return if (s1 == "" || s2 == "")
+  m = Array.new(s1.length){ [0] * s2.length }
+  longest_length, longest_end_pos = 0,0
+  (0 .. s1.length - 1).each do |x|
+    (0 .. s2.length - 1).each do |y|
+      if s1[x] == s2[y]
+        m[x][y] = 1
+        if (x &gt; 0 &amp;&amp; y &gt; 0)
+          m[x][y] += m[x-1][y-1]
+        end
+        if m[x][y] &gt; longest_length
+          longest_length = m[x][y]
+          longest_end_pos = x
+        end
+      end
+    end
+  end
+  return s1[longest_end_pos - longest_length + 1 .. longest_end_pos]
+end
+</pre>
+<p>Nå ser det ut som om de på toppen begynner å få et solid forsprang. Men husk at lukene blir mere og mere verdt for hver dag som går. Dessuten kommer flere av lukene som er igjen til å være krevende, og gjør f.eks. Magnar en feil så er det ikke så veldig vanskelig å ta ham igjen.</p>

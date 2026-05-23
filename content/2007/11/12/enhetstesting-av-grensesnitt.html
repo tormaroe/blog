@@ -1,0 +1,13 @@
+---
+title: Enhetstesting av grensesnitt?
+link: http://blog.kjempekjekt.com/2007/11/12/enhetstesting-av-grensesnitt/
+layout: post
+date: 2007-11-12 13:50:39Z
+tags:
+  - Testing / TDD
+---
+På TechEd i Barcelona fikk unit-test guru <a href="http://weblogs.asp.net/rosherove/">Roy Osherove</a> spørsmål om han kunne si noe om unittesting av grensesnitt, det være seg WinForms eller Web gui. Hans svar var klinkende klart:
+<p align="center"><strong><em>"Don't do it!!!"</em></strong></p>
+Ikke lag unit tester for UI. Hvis du vil teste UI logikken din kan du bruke en MVC modell eller lignende, men ikke forsøk deg på å teste selve brukergrensesnittet. Det er for utfordrende rent teknisk til at det er verdt det, i tillegg til det faktum at UI er svært dynamisk - både over tid men også med tanke på konfigurasjons- og profil-avhengigheter.
+
+Så var det avklart en gang for alle. <a href="http://watin.sourceforge.net/">Watin</a> kastes herved i bit-bøtta.

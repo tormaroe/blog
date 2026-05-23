@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Basic,Common Lisp">
+
+    <title>En BASIC til Common Lisp kompilator</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En BASIC til Common Lisp kompilator</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 11. februar 2016</small> 
+            <a href="/tags/basic"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Basic</span></a>
+          
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          </p>
+          <p>Jeg er litt småsyk - sikkert svineinfluensa - så jeg holder meg hjemme et par dager, og fikk da litt tid til å leke meg med <a href="http://scymtym.github.io/esrap/">Esrap</a>, et <em>packrat-parser</em> biblotek i Common Lisp.</p>
+<blockquote>
+<p>&quot;Packrat parsers are parsers for PEGs (Parsing expression grammars) that operate in guaranteed linear time through the use of memoization.&quot;
+<small><a href="http://bford.info/packrat/">source</a></small></p>
+</blockquote>
+<p>##En basic BASIC</p>
+<p>Oppgaven jeg tenkte jeg skulle løse var å lage en parser og kompilator for BASIC. Det vil si for en veldig enkel og gammeldags BASIC. Språket skal støtte kommandoene <code>REM</code>, <code>LET</code>, <code>IF .. THEN</code>, <code>GOTO</code>, <code>PRINT</code> og <code>END</code>, samt enkel aritmetikk. Alle linjer må nummereres, og behøver <em>ikke</em> listes i riktig rekkefølge.</p>
+<p>Her er et eksempel på et program i denne BASIC&#39;en som summerer alle multipler av 3 og 5 under 1000 (min <em>Hello World</em>):</p>
+<pre><code class="hljs"><span class="hljs-symbol">0000 </span><span class="hljs-comment">REM Count multiples of 3 and 5 below 1000</span>
+
+<span class="hljs-symbol">0010 </span><span class="hljs-keyword">LET</span> I = <span class="hljs-number">3</span>
+<span class="hljs-symbol">0011 </span><span class="hljs-keyword">LET</span> SUM = <span class="hljs-number">0</span>
+
+<span class="hljs-symbol">9000 </span><span class="hljs-keyword">PRINT</span> SUM
+<span class="hljs-symbol">9001 </span><span class="hljs-keyword">END</span>
+
+<span class="hljs-symbol">0100 </span><span class="hljs-keyword">LET</span> TEMP = I % <span class="hljs-number">3</span>
+<span class="hljs-symbol">0110 </span><span class="hljs-keyword">IF</span> TEMP = <span class="hljs-number">0</span> <span class="hljs-keyword">THEN</span> <span class="hljs-number">400</span>
+
+<span class="hljs-symbol">0200 </span><span class="hljs-keyword">LET</span> TEMP = I % <span class="hljs-number">5</span>
+<span class="hljs-symbol">0210 </span><span class="hljs-keyword">IF</span> TEMP = <span class="hljs-number">0</span> <span class="hljs-keyword">THEN</span> <span class="hljs-number">400</span>
+
+<span class="hljs-symbol">0300 </span><span class="hljs-keyword">LET</span> I = I + <span class="hljs-number">1</span>
+<span class="hljs-symbol">0310 </span><span class="hljs-keyword">IF</span> I = <span class="hljs-number">1000</span> <span class="hljs-keyword">THEN</span> <span class="hljs-number">9000</span>
+<span class="hljs-symbol">0320 </span><span class="hljs-keyword">GOTO</span> <span class="hljs-number">100</span>
+
+<span class="hljs-symbol">0400 </span><span class="hljs-keyword">LET</span> SUM = SUM + I
+<span class="hljs-symbol">0410 </span><span class="hljs-keyword">GOTO</span> <span class="hljs-number">300</span></code></pre><p>Projektet mitt har kalt for <strong>CLEMENY</strong>, som er en Common Lisp-tvist av etternavnet til <a href="https://en.wikipedia.org/wiki/John_G._Kemeny">John G. Kemeny</a> - en av pionerene bak BASIC. Det ferdige <a href="https://github.com/tormaroe/clemeny">projektet finner du på Github</a> om du er interessert.</p>
+<p>##Parsing</p>
+<p>Med Esrap definerer jeg en <em>grammar</em> som parser BASIC-koden. Selv om jeg har definert slike ting en del ganger før, så er jeg på ingen måte noen ekspert, og den ble litt til etterhvert som jeg eksperimenterte.</p>
+<p>Her er en listing fra Esrap som beskriver resultatet:</p>
+<pre><code class="hljs">Grammar PROGRAM:
+   PROGRAM         &lt;- (AND (* LINE-TERMINATED) (? LINE)) : T
+   LINE-TERMINATED &lt;- (AND (? WSNL) LINE (? WS) (+ NL)) : T
+   WSNL            &lt;- (+ (OR WS NL)) : T
+   WS              &lt;- (+ (OR #\  #\Tab)) : T
+   NL              &lt;- (+ (AND (? #\Return) #\Newline)) : T
+   LINE            &lt;- (AND LINE-LABEL (? (AND WS COMMAND))) : T
+   LINE-LABEL      &lt;- (AND (? WS) INTEGER) : T
+   INTEGER         &lt;- (+ (OR <span class="hljs-string">&quot;0&quot;</span> <span class="hljs-string">&quot;1&quot;</span> <span class="hljs-string">&quot;2&quot;</span> <span class="hljs-string">&quot;3&quot;</span> <span class="hljs-string">&quot;4&quot;</span> <span class="hljs-string">&quot;5&quot;</span> <span class="hljs-string">&quot;6&quot;</span> <span class="hljs-string">&quot;7&quot;</span> <span class="hljs-string">&quot;8&quot;</span> <span class="hljs-string">&quot;9&quot;</span>)) : T
+   COMMAND         &lt;- (OR COMMENT NULLARY-COMMAND UNARY-COMMAND LET-COMMAND
+                          IF-COMMAND) : T
+   COMMENT         &lt;- (AND <span class="hljs-string">&quot;REM&quot;</span> (* (GRAPHIC-CHAR-P CHARACTER))) : T
+   NULLARY-COMMAND &lt;- (OR <span class="hljs-string">&quot;END&quot;</span>) : T
+   UNARY-COMMAND   &lt;- (AND (OR <span class="hljs-string">&quot;GOTO&quot;</span> <span class="hljs-string">&quot;PRINT&quot;</span>) WS VALUE) : T
+   VALUE           &lt;- (OR NAME INTEGER) : T
+   NAME            &lt;- (+ (UPPER-CASE-P CHARACTER)) : T
+   LET-COMMAND     &lt;- (AND <span class="hljs-string">&quot;LET&quot;</span> WS NAME WS #\= WS EXPRESSION) : T
+   EXPRESSION      &lt;- (OR (AND VALUE (? WS) OPERATOR (? WS) VALUE) VALUE) : T
+   OPERATOR        &lt;- (OR #\+ #\- #\* #\/ #\%) : T
+   IF-COMMAND      &lt;- (AND <span class="hljs-string">&quot;IF&quot;</span> WS COMPARISON WS <span class="hljs-string">&quot;THEN&quot;</span> WS INTEGER) : T
+   COMPARISON      &lt;- (AND VALUE WS (OR #\= #\&gt; #\&lt;) WS VALUE) : T</code></pre><p>##AST</p>
+<p>Når jeg bruker reglene over til å parse BASIC-programmet ender jeg opp med dette abstrakte syntakstreet (AST) i Common Lisp:</p>
+<pre><code class="hljs">((<span class="hljs-number">0</span> (<span class="hljs-string">&quot;REM&quot;</span> <span class="hljs-string">&quot; Count multiples of 3 and 5 below 1000&quot;</span>)) 
+ (<span class="hljs-number">10</span> (<span class="hljs-string">&quot;LET&quot;</span> <span class="hljs-string">&quot;I&quot;</span> <span class="hljs-number">3</span>))
+ (<span class="hljs-number">11</span> (<span class="hljs-string">&quot;LET&quot;</span> <span class="hljs-string">&quot;SUM&quot;</span> <span class="hljs-number">0</span>)) 
+ (<span class="hljs-number">100</span> (<span class="hljs-string">&quot;LET&quot;</span> <span class="hljs-string">&quot;TEMP&quot;</span> (<span class="hljs-string">&quot;MOD&quot;</span> <span class="hljs-string">&quot;I&quot;</span> <span class="hljs-number">3</span>)))
+ (<span class="hljs-number">110</span> (<span class="hljs-string">&quot;IF&quot;</span> (<span class="hljs-string">&quot;=&quot;</span> <span class="hljs-string">&quot;TEMP&quot;</span> <span class="hljs-number">0</span>) <span class="hljs-number">400</span>)) 
+ (<span class="hljs-number">200</span> (<span class="hljs-string">&quot;LET&quot;</span> <span class="hljs-string">&quot;TEMP&quot;</span> (<span class="hljs-string">&quot;MOD&quot;</span> <span class="hljs-string">&quot;I&quot;</span> <span class="hljs-number">5</span>)))
+ (<span class="hljs-number">210</span> (<span class="hljs-string">&quot;IF&quot;</span> (<span class="hljs-string">&quot;=&quot;</span> <span class="hljs-string">&quot;TEMP&quot;</span> <span class="hljs-number">0</span>) <span class="hljs-number">400</span>)) 
+ (<span class="hljs-number">300</span> (<span class="hljs-string">&quot;LET&quot;</span> <span class="hljs-string">&quot;I&quot;</span> (<span class="hljs-string">&quot;+&quot;</span> <span class="hljs-string">&quot;I&quot;</span> <span class="hljs-number">1</span>)))
+ (<span class="hljs-number">310</span> (<span class="hljs-string">&quot;IF&quot;</span> (<span class="hljs-string">&quot;=&quot;</span> <span class="hljs-string">&quot;I&quot;</span> <span class="hljs-number">1000</span>) <span class="hljs-number">9000</span>)) 
+ (<span class="hljs-number">320</span> (<span class="hljs-string">&quot;GOTO&quot;</span> <span class="hljs-number">100</span>))
+ (<span class="hljs-number">400</span> (<span class="hljs-string">&quot;LET&quot;</span> <span class="hljs-string">&quot;SUM&quot;</span> (<span class="hljs-string">&quot;+&quot;</span> <span class="hljs-string">&quot;SUM&quot;</span> <span class="hljs-string">&quot;I&quot;</span>))) 
+ (<span class="hljs-number">410</span> (<span class="hljs-string">&quot;GOTO&quot;</span> <span class="hljs-number">300</span>)) 
+ (<span class="hljs-number">9000</span> (<span class="hljs-string">&quot;PRINT&quot;</span> <span class="hljs-string">&quot;SUM&quot;</span>))
+ (<span class="hljs-number">9001</span> (<span class="hljs-string">&quot;END&quot;</span>))) </code></pre><p>##Kompilering</p>
+<p>Men hvordan skal jeg så kompilere dette til eksekverbar kode? Jo, Common Lisp har en interesang operator som heter <a href="http://clhs.lisp.se/Body/s_tagbod.htm#tagbody"><code>TAGBODY</code></a>. Den lar deg egentlig lage en slags GOTO-struktur, noe som gjør at mappingen fra BASIC til Common Lisp blir ganskel enkel.</p>
+<p>Så med kun noen få linjer kode transformerer jeg syntakstreet til denne strukturen:</p>
+<pre><code class="hljs">(<span class="hljs-name">BLOCK</span> NIL
+  (<span class="hljs-name">LET</span> (<span class="hljs-name">TEMP</span> I SUM)
+    (<span class="hljs-name">TAGBODY</span>
+     <span class="hljs-number">0</span>
+     <span class="hljs-number">10</span>
+      (<span class="hljs-name">SETF</span> I <span class="hljs-number">3</span>)
+     <span class="hljs-number">11</span>
+      (<span class="hljs-name">SETF</span> SUM <span class="hljs-number">0</span>)
+     <span class="hljs-number">100</span>
+      (<span class="hljs-name">SETF</span> TEMP (<span class="hljs-name">MOD</span> I <span class="hljs-number">3</span>))
+     <span class="hljs-number">110</span>
+      (<span class="hljs-name">WHEN</span> (<span class="hljs-name"><span class="hljs-built_in">=</span></span> TEMP <span class="hljs-number">0</span>) (<span class="hljs-name">GO</span> <span class="hljs-number">400</span>))
+     <span class="hljs-number">200</span>
+      (<span class="hljs-name">SETF</span> TEMP (<span class="hljs-name">MOD</span> I <span class="hljs-number">5</span>))
+     <span class="hljs-number">210</span>
+      (<span class="hljs-name">WHEN</span> (<span class="hljs-name"><span class="hljs-built_in">=</span></span> TEMP <span class="hljs-number">0</span>) (<span class="hljs-name">GO</span> <span class="hljs-number">400</span>))
+     <span class="hljs-number">300</span>
+      (<span class="hljs-name">SETF</span> I (<span class="hljs-name"><span class="hljs-built_in">+</span></span> I <span class="hljs-number">1</span>))
+     <span class="hljs-number">310</span>
+      (<span class="hljs-name">WHEN</span> (<span class="hljs-name"><span class="hljs-built_in">=</span></span> I <span class="hljs-number">1000</span>) (<span class="hljs-name">GO</span> <span class="hljs-number">9000</span>))
+     <span class="hljs-number">320</span>
+      (<span class="hljs-name">GO</span> <span class="hljs-number">100</span>)
+     <span class="hljs-number">400</span>
+      (<span class="hljs-name">SETF</span> SUM (<span class="hljs-name"><span class="hljs-built_in">+</span></span> SUM I))
+     <span class="hljs-number">410</span>
+      (<span class="hljs-name">GO</span> <span class="hljs-number">300</span>)
+     <span class="hljs-number">9000</span>
+      (<span class="hljs-name">FORMAT</span> T <span class="hljs-string">&quot;~A~%&quot;</span> SUM)
+     <span class="hljs-number">9001</span>
+      (<span class="hljs-name">RETURN</span>)))) </code></pre><p>Om jeg så sender dette til funksjonen <a href="http://clhs.lisp.se/Body/f_eval.htm#eval"><code>EVAL</code></a> vil summen 233168 printes ut til terminalen.</p>
+<p>Done!</p>
+<p>Om jeg nå hadde villet kunne jeg ha laget et Common Lisp image (i praksis et selvstendig, kjørbart program) som tok stien til en BASIC-fil som argument, kompilerte koden i minnet, evaluerte den direkte, og så avsluttet. Alternativt kunne kompilatoren skrevet den kompilerte Common Lisp-koden til en fil..., eller den kunne ha produsert et nytt image som når det ble kjørt eksekverte den kompilerte koden.</p>
+<p>Men jeg stopper der - det som var gøy var å skrive parseren og å kompilere til Common Lisp-kode.</p>
+<p>##Konklusjoner</p>
+<p>Esrap var en nokså enkel parser å jobbe med, og med noe prøving og feiling fikk jeg til alt jeg prøvde på. Den virker også å være ganske rask. Jeg kunne ha ønsket meg bedre feilmeldinger i noen tilfeller, men stort sett forstod jeg hva som gikk galt.</p>
+<p>Når jeg implementerer programmeringsspråk har jeg oftest implementert tolkere, ikke kompilatorer. Men å kompilere er egentlig både enklere og mere morro. Og Common Lisp er et flott språk å kompilere til/i, fordi kode og data i Lisp er to sider av samme sak (se <a href="https://en.wikipedia.org/wiki/Homoiconicity">homoiconicity</a>), og fordi Common Lisp er så rikt på egenskaper og støtte for ulike paradigmer.</p>
+<p>Så dette gav mersmak.</p>
+<p>Ta nå <a href="https://github.com/tormaroe/clemeny">en titt på koden</a> for å se hvordan det hele virker. Det er ikke mange linjene med kode...</p>
+<p>##P.S.</p>
+<p>Jeg kodet CLEMENY i SublimeText med en integrert REPL som kjørte Steel Bank Common Lisp.., takket være <a href="https://sublimerepl.readthedocs.org/en/latest/"><em>SublimeREPL</em></a>. Samme hvilket språk du bruker - Clojure, CoffeeScript, Elixir, F#, Lua, Perl, Python, eller andre - og du er interessert i å bruke SublimeText som editor, så er SublimeREPL absolutt noe du bør teste ut.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

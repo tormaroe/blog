@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Software/verktøy,Testing / TDD">
+
+    <title>Ultra-tiny given-when-then DSL-snippet</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Ultra-tiny given-when-then DSL-snippet</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 13. august 2009</small> 
+            <a href="/tags/software-verktøy"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Software/verktøy</span></a>
+          
+            <a href="/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
+          </p>
+          <p>Jeg har testet diverse TDD/BDD-rammeverk de siste månedene (bl.a. <a href="http://github.com/machine/machine.specifications/tree/master" target="_blank">machien specification</a> og <a href="http://code.google.com/p/tinybdd/" target="_blank">tinyBDD</a>), og eksperimentert endel med hvordan jeg kan skrive tester/spesifikasjoner som dokumenterer koden best mulig. Dette har resultert i at jeg ikke bruker noe spesielt rammeverk i det hele tatt, men bare bruker deskriptive navn og et generelt <i>given-when-then</i> formular.</p>
+<p>Mine tester har en stund nå sett ut omtrent som dette:</p>
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px">        [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px">        <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Stupid_car_start_1()</p>
+<p style="line-height: 11pt; margin: 0px">        {</p>
+<p style="line-height: 11pt; margin: 0px">            Given_transmission_is(manual);</p>
+<p style="line-height: 11pt; margin: 0px">            Given_transmission_is_in(first_gear);</p>
+<p style="line-height: 11pt; margin: 0px">            Given_clutch_pedal_is(not_engaged);</p>
+<p style="line-height: 11pt; margin: 0px">            When_key_is_turned();</p>
+<p style="line-height: 11pt; margin: 0px">            Then_car_should_jump_forward();</p>
+<p style="line-height: 11pt; margin: 0px">            Then_engine_should_be_dead();</p>
+<p style="line-height: 11pt; margin: 0px">        }</p>
+</div>
+<p>Det virker litt teit å si <em>given</em> tre ganger på rad. Alternativt kunne given nummer to og tre i stedet begynt med "And_", og det samme kunne jeg gjort med Then_engine_is_dead(). Det er derimot et problemer med den måten å gjøre det på; ofte vil den metoden som er given nummer 3 i én test plutselig bli den eneste given i en annen test, og da kan den ikke hete noe med "And".</p>
+<p>Et annet problem er at det som er en "When" i én test kan være kjekk å bruke som en "Given" i neste test. For å løse dette problemet legger jeg til et lite sett med properties i test-klassen:</p>
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #ff8000">        #region</span> Really tiny BDD DSL / Syntactic sugar</p>
+<p style="line-height: 11pt; margin: 0px">        <span style="color: #ff8000">protected</span> <span style="color: yellow">CarStartTests</span> Given { <span style="color: #ff8000">get</span> { <span style="color: #ff8000">return</span> <span style="color: #ff8000">this</span>; } }</p>
+<p style="line-height: 11pt; margin: 0px">        <span style="color: #ff8000">protected</span> <span style="color: yellow">CarStartTests</span> When { <span style="color: #ff8000">get</span> { <span style="color: #ff8000">return</span> <span style="color: #ff8000">this</span>; } }</p>
+<p style="line-height: 11pt; margin: 0px">        <span style="color: #ff8000">protected</span> <span style="color: yellow">CarStartTests</span> Then { <span style="color: #ff8000">get</span> { <span style="color: #ff8000">return</span> <span style="color: #ff8000">this</span>; } }</p>
+<p style="line-height: 11pt; margin: 0px">        <span style="color: #ff8000">protected</span> <span style="color: yellow">CarStartTests</span> and { <span style="color: #ff8000">get</span> { <span style="color: #ff8000">return</span> <span style="color: #ff8000">this</span>; } }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #ff8000">        #endregion</span></p>
+</div>
+<p>Her ser du hvordan den forrige testen blir seende ut ved å bruke de nye propertiene:</p>
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px">        [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px">        <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Stupid_car_start_2()</p>
+<p style="line-height: 11pt; margin: 0px">        {</p>
+<p style="line-height: 11pt; margin: 0px">            Given.transmission_is(manual);</p>
+<p style="line-height: 11pt; margin: 0px">            and.transmission_is_in(first_gear);</p>
+<p style="line-height: 11pt; margin: 0px">            and.clutch_pedal_is(not_engaged);</p>
+<p style="line-height: 11pt; margin: 0px">            When.key_is_turned();</p>
+<p style="line-height: 11pt; margin: 0px">            Then.car_should_jump_forward();</p>
+<p style="line-height: 11pt; margin: 0px">            and.engine_should_be_dead();</p>
+<p style="line-height: 11pt; margin: 0px">        }</p>
+</div>
+<p>Men nå står jeg også mye mer fritt til å trikse å mikse med metodene og variablene i test-klassen, samtidig som jeg beholder et flytende og naturlig språk. Samme testen kunne f.eks. lett se ut som dette: </p>
+<div style="font-family: monospace; margin-bottom: 12px; background: black; color: white; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px">        [<span style="color: yellow">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px">        <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Stupid_car_start_3()</p>
+<p style="line-height: 11pt; margin: 0px">        {</p>
+<p style="line-height: 11pt; margin: 0px">            Given.vehicle.Transmission = manual;</p>
+<p style="line-height: 11pt; margin: 0px">            and.vehicle.Transmission.SetGear(first);</p>
+<p style="line-height: 11pt; margin: 0px">            and.vehicle.Clutch.ChangeState(not_engaged);</p>
+<p style="line-height: 11pt; margin: 0px">            When.key.Turn();</p>
+<p style="line-height: 11pt; margin: 0px">            Then.car_jump_counter.should_be(1);</p>
+<p style="line-height: 11pt; margin: 0px">            and.vehicle.Engine.State.should_be(dead);</p>
+<p style="line-height: 11pt; margin: 0px">        }</p>
+</div>
+<p>I realiteten blir det som regel en blanding av de to fremgangsmåtene: <em>Givens</em> skjuler ofte mye, som f.eks. oppsett av mocks/fakes, og beholdes som metoder. <em>Thens</em> på den andre siden er som oftest minst like lesbare om de er tester direkte på en eller annen variabel brukt for å "sanse" korrektheten av testen/spesifikasjonen. Kombinert med et sett med fluent asserts (som du finner i <a href="http://code.google.com/p/coretdd/" target="_blank">coreTDD</a>) blir en sjekk av en variabel like lesbar som et metodenavn.</p>
+<p>Nedenfor er en Visual Studio snippet-fil jeg har definert for å enkelt kunne inserte de fire BDD-propertiene i nye testklasser. Hvis du lagrer XML'en med navnet <u>bdd.snippet</u> under "My Documents\Visual Studio 2008\Code Snippets\Visual C#\My Code Snippets", så vil du kunne bruke den ved for eksempel å skrive <strong>"bdd"</strong> i koden din (uten hermetegnene altså..) og trykke TAB to ganger.</p>
+<div style="font-family: monospace; font-size: 9pt; color: white; background: black; margin-bottom:12px;">
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;1</span>&nbsp;&lt;?xml <span style="color: #ff8000;">version</span>=&quot;<span style="color: lime;">1.0</span>&quot; <span style="color: #ff8000;">encoding</span>=&quot;<span style="color: lime;">utf-8</span>&quot; ?&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;2</span>&nbsp;&lt;CodeSnippets <span style="color: #ff8000;">xmlns</span>=&quot;<span style="color: lime;">http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet</span>&quot;&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;3</span>&nbsp;&nbsp; &nbsp; &lt;CodeSnippet <span style="color: #ff8000;">Format</span>=&quot;<span style="color: lime;">1.0.0</span>&quot;&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;4</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &lt;Header&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;5</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Title&gt;Given-When-Then Syntax Sugar&lt;/Title&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;6</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Shortcut&gt;bdd&lt;/Shortcut&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;7</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Author&gt;/&lt;/Author&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;8</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Description&gt;Provides a really tiny dsl for doing bdd.&lt;/Description&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;&nbsp;9</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &lt;/Header&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;10</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &lt;Snippet&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;11</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Declarations&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;12</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Object <span style="color: #ff8000;">Editable</span>=&quot;<span style="color: lime;">false</span>&quot;&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;13</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ID&gt;ClassName&lt;/ID&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;14</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Function&gt;ClassName()&lt;/Function&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;15</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Object&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;16</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Declarations&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;17</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Code <span style="color: #ff8000;">Language</span>=&quot;<span style="color: lime;">CSharp</span>&quot;&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;18</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;![CDATA[</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;19</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #region Really tiny BDD DSL / Syntactic sugar</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;20</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected $ClassName$ Given { get { return this; } }</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;21</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected $ClassName$ When { get { return this; } }</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;22</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected $ClassName$ Then { get { return this; } }</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;23</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected $ClassName$ and { get { return this; } }</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;24</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;25</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ]]&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;26</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Code&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;27</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &lt;/Snippet&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;28</span>&nbsp;&nbsp; &nbsp; &lt;/CodeSnippet&gt;</p>
+<p style="margin: 0px; line-height:11pt;"><span style="color: #2b91af;">&nbsp;&nbsp;&nbsp;29</span>&nbsp;&lt;/CodeSnippets&gt;</p>
+</div>
+<p>Hvis du finner noe mindre BDD-rammeverk enn dette så må du gi meg et vink ;)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

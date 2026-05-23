@@ -1,0 +1,123 @@
+---
+title: Overvåk ledig diskplass med WMI
+link: http://blog.kjempekjekt.com/2009/06/04/overvak-ledig-diskplass-med-wmi/
+layout: post
+date: 2009-06-04 23:35:32Z
+tags:
+  - Diverse prosjekter
+  - Jobb
+  - Software/verktøy
+---
+Med gjevne mellomrom går en eller annen disk på en eller annen server full, enten det er på grunn av ivrige logger, akkumulerende backups, voksende databaser eller noe helt annet. Uansett hva det er skaper det <em>alltid</em> problemer og tapt arbeidstid. Og med like gjevne mellomrom kan man høre meg klage, og si at nå <em>må</em> vi få på plass en løsning som kan overvåke diskene våre.
+
+I dag bestemte jeg meg derimot for å ikke klage lengre, og 20 minutter senere hadde jeg laget en liten app som viste meg hvor mye ledig diskplass det var på serverne våre. Jeg ante ikke at det skulle være <em>så</em> enkelt.
+
+Jeg begynte med å lage en liten dataklasse for å holde på informasjonen om en disk. Med hjelp av <a href="http://www.devexpress.com/Products/Visual_Studio_Add-in/Coding_Assistance/">CodeRush</a> tok det ikke mange sekunder eller tastetrykk. Her er DiskInfo-klassen:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">    8</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: #f0dfaf">DiskInfo</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">    9</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   10</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">string</span> <span style="color: #f8ffc6">DriveLetter</span> { <span style="font-weight: bold; color: #eaeaac">get</span>; <span style="font-weight: bold; color: #eaeaac">set</span>; }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   11</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">string</span> <span style="color: #f8ffc6">VolumeName</span> { <span style="font-weight: bold; color: #eaeaac">get</span>; <span style="font-weight: bold; color: #eaeaac">set</span>; }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   12</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">double</span> <span style="color: #f8ffc6">Size</span> { <span style="font-weight: bold; color: #eaeaac">get</span>; <span style="font-weight: bold; color: #eaeaac">set</span>; }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   13</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">double</span> <span style="color: #f8ffc6">Free</span> { <span style="font-weight: bold; color: #eaeaac">get</span>; <span style="font-weight: bold; color: #eaeaac">set</span>; }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   14</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">double</span> <span style="color: #f8ffc6">PercentFree</span> { <span style="font-weight: bold; color: #eaeaac">get</span> { <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">Free</span> / <span style="color: #f8ffc6">Size</span>; } }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   15</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   16</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">override</span> <span style="font-weight: bold; color: #eaeaac">string</span> <span style="color: #f8ffc6">ToString</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   17</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   18</span>         <span style="font-weight: bold; color: #eaeaac">return</span> <span style="font-weight: bold; color: #eaeaac">string</span>.<span style="color: #f8ffc6">Format</span>(<span style="color: #c89191">"{0}{1}{2}{3}{4}"</span>,</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   19</span>             <span style="color: #f8ffc6">DriveLetter</span>.<span style="color: #f8ffc6">PadRight</span>(<span style="color: #8acccf">5</span>),</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   20</span>             <span style="color: #f8ffc6">VolumeName</span>.<span style="color: #f8ffc6">PadRight</span>(<span style="color: #8acccf">30</span>),</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   21</span>             <span style="color: #f8ffc6">Size</span>.<span style="color: #f8ffc6">ToString</span>(<span style="color: #c89191">"###,###,###,###"</span>).<span style="color: #f8ffc6">PadLeft</span>(<span style="color: #8acccf">15</span>),</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   22</span>             <span style="color: #f8ffc6">Free</span>.<span style="color: #f8ffc6">ToString</span>(<span style="color: #c89191">"###,###,###,###"</span>).<span style="color: #f8ffc6">PadLeft</span>(<span style="color: #8acccf">15</span>),</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   23</span>             <span style="color: #f8ffc6">PercentFree</span>.<span style="color: #f8ffc6">ToString</span>(<span style="color: #c89191">"#0%"</span>).<span style="color: #f8ffc6">PadLeft</span>(<span style="color: #8acccf">10</span>));</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   24</span>     }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   25</span> }</p>
+</div>
+Og så trengte jeg noe som kunne hente ut informasjonen. Jeg har hørt mye om Windows Management Instrumentation (WMI), men aldri brukt det. Men en liten titt på <a href="http://msdn.microsoft.com/en-us/library/system.management.aspx">System.Management namespacet</a> avslørte at dette var akkurat det jeg behøvde:
+<p style="margin-left: 20px"><em>Provides access to a rich set of management information and management events about the system, devices, and applications instrumented to the WMI infrastructure. Applications and services can query for interesting management information (<u>such as how much free space is left on the disk</u>, what is the current CPU utilization, which database a certain application is connected to, and much more)...</em></p>
+Jeg laget en kjapp liten command-klasse jeg valgte å kalle DiskInfoRetriever, som gitt navnet på en server henter ut informasjon om alle diskene på den maskinen:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">    9</span> <span style="font-weight: bold; color: #eaeaac">using</span> <span style="color: #f8ffc6">System</span>.<span style="color: #f8ffc6">Management</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   10</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   11</span> <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: #f0dfaf">DiskInfoRetriever</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   12</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   13</span>     <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">string</span> <span style="color: #f8ffc6">_Server</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   14</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   15</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f0dfaf">List</span><<span style="color: #f0dfaf">DiskInfo</span>> <span style="color: #f8ffc6">Items</span> { <span style="font-weight: bold; color: #eaeaac">get</span>; <span style="font-weight: bold; color: #eaeaac">set</span>; }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   16</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   17</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">DiskInfoRetriever</span>(<span style="font-weight: bold; color: #eaeaac">string</span> <span style="color: #f8ffc6">server</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   18</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   19</span>         <span style="color: #f8ffc6">_Server</span> = <span style="color: #f8ffc6">FixServerName</span>(<span style="color: #f8ffc6">server</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   20</span>         <span style="color: #f8ffc6">Items</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">List</span><<span style="color: #f0dfaf">DiskInfo</span>>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   21</span>     }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   22</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   23</span>     <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">string</span> <span style="color: #f8ffc6">FixServerName</span>(<span style="font-weight: bold; color: #eaeaac">string</span> <span style="color: #f8ffc6">server</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   24</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   25</span>         <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">server</span>.<span style="color: #f8ffc6">StartsWith</span>(<span style="color: #a31515">@"\\"</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   26</span>             ? <span style="color: #f8ffc6">server</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   27</span>             : <span style="color: #a31515">@"\\"</span> + <span style="color: #f8ffc6">server</span> + <span style="color: #a31515">@"\root\cimv2"</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   28</span>     }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   29</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   30</span>     <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">Execute</span>()</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   31</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   32</span>         <span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">scope</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">ManagementScope</span>(<span style="color: #f8ffc6">_Server</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   33</span>         <span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">query</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">ObjectQuery</span>(</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   34</span>               <span style="color: #c89191">"select FreeSpace, VolumeName, Size, Name "</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   35</span>             + <span style="color: #c89191">"from Win32_LogicalDisk where DriveType=3"</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   36</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   37</span>         <span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">searcher</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">ManagementObjectSearcher</span>(<span style="color: #f8ffc6">scope</span>, <span style="color: #f8ffc6">query</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   38</span>         <span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">results</span> = <span style="color: #f8ffc6">searcher</span>.<span style="color: #f8ffc6">Get</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   39</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   40</span>         <span style="color: #f8ffc6">Items</span>.<span style="color: #f8ffc6">Clear</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   41</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   42</span>         <span style="font-weight: bold; color: #eaeaac">const</span> <span style="font-weight: bold; color: #eaeaac">int</span> <span style="color: #f8ffc6">MEGABYTE</span> = <span style="color: #8acccf">1048576</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   43</span>         <span style="font-weight: bold; color: #eaeaac">foreach</span> (<span style="color: #f0dfaf">ManagementObject</span> <span style="color: #f8ffc6">result</span> <span style="font-weight: bold; color: #eaeaac">in</span> <span style="color: #f8ffc6">results</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   44</span>         {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   45</span>             <span style="color: #f8ffc6">Items</span>.<span style="color: #f8ffc6">Add</span>(<span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">DiskInfo</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   46</span>             {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   47</span>                 <span style="color: #f8ffc6">DriveLetter</span> = <span style="color: #f8ffc6">result</span>[<span style="color: #c89191">"Name"</span>].<span style="color: #f8ffc6">ToString</span>(),</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   48</span>                 <span style="color: #f8ffc6">VolumeName</span> = <span style="color: #f8ffc6">result</span>[<span style="color: #c89191">"VolumeName"</span>].<span style="color: #f8ffc6">ToString</span>(),</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   49</span>                 <span style="color: #f8ffc6">Size</span> = (<span style="font-weight: bold; color: #eaeaac">double</span>.<span style="color: #f8ffc6">Parse</span>(<span style="color: #f8ffc6">result</span>[<span style="color: #c89191">"Size"</span>].<span style="color: #f8ffc6">ToString</span>()) / <span style="color: #f8ffc6">MEGABYTE</span>),</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   50</span>                 <span style="color: #f8ffc6">Free</span> = (<span style="font-weight: bold; color: #eaeaac">double</span>.<span style="color: #f8ffc6">Parse</span>(<span style="color: #f8ffc6">result</span>[<span style="color: #c89191">"FreeSpace"</span>].<span style="color: #f8ffc6">ToString</span>()) / <span style="color: #f8ffc6">MEGABYTE</span>),</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   51</span>             });</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   52</span>         }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   53</span>     }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   54</span> }</p>
+</div>
+Legg merke til den SQL-lignende spørringen på linje 34/35.
+
+Nå gjenstod det bare å definere en liste med servere, initialisere en bunch med command-objekter, eksekvere dem, og <em>loope</em> gjennom resultatet for å skrive objektene til konsollet. Det gjorde jeg i Main:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #85ac8d">   10</span> <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">Main</span>(<span style="font-weight: bold; color: #eaeaac">string</span>[] <span style="color: #f8ffc6">args</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   11</span> {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   12</span>     <span style="font-weight: bold; color: #eaeaac">string</span>[] <span style="color: #f8ffc6">servers</span> = { <span style="color: #c89191">"s1dev02"</span>, <span style="color: #c89191">"s1dev03"</span>, <span style="color: #c89191">"s1dev04"</span>, <span style="color: #c89191">"s1dev05"</span>, <span style="color: #c89191">"s1hvsql01"</span> };</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   13</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   14</span>     <span style="font-weight: bold; color: #eaeaac">try</span></p>
+<p style="margin: 0px"><span style="color: #85ac8d">   15</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   16</span>         <span style="font-weight: bold; color: #eaeaac">foreach</span> (<span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">server</span> <span style="font-weight: bold; color: #eaeaac">in</span> <span style="color: #f8ffc6">servers</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   17</span>         {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   18</span>             <span style="color: #f0dfaf">Console</span>.<span style="color: #f8ffc6">WriteLine</span>(<span style="color: #f8ffc6">server</span> + <span style="color: #c89191">":"</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   19</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   20</span>             <span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">diskInfoRetriever</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: #f0dfaf">DiskInfoRetriever</span>(<span style="color: #f8ffc6">server</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   21</span>             <span style="color: #f8ffc6">diskInfoRetriever</span>.<span style="color: #f8ffc6">Execute</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   22</span>             <span style="color: #f8ffc6">diskInfoRetriever</span>.<span style="color: #f8ffc6">Items</span>.<span style="color: #f8ffc6">ForEach</span>((<span style="color: #f8ffc6">disk</span>) => <span style="color: #f0dfaf">Console</span>.<span style="color: #f8ffc6">WriteLine</span>(<span style="color: #f8ffc6">disk</span>));</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   23</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   24</span>             <span style="color: #f0dfaf">Console</span>.<span style="color: #f8ffc6">WriteLine</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   25</span>         }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   26</span>     }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   27</span>     <span style="font-weight: bold; color: #eaeaac">catch</span> (<span style="color: #f0dfaf">Exception</span> <span style="color: #f8ffc6">ex</span>)</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   28</span>     {</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   29</span>         <span style="color: #f0dfaf">Console</span>.<span style="color: #f8ffc6">ForegroundColor</span> = <span style="color: #2b91af">ConsoleColor</span>.<span style="color: #f8ffc6">Red</span>;</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   30</span>         <span style="color: #f0dfaf">Console</span>.<span style="color: #f8ffc6">WriteLine</span>(<span style="color: #f8ffc6">ex</span>.<span style="color: #f8ffc6">ToString</span>());</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   31</span>     }</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   32</span> </p>
+<p style="margin: 0px"><span style="color: #85ac8d">   33</span>     <span style="color: #f0dfaf">Console</span>.<span style="color: #f8ffc6">WriteLine</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   34</span>     <span style="color: #f0dfaf">Console</span>.<span style="color: #f8ffc6">WriteLine</span>(<span style="color: #c89191">"press ENTER to exit.."</span>);</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   35</span>     <span style="color: #f0dfaf">Console</span>.<span style="color: #f8ffc6">ReadLine</span>();</p>
+<p style="margin: 0px"><span style="color: #85ac8d">   36</span> }</p>
+</div>
+20 minutter tidligere hadde jeg ingen anelse om at jeg kom til å lage dette her, eller at det var så enkelt. For fremtiden skal jeg tenke meg om en ekstra gang før jeg klager over en manglende, teknisk løsning. Det meste lar seg løse, og mye er enklere enn man tror.
+
+Neste steg blir å lage en ny modul til <a href="http://blog.kjempekjekt.com/?s=contikicenter">ContikiCenter</a> som kan informere oss om når disker nærmer seg smertegrensen. Her er forresten resultatet av dagens kjøring:
+<div><a title="Disk Watcher console app by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3596065688/"><img height="247" alt="Disk Watcher console app" src="http://farm3.static.flickr.com/2476/3596065688_bd8f3b2f36.jpg" width="500" border="0" /></a></div>
+Obs, det ser ut som om vi må foreta en liten opprydning på s1dev04. Jaja, det får vente til i morgen.. :)

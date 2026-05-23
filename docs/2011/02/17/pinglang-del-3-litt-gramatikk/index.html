@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="DSL,PingLang">
+
+    <title>PingLang del 3: Litt gramatikk</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>PingLang del 3: Litt gramatikk</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 17. februar 2011</small> 
+            <a href="/tags/dsl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DSL</span></a>
+          
+            <a href="/tags/pinglang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> PingLang</span></a>
+          </p>
+          <p>Før jeg fortsetter implementasjonen av PingLang er det på tide å snakke litt om <strong><em>grammars</em></strong> – dvs. hvordan man kan beskrive syntaksen til et programmeringsspråk på en presis og formell måte. Dette er <em>ikke</em> noe du <em>må</em> gjøre for å kunne implementere et språk. For enkle språk eksisterer gjerne syntaks-reglene i hodet på utvikleren, og det kan fungere helt greit. Men en grammar kan fungere som en slags pseudo-kode, og kan gjøre det enklere å implementere språket. </p>
+<p>For å spesifisere en grammar bruker man en notasjon som kalles <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form" target="_blank"><strong>Backus-Naur Form</strong> (BNF)</a>. Backus (som jeg skrev om i <a href="/2010/12/13/informatisk-julekalender-luke-13/">julekalenderen, luke 13</a>) utviklet BNF for å spesifisere programmeringsspråket ALGOL, og hans notasjon har siden blitt en standard for å spesifisere syntaks.</p>
+<p>Om man ønsker å bruke en såkalt <em>parser generator</em> for gjøre implementasjonen av et språk/DSL enklere, vil man som regel bruke BNF som et språk for å drive genereringen. Jeg gjør ikke det for PingLang, men BNF-reglene jeg skriver her vil som sagt hjelpe meg mye når jeg programmerer parseren for hånd. </p>
+<h4>Terminals</h4>
+<p>Så la oss ta en titt på grammar’en til PingLang. Om vi begynner forsiktig så har vi først har vi en liste med såkalte terminals som i praksis utgjør alle nøkkelordene i PingLang.</p>
+<pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; padding-top: 6px">LISTEN       : 'listen on port'                      ;
+COUNT        : 'count every'                         ;
+STARTING     : 'starting'                            ;
+ERROR        : 'error'                               ;
+PINGED       : 'pinged'                              ;
+MESSAGE      : 'message'                             ;
+COUNTER      : 'counter'                             ;
+GT           : '&gt;'                                   ;
+PRINT        : 'print'                               ;
+PING         : 'ping'                                ;
+RESET        : 'reset counter'                       ;
+WAIT         : 'wait'                                ;
+SEND         : 'send'                                ;
+TO_PORT      : 'to port'                             ;
+</pre>
+<p>Hvis du mener du har sett denne listen før så har du helt rett. Dette er nemlig en del av listen over mulige tokens som jeg implementerte da jeg lagde lexeren i <a href="/2011/02/04/pinglang-del-2-en-lexer/">PingLang del 2</a>. Men det mangler noen terminals – dette var kun de som består av konstante tekststrenger. I tillegg har vi disse:</p>
+<pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; padding-top: 6px">ID           : ('a'..'z'|'A'..'Z')+ (\w|\-)*         ;
+STRING       : '\"' [any char not newline]* '\"'     ;
+INT          : '0'..'9'+                             ;
+T            : (\r|\n|;)+                            ;
+</pre>
+<p>Her sier jeg f.eks. at en identifikator (ID) i PingLang består av en bokstav mellom a og z, etterfulgt av et vilkårlig antall bokstaver, tall eller bindestreker. Jeg sier at en streng er alt mellom to hermetegn, sålenge det ikke er et linjeskift. Et tall (INT) er ett eller flere siffer.</p>
+<p>Den litt spesielle terminatoren T har jeg definert til å være en eller flere linjeskift og/eller semikolon. Dette vil gjøre det litt vanskeligere å parse koden, men vil gi oss litt mere fleksibilitet når vi skal kode i PingLang. Du vil se igjen T’en i mange regler nedenfor, men forsøk å ikke henge deg for mye opp i det. De er der for å sørge for at programmereren kan legge inn et vilkårlig antall linjeskift der hvor det er naturlig.</p>
+<p>Videre har vi et par terminals som vil bli forkastet av av lexeren, nemlig whitespace (WS) og kommentarer (COMMENT). En kommentar er noe som begynner med enten to backslasher eller et hash-symbol (både C og Ruby-stil tillat altså), og som fortsetter til første linjeskift.</p>
+<pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; padding-top: 6px">WS           : ( |\t)+                               ;
+COMMENT      : (\\\\|#) [any char not newline]*      ;
+</pre>
+<p>Jeg håper du ser hvordan disse reglene begynner å gi språket vårt form. Nå følger de reglene som ikke er terminals. Disse er det ikke lexeren som er ansvarlig for – de vil bli brukt til å implementere resten av parseren (i neste del i serien).</p>
+<h4>Sammensatte regler</h4>
+<p>Her er den aller første regelen, som definerer hvordan et PingLang-program ser ut:</p>
+<pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; padding-top: 6px">program      : actor* T? EOF                         ;
+</pre>
+<p>Et program er altså null eller flere actors, muligens etterfulgt av en T (definert tidligere som en eller flere linjeskift og/eller semikolon), etterfulgt av EOF (end of file). Vi trenger så å vite hva en actor er:</p>
+<pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; padding-top: 6px">actor        : T? ID actorBody                       ;
+</pre>
+<p>En actor består muligens av en T, etterfulgt av en ID (navnet på actoren), etterfulgt av en actorBody. Vi går videre til actorBody:</p>
+<pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; padding-top: 6px">actorBody    : T? (listenStmt|countStmt|whenBlock)* . ;
+</pre>
+<p>En actorBody består igjen muligens av en T, etterfulgt av null eller flere av tre ulike elementer: en listen-definisjon, en count-definisjon, eller en when-block. Til slutt avsluttes actorBody av et punktum.</p>
+<p>Vi må fortsette å grave oss ned i reglene til vi kommer til terminals. Listen-definisjonen (listenStmt) er et eksempel på en slik regel:</p>
+<pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; padding-top: 6px">listenStmt   : LISTEN INT T?                         ;
+</pre>
+<p>Den begynner med en LISTEN terminal, som vi tidligere har definert til å være strenger “listen on port”. Deretter kommer et tall (INT), muligens etterfulgt av en T.</p>
+<p>Og slik fortsetter vi til vi har definert hele språket..</p>
+<pre style="padding-bottom: 6px; background-color: #eeeeee; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; padding-top: 6px">countStmt    : COUNT INT unit T?                     ;
+unit         : 'second'|'seconds'                    ;
+
+whenBlock    : WHEN eventSpec eventBody              ;
+eventSpec    : STARTING
+             | ERROR
+             | PINGED
+             | MESSAGE
+             | COUNTER GT INT                        ;
+eventBody    : action 
+             | action T                               
+             | T+ (action T)+ END T+                 ;
+
+action       : PRINT printArgs
+             | PING INT
+             | RESET
+             | WAIT INT unit
+             | SEND STRING TO_PORT INT               ;
+
+printArgs    : (INT|STRING|MESSAGE|COUNTER)*         ;
+</pre>
+<p>Og det var det hele. Ut fra denne BNF-definisjonen kan du utlede hvordan alle gyldige PingLang-programmer kan se ut. Reglene sier ingen ting om hva de ulike tingene betyr - altså semantikken i språket – kun hva som er tillat syntaks. </p>
+<p>Jeg står over å forklare i detalj hvordan BNF fungerer, men håper du forstod det grunnleggende. Disse reglene vil vi ta med oss videre i neste artikkel hvor jeg skal implementere PingLang-parseren. Er du interessert i å se flere grammars kan du ta en titt på <a href="http://www.devincook.com/GOLDParser/grammars/index.htm" target="_blank">Grammar Downloads</a>, hvor du finner et hav av eksempler.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

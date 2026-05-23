@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Ruby">
+
+    <title>Kalenderluke 11: Hvem er input?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kalenderluke 11: Hvem er input?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 12. desember 2013</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p>Luke 11 i utviklernes julekalender 2013 inneholdt litt ruby-kode, navnet til en hemmelig valgt deltager, og et output generert fra dette navnet. Oppgaven var å finne hvilket navn som var brukt, og da har man i grunnen to ulike fremgangsmåter.</p>
+<h2>Forsøke alle navnene</h2>
+<p>Funksjonen i oppgaven går kun én vei; man kan ikke starte med output og få ut hva input var. Derimot kan man forsøke å kalle funksjonen med alle gyldige input – dvs. navnene til alle deltagerne i julekalenderen – og se hvilke navn som gir det riktige output. Dette er en brukbar strategi om man har Ruby installert, og jeg antar det var dette de fleste gjorde.</p>
+<p>Men om du ønsker å forstå hva funksjonen gjør så kan du også komme frem til navnet med litt hjernekraft...</p>
+<h2>Analysere koden og output</h2>
+<pre>def process input
+  input.
+    downcase.
+    split('').
+    sort.
+    chunk {|c| c.ord }.
+    inject('') {|a,x| "#{a}#{x[0]}#{x[1].size}" }
+end
+</pre>
+<p>Funksjonen <code>process</code> sender <code>input</code> gjennom en pipeline av transformerende funksjonskall. La oss begynne med et tenkt input "Janne", og se hva som skjer i hvert steg.</p>
+<pre>"Janne".downcase</pre>
+<p><code>downcase</code> endrer alle store bokstaver til små bokstaver. Resultatet er "janne".</p>
+<pre>"janne".split('')</pre>
+<p><code>split</code> med en tom streng som argument deler opp strengen bokstav for bokstav. Resultatet er ["j", "a", "n", "n", "e"].</p>
+<pre>["j", "a", "n", "n", "e"].sort</pre>
+<p>Her sorterer jeg arrayet, som gir ["a", "e", "j", "n", "n"].</p>
+<pre>["a", "e", "j", "n", "n"].chunk {|c| c.ord }</pre>
+<p><code>chunk</code> brukes til å gruppere elementene i arrayet. Jeg bestemmer at tegnene (c) skal grupperes på integer/ASCII-verdien (c.ord). Resultatet er en enumerasjon som inneholder [[97, ["a"]], [101, ["e"]], [106, ["j"]], [110, ["n", "n"]]].</p>
+<pre>[[97, ["a"]], 
+ [101, ["e"]], 
+ [106, ["j"]], 
+ [110, ["n", "n"]]].inject('') {|a,x| 
+   "#{a}#{x[0]}#{x[1].size}" 
+}</pre>
+<p><code>inject</code> er Rubys funksjon for å "slå sammen" en enumerasjon til én verdi - det samme som <code>Aggregate</code> i C#, <code>fold</code> i språk som Haskell / ML / F#, <code>reduce</code> i Clojure, <code>Accumulate</code> og <code>Compress</code> andre steder. Jeg har snakket <i>mye</i> om bruk av denne typen funksjoner her på bloggen.</p>
+<p>I dette tilfellet bygger jeg opp en streng av ASCII-verdiene konkatenert med antall bokstaver i hver gruppe. Resultatet blir dermed 971101110611102.</p>
+<p>Når vi forstår dette kan vi forsøke å bryte opp output fra oppgaven, som var 32297310121031104110611071108111011111114111511161. Vi kan anta at vi holder oss innenfor en range av verdier fra 32 (space) til rundt et par hundre om navnet inkluderer noen sære tegn.</p>
+<pre>32 2   #=&gt; To space, navnet består av tre deler! 
+97 3   #=&gt; Tre a
+101 2  #=&gt; To  e
+103 1  #=&gt; En  g
+104 1  #=&gt; En  h
+106 1  #=&gt; En  j
+107 1  #=&gt; En  k
+108 1  #=&gt; En  l
+110 1  #=&gt; En  n
+111 1  #=&gt; En  o
+114 1  #=&gt; En  r
+115 1  #=&gt; En  s
+116 1  #=&gt; En  t
+</pre>
+<p>Og så gjenstår det å bruke hjernens mønstergjenkjennings-egenskaper til å sette sammen bokstavene til et fornuftig navn. Eller å endelig innse at det er lurere å kjøre funksjonen på alle navnene likevel :P</p>
+<h2>Hvem klarte det raskest?</h2>
+<p>Hurtigst til å svare riktig på oppgaven i luke 11 var Magnar Sveen, som begynner å få en solid ledelse sammenlagt. Han klarte oppgaven på 5 minutter og 46 sekunder.</p>
+<p>Her er en oversikt over poengutviklingen for noen utvalgte spillere:</p>
+<p><img title="luke11_tabell" style="border-top: 0px; border-right: 0px; background-image: none; border-bottom: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 22px auto; border-left: 0px; display: block; padding-right: 0px" border="0" alt="luke11_tabell" src="/uploads/2013/12/luke11_tabell.jpg" width="593" height="153"></p>
+<p>Og de samme tallene presentert grafisk (klikk for full størrelse):</p>
+<p><a href="/uploads/2013/12/luke11_chart.jpg"><img title="luke11_chart" style="border-top: 0px; border-right: 0px; background-image: none; border-bottom: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; border-left: 0px; display: block; padding-right: 0px; margin-right: auto" border="0" alt="luke11_chart" src="/uploads/2013/12/luke11_chart_thumb.jpg" width="600" height="194"></a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

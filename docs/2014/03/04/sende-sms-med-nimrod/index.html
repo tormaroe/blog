@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Nimrod,SMS">
+
+    <title>Sende SMS med Nimrod</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Sende SMS med Nimrod</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 4. mars 2014</small> 
+            <a href="/tags/nimrod"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Nimrod</span></a>
+          
+            <a href="/tags/sms"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> SMS</span></a>
+          </p>
+          <p>Dette er min andre post om <em>Nimrod</em>, et programmeringsspråk jeg nettopp har oppdaget, og som var såpass interessant at jeg bestemte meg for å bruke litt tid på å lære det.</p>
+<p>I den første posten løste jeg Euler1 - min <em>hello world</em> jeg alltid løser aller først når jeg lærer nye språk. Den <em>andre</em> tingen jeg som regel gjør er å se hvordan jeg kan sende en SMS. Dette er egentlig bare en yrkesskade, men det er en grei måte å teste ut hvordan man gjør <em>webkall</em>, enkel <em>strengbehandling</em> og <em>input fra kommandolinjen</em>.</p>
+<p>Det jeg skal lage er altså et lite konsollprogram som ber om input fra brukeren, og som sender en SMS via et av <a href="http://pswin.com">PSWinCom</a> sine aller enkleste API&#39;er - et http GET request.</p>
+<h2>Let&#39;s do it</h2>
+<p>Først må jeg importere et par moduler som jeg skal bruke..</p>
+<pre><code class="hljs ruby">import httpclient, strutils</code></pre><p>Jeg må bygge opp en URL som jeg skal bruke til å sende tekstmeldingen. Jeg starter med å definere variabelen <code>req</code> med adressen til riktig endepunkt</p>
+<pre><code class="hljs ruby">var req = <span class="hljs-string">&quot;http://sms.pswin.com/http4sms2/send.aspx&quot;</span></code></pre><p>Deretter lager jeg en liten prosedyre for å hjelpe meg å be brukeren om de ulike parametrene. Prosedyren konkatenerer navn og verdi på adressen i <code>req</code>.</p>
+<pre><code class="hljs ruby"><span class="hljs-built_in">proc</span> promptParameter(<span class="hljs-symbol">label:</span> string) =
+  stdout.write label
+  req.add label
+  req.add(stdin.readline.replace(<span class="hljs-string">&quot; &quot;</span>,<span class="hljs-string">&quot;+&quot;</span>))</code></pre><p>Og så kan jeg bruke den til å be om brukernavn, passord, mottakernummer og selve meldingen.</p>
+<pre><code class="hljs ruby">promptParameter <span class="hljs-string">&quot;?USER=&quot;</span>
+promptParameter <span class="hljs-string">&quot;&amp;PW=&quot;</span>
+promptParameter <span class="hljs-string">&quot;&amp;RCV=&quot;</span>
+promptParameter <span class="hljs-string">&quot;&amp;TXT=&quot;</span></code></pre><p>Nå er vi klare får å gjøre webkallet, og det er så enkelt som å si:</p>
+<pre><code class="hljs ruby">let resp = get(req)</code></pre><p><code>resp</code> representerer responsen (si det fort fem ganger!), og jeg avslutter med å skrive ut den ferdige URL&#39;en samt statuskoden og resultatet fra SMS Gatewayen:</p>
+<pre><code class="hljs ruby">echo <span class="hljs-string">&quot;Request: &quot;</span>, req
+echo <span class="hljs-string">&quot;Response status: &quot;</span>, resp.status
+echo <span class="hljs-string">&quot;Response body: &quot;</span>, resp.body</code></pre><h2>Og så kan vi kompilere og kjøre programmet</h2>
+<p>Jeg åpner PowerShell og forteller nimrod at den skal kompilere sms.nim.</p>
+<pre><code class="hljs">PS C:<span class="hljs-string">\dev\nimrod-test&gt;</span> nimrod.exe compile .<span class="hljs-string">\sms.nim</span></code></pre><p>Nimrod spytter ut gcc-kommandoene den kjører og noen hint, og så er den ferdig og jeg har en native <code>sms.exe</code> klar til å kjøres:</p>
+<pre><code class="hljs bash">PS C:\dev\nimrod-test&gt; .\sms.exe
+?USER=gatewayuser
+&amp;PW=gatewaypassword
+&amp;RCV=4790696698
+&amp;TXT=Dette er en <span class="hljs-built_in">test</span> fra Nimrod
+http://sms.pswin.com/http4sms2/send.aspx?USER=gatewayuser&amp;PW=gatewaypassword&amp;RCV=4790696698&amp;TXT=Dette+er+en+<span class="hljs-built_in">test</span>+fra+Kong+Nimrod
+Response status: 200 OK
+Response body: 0
+OK</code></pre><p>Og det var det; 14 linjer kode for å lage en enkel og liten SMS-klient. Ikke noe å samle på akkurat, men jeg lærte litt mer om å kode i Nimrod.</p>
+<p>I neste bloggpost vil jeg skrive et <em>litt</em> større program som jeg også har gjort i mange forskjellige språk - nemlig en stack-basert kalkulator. Så følg med!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

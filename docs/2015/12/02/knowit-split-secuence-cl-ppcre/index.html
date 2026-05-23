@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Common Lisp,Regex">
+
+    <title>Knowit provoserer frem split-sequence og cl-ppcre</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Knowit provoserer frem split-sequence og cl-ppcre</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 2. desember 2015</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/regex"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Regex</span></a>
+          </p>
+          <p>Utviklerne i <strong><a href="http://knowitlabs.no/">Knowit Labs</a></strong> har også laget <a href="https://julekalender.knowit.no/">en julekalender i år</a>. En utviklerkonkurranse i samme stil som jeg gjorde julen 2013. Jeg liker å tro at jeg var en av inspirasjonskildene ;)</p>
+<p>Selvfølgelig måtte jeg slenge meg på og løse første oppgave i går. Nå er fristen utløpt, så jeg kan vise frem hvordan jeg løste den. Det var ikke så vanskelig, men siden jeg blant annet fokuserer på Common Lisp i min egen kalender så tenkte jeg at jeg også skulle løse knowits utfordringer i det språket.</p>
+<p>Oppgaven presenterte en liste med potensielle &quot;Ruritanianske&quot; personnummer - og man skulle finne ut hvor mange av dem som var gyldige. Et typisk regex-problem.</p>
+<p>Her er det jeg skrev for å komme frem til svaret - se på dette som en bonus-teaser i forhold til hva som kommer til å komme av Common Lisp-poster her i desember:</p>
+<pre><code class="hljs">(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:drakma</span>)
+(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:cl-ppcre</span>)
+(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:split-sequence</span>)
+
+(<span class="hljs-name">defun</span> get-id-list ()
+  (<span class="hljs-name">split-sequence</span><span class="hljs-symbol">:split-sequence-if</span> 
+    (<span class="hljs-name">lambda</span> (<span class="hljs-name">x</span>) (<span class="hljs-name">member</span> x &#x27;(#\return #\newline)))
+    (<span class="hljs-name">drakma</span><span class="hljs-symbol">:http-request</span> <span class="hljs-string">&quot;http://pastebin.com/raw.php?i=F8z0JWqa&quot;</span>)
+    <span class="hljs-symbol">:remove-empty-subseqs</span> <span class="hljs-literal">t</span>))
+
+(<span class="hljs-name">defun</span> valid-p (<span class="hljs-name">id</span>)
+  (<span class="hljs-name">cl-ppcre</span><span class="hljs-symbol">:scan</span> <span class="hljs-string">&quot;^[a-z]{0,3}[0-9]{2,8}[A-Z]{3,}&quot;</span> id))
+
+(<span class="hljs-name">defun</span> main ()
+  (<span class="hljs-name">length</span> (<span class="hljs-name">remove-if-not</span> #&#x27;valid-p (<span class="hljs-name">get-id-list</span>))))
+
+(<span class="hljs-name">main</span>)</code></pre><p>Dette var første gang jeg hadde fått bruk for å splitte en sekvens i Common Lisp, 
+og jeg måtte google litt for å finne 
+<a href="http://quickdocs.org/split-sequence/">split-sequence</a>. Den viste seg å være en 
+ganske fin utility-funksjon.</p>
+<p>Ellers synes jeg løsningen ble fin; <a href="http://weitz.de/drakma/">drakma</a> gjør det 
+trivielt å laste ned dataene, og <a href="http://weitz.de/cl-ppcre/">cl-ppcre</a> <em>(Portable Perl-compatible regular expressions for Common Lisp)</em> gjør det 
+enkelt å bruke regulære uttrykk. Når jeg tenker meg om kunne jeg nok brukt 
+cl-ppcre til å splitte dataene også, men da hadde jeg jo aldri oppdaget split-sequence.</p>
+<p>Om jeg bare hadde brukt cl-ppcre hadde <code>get-id-list</code> blitt slik:</p>
+<pre><code class="hljs">(<span class="hljs-string">defun</span> <span class="hljs-built_in">get-id-list</span> ()
+  (<span class="hljs-string">cl-ppcre:split </span><span class="hljs-string">&quot;\\r\\n&quot;</span>
+    (<span class="hljs-string">drakma:http-</span><span class="hljs-string">request</span> <span class="hljs-string">&quot;http://pastebin.com/raw.php?i=F8z0JWqa&quot;</span>)))</code></pre><p>Jeg anbefaler alle utviklere å <a href="https://julekalender.knowit.no/">delta på knowits julekalender</a>, hvor du blir med i trekningen av valgfri smarttelefon.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

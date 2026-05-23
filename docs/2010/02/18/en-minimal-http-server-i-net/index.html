@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="C#,OO Patterns,Webutvikling">
+
+    <title>En minimal http-server i .Net</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En minimal http-server i .Net</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 18. februar 2010</small> 
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          
+            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+          </p>
+          <p>.Net-rammeverket er fullt av moduler for å lage webtjenester; du kan bruke <strong>WebForms</strong> eller <strong>ASP.NET MVC</strong>, <strong>SOAP web services</strong> eller <strong>WCF</strong>, <strong>RIA services</strong> eller <strong>Astoria data services</strong>, alt etter dagsform og hvilket behov du har. Noen ganger kan det derimot være greit å vite hvordan man på aller enklest måte kan lage en http-basert server. I Chrome-vinduet under ser du hvordan jeg aksesserer en <em>"no-fuss"</em> service som kan fortelle meg hva klokka er…</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="CropperCapture[48]" border="0" alt="CropperCapture[48]" src="/uploads/2010/02/CropperCapture48.png" width="498" height="169"> </p>
+<p>I denne artikkelen presenterer jeg den ikke så veldig godt kjente klassen <strong><em>HttpListener</em></strong> (i System.Net namespacet), og viser hvordan man enkelt kan bruke den til å lage en slags webserver. Denne teknikken kan være aktuell om man f.eks. skulle trenge å raskt <em>mocke opp</em> noen webservicer som ikke følger de vanlige standardene, eller om man skal lage moduler som kommuniserer over http med en proprietær protokoll.</p>
+<p>Men jeg har mer på lur: Http-serveren jeg presenterer her er designet for å være utvidbar, og bruker derfor STRATEGY PATTERN i håndteringen av forespørslene. Du vil også få se hvordan jeg kombinerer <em><strong>attributter</strong></em> og <strong><em>reflection</em></strong> for å kunne dynamisk legge til ny adferd uten å måtte editere eksisterende kode. </p>
+<p>Her følger selve server-klassen: SimpleHttpServer. Det sentrale skjer i linje 30 til 33, hvor jeg oppretter en HttpListener, registrerer adresse og port for lytting, og starter å lytte. Dette tilsvarer mer eller mindre hvordan Internet Information Server (IIS) selv registrerer seg for lytting mot operativsystemet.</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    9</span> <span style="color: #00bfff">public</span> <span style="color: #00bfff">class</span> <span style="color: #00d2d2">SimpleHttpServer</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   10</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   11</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">_address</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">int</span> <span style="color: #c4c4c4">_port</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   13</span>     <span style="color: #00bfff">private</span> <span style="color: #7ee0ce">ResponderFactory</span> <span style="color: #c4c4c4">_dispatcher</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   14</span>     <span style="color: #00bfff">public</span> <span style="color: #c4c4c4">SimpleHttpServer</span>(<span style="color: #00bfff">string</span> <span style="color: #c4c4c4">address</span>, <span style="color: #00bfff">int</span> <span style="color: #c4c4c4">port</span>, <span style="color: #7ee0ce">ResponderFactory</span> <span style="color: #c4c4c4">dispatcher</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   15</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   16</span>         <span style="color: #c4c4c4">_port</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">port</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   17</span>         <span style="color: #c4c4c4">_address</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">address</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   18</span>         <span style="color: #c4c4c4">_dispatcher</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">dispatcher</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   19</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   20</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   21</span>     <span style="color: #00bfff">private</span> <span style="color: #00d2d2">HttpListener</span> <span style="color: #c4c4c4">_httpListener</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   22</span>     <span style="color: #00bfff">public</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">Start</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   23</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   24</span>         <span style="color: #c4c4c4">StartHttpListener</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   25</span>         <span style="color: #00bfff">while</span> (<span style="color: #00bfff">true</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   26</span>             <span style="color: #c4c4c4">WaitForRequestThenHandle</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   27</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   28</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">StartHttpListener</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   29</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   30</span>         <span style="color: #c4c4c4">_httpListener</span> <span style="color: silver">=</span> <span style="color: #00bfff">new</span> <span style="color: #00d2d2">HttpListener</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   31</span>         <span style="color: #c4c4c4">_httpListener</span><span style="color: silver">.</span><span style="color: #c4c4c4">Prefixes</span><span style="color: silver">.</span><span style="color: #c4c4c4">Add</span>(</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   32</span>             <span style="color: #00d2d2">String</span><span style="color: silver">.</span><span style="color: #c4c4c4">Format</span>(<span style="color: #fa8072">"http://{0}:{1}/"</span>, <span style="color: #c4c4c4">_address</span>, <span style="color: #c4c4c4">_port</span>));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   33</span>         <span style="color: #c4c4c4">_httpListener</span><span style="color: silver">.</span><span style="color: #c4c4c4">Start</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   34</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   35</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">WaitForRequestThenHandle</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   36</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   37</span>         <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">incomingRequestContext</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">_httpListener</span><span style="color: silver">.</span><span style="color: #c4c4c4">GetContext</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   38</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   39</span>         <span style="color: #00d2d2">ThreadPool</span><span style="color: silver">.</span><span style="color: #c4c4c4">QueueUserWorkItem</span>((<span style="color: #c4c4c4">state</span>) <span style="color: silver">=></span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   40</span>         {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   41</span>             <span style="color: #00bfff">try</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   42</span>             {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   43</span>                 <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">context</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">state</span> <span style="color: #00bfff">as</span> <span style="color: #00d2d2">HttpListenerContext</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   44</span>                 <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">url</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">context</span><span style="color: silver">.</span><span style="color: #c4c4c4">Request</span><span style="color: silver">.</span><span style="color: #c4c4c4">Url</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   45</span>                 <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">encoding</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">context</span><span style="color: silver">.</span><span style="color: #c4c4c4">Request</span><span style="color: silver">.</span><span style="color: #c4c4c4">ContentEncoding</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   46</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   47</span>                 <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">result</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">_dispatcher</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   48</span>                     <span style="color: silver">.</span><span style="color: #c4c4c4">GetResponder</span>(<span style="color: #c4c4c4">GetCommandKey</span>(<span style="color: #c4c4c4">url</span>, <span style="color: #c4c4c4">encoding</span>))</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   49</span>                     <span style="color: silver">.</span><span style="color: #c4c4c4">RespondTo</span>(<span style="color: #c4c4c4">GetCommandArguments</span>(<span style="color: #c4c4c4">url</span>, <span style="color: #c4c4c4">encoding</span>));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   50</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   51</span>                 <span style="color: #c4c4c4">Respond</span>(<span style="color: #c4c4c4">context</span>, <span style="color: #c4c4c4">encoding</span>, <span style="color: #c4c4c4">result</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   52</span>             }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   53</span>             <span style="color: #00bfff">catch</span> (<span style="color: #00d2d2">Exception</span> <span style="color: #c4c4c4">ex</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   54</span>             {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   55</span>                 <span style="color: #bdb76b">// Don't want the service to die, just log it..</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   56</span>                 <span style="color: #00d2d2">Console</span><span style="color: silver">.</span><span style="color: #c4c4c4">WriteLine</span>(<span style="color: #c4c4c4">ex</span><span style="color: silver">.</span><span style="color: #c4c4c4">ToString</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   57</span>                 <span style="color: #bdb76b">// Could then responde with some error code...</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   58</span>             }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   59</span>         },</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   60</span>         <span style="color: #c4c4c4">incomingRequestContext</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   61</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   62</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   63</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">static</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">GetCommandKey</span>(<span style="color: #00d2d2">Uri</span> <span style="color: #c4c4c4">url</span>, <span style="color: #00d2d2">Encoding</span> <span style="color: #c4c4c4">encoding</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   64</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   65</span>         <span style="color: #bdb76b">// AbsolutePath always starts with a '/'</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   66</span>         <span style="color: #00bfff">return</span> <span style="color: #00d2d2">HttpUtility</span><span style="color: silver">.</span><span style="color: #c4c4c4">UrlDecode</span>(<span style="color: #c4c4c4">url</span><span style="color: silver">.</span><span style="color: #c4c4c4">AbsolutePath</span><span style="color: silver">.</span><span style="color: #c4c4c4">Substring</span>(<span style="color: #80ff00">1</span>), <span style="color: #c4c4c4">encoding</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   67</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   68</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">static</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">GetCommandArguments</span>(<span style="color: #00d2d2">Uri</span> <span style="color: #c4c4c4">url</span>, <span style="color: #00d2d2">Encoding</span> <span style="color: #c4c4c4">encoding</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   69</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   70</span>         <span style="color: #bdb76b">// Query always starts with a '?', but may be null</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   71</span>         <span style="color: #00bfff">return</span> <span style="color: #c4c4c4">url</span><span style="color: silver">.</span><span style="color: #c4c4c4">Query</span> <span style="color: silver">!=</span> <span style="color: #00bfff">null</span> <span style="color: silver">&&</span> <span style="color: #c4c4c4">url</span><span style="color: silver">.</span><span style="color: #c4c4c4">Query</span><span style="color: silver">.</span><span style="color: #c4c4c4">Length</span> <span style="color: silver">></span> <span style="color: #80ff00">1</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   72</span>                         <span style="color: silver">?</span> <span style="color: #00d2d2">HttpUtility</span><span style="color: silver">.</span><span style="color: #c4c4c4">UrlDecode</span>(<span style="color: #c4c4c4">url</span><span style="color: silver">.</span><span style="color: #c4c4c4">Query</span><span style="color: silver">.</span><span style="color: #c4c4c4">Substring</span>(<span style="color: #80ff00">1</span>), <span style="color: #c4c4c4">encoding</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   73</span>                         : <span style="color: #00bfff">string</span><span style="color: silver">.</span><span style="color: #c4c4c4">Empty</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   74</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   75</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">static</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">Respond</span>(<span style="color: #00d2d2">HttpListenerContext</span> <span style="color: #c4c4c4">context</span>, <span style="color: #00d2d2">Encoding</span> <span style="color: #c4c4c4">encoding</span>, <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">result</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   76</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   77</span>         <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">bytes</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">encoding</span><span style="color: silver">.</span><span style="color: #c4c4c4">GetBytes</span>(<span style="color: #c4c4c4">result</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   78</span>         <span style="color: #c4c4c4">context</span><span style="color: silver">.</span><span style="color: #c4c4c4">Response</span><span style="color: silver">.</span><span style="color: #c4c4c4">ContentLength64</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">bytes</span><span style="color: silver">.</span><span style="color: #c4c4c4">Length</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   79</span>         <span style="color: #c4c4c4">context</span><span style="color: silver">.</span><span style="color: #c4c4c4">Response</span><span style="color: silver">.</span><span style="color: #c4c4c4">OutputStream</span><span style="color: silver">.</span><span style="color: #c4c4c4">Write</span>(<span style="color: #c4c4c4">bytes</span>, <span style="color: #80ff00">0</span>, <span style="color: #c4c4c4">bytes</span><span style="color: silver">.</span><span style="color: #c4c4c4">Length</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   80</span>         <span style="color: #c4c4c4">context</span><span style="color: silver">.</span><span style="color: #c4c4c4">Response</span><span style="color: silver">.</span><span style="color: #c4c4c4">StatusCode</span> <span style="color: silver">=</span> <span style="color: #80ff00">200</span>; <span style="color: #bdb76b">// everything is ok :)</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   81</span>         <span style="color: #c4c4c4">context</span><span style="color: silver">.</span><span style="color: #c4c4c4">Response</span><span style="color: silver">.</span><span style="color: #c4c4c4">Close</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   82</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   83</span> }</p>
+</div>
+<p>Etter å ha opprettet HttpListener kjører jeg en uendelig løkke som mottar innkommende forespørsler og håndterer dem (en robust implementasjon ville også hatt en Stop-metode som terminerte løkken). Kallet til GetContext() i linje 37 returnerer når en request mottas, og så bruker jeg ThreadPool til å <em>spawn'e</em> en ny tråd som håndterer den og svarer tilbake.</p>
+<p>Denne serveren bruker selve URL'en til å avgjøre hva den skal gjøre. I eksempelet i starten av artikkelen var requesten <u>http://127.0.0.1:8081/time?</u>. Alt etter domenet og porten men før spørsmålstegnet bruker jeg til å avgjøre hvilken <strong><em>Responder</em></strong> som skal brukes. Det er her STARTEGY pattern kommer inn i bildet – en responder er en klasse som implementerer interfacet <em>Responder</em>…</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    5</span> <span style="color: #00bfff">public</span> <span style="color: #00bfff">interface</span> <span style="color: #7ee0ce">Responder</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    6</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span>     <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">RespondTo</span>(<span style="color: #00bfff">string</span> <span style="color: #c4c4c4">arguments</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span> }</p>
+</div>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    5</span> <span style="color: #00bfff">public</span> <span style="color: #00bfff">interface</span> <span style="color: #7ee0ce">ResponderFactory</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    6</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span>     <span style="color: #7ee0ce">Responder</span> <span style="color: #c4c4c4">GetResponder</span>(<span style="color: #00bfff">string</span> <span style="color: #c4c4c4">responderKey</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span> }</p>
+</div>
+<p>Argumentene som sendes til responderen er alt som kommer etter spørsmålstegnet i requesten. HttpListener støtter mye mer enn dette, men alt jeg er interessert i denne gangen er selve URL'en.</p>
+<p>SimpleHttpServer ble initialisert med en ResponderFactory. Denne vil - gitt en nøkkel - returnere riktig responder. Ta en titt til på serveren om du ikke fikk det helt med deg første gangen, spesielt linje 47 til 49.</p>
+<p>En første versjon av ResponderFactory (den faktiske implementasjonen kommer lengre nede) kunne vært en klasse som uansett nøkkel returnerte en UnknownCommandResponder:</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    5</span> <span style="color: #00bfff">public</span> <span style="color: #00bfff">class</span> <span style="color: #00d2d2">UnknownCommandResponder</span> : <span style="color: #7ee0ce">Responder</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    6</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">_request</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span>     <span style="color: #00bfff">public</span> <span style="color: #c4c4c4">UnknownCommandResponder</span>(<span style="color: #00bfff">string</span> <span style="color: #c4c4c4">request</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    9</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   10</span>         <span style="color: #c4c4c4">_request</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">request</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   11</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span>     <span style="color: #00bfff">public</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">RespondTo</span>(<span style="color: #00bfff">string</span> <span style="color: #c4c4c4">arguments</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   13</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   14</span>         <span style="color: #00bfff">return</span> <span style="color: #00d2d2">String</span><span style="color: silver">.</span><span style="color: #c4c4c4">Format</span>(<span style="color: #fa8072">"Unknown command: '{0}' with arguments '{1}'"</span>, </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   15</span>             <span style="color: #c4c4c4">_request</span>, </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   16</span>             <span style="color: #c4c4c4">arguments</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   17</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   18</span> }</p>
+</div>
+<p>Det kan være greit å ha en slik default strategi/responder til å svare på alle mulige ting man måtte finne på å etterspørre. Her ser du den i aksjon:</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="CropperCapture[46]" border="0" alt="CropperCapture[46]" src="/uploads/2010/02/CropperCapture46.png" width="498" height="169"> </p>
+<h4>Opprette flere tjenester: Attributter og reflection</h4>
+<p>Før jeg legger til den første "fornuftige" responderen oppretter jeg et .net-attributt. Det trenger ikke være noe mer avansert enn å lage en klassen som arver fra Attribute.</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    6</span> <span style="color: #00bfff">public</span> <span style="color: #00bfff">class</span> <span style="color: #00d2d2">RespondToAttribute</span> : <span style="color: #00d2d2">Attribute</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span>     <span style="color: #00bfff">public</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">Key</span> { <span style="color: #00bfff">get</span>; <span style="color: #00bfff">set</span>; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    9</span>     <span style="color: #00bfff">public</span> <span style="color: #c4c4c4">RespondToAttribute</span>(<span style="color: #00bfff">string</span> <span style="color: #c4c4c4">key</span>) { </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   10</span>         <span style="color: #c4c4c4">Key</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">key</span>; </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   11</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span> }</p>
+</div>
+<p>Jeg har laget svært få attributter i min karriære, men det er en teknikk som kan gi veldig elegante løsninger om det brukes riktig. Måten jeg bruker det på her er ganske vanlig. Og enkel! Den vil rett og slett la meg legge til nye respondere uten at jeg behøver å endre noen eksisterende kode. </p>
+<p>Men first thing first: Når jeg implementerer mine respondere vil RespondToAttribute la meg spesifisere hvilken nøkkel hver responder gjelder for. Her er f.eks. en enkel responder som legger sammen en rekke med tall separert med komma:</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    6</span> [<span style="color: #00d2d2">RespondTo</span>(<span style="color: #fa8072">"add"</span>)]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span> <span style="color: #00bfff">public</span> <span style="color: #00bfff">class</span> <span style="color: #00d2d2">Add</span> : <span style="color: #7ee0ce">Responder</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    9</span>     <span style="color: #00bfff">public</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">RespondTo</span>(<span style="color: #00bfff">string</span> <span style="color: #c4c4c4">arguments</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   10</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   11</span>         <span style="color: #00bfff">int</span> <span style="color: #c4c4c4">result</span> <span style="color: silver">=</span> <span style="color: #80ff00">0</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span>         <span style="color: #00d2d2">Array</span><span style="color: silver">.</span><span style="color: #c4c4c4">ForEach</span>(<span style="color: #c4c4c4">arguments</span><span style="color: silver">.</span><span style="color: #c4c4c4">Split</span>(<span style="color: #fa8072">','</span>),</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   13</span>             (<span style="color: #c4c4c4">arg</span>) <span style="color: silver">=></span> <span style="color: #c4c4c4">result</span> <span style="color: silver">+=</span> <span style="color: #00d2d2">Int32</span><span style="color: silver">.</span><span style="color: #c4c4c4">Parse</span>(<span style="color: #c4c4c4">arg</span>));            </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   14</span>         <span style="color: #00bfff">return</span> <span style="color: #00bfff">string</span><span style="color: silver">.</span><span style="color: #c4c4c4">Format</span>(<span style="color: #fa8072">"The answer is {0}"</span>, <span style="color: #c4c4c4">result</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   15</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   16</span> }</p>
+</div>
+<p>(Det er en konvensjon i .Net at man slipper å skrive "Attribute"-delen av attributt-navnet. Dermed blir linje 6 så fin.., denne klassen <em>"responderer på add"</em>.)</p>
+<p>Når jeg gjør ting som dette er det typisk endel implisitte regler jeg må følge. I dette tilfelle vil det for eksempel ikke gi mening om mer enn én klasse responderer på "add". Nøkkelen må med andre ord være unik. For å håndheve slike regler oppretter jeg som regel validerende enhetstester. Følgende test bruker reflection til å hente ut alle typer i prosjektet, samle opp alle RespondToAttributes fra typene, og sjekke at de er unike..</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span> [<span style="color: #00d2d2">Test</span>]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   13</span> <span style="color: #00bfff">public</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">Should_all_be_unique</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   14</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   15</span>     <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">keys</span> <span style="color: silver">=</span> <span style="color: #00bfff">new</span> <span style="color: #00d2d2">List</span><span style="color: silver"><</span><span style="color: #00bfff">string</span><span style="color: silver">></span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   16</span>     <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">allTypes</span> <span style="color: silver">=</span> <span style="color: #00d2d2">Assembly</span><span style="color: silver">.</span><span style="color: #c4c4c4">GetExecutingAssembly</span>()<span style="color: silver">.</span><span style="color: #c4c4c4">GetTypes</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   17</span>     <span style="color: #00bfff">foreach</span> (<span style="color: #00bfff">var</span> <span style="color: #c4c4c4">t</span> <span style="color: #00bfff">in</span> <span style="color: #c4c4c4">allTypes</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   18</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   19</span>         <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">attribute</span> <span style="color: silver">=</span> <span style="color: #00d2d2">Attribute</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   20</span>             <span style="color: silver">.</span><span style="color: #c4c4c4">GetCustomAttribute</span>(<span style="color: #c4c4c4">t</span>, <span style="color: #00bfff">typeof</span>(<span style="color: #00d2d2">RespondToAttribute</span>))</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   21</span>             <span style="color: #00bfff">as</span> <span style="color: #00d2d2">RespondToAttribute</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   22</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   23</span>         <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">attribute</span> <span style="color: silver">==</span> <span style="color: #00bfff">null</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   24</span>             <span style="color: #00bfff">continue</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   25</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   26</span>         <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">keys</span><span style="color: silver">.</span><span style="color: #c4c4c4">Contains</span>(<span style="color: #c4c4c4">attribute</span><span style="color: silver">.</span><span style="color: #c4c4c4">Key</span>))</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   27</span>             <span style="color: #00d2d2">Assert</span><span style="color: silver">.</span><span style="color: #c4c4c4">Fail</span>(<span style="color: #c4c4c4">attribute</span><span style="color: silver">.</span><span style="color: #c4c4c4">Key</span> <span style="color: silver">+</span> <span style="color: #fa8072">" appear more than once!"</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   28</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   29</span>         <span style="color: #c4c4c4">keys</span><span style="color: silver">.</span><span style="color: #c4c4c4">Add</span>(<span style="color: #c4c4c4">attribute</span><span style="color: silver">.</span><span style="color: #c4c4c4">Key</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   30</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   31</span> }</p>
+</div>
+<p>Og denne samme teknikken vil jeg bruke når jeg implementerer den endelige ResponderFactory-klassen. Den oppretter en dictionary med nøkler mappet til respondere (eller mer nøyaktig mappet til funksjoner som oppretter respondere).</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span> <span style="color: #00bfff">public</span> <span style="color: #00bfff">class</span> <span style="color: #00d2d2">ReflectiveResponderFactory</span> : <span style="color: #7ee0ce">ResponderFactory</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    9</span>     <span style="color: #00bfff">private</span> <span style="color: #00d2d2">Dictionary</span><span style="color: silver"><</span><span style="color: #00bfff">string</span>, <span style="color: yellow">Func</span><span style="color: silver"><</span><span style="color: #7ee0ce">Responder</span><span style="color: silver">>></span> <span style="color: #c4c4c4">_dispatchTable</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   10</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   11</span>     <span style="color: #00bfff">public</span> <span style="color: #c4c4c4">ReflectiveResponderFactory</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   13</span>         <span style="color: #c4c4c4">_dispatchTable</span> <span style="color: silver">=</span> <span style="color: #00bfff">new</span> <span style="color: #00d2d2">Dictionary</span><span style="color: silver"><</span><span style="color: #00bfff">string</span>, <span style="color: yellow">Func</span><span style="color: silver"><</span><span style="color: #7ee0ce">Responder</span><span style="color: silver">>></span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   14</span>         <span style="color: #00d2d2">Array</span><span style="color: silver">.</span><span style="color: #c4c4c4">ForEach</span>(<span style="color: #00d2d2">Assembly</span><span style="color: silver">.</span><span style="color: #c4c4c4">GetExecutingAssembly</span>()<span style="color: silver">.</span><span style="color: #c4c4c4">GetTypes</span>(),</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   15</span>             (<span style="color: #c4c4c4">type</span>) <span style="color: silver">=></span> <span style="color: #c4c4c4">AddDispatchIfResponder</span>(<span style="color: #c4c4c4">type</span>, <span style="color: #c4c4c4">GetResponderInfo</span>(<span style="color: #c4c4c4">type</span>)));</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   16</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   17</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">static</span> <span style="color: #00d2d2">RespondToAttribute</span> <span style="color: #c4c4c4">GetResponderInfo</span>(<span style="color: #00d2d2">Type</span> <span style="color: #c4c4c4">maybeResponderType</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   18</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   19</span>         <span style="color: #00bfff">return</span> <span style="color: #00d2d2">Attribute</span><span style="color: silver">.</span><span style="color: #c4c4c4">GetCustomAttribute</span>(<span style="color: #c4c4c4">maybeResponderType</span>,</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   20</span>             <span style="color: #00bfff">typeof</span>(<span style="color: #00d2d2">RespondToAttribute</span>)) <span style="color: #00bfff">as</span> <span style="color: #00d2d2">RespondToAttribute</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   21</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   22</span>     <span style="color: #00bfff">private</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">AddDispatchIfResponder</span>(<span style="color: #00d2d2">Type</span> <span style="color: #c4c4c4">type</span>, <span style="color: #00d2d2">RespondToAttribute</span> <span style="color: #c4c4c4">responderInfo</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   23</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   24</span>         <span style="color: #00bfff">if</span> (<span style="color: #c4c4c4">responderInfo</span> <span style="color: silver">!=</span> <span style="color: #00bfff">null</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   25</span>             <span style="color: #c4c4c4">_dispatchTable</span><span style="color: silver">.</span><span style="color: #c4c4c4">Add</span>(</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   26</span>                 <span style="color: #c4c4c4">responderInfo</span><span style="color: silver">.</span><span style="color: #c4c4c4">Key</span>,</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   27</span>                 () <span style="color: silver">=></span> <span style="color: #00d2d2">Activator</span><span style="color: silver">.</span><span style="color: #c4c4c4">CreateInstance</span>(<span style="color: #c4c4c4">type</span>) <span style="color: #00bfff">as</span> <span style="color: #7ee0ce">Responder</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   28</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   29</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   30</span>     <span style="color: #00bfff">public</span> <span style="color: #7ee0ce">Responder</span> <span style="color: #c4c4c4">GetResponder</span>(<span style="color: #00bfff">string</span> <span style="color: #c4c4c4">responderKey</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   31</span>     {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   32</span>         <span style="color: #00bfff">if</span> (<span style="color: silver">!</span><span style="color: #c4c4c4">_dispatchTable</span><span style="color: silver">.</span><span style="color: #c4c4c4">ContainsKey</span>(<span style="color: #c4c4c4">responderKey</span>))</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   33</span>             <span style="color: #00bfff">return</span> <span style="color: #00bfff">new</span> <span style="color: #00d2d2">UnknownCommandResponder</span>(<span style="color: #c4c4c4">responderKey</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   34</span>         <span style="color: #00bfff">return</span> <span style="color: #c4c4c4">_dispatchTable</span>[<span style="color: #c4c4c4">responderKey</span>]<span style="color: silver">.</span><span style="color: #c4c4c4">Invoke</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   35</span>     }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   36</span> }</p>
+</div>
+<p>Her forutsettes det at alle respondere (med RespondTo-attributt) har en default, parameter-løs konstruktør, slik at den kan opprettes i lambda-uttrykket i linje 27. Du bør opprette en enhetstest for å validere dette også, slik at ingen lager en responder med konstruktør-parametre i fremtiden og dermed introduserer en bug (ikke at de ikke ville ha oppdaget det, men rask tilbakemelding er alltid kjekt).</p>
+<p>Om du nå har skjønt hvordan disse klassene henger sammen gjenstår det bare å opprette og starte en SimpleHttpServer for at dette skal fungere. Her kjører jeg serveren i et konsollprogram, men i et mer realistisk senario vil du typisk kjøre den i en enkel Windows service.</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span> <span style="color: #00bfff">static</span> <span style="color: #00bfff">void</span> <span style="color: #c4c4c4">Main</span>(<span style="color: #00bfff">string</span>[] <span style="color: #c4c4c4">args</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    9</span>     <span style="color: #00bfff">new</span> <span style="color: #00d2d2">SimpleHttpServer</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   10</span>         (<span style="color: #fa8072">"*"</span>, <span style="color: #80ff00">8081</span>, <span style="color: #00bfff">new</span> <span style="color: #00d2d2">ReflectiveResponderFactory</span>())</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   11</span>         <span style="color: silver">.</span><span style="color: #c4c4c4">Start</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span> }</p>
+</div>
+<p>Og nå kan vi endelig få vite hvor mye 10 + 20 + 30 er…</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="CropperCapture[47]" border="0" alt="CropperCapture[47]" src="/uploads/2010/02/CropperCapture47.png" width="498" height="169"></p>
+<p>For å utvide serveren med mer funksjonalitet er det nå bare til å opprette flere klasser som arver fra Responder-interfacet, og legge til et RespondToAttribute. ReflectiveResponderFactory vil finne og registrere den nye klassen under oppstart, og delegere til en ny instans av responderen om nøkkelen kommer i en forespørsel.</p>
+<p>Jeg håper noen klarte å henge med óg få noe fornuftig ut av dette. Mer info om <a href="http://msdn.microsoft.com/en-us/library/system.net.httplistener.aspx" target="_blank">HttpListener finner du her</a>, og <a href="http://www.google.no/search?q=.net+attributes" target="_blank">info om .net attributes finner du via google</a>. I <a href="/2010/02/22/en-minimal-http-server-i-ruby/">neste blogpost</a> vil du få se hvordan jeg implementerer nøyaktig samme funksjonalitet ved hjelp av Ruby.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=SOAP" rel="tag">SOAP</a>, <a href="/index.php?s=Strategy" rel="tag">Strategy</a>, <a href="/index.php?s=WCF" rel="tag">WCF</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

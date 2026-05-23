@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Diverse prosjekter,QuickBencher,C#">
+
+    <title>QuickBencher (beta)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>QuickBencher (beta)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 25. januar 2010</small> 
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          
+            <a href="/tags/quickbencher"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> QuickBencher</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p><img id="image540" src="/uploads/2010/01/logo_small.png" align="right" style="padding-left:18px;padding-bottom:8px;" />I går lanserte jeg versjon 0.1 av et lite open source bibliotek jeg har valgt å kalle <strong><em>QuickBencher</em></strong>. Dere finner det på <a href="http://quickbencher.codeplex.com/">quickbencher.codeplex.com</a>. Formålet er å gjøre det litt enklere å måle hvor lang tid ting tar, og kjøre sammenligninger på ulike større eller mindre kodesnutter. Her er et eksempel:</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    1</span> <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">list</span> <span style="color: silver">=</span> <span style="color: #00bfff">new</span> <span style="color: #00d2d2">List</span><span style="color: silver"><</span><span style="color: #00bfff">string</span><span style="color: silver">></span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    2</span> <span style="color: #00bfff">for</span> (<span style="color: #00bfff">int</span> <span style="color: #c4c4c4">i</span> <span style="color: silver">=</span> <span style="color: #80ff00">0</span>; <span style="color: #c4c4c4">i</span> <span style="color: silver"><</span> <span style="color: #80ff00">10000000</span>; <span style="color: #c4c4c4">i</span><span style="color: silver">++</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    3</span>     <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">Add</span>(<span style="color: #c4c4c4">i</span><span style="color: silver">.</span><span style="color: #c4c4c4">ToString</span>());</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    4</span> </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    5</span> <span style="color: #00bfff">string</span> <span style="color: #c4c4c4">dummy</span>;</p>
+</div>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #202020; color: #e0e0e0; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    6</span> <span style="color: #00d2d2">Benchmark</span><span style="color: silver">.</span><span style="color: #c4c4c4">Bm</span>(<span style="color: #c4c4c4">x</span> <span style="color: silver">=></span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    7</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    8</span>     <span style="color: #c4c4c4">x</span><span style="color: silver">.</span><span style="color: #c4c4c4">Report</span>(<span style="color: #fa8072">"For:"</span>, ()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">    9</span>         <span style="color: silver">=></span> { <span style="color: #00bfff">for</span> (<span style="color: #00bfff">int</span> <span style="color: #c4c4c4">i</span> <span style="color: silver">=</span> <span style="color: #80ff00">0</span>; <span style="color: #c4c4c4">i</span> <span style="color: silver"><</span> <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">Count</span>; <span style="color: #c4c4c4">i</span><span style="color: silver">++</span>) <span style="color: #c4c4c4">dummy</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">list</span>[<span style="color: #c4c4c4">i</span>]; });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   10</span>     <span style="color: #c4c4c4">x</span><span style="color: silver">.</span><span style="color: #c4c4c4">Report</span>(<span style="color: #fa8072">"While:"</span>, ()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   11</span>         <span style="color: silver">=></span> { <span style="color: #00bfff">var</span> <span style="color: #c4c4c4">enu</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">GetEnumerator</span>(); <span style="color: #00bfff">while</span>(<span style="color: #c4c4c4">enu</span><span style="color: silver">.</span><span style="color: #c4c4c4">MoveNext</span>()) <span style="color: #c4c4c4">dummy</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">enu</span><span style="color: silver">.</span><span style="color: #c4c4c4">Current</span>; });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   12</span>     <span style="color: #c4c4c4">x</span><span style="color: silver">.</span><span style="color: #c4c4c4">Report</span>(<span style="color: #fa8072">"Foreach:"</span>, ()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   13</span>         <span style="color: silver">=></span> { <span style="color: #00bfff">foreach</span> (<span style="color: #00bfff">var</span> <span style="color: #c4c4c4">item</span> <span style="color: #00bfff">in</span> <span style="color: #c4c4c4">list</span>) <span style="color: #c4c4c4">dummy</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">item</span>; });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   14</span>     <span style="color: #c4c4c4">x</span><span style="color: silver">.</span><span style="color: #c4c4c4">Report</span>(<span style="color: #fa8072">"Lambda:"</span>, ()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   15</span>         <span style="color: silver">=></span> { <span style="color: #c4c4c4">list</span><span style="color: silver">.</span><span style="color: #c4c4c4">ForEach</span>(<span style="color: #c4c4c4">s</span> <span style="color: silver">=></span> <span style="color: #c4c4c4">dummy</span> <span style="color: silver">=</span> <span style="color: #c4c4c4">s</span>); });</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #282828; color: gray">   16</span> });</p>
+</div>
+<div style="margin-bottom: 15px"><p><font face="monospace">Output:</p>
+<div style="background-color: #000000; color: #f6f3e8"><span style="background-color: #000000"><font color="#3d3d3d">  </font></span>                user     system      total        real<br />
+<span style="background-color: #000000"><font color="#3d3d3d">  </font></span>For:        0.140401   0.000000   0.140401 (  0.147000)<br />
+<span style="background-color: #000000"><font color="#3d3d3d">  </font></span>While:      0.124801   0.000000   0.124801 (  0.122000)<br />
+<span style="background-color: #000000"><font color="#3d3d3d">  </font></span>Foreach:    0.124801   0.000000   0.124801 (  0.121000)<br />
+<span style="background-color: #000000"><font color="#3d3d3d">  </font></span>Lambda:     0.062400   0.000000   0.062400 (  0.093000)</div>
+<p /></font></div>
+<p>Mens jeg holdt på å lære meg <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a> kom jeg over en <a href="http://ruby-doc.org/core/classes/Benchmark.html" target="_blank">modul som heter Benchmark</a>. <em>"En sånn modul skulle jeg hatt i verktøyskrinet mitt når jeg utvikler i C#,"</em> tenkte jeg, og siden det ikke så ut som om noen hadde gjort det før så lagde jeg den.</p>
+<p>Ta en titt på <a href="http://quickbencher.codeplex.com/">prosjektsiden på CodePlex</a> for mer info og for å laste ned v0.1. Den skal fungere mer eller mindre som tiltenkt, men det hadde vært kjekt å få litt tilbakemelding på om den fungerer for andre enn meg. Jeg tar gladelig imot forbedringsforslag, og hvis noen har lyst til å bidra på andre måter så er dere velkomne til det.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

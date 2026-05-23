@@ -1,0 +1,47 @@
+---
+title: "Julebonus: ML-style Patternmatching i Clojure"
+link: http://blog.kjempekjekt.com/2011/12/20/julebonus-ml-style-patternmatching-i-clojure/
+layout: post
+date: 2011-12-20 12:36:45Z
+tags:
+  - Julekalender
+  - Clojure
+  - Pattern matching
+---
+<p>I tilfelle du ikke synes det er nok med én blogpost hver dag har jeg her en knøttliten bonus til deg. Jeg har jo nå vist deg <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">Euler 1</a> løst på forskjellige måter i et utall språk. Blant annet har jeg vist hvordan oppgaven kan løses ved hjelp av pattern matching – dette gjorde jeg i <a href="http://blog.kjempekjekt.com/2011/12/06/f/">F#</a> og i <a href="http://blog.kjempekjekt.com/2011/12/09/nemerle/">Nemerle</a>, og Kråkelefse delte også <a href="http://pastebin.com/V1QtD95k">en lignende løsning i Haskell</a>.</p> <p>Når jeg da nylig kom over <a href="https://github.com/clojure/core.match">et matching-biblotek for Clojure</a> måtte jeg nesten teste denne muligheten ut også i det språket. Måtte leke meg litt. Man kan trygt si at multiplene av 3 og 5 har gjort meg litt ensporet. Anyways, here goes... </p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Delimiter">(</span>ns euler1CljMatch.core
+<span class="lnr">11 </span>    <span class="Delimiter">(</span><span class="Type">:use</span> [clojure.core.match :only [match]]<span class="Delimiter">))</span>
+<span class="lnr">12 </span>
+<span class="lnr">13 </span><span class="Delimiter">(</span><span class="Statement">let</span> [mod-zero? #<span class="Delimiter">(</span>zero? <span class="Delimiter">(</span><span class="Statement">mod</span> %2 %1<span class="Delimiter">))</span>]
+<span class="lnr">14 </span>  <span class="Delimiter">(</span>def mod-zero-3? <span class="Delimiter">(</span>partial mod-zero? <span class="Number">3</span><span class="Delimiter">))</span>
+<span class="lnr">15 </span>  <span class="Delimiter">(</span>def mod-zero-5? <span class="Delimiter">(</span>partial mod-zero? <span class="Number">5</span><span class="Delimiter">)))</span>
+<span class="lnr">16 </span>
+<span class="lnr">17 </span><span class="Delimiter">(</span>defn mult3or5? [x]
+<span class="lnr">18 </span>  <span class="Delimiter">(</span>match [x]
+<span class="lnr">19 </span>    [<span class="Delimiter">(</span>_ <span class="Type">:when</span> mod-zero-3?<span class="Delimiter">)</span>] true
+<span class="lnr">20 </span>    [<span class="Delimiter">(</span>_ <span class="Type">:when</span> mod-zero-5?<span class="Delimiter">)</span>] true
+<span class="lnr">21 </span>    <span class="Type">:else</span>                   false<span class="Delimiter">))</span>
+<span class="lnr">22 </span>
+<span class="lnr">23 </span><span class="Delimiter">(</span>defn euler-1 []
+<span class="lnr">24 </span>  <span class="Delimiter">(</span><span class="Statement">loop</span> [n <span class="Number">0</span>, sum <span class="Number">0</span>]
+<span class="lnr">25 </span>    <span class="Delimiter">(</span>match [n]
+<span class="lnr">26 </span>      [ <span class="Number">1000</span> ]              sum
+<span class="lnr">27 </span>      [<span class="Delimiter">(</span>_ <span class="Type">:when</span> mult3or5?<span class="Delimiter">)</span>] <span class="Delimiter">(</span>recur <span class="Delimiter">(</span>inc n<span class="Delimiter">)</span> <span class="Delimiter">(</span><span class="Statement">+</span> sum n<span class="Delimiter">))</span>
+<span class="lnr">28 </span>      [ _    ]              <span class="Delimiter">(</span>recur <span class="Delimiter">(</span>inc n<span class="Delimiter">)</span>    sum<span class="Delimiter">))))</span>
+<span class="lnr">29 </span>
+<span class="lnr">30 </span><span class="Delimiter">(</span>println <span class="Delimiter">(</span>euler-1<span class="Delimiter">))</span>
+</pre>
+<p>Det er langt fra optimalt å bruke <i>match</i> til dette her, og det illustrerer heller ikke hva pattern matching er godt for. Men jeg måtte bare få det ut! Viktig å test nye muligheter.</p>
+<p>For ordens skyld: I slike situasjoner (som det jeg har rotet meg opp i ved å forsøke å bruke match) foretrekker Lisp'ere å bruke en makro som heter <strong><a href="http://clojuredocs.org/clojure_core/clojure.core/cond">cond</a></strong>. I dette tilfellet gir det mye renere syntaks:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px">
+<span class="lnr">17 </span><span class="Delimiter">(</span>defn mult3or5? [x]
+<span class="lnr">18 </span>  <span class="Delimiter">(</span><span class="Statement">cond</span> <span class="Delimiter">(</span>mod-zero-3? x<span class="Delimiter">)</span> true
+<span class="lnr">19 </span>        <span class="Delimiter">(</span>mod-zero-5? x<span class="Delimiter">)</span> true
+<span class="lnr">20 </span>        <span class="Type">:else</span>           false<span class="Delimiter">))</span>
+<span class="lnr">21 </span>
+<span class="lnr">22 </span><span class="Delimiter">(</span>defn euler-1 []
+<span class="lnr">23 </span>  <span class="Delimiter">(</span><span class="Statement">loop</span> [n <span class="Number">0</span>, sum <span class="Number">0</span>]
+<span class="lnr">24 </span>    <span class="Delimiter">(</span><span class="Statement">cond</span> <span class="Delimiter">(</span><span class="Statement">=</span> n <span class="Number">1000</span><span class="Delimiter">)</span>    sum
+<span class="lnr">25 </span>          <span class="Delimiter">(</span>mult3or5? n<span class="Delimiter">)</span> <span class="Delimiter">(</span>recur <span class="Delimiter">(</span>inc n<span class="Delimiter">)</span> <span class="Delimiter">(</span><span class="Statement">+</span> sum n<span class="Delimiter">))</span>
+<span class="lnr">26 </span>          <span class="Type">:else</span>         <span class="Delimiter">(</span>recur <span class="Delimiter">(</span>inc n<span class="Delimiter">)</span>    sum<span class="Delimiter">))))</span>
+</pre>
+<p>Og så var det fire dager igjen til Jul :D</p>

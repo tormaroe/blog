@@ -1,0 +1,156 @@
+---
+title: Strømlinjeformede enhetstester
+link: http://blog.kjempekjekt.com/2011/01/20/strmlinjeformede-enhetstester/
+layout: post
+date: 2011-01-20 11:27:13Z
+tags:
+  - DSL
+  - TDD
+  - C#
+---
+<p><strong>Når man skriver enhetstester kan det fort bli mye rot om man ikke tenker nøye gjennom hvordan de bør struktureres. Det vanlige er å lage testmetoder som inneholder en eller annen form for <em>Arrange-Act-Assert</em> eller <em>Given-When-Then</em>; man setter altså opp et miljø som skal testes, utfører en handling, og sjekker at det man forventer har skjedd. Desverre blir dette ofte for mye støy i én metode, og man trenger et bedre “rammeverk” for testene.</strong></p> <p>Ingen situasjoner er like, og strukturen på testene bør derfor heller ikke alltid følge samme mal. I denne blogposten forteller jeg om et mønster som ofte gir meg renere enhetstester..</p> <p>Her er et eksempel hvor jeg utvikler et lite språk (DSL) for å svare på meldinger. <tt>Reply_with_message.sms</tt> er et skript skrevet i dette språket som automatisk skal svare med teksten fra den innkommende meldingen flettet inn. </p> <div style="font-family: monospace"><b>Reply_with_message.sms:</b><br><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 10 </span>reply <span class="String">"You said: </span><span class="Special">\"</span><span class="String">${message}</span><span class="Special">\"</span><span class="String">"</span>
+</pre></div>
+<p>For å kontrollere at dette fungerer har jeg laget følgende enhetstest i C#:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 12 </span>[TestScript(<span class="String">"Reply_with_message.sms"</span>, Sender = <span class="String">"55596698"</span>, Text=<span class="String">"This is a test"</span>)]
+<span class="lnr"> 13 </span><span class="Type">public</span> <span class="Type">class</span> Spec_reply : CompileAndEvaluateTestFixture
+<span class="lnr"> 14 </span>{
+<span class="lnr"> 15 </span>    [Test]
+<span class="lnr"> 16 </span>    <span class="Type">public</span> <span class="Type">void</span> Should_reply_once_and_only_once()
+<span class="lnr"> 17 </span>    {
+<span class="lnr"> 18 </span>        Result.Replies.Count.ShouldEqual(<span class="Number">1</span>);
+<span class="lnr"> 19 </span>    }
+<span class="lnr"> 20 </span>    [Test]
+<span class="lnr"> 21 </span>    <span class="Type">public</span> <span class="Type">void</span> Should_reply_with_original_text()
+<span class="lnr"> 22 </span>    {
+<span class="lnr"> 23 </span>        Result.Replies.First().ShouldEqual(<span class="String">"You said: </span><span class="Special">\"</span><span class="String">This is a test</span><span class="Special">\"</span><span class="String">"</span>);
+<span class="lnr"> 24 </span>    }
+<span class="lnr"> 25 </span>}
+</pre>
+<p>Testklassen inneholder to tester: Den første kontrollerer at det er registrert én utgående melding, og den andre kontrollerer at teksten i meldingen er som forventet.</p>
+<p>Testklassen er dekorert med en attributt som spesifiserer navnet på skriptfilen, og informasjon om meldingen den skal behandle. Det er baseklassen som testen arver fra som gjør selve jobben. <tt>CompileAndEvaluateTestFixture</tt> plukker ut skriptfilen, kompilerer den, og bruker resultatet til å prosessere meldingen jeg spesifiserte. Propertien <tt>Result</tt> inneholder resultatet.</p>
+<p>Dette gir en ren og pen enhetstest, og baseklassen kan gjenbrukes i mange andre tester.</p>
+<h4>Et komplett eksempel med baseklasse og attributt</h4>
+<p>Nå har du sett hvor jeg vil hen. La meg ta et annet eksempel, og forklare litt grundigere.</p>
+<p>For det første bør jeg nevne hvilke avhengigheter jeg bruker. Hver gang jeg starter et nytt prosjekt kopierer jeg alltid med meg tre ting: Testrammeverket <a href="http://www.nunit.org/" target="_blank">NUnit</a>, mockingrammeverket <a href="http://code.google.com/p/moq/" target="_blank">Moq</a>, og <a href="http://code.google.com/p/coretdd/" target="_blank">coreTDD</a> for flutende assert (f.eks. <tt>ShouldEqual()</tt>).</p>
+<p>Og så til eksempelet: Her har jeg utviklet en <a href="http://en.wikipedia.org/wiki/Lexical_analysis" target="_blank">Lexer</a> (også kalt <em>tokenizer</em> eller <em>scanner</em>) som skal ta en kodesnutt og splitte det opp i tokens. Og her er en ren og pen test som eksekverer lexeren på strengen <tt>foo = "Some text"</tt>:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 29 </span>[TokenizeThis(<span class="String">"foo = </span><span class="Special">\"</span><span class="String">Some text</span><span class="Special">\"</span><span class="String">"</span>)]
+<span class="lnr"> 30 </span><span class="Type">public</span> <span class="Type">class</span> AssignmentTest : BaseLexerTest
+<span class="lnr"> 31 </span>{
+<span class="lnr"> 32 </span>    [Test]
+<span class="lnr"> 33 </span>    <span class="Type">public</span> <span class="Type">void</span> Test()
+<span class="lnr"> 34 </span>    {
+<span class="lnr"> 35 </span>        ExpectTokens(Tokens.ID, Tokens.ASSIGN, Tokens.STRING);
+<span class="lnr"> 36 </span>        ExpectTokens(<span class="String">"foo"</span>, <span class="String">"="</span>, <span class="String">"</span><span class="Special">\"</span><span class="String">Some text</span><span class="Special">\"</span><span class="String">"</span>);
+<span class="lnr"> 37 </span>    }
+<span class="lnr"> 38 </span>}
+</pre>
+<p>Igjen bruker jeg en attributt for å spesifisere dataene for testen, og en baseklasse utfører selve handlingen. Testmetoden kan dermed konsentrere seg om å kontrollere output.</p>
+<p>Her er den enkle implementasjonen av attributtet:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">177 </span><span class="Type">public</span> <span class="Type">class</span> TokenizeThis : Attribute
+<span class="lnr">178 </span>{
+<span class="lnr">179 </span>  <span class="Type">public</span> TokenizeThis(<span class="Type">string</span> input)
+<span class="lnr">180 </span>  {
+<span class="lnr">181 </span>    Input = input;
+<span class="lnr">182 </span>  }
+<span class="lnr">183 </span>  <span class="Type">public</span> <span class="Type">string</span> Input { get; <span class="Type">private</span> set; }
+<span class="lnr">184 </span>}
+</pre>
+<p>Og her følger baseklassen som gjør hele jobben. I setup-metoden som kjøres før hver test henter jeg først ut input-teksten fra attributtet, oppretter en ny Lexer, og utfører operasjonen. Linje 141-142 er bare debug-output. De to siste metodene er verktøy enhetstestene så kan benytte for å kontrollere resultatet.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">126 </span>[TestFixture]
+<span class="lnr">127 </span><span class="Type">public</span> <span class="Type">class</span> BaseLexerTest
+<span class="lnr">128 </span>{
+<span class="lnr">129 </span>  <span class="Type">private</span> Lexer lexer;
+<span class="lnr">130 </span>  <span class="Type">private</span> TokenizeThis _attributes;
+<span class="lnr">131 </span>
+<span class="lnr">132 </span>  <span class="Type">public</span> List&lt;Token&gt; tokens { <span class="Statement">get</span> { <span class="Statement">return</span> lexer.Tokens; } }
+<span class="lnr">133 </span>
+<span class="lnr">134 </span>  [SetUp]
+<span class="lnr">135 </span>  <span class="Type">public</span> <span class="Type">void</span> SetUp()
+<span class="lnr">136 </span>  {
+<span class="lnr">137 </span>    GetTextToTokenize();
+<span class="lnr">138 </span>    lexer = <span class="Statement">new</span> Lexer(Tokens.All);
+<span class="lnr">139 </span>    lexer.Tokenize(_attributes.Input);
+<span class="lnr">140 </span>
+<span class="lnr">141 </span>    Console.WriteLine(<span class="String">"Tokens for {0}"</span>, _attributes.Input);
+<span class="lnr">142 </span>    tokens.ForEach(tok =&gt; Console.WriteLine(tok));
+<span class="lnr">143 </span>  }
+<span class="lnr">144 </span>
+<span class="lnr">145 </span>  <span class="Type">private</span> <span class="Type">void</span> GetTextToTokenize()
+<span class="lnr">146 </span>  {
+<span class="lnr">147 </span>    <span class="Statement">try</span>
+<span class="lnr">148 </span>    {
+<span class="lnr">149 </span>      _attributes = <span class="Statement">this</span>.GetType()
+<span class="lnr">150 </span>        .GetCustomAttributes(<span class="Statement">typeof</span>(TokenizeThis), <span class="Constant">false</span>)
+<span class="lnr">151 </span>        .First() <span class="Statement">as</span> TokenizeThis;
+<span class="lnr">152 </span>    }
+<span class="lnr">153 </span>    <span class="Statement">catch</span> (Exception ex)
+<span class="lnr">154 </span>    {
+<span class="lnr">155 </span>      Assert.Fail(<span class="String">"Test class {0} does not specify a TokenizeThis attribute!"</span>,
+<span class="lnr">156 </span>          <span class="Statement">this</span>.GetType().Name);
+<span class="lnr">157 </span>    }
+<span class="lnr">158 </span>  }
+<span class="lnr">159 </span>
+<span class="lnr">160 </span>  <span class="Type">protected</span> <span class="Type">void</span> ExpectTokens(<span class="Statement">params</span> <span class="Type">int</span>[] tokenTypes)
+<span class="lnr">161 </span>  {
+<span class="lnr">162 </span>    tokens.Count.ShouldEqual(tokenTypes.Length);
+<span class="lnr">163 </span>
+<span class="lnr">164 </span>    <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Number">0</span>; i &lt; tokenTypes.Length; i++)
+<span class="lnr">165 </span>      tokens[i].Type.ShouldEqual(tokenTypes[i]);
+<span class="lnr">166 </span>  }
+<span class="lnr">167 </span>
+<span class="lnr">168 </span>  <span class="Type">protected</span> <span class="Type">void</span> ExpectTokens(<span class="Statement">params</span> <span class="Type">string</span>[] tokenContent)
+<span class="lnr">169 </span>  {
+<span class="lnr">170 </span>    tokens.Count.ShouldEqual(tokenContent.Length);
+<span class="lnr">171 </span>
+<span class="lnr">172 </span>    <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Number">0</span>; i &lt; tokenContent.Length; i++)
+<span class="lnr">173 </span>      tokens[i].Text.ShouldEqual(tokenContent[i]);
+<span class="lnr">174 </span>  }
+<span class="lnr">175 </span>}
+</pre>
+<p>Jeg har altså laget en attributt som lar meg spesifisere <em>Arrange</em>-delen (eller <em>Given</em>) av testen, og en baseklasse som tar seg av å utføre <em>Arrange</em> og <em>Act</em> (eller <em>Given</em> og <em>When</em>), samt gjøre det enklere for testene å utføre <em>Assert</em> (eller <em>Then</em>).</p>
+<p>Denne teknikken gir meg mange flere testklasser, fordi jeg trenger én ny klasse for hver Arrange/Given. Men det resulterer i en mye mere ryddig struktur - det er enkelt å finne frem i testene, og enkelt å se hva testene faktisk tester. Jeg vil også påstå at dette mønsteret gir meg mere stabile tester, med mindre koderepetisjon, og bedre muligheter for refakturering.</p>
+<h4>Noen flere eksempler</h4>
+<p>De to foregående eksemplene er klassiske enhetstester, hvor man korrelerer input og output fra en operasjon. Dette kan i teorien settes opp som en tabell, og man kunne kanskje brukt verktøy som <a href="http://en.wikipedia.org/wiki/FitNesse" target="_blank">Fit/FitNesse</a> til å spesifisere det samme. Ofte bruker jeg i stedet det som akkurat nå kalles for <em><a href="http://parlezuml.com/blog/?postid=987" target="_blank">“London school TDD”</a></em> (er vel i bunn og grunn det vi har kalt <strong>BDD</strong> i noen år nå), hvor man tester samhandlingen mellom objekter. Da trenger vi <em>mocks/test doubles</em>, og det er da jeg bruker Moq-rammeverket. Denne formen for testing egner seg også godt til den teknikken jeg har beskrevet.</p>
+<p>Her er en annen test fra meldings-DSL’en jeg lager. I denne testen setter jeg opp en semantisk modell som er det som er resultatet av at et DSL-skript har blitt kjørt. Jeg skal nå teste at når jeg “utfører” modellen så skal visse ting skje. Helt konkret sier jeg i SetupModel at programmet skal logge to tekstlinjer. Jeg skriver så to testmetoder; den ene kontrollerer at en av tekststrengene ble logget, og den andre tester at log-metoden ble kalt to ganger.</p>
+<p><tt>SetupModel</tt> er en tom, virtual metode i baseklassen, som vil bli kalt i setup.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 80 </span><span class="Type">public</span> <span class="Type">class</span> Executor_must_log : ServiceSemanticsExecutorTestFixture
+<span class="lnr"> 81 </span>{
+<span class="lnr"> 82 </span>    <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> SetupModel()
+<span class="lnr"> 83 </span>    {
+<span class="lnr"> 84 </span>        Model.Log.Add(<span class="String">"This should be logged"</span>);
+<span class="lnr"> 85 </span>        Model.Log.Add(<span class="String">"This should also be logged"</span>);
+<span class="lnr"> 86 </span>    }
+<span class="lnr"> 87 </span>
+<span class="lnr"> 88 </span>    [Test]
+<span class="lnr"> 89 </span>    <span class="Type">public</span> <span class="Type">void</span> Must_log_spesific_log_text()
+<span class="lnr"> 90 </span>    {
+<span class="lnr"> 91 </span>        LogMock.Verify(log =&gt; log.Log(<span class="String">"This should be logged"</span>), Times.Once());
+<span class="lnr"> 92 </span>    }
+<span class="lnr"> 93 </span>
+<span class="lnr"> 94 </span>    [Test]
+<span class="lnr"> 95 </span>    <span class="Type">public</span> <span class="Type">void</span> Must_log_all_items()
+<span class="lnr"> 96 </span>    {
+<span class="lnr"> 97 </span>        LogMock.Verify(log =&gt; log.Log(It.IsAny&lt;<span class="Type">string</span>&gt;()), Times.Exactly(<span class="Number">2</span>));
+<span class="lnr"> 98 </span>    }
+<span class="lnr"> 99 </span>}
+</pre>
+<p>Det er baseklassen med det herlige navnet <tt>ServiceSemanticsExecutorTestFixture</tt> som eksekverer modellen, og som har mocks jeg så kan bruke til selve verifiseringen.</p>
+<p>Og her følger et siste eksempel som er ganske interessant. Her tester jeg faktisk et testrammeverk! Jeg setter opp to modeller. Den ene jeg kaller Actual er den semantiske modellen fra en DSL. Expectations er den semantiske modellen fra en annen DSL som jeg bruker til å verifisere den første. I testmetoden kan jeg så kontrollere at testrammeverket jeg tester fanger opp missmatch mellom de to modellene, og at det rapporterer denne mismatchen korrekt.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">104 </span><span class="Type">public</span> <span class="Type">class</span> Spec_ExpectedRepliesVerifier_fail : VerifierTestFixture&lt;ExpectedRepliesVerifier&gt;
+<span class="lnr">105 </span>{
+<span class="lnr">106 </span>    <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> SetupActual()
+<span class="lnr">107 </span>    {
+<span class="lnr">108 </span>        Actual.Replies.Add(<span class="String">"This is a reply"</span>);
+<span class="lnr">109 </span>    }
+<span class="lnr">110 </span>
+<span class="lnr">111 </span>    <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> SetupExpectations()
+<span class="lnr">112 </span>    {
+<span class="lnr">113 </span>        Expectations.ExpectedReplies.Add(<span class="String">"This is a reply"</span>);
+<span class="lnr">114 </span>        Expectations.ExpectedReplies.Add(<span class="String">"This is another reply"</span>);
+<span class="lnr">115 </span>    }
+<span class="lnr">116 </span>
+<span class="lnr">117 </span>    [Test]
+<span class="lnr">118 </span>    <span class="Type">public</span> <span class="Type">void</span> Should_report_missing_reply()
+<span class="lnr">119 </span>    {
+<span class="lnr">120 </span>        Result.Ok.ShouldBeFalse();
+<span class="lnr">121 </span>        Result.Items.First().Exception.Message
+<span class="lnr">122 </span>            .ShouldEqual(<span class="String">"Missing reply: </span><span class="Special">\"</span><span class="String">This is another reply</span><span class="Special">\"</span><span class="String">"</span>);
+<span class="lnr">123 </span>    }
+<span class="lnr">124 </span>}
+</pre>
+<p>Jeg bruker en ekstra teknikk i denne testen, og det er å bruke <i>Generics</i> til å spesifisere hvilken klasse jeg tester – nemlig <tt>ExpectedRepliesVerifier</tt>. Baseklassen oppretter en instans av denne, og bruker den til å validere de to modellene mot hverandre. Dermed kan jeg bruke denne samme teknikken på alle verifiseringsobjekter jeg lager, og for alle tenkelige oppsett av modeller.</p>
+<p>Les også mine mest populære testrelaterte artikler: <a href="http://blog.kjempekjekt.com/2009/08/25/utenfra-og-inn-programmering/">Utenfra-og-inn programmering</a> og <a href="http://blog.kjempekjekt.com/2009/08/30/tdd-og-mocking-i-praksis/">TDD og mocking i praksis</a>.</p>

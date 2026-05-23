@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,C#,Clojure,Common Lisp,Polyglot,Ruby">
+
+    <title>Hello World, Euler style</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hello World, Euler style</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 24. november 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p>I den oppkommende adventskalenderen, hvor jeg hver dag frem til Jul vil introdusere deg for et nytt programmeringsspråk, har jeg valgt én bestemt oppgave for å vise frem språkene – nemlig den første og enkleste oppgaven på <a href="http://projecteuler.net/">Project Euler</a>.</p>
+<p>Oppgaven lyder:</p>
+<p style="padding-bottom: 5px; background-color: #eeeeee; padding-left: 5px; padding-right: 5px; font-size: 110%; padding-top: 5px"><em>Hvis vi lister opp alle naturlige tall under 10 som er multipler av 3 eller 5 så får vi 3, 5, 6 og 9. Summen av disse er 23. Finn summen av alle multipler av 3 eller 5 under 1000.</em></p>
+<p>Jeg bruker denne oppgaven som min <em><a href="http://en.wikipedia.org/wiki/Hello_world_program">Hello, World</a></em> når jeg lærer meg nye språk. Den sørger for at jeg raskt lærer meg flere grunnleggende byggestener i språket, som hvordan man itererer, og hvordan man tar avgjørelser basert på numeriske operasjoner.</p>
+<p>Jeg har også brukt oppgaven her på bloggen tidligere, i posten <a href="/2010/05/04/parallellisering-av-en-algoritme-i-erlang/">Parallellisering av en algoritme i Erlang</a>. I dag gir jeg deg mulighet til å gjøre deg kjent med oppgaven, og viser noen implementasjoner i de språkene du normalt ser på programmeringsbloggen.</p>
+<h4>Løsning i C#</h4>
+<p>C# er språket jeg bruker til daglig, så det er et greit sted å begynne. Her følger en komplett løsning som looper gjennom alle tallene opp til 1000, sjekker om de er multipler av 3 eller 5 (ved å bruke <a href="http://en.wikipedia.org/wiki/Modulo_operation">modulo</a>), og summerer opp tallene i sum-variabelen. Det siste som skjer er at tallet skrives ut.</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Type">class</span> Program
+<span class="lnr">11 </span>{
+<span class="lnr">12 </span>    <span class="Type">static</span> <span class="Type">void</span> Main()
+<span class="lnr">13 </span>    {
+<span class="lnr">14 </span>        <span class="Type">int</span> sum = <span class="Number">0</span>;
+<span class="lnr">15 </span>        <span class="Statement">for</span> (<span class="Type">int</span> i = <span class="Number">0</span>; i &lt; <span class="Number">1000</span>; i++)
+<span class="lnr">16 </span>            <span class="Conditional">if</span> (i % <span class="Number">3</span> == <span class="Number">0</span> || i % <span class="Number">5</span> == <span class="Number">0</span>)
+<span class="lnr">17 </span>                sum += i;
+<span class="lnr">18 </span>        System.Console.WriteLine(sum);
+<span class="lnr">19 </span>    }
+<span class="lnr">20 </span>}
+</pre>
+<p>Som sagt er det en meget enkel oppgave – så sant du kjenner til modulo da.</p>
+<p>En alternativ måte å løse oppgaven er å bruke en funksjonell, stream-basert teknikk. I .NET vil dette si Linq. Her er en løsning i C# som bruker Range, Where og Sum:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Statement">using</span> System.Linq;
+<span class="lnr">11 </span>
+<span class="lnr">12 </span><span class="Type">class</span> Program
+<span class="lnr">13 </span>{
+<span class="lnr">14 </span>    <span class="Type">static</span> <span class="Type">void</span> Main()
+<span class="lnr">15 </span>    {
+<span class="lnr">16 </span>        System.Console.WriteLine(
+<span class="lnr">17 </span>            Enumerable.Range(<span class="Number">1</span>, <span class="Number">999</span>)
+<span class="lnr">18 </span>            .Where(i =&gt; i % <span class="Number">3</span> == <span class="Number">0</span> || i % <span class="Number">5</span> == <span class="Number">0</span>)
+<span class="lnr">19 </span>            .Sum());
+<span class="lnr">20 </span>    }
+<span class="lnr">21 </span>}
+<span class="lnr">22 </span>
+</pre>
+<p>I julekalenderen vil du komme til å se en god mix av disse to fremgangsmåtene, og noen som er helt anderledes.</p>
+<h4>Løsning i Ruby</h4>
+<p>Ruby er det språket det er lettest for meg å hoppe inn i om jeg skal lage et kjapt lite verktøy, skal teste ut en algoritme eller noe lignende. Her følger en imperativ løsning:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">1 </span>sum = <span class="Number">0</span>;
+<span class="lnr">2 </span>(<span class="Number">1</span>...<span class="Number">1000</span>).each <span class="rubyControl">do</span> |<span class="Identifier">i</span>|
+<span class="lnr">3 </span>  sum += i <span class="Conditional">if</span> i.modulo(<span class="Number">3</span>) == <span class="Number">0</span> <span class="rubyControl">or</span> i.modulo(<span class="Number">5</span>) == <span class="Number">0</span>
+<span class="lnr">4 </span><span class="rubyControl">end</span>
+<span class="lnr">5 </span>puts sum
+</pre>
+<p>I Ruby bruker jeg omtrent aldri vanlige for-løkker – å opprette en range, og så kjøre en kodeblokk for hvert element er mere naturlig.</p>
+<p>En stream-basert løsning er mere elegant. Da bruker jeg select for å filtrere tallene, og reduce for å summere, slik som dette:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">7 </span>puts (<span class="Number">1</span>...<span class="Number">1000</span>).
+<span class="lnr">8 </span>  select{|<span class="Identifier">x</span>| x.modulo(<span class="Number">3</span>) == <span class="Number">0</span> <span class="rubyControl">or</span> x.modulo(<span class="Number">5</span>) == <span class="Number">0</span>}.
+<span class="lnr">9 </span>  reduce(<span class="Constant">:+</span>)
+</pre>
+<h4>Løsning i Clojure</h4>
+<p>Clojure er fortsatt favorittspråket mitt, så jeg må ta med noen løsninger i det også. Selv om det er helt unaturlig å bruke en løkke i Clojure så har jeg kokt sammen en slik løsning for denne ene gangens skyld:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr"> 1 </span><span class="Delimiter">(</span><span class="Statement">loop</span> [sum <span class="Number">0</span>, numbers <span class="Delimiter">(</span>range <span class="Number">1000</span><span class="Delimiter">)</span>]
+<span class="lnr"> 2 </span>  <span class="Delimiter">(</span><span class="Statement">if</span> <span class="Delimiter">(</span>seq numbers<span class="Delimiter">)</span>
+<span class="lnr"> 3 </span>    <span class="Delimiter">(</span><span class="Statement">let</span> [i <span class="Delimiter">(</span><span class="Statement">first</span> numbers<span class="Delimiter">)</span>]
+<span class="lnr"> 4 </span>      <span class="Delimiter">(</span><span class="Statement">if</span> <span class="Delimiter">(</span><span class="Statement">or</span> <span class="Delimiter">(</span>zero? <span class="Delimiter">(</span><span class="Statement">mod</span> i <span class="Number">3</span><span class="Delimiter">))</span>
+<span class="lnr"> 5 </span>              <span class="Delimiter">(</span>zero? <span class="Delimiter">(</span><span class="Statement">mod</span> i <span class="Number">5</span><span class="Delimiter">)))</span>
+<span class="lnr"> 6 </span>        <span class="Delimiter">(</span>recur <span class="Delimiter">(</span><span class="Statement">+</span> sum i<span class="Delimiter">)</span> <span class="Delimiter">(</span><span class="Statement">rest</span> numbers<span class="Delimiter">))</span>
+<span class="lnr"> 7 </span>        <span class="Delimiter">(</span>recur sum <span class="Delimiter">(</span><span class="Statement">rest</span> numbers<span class="Delimiter">))))</span>
+<span class="lnr"> 8 </span>    <span class="Delimiter">(</span>println sum<span class="Delimiter">)))</span>
+</pre>
+<p>Det fungerer, men jeg gremmes! I Clojure er stream-basert programmering det naturlige, og jeg kan bruke range, filter og reduce til å løse oppgaven ganske enkelt:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr"> 1 </span><span class="Delimiter">(</span>println
+<span class="lnr"> 2 </span>  <span class="Delimiter">(</span><span class="Statement">reduce</span> <span class="Statement">+</span>
+<span class="lnr"> 3 </span>          <span class="Delimiter">(</span>filter #<span class="Delimiter">(</span><span class="Statement">or</span> <span class="Delimiter">(</span>zero? <span class="Delimiter">(</span><span class="Statement">mod</span> % <span class="Number">3</span><span class="Delimiter">))</span>
+<span class="lnr"> 4 </span>                       <span class="Delimiter">(</span>zero? <span class="Delimiter">(</span><span class="Statement">mod</span> % <span class="Number">5</span><span class="Delimiter">)))</span>
+<span class="lnr"> 5 </span>                  <span class="Delimiter">(</span>range <span class="Number">1000</span><span class="Delimiter">))))</span>
+</pre>
+<p>Det er derimot ikke sikkert du synes det er så enkelt å <em>lese</em> denne koden. Trikset med å lese Clojure/Lisp-syntaks er som følger: Skann raskt med øynene fra venstre mot høyre til du kommer til uttrykkets siste del, som i dette tilfellet er (range 1000). Arbeid deg så tilbake mot høyre.</p>
+<p>For å gjøre koden litt mere leservennlig tilbyr Clojure deg å gjøre det samme på følgende måte:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Delimiter">(</span>-&gt;&gt; <span class="Number">1000</span> range
+<span class="lnr">11 </span>     <span class="Delimiter">(</span>filter #<span class="Delimiter">(</span><span class="Statement">or</span> <span class="Delimiter">(</span>zero? <span class="Delimiter">(</span><span class="Statement">mod</span> % <span class="Number">3</span><span class="Delimiter">))</span>
+<span class="lnr">12 </span>                  <span class="Delimiter">(</span>zero? <span class="Delimiter">(</span><span class="Statement">mod</span> % <span class="Number">5</span><span class="Delimiter">))))</span>
+<span class="lnr">13 </span>     <span class="Delimiter">(</span><span class="Statement">reduce</span> <span class="Statement">+</span><span class="Delimiter">)</span>
+<span class="lnr">14 </span>     println<span class="Delimiter">)</span>
+</pre>
+<p>Denne koden kan leses fra venstre mot høyre. <em>"Ta tallet 1000, og lag en range av det. Filtrer med en anonym funksjon som sjekker om tall er delelig på 3 eller 5. Reduser med pluss (altså pluss dem sammen), og skriv til slutt ut"</em>.</p>
+<h4>Løsning i Common Lisp</h4>
+<p>Og helt på tampen tar jeg med en løsning i Common Lisp – fordi man der finner den kuleste og mest komplette varianten av en for-løkke som finnes i noe språk, nemlig <strong>loop makroen</strong>:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">1 </span><span class="Delimiter">(</span><span class="Statement">print</span> <span class="Delimiter">(</span><span class="Statement">loop</span> for x below <span class="Number">1000</span>
+<span class="lnr">2 </span>             <span class="Statement">when</span> <span class="Delimiter">(</span><span class="Statement">or</span> <span class="Delimiter">(</span><span class="Statement">zerop</span> <span class="Delimiter">(</span><span class="Statement">mod</span> x <span class="Number">3</span><span class="Delimiter">))</span>
+<span class="lnr">3 </span>                      <span class="Delimiter">(</span><span class="Statement">zerop</span> <span class="Delimiter">(</span><span class="Statement">mod</span> x <span class="Number">5</span><span class="Delimiter">)))</span>
+<span class="lnr">4 </span>             sum x<span class="Delimiter">)</span>
+</pre>
+<p>Du har nå sett oppgaven løst med fire ulike språk, og i desember vil du få se flere løsninger. Da vil jeg sansynligvis bryte oppgaven opp i flere steg eller funksjoner, slik at jeg får presentert enda flere aspekter ved språkene jeg forteller om.</p>
+<p>Jeg håper du gleder deg like mye som meg :)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

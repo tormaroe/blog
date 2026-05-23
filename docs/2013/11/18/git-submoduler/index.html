@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Git">
+
+    <title>GIT submoduler</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>GIT submoduler</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 18. november 2013</small> 
+            <a href="/tags/git"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Git</span></a>
+          </p>
+          <p>Som lovet dukker det her opp én gjesteblogg om git hver uke, og denne uken heter den...</p>
+<h1>Der untermodule - Ukens GIT #3</h1>
+<p><em>Yo dawg! I herd u like repos so I put repos in yo repos so u can commit while u commit!</em>
+<p>Noen ganger har man et internt bibliotek som blir brukt av flere produkter / programmer. Programmene ligger gjerne i hver sine git depoter, og biblioteket har gjerne sitt eget depot det også. Git submodule lar deg referere til og sjekke ut andre git depoter inni git depotet ditt - samt å dele dette med de andre utviklerne på prosjektet.<br />
+<h2>Legge til en undermodul</h2>
+<p>Følgende legger til et eksternt git repo som en underkatalog i <code>lib/</code> i hovedprogrammets repo. Dette produserer en <code>.gitmodules</code>-fil som du commiter og pusher til de andre.
+<pre># Inni utsjekket git depot for hovedprogrammet:
+$ git submodule add git://gitserver/bibliotek.git lib/bibliotek
+Cloning into 'lib/bibliotek'... done.
+$ cat .gitmodules
+[submodule "lib/bibliotek"]
+    path = lib/bibliotek
+    url = git://gitserver/bibliotek.git
+$ git add .gitmodules
+$ git commit -m "La til bibliotek som submodule"</pre>
+<h2>Hente ned et depot som bruker undermoduler</h2>
+<pre>$ git clone git://gitserver/hovedprogram.git
+$ cd hovedprogram
+$ git submodule init    # Last ned eventuelle undermoduler
+Submodule 'lib/bibliotek' (git://gitserver/bibliotek.git) registered
+$ git submodule update
+Submodule path 'lib/bibliotek': checked out '6a21ab9...'</pre>
+<h2>Spesifikk revisjon av undermodul</h2>
+<p>Gjerne vil man at alle skal ha samme revisjon av undermodulen utsjekket, og kanskje ikke gjeldende HEAD, men heller en godt uttestet tag eller lignende. Man kan da gjøre følgende:
+<pre>$ cd lib/bibliotek      # Gå inn i undermodul
+$ git checkout v1.0
+$ cd ..                 # Gå tilbake til hovedprogram
+$ git add bibliotek     # Commit revisjonen undermodul er på
+$ git commit -m "Hovedprogram bruker nå v1.0 av bibliotek"</pre>
+<p>De andre utviklerne kan så utføre følgende:
+<pre>$ git pull
+$ git submodule update</pre>
+<p>Skrevet av <a href="http://www.eikeland.se/">Stian Eikeland</a>.</p>
+<p><b>Tidligere artikler i serien:</b> <a href="/2013/11/04/branching-i-git/">Branching i git</a> | <a href="/2013/11/11/git-bisect/">git bisect</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

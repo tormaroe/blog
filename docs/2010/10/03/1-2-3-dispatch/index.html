@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="OO Patterns,C#,Clojure">
+
+    <title>1-2-3 dispatch</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>1-2-3 dispatch</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 3. oktober 2010</small> 
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          </p>
+          <p>Har du lest <a href="http://james-iry.blogspot.com/2009/05/brief-incomplete-and-mostly-wrong.html"><em>A Brief, Incomplete, and Mostly Wrong History of Programming Languages</em></a> ? Blogposten beskriver bl.a. Java's fødsel på denne måten:</p>
+<p style="padding-bottom: 2px; background-color: #ffeeaa; padding-left: 12px; padding-right: 12px; margin-left: 20px; font-size: 110%; margin-right: 20px"><i>1996 - James Gosling invents Java. Java is a relatively verbose, garbage collected, class based, statically typed, single dispatch, object oriented language with single implementation inheritance and multiple interface inheritance. Sun loudly heralds Java's novelty.</i></p>
+<p>Dette blir veldig morsomt da det etterfølges av følgende:</p>
+<p style="padding-bottom: 2px; background-color: #ffeeaa; padding-left: 12px; padding-right: 12px; margin-left: 20px; font-size: 110%; margin-right: 20px"><i>2001 - Anders Hejlsberg invents C#. C# is a relatively verbose, garbage collected, class based, statically typed, single dispatch, object oriented language with single implementation inheritance and multiple interface inheritance. Microsoft loudly heralds C#'s novelty.</i></p>
+<p>Da jeg leste dette slo det meg at jeg ikke ante hva <strong><em>single dispatch</em></strong> var for noe. Jeg skjønte at det var noe grunnleggende i hvordan programmeringsspråk fungerer, og ante at det hadde noe med metode/funksjonskall å gjøre, men der stoppet min kunnskap. Etter litt googling føler jeg meg nå bedre – og jeg vil nå gjerne dele det jeg har lært!</p>
+<p>Single dispatch gir ikke så mye mening før vi ser på hva alternativet er. <strong><em>Multiple dispatch</em></strong> (eller <em>multimethods</em>) er en feature hvor hvilken metode som kjøres når man gjør et metodekall kan avgjøres basert på informasjon som bare er tilgjengelig under kjøring (dvs. dynamisk). I denne artikkelen vil jeg eksemplifisere både single og multiple dispatch, men også demonstrere <strong>VISITOR PATTERN</strong>, som er en teknikk vi av og til bruker for å omgå utfordringene med single dispatch.</p>
+<h4>Single dispatch</h4>
+<p>C# er et eksempel på et <em>single dispatch</em>-språk. "Problemet" med single dispatch, om jeg kan kalle det det, kan illustreres med koden nedenfor. Her har vi en Person-klasse som inneholder fornavn og etternavn. Deretter arver vi fra denne for å definere en russer, som i tillegg har et "patrynomisk" navn – et navn russere har som utkommer av farens fornavn. Til slutt har jeg samlet forretningslogikken for å produsere "full display name" for en person i FullNameFormatter.</p>
+<pre><code>public class Person
+{
+    public string GivenName { get; set; }
+    public string Surname { get; set; }
+}
+ 
+public class Russian : Person
+{
+    public string PatronymicName { get; set; }
+}
+ 
+public static class FullNameFormatter
+{
+    public static string FullName(Person p)
+    {
+        return string.Format("{0} {1}", p.GivenName, p.Surname);
+    }
+    public static string FullName(Russian p)
+    {
+        return string.Format("{0} {1} {2}", 
+            p.GivenName, p.PatronymicName, p.Surname);
+    }
+}
+</code></pre>
+<p>Jeg bruker så disse klassene til å definere et par personer, og skrive ut navnene deres..</p>
+<pre><code>static void Main(string[] args)
+{
+    List<Person> people = new List<Person>
+    {
+        new Person { GivenName = "Jens", Surname = "Stoltenberg" },
+        new Russian { GivenName = "Boris", PatronymicName = "Nikolayevich", 
+            Surname = "Yeltsin" }
+    };
+ 
+    people.ForEach(p => Console.WriteLine(FullNameFormatter.FullName(p)));
+}</code></pre>
+<div style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><u>Output:</u><br>Jens Stoltenberg<br>Boris Yeltsin<br></font></div>
+<p>Resultatet er ikke hva jeg ønsker – russerens mellomnavn kommer ikke med! Dette er fordi C# har single (statisk) dispatch: Kompilatoren kan ikke skille mellom personene i listen, behandler alle som instanser av Person, og dispatcher til "feil" metode for russeren.</p>
+<p>Det finnes flere løsninger på dette problemet. Den mest åpenbare er kanskje å ha logikken for <em>full name</em> i Person-klassen, og overstyre den i Russian. Av og til er det det mest fornuftige, og føles veldig objektorientert. Men man kan ikke plassere <em>all</em> forretningslogikk inn i klassene, og dessuten gjør dette at vi sprer <em>full name</em>-logikken mellom mange, ulike filer.</p>
+<p>En annen, vanlig løsning er å ha bare én FullName-metode, og bruke reflection - dvs. sjekke objektets egentlige type. FullName vil da typisk ha en switch med én case for hver type. Det vil si at man egentlig gjør sin egen, reflection-baserte dispatch. </p>
+<p>Men vi har også et objektoerientert mønster for å løse problemet – det heter <strong>Visitor pattern</strong>, og det vil jeg presentere nå..</p>
+<p style="padding-bottom: 10px; background-color: #e6e6e6; padding-left: 10px; padding-right: 10px; margin-left: 10px; margin-right: 10px; padding-top: 10px"><b>Sidebar: Multiple dispatch i C# 4.0</b><br>Interessant nok kan man med C# 4.0 enkelt "fikse" koden over til å bruke multiple dispatch, slik at fullname blir formatert riktig for russeren. Det gjør man ved å endre deklerasjonen av people fra <tt>List&lt;Person&gt;</tt> til <tt>List&lt;dynamic&gt;</tt>. .NET vil da vente til runtime med å avjøre hvilket type objekt dette er, og vet dermed at det har å gjøre med en russer når kallet til FullName skal dispatches – slik at riktig overload kalles.<br></p>
+<h4>Dual dispatch</h4>
+<p>I <a href="http://en.wikipedia.org/wiki/Visitor_pattern" target="_blank">Visitor pattern</a> bruker vi en teknikk som kalles dual dispatch – som i dette eksempelet vil sørge for at riktig overload av FullName skal bli kalt. Jeg legger til et IFullNameFormatter-interface (dette er visitoren), og FullNameFormatter må arve fra dette. I tillegg må jeg gi Person en FullName-metode som tar imot en formatter/visitor og kaller den med seg selv som parameter. Denne må russeren overstyre.</p>
+<pre><code>public interface IFullNameFormatter
+{
+    string FullName(Person p);
+    string FullName(Russian r);
+}
+ 
+public class Person
+{
+    public string GivenName { get; set; }
+    public string Surname { get; set; }
+    public virtual string FullName(IFullNameFormatter formatter)
+    {
+        return formatter.FullName(this);
+    }
+}
+ 
+public class Russian : Person
+{
+    public string PatronymicName { get; set; }
+    public override string FullName(IFullNameFormatter formatter)
+    {
+        return formatter.FullName(this); // Have to override, or this will not work!
+    }
+}
+ 
+public class FullNameFormatter : IFullNameFormatter
+{
+    public string FullName(Person p)
+    {
+        return string.Format("{0} {1}", p.GivenName, p.Surname);
+    }
+    public string FullName(Russian r)
+    {
+        return string.Format("{0} {1} {2}",
+            r.GivenName, r.PatronymicName, r.Surname);
+    }
+}</code></pre>
+<p>Jeg kan nå formaterer navnene til personene i listen min på følgende måte:</p>
+<pre><code>static void Main(string[] args)
+{
+    List<Person> people = new List<Person>
+    {
+        new Person { GivenName = "Jens", Surname = "Stoltenberg" },
+        new Russian { GivenName = "Boris", PatronymicName = "Nikolayevich", 
+            Surname = "Yeltsin" }
+    };
+ 
+    var formatter = new FullNameFormatter();
+    people.ForEach(p => Console.WriteLine(p.FullName(formatter)));
+}</code></pre>
+<div style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><u>Output:</u><br>Jens Stoltenberg<br>Boris Nikolayevich Yeltsin<br></font></div>
+<p>Når jeg nå kaller FullName på russer-objektet, vil russeren kalle riktig Fullname i formatteren – og problemet er løst. FullName-logikken er nå samlet i én klasse, men splittet tydelig opp i ulike overloads i denne klassen. Ulempen er at vi må overstyre en metode i hver subklasse av Person.</p>
+<p>Visitor er et relativt komplisert mønster, og man bør tenke seg om to ganger før man tar det i bruk. Dual dispatch er ikke alltid helt intuitivt, spesielt for mindre erfarne utviklere på teamet, og mange kan bli nervøse når de ser visitor-klasser og accept-metoder. God navngiving, som den jeg har brukt her, kan hjelpe på dette problemet.</p>
+<h4>Multiple dispatch</h4>
+<p>Og så har vi endelig kommet til multiple dispatch. I motsetning til single dispatch vil man nå avgjøre hvilken funksjon/metode som kalles basert på data som er tilgjengelig når programmet kjøres. I stedet for at det er et <em>en-til-en</em> forhold mellom et metodekall og en metode, kan et metodekall nå resultere i eksekveringen av ett av en hel rekke metoder.</p>
+<p>Clojure har støtte for multiple dispatch, og her er et eksempel på hvordan det kan utnyttes. Først definerer jeg en variabel, <em>people</em>, som inneholder et array av fire personer. Personene er rett og slett maps (distionaries). Alle disse fire vil kreve ulike <em>full name</em>-regler.</p>
+<div style="padding-bottom: 6px; background-color: #002240; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><font color="#b8860b">(</font>def people <br>&nbsp;&nbsp;&nbsp;&nbsp; [{:given-name <font color="#3ad900">"Jens"</font> :surname <font color="#3ad900">"Stoltenberg"</font> :nationality <font color="#3ad900">"Norwegian"</font>}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:given-name <font color="#3ad900">"Dong"</font> :surname <font color="#3ad900">"Lee"</font> :nationality <font color="#3ad900">"Korean"</font>}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:given-name <font color="#3ad900">"Boris"</font> :surname <font color="#3ad900">"Yeltsin"</font> :nationality <font color="#3ad900">"Russian"</font>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :patronymic-name <font color="#3ad900">"Nikolayevich"</font>}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:given-name <font color="#3ad900">"Dung"</font> :surname <font color="#3ad900">"Nguyen"</font> :nationality <font color="#3ad900">"Vietnamese"</font>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :middle-name <font color="#3ad900">"Tan"</font>}]<font color="#b8860b">)</font><br></font></div>
+<p>Deretter skal jeg definere en <strong><em>multimethod</em></strong> for å formatere navnet. defmulti sier hva metoden heter, og hva den skal dispatche på. I dette tilfellet vil jeg dispatche på nasjonaliteten til personen, som er en nøkkel (et felt om du vil) i person-mapen. Man kan dispatche på andre ting også, inkludert type (for eksempel java-objekt type).</p>
+<p>Til slutt kommer de ulike "overloadene" av full-name, hvor jeg spesifiserer hvilken verdi av nasjonalitet hver enkelt metode håndterer.</p>
+<div style="padding-bottom: 6px; background-color: #002240; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><font color="#b8860b">(</font>defmulti full-name :nationality<font color="#b8860b">)</font><br><br><font color="#b8860b">(</font><font color="#ff9d00"><b>defmethod</b></font> full-name <font color="#3ad900">"Korean"</font> [user]<br>&nbsp; <font color="#b8860b">(</font>str <font color="#b8860b">(</font>:surname <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)</font>&nbsp;<font color="#3ad900">" "</font>&nbsp;<font color="#b8860b">(</font>:given-name <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)))</font><br><br><font color="#b8860b">(</font><font color="#ff9d00"><b>defmethod</b></font> full-name <font color="#3ad900">"Russian"</font> [user]<br>&nbsp; <font color="#b8860b">(</font>str <font color="#b8860b">(</font>:given-name <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)</font>&nbsp;<font color="#3ad900">" "</font>&nbsp;<font color="#b8860b">(</font>:patronymic-name <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)</font>&nbsp;<font color="#3ad900">" "</font>&nbsp;<font color="#b8860b">(</font>:surname <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)))</font><br><br><font color="#b8860b">(</font><font color="#ff9d00"><b>defmethod</b></font> full-name <font color="#3ad900">"Vietnamese"</font> [user]<br>&nbsp; <font color="#b8860b">(</font>str <font color="#b8860b">(</font>:surname <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)</font>&nbsp;<font color="#3ad900">" "</font>&nbsp;<font color="#b8860b">(</font>:middle-name <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)</font>&nbsp;<font color="#3ad900">" "</font>&nbsp;<font color="#b8860b">(</font>:given-name <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)))</font><br><br><font color="#b8860b">(</font><font color="#ff9d00"><b>defmethod</b></font> full-name <font color="#80ffbb"><b>:default</b></font> [user]<br>&nbsp; <font color="#b8860b">(</font>str <font color="#b8860b">(</font>:given-name <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)</font>&nbsp;<font color="#3ad900">" "</font>&nbsp;<font color="#b8860b">(</font>:surname <font color="#ff9d00"><b>user</b></font><font color="#b8860b">)))</font><br></font></div>
+<p>Den siste overloaded er spesifisert som default, og vil håndtere alle kall til full-name hvor det ikke finnes en bedre match.</p>
+<p>Jeg kan nå iterere over alle personene og skrive ut nasjonaliteten og full name for hver på denne måten:</p>
+<div style="padding-bottom: 6px; background-color: #002240; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><font color="#b8860b">(</font>doseq [p people] <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#b8860b">(</font>println <font color="#b8860b">(</font>:nationality p<font color="#b8860b">)</font>&nbsp;<font color="#3ad900">":"</font>&nbsp;<font color="#b8860b">(</font>full-name p<font color="#b8860b">)))</font><br></font></div>
+<div style="padding-bottom: 6px; background-color: #002240; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #ffffff; padding-top: 6px"><font face="monospace"><u>Output:</u><br>Norwegian : Jens Stoltenberg<br>Korean : Lee Dong<br>Russian : Boris Nikolayevich Yeltsin<br>Vietnamese : Nguyen Tan Dung<br></font></div>
+<p>Jeg håper du lærte noe fra denne gjennomgangen. Jeg vet i alle fall nå hva forskjellen mellom single og multiple dispatch er for noe. Jeg lærte meg også mer om hvorfor vi av og til trenger å bruke VISITOR pattern, og vet nå om én ekstra ting jeg kan bruke .NET's nye <em>dynamic</em> feature til.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

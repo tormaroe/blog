@@ -1,0 +1,135 @@
+---
+title: Regex
+link: http://blog.kjempekjekt.com/2011/12/23/regex/
+layout: post
+date: 2011-12-23 08:58:18Z
+tags:
+  - DSL
+  - Julekalender
+  - Regex
+---
+<p>Dagens blogpost handler <em>ikke</em> om et programmeringsspråk som kan brukes til generelle formål. Regulære uttrykk – også kalt <em>regex </em>eller <em>regexp</em> – er et domenespesifikt språk man kan bruke til å "matche" tekst. Og alle utviklere, uansett hvilket språk de ellers bruker, kan dra nytte av dette. Desverre behersker alt for få utviklere den enorme styrken som bor i disse uttrykkene – om dette gjelder <em>deg</em> har du herved mottatt min oppfordring om å gjøre noe med det!</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="regex" border="0" alt="regex" src="/uploads/2011/12/regex.jpg" width="500" height="330"></p> <p>Steve Yegge, en erfaren utvikler og bråkebøtte med bakgrunn fra Amazon og Google, har følgende å si om regulære uttrykk:</p> <p><strong>"If you aren't <em>extremely proficient</em> with regular expressions right now, then you should drop everything and go become proficient with them. I bet I use regular expressions on 350 days out of every year: in my editor, on the command-line, in my code — anywhere that using one would save me time or make my code clearer. Oh, how it hurts to think about all the so-called "programmers" out there who don't know how to use regexps. Argh."</strong> (<a href="https://sites.google.com/site/steveyegge2/the-emacs-problem">kilde</a>)</p> <p>Kanskje du har hørt et uttrykk som sier noe sånt som: <em>"Du har ett problem, og bestemmer deg for å løse det med regex. Nå har du to problemer."</em> Bakgrunnen for dette er at regex-syntaksen er svært tett og komprimert, og lett å gjøre feil om man ikke kan det godt nok eller ikke sikrer seg godt ved å teste. Men dette er ikke grunner til å la være å bruke dem. Kraften er verdt anstrengelsen!</p> <h4>Hva kan jeg gjøre med regex?</h4> <p>Et veldig vanlig bruksområde for regex er input-validering. Du kan f.eks. validere at noe er en gyldig epost-adresse, url, telefonnummer, postkode osv. Man bruker det også til søking i større mengder tekst, og ulike parsing-oppgaver, f.eks. om man ønsker å fargelegge tekst etter forskjellige regler. </p> <p>De fleste programmeringsspråk har regex-støtte, men vær oppmerksom på at metodenavn og måte de brukes på vil være forskjellig fra språk til språk. Selve regex-syntaksen kan også variere noe. Denne gangen velger jeg å vise eksempler i Ruby.</p> <h4>Validering</h4> <p>Se for deg at jeg har en rekke norske telefonnumre som jeg skal validere. De skal i utgangspunktet bestå av 8 siffer, men kan også ha en landkode, og den kan være formatert på tre ulike måter.</p> <p>I eksempelet nedefor looper jeg over et array med numre, validerer det med et regex, og skriver ut om det er gyldig eller ikke.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 10 </span>inputs = [
+<span class="lnr"> 11 </span>  <span class="rubyStringDelimiter">'</span><span class="String">90909090</span><span class="rubyStringDelimiter">'</span>,     <span class="Comment"># Valid: normal number</span>
+<span class="lnr"> 12 </span>  <span class="rubyStringDelimiter">'</span><span class="String">4790909090</span><span class="rubyStringDelimiter">'</span>,   <span class="Comment"># Valid: number with country code</span>
+<span class="lnr"> 13 </span>  <span class="rubyStringDelimiter">'</span><span class="String">+4790909090</span><span class="rubyStringDelimiter">'</span>,  <span class="Comment"># Valid: country code using +</span>
+<span class="lnr"> 14 </span>  <span class="rubyStringDelimiter">'</span><span class="String">004790909090</span><span class="rubyStringDelimiter">'</span>, <span class="Comment"># Valid: country code using 00</span>
+<span class="lnr"> 15 </span>
+<span class="lnr"> 16 </span>  <span class="rubyStringDelimiter">'</span><span class="String">+47909090</span><span class="rubyStringDelimiter">'</span>,    <span class="Comment"># Invalid: + without country code </span>
+<span class="lnr"> 17 </span>                  <span class="Comment">#          or too short number</span>
+<span class="lnr"> 18 </span>  <span class="rubyStringDelimiter">'</span><span class="String">9090909o</span><span class="rubyStringDelimiter">'</span>,     <span class="Comment"># Invalid: invalid character</span>
+<span class="lnr"> 19 </span>  <span class="rubyStringDelimiter">'</span><span class="String">9090909</span><span class="rubyStringDelimiter">'</span>,      <span class="Comment"># Invalid: too few digits</span>
+<span class="lnr"> 20 </span>  <span class="rubyStringDelimiter">'</span><span class="String">+4690909090</span><span class="rubyStringDelimiter">'</span>,  <span class="Comment"># Invalid: wrong country code</span>
+<span class="lnr"> 21 </span>  <span class="rubyStringDelimiter">'</span><span class="String">909090909</span><span class="rubyStringDelimiter">'</span>,    <span class="Comment"># Invalid: too many digits</span>
+<span class="lnr"> 22 </span>  <span class="rubyStringDelimiter">'</span><span class="String">00474790909090</span><span class="rubyStringDelimiter">'</span> <span class="Comment"># Invalid: Trying to fool the regex now</span>
+<span class="lnr"> 23 </span>]
+<span class="lnr"> 24 </span>
+<span class="lnr"> 25 </span><span class="Comment"># Note: Assuming all spaces have been removed from numbers</span>
+<span class="lnr"> 26 </span>validation_format = <span class="rubyRegexpDelimiter">/</span><span class="Special">^</span><span class="Special">((</span><span class="rubyRegexp">0047</span><span class="Special">)</span><span class="Special">?</span><span class="Special">|(</span><span class="Special">\+</span><span class="rubyRegexp">47</span><span class="Special">)</span><span class="Special">?</span><span class="Special">|(</span><span class="rubyRegexp">47</span><span class="Special">)</span><span class="Special">?</span><span class="Special">)</span><span class="Special">\d</span><span class="Special">{8}</span><span class="Special">$</span><span class="rubyRegexpDelimiter">/</span>
+<span class="lnr"> 27 </span>
+<span class="lnr"> 28 </span>inputs.each <span class="rubyControl">do</span> |<span class="Identifier">x</span>|
+<span class="lnr"> 29 </span>  valid = validation_format.match x
+<span class="lnr"> 30 </span>  puts <span class="rubyStringDelimiter">"</span><span class="rubyInterpolationDelimiter">#{</span>x<span class="rubyInterpolationDelimiter">}</span><span class="String"> is </span><span class="rubyInterpolationDelimiter">#{</span>valid ? <span class="rubyStringDelimiter">"</span><span class="String">valid</span><span class="rubyStringDelimiter">"</span> : <span class="rubyStringDelimiter">"</span><span class="String">INVALID!</span><span class="rubyStringDelimiter">"</span><span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 31 </span><span class="rubyControl">end</span>
+</pre>
+<h4>Kommentere regex</h4>
+<p>Som sagt kan regulære utrykk være litt kryptiske, og det er viktig å dokumentere dem godt. I Ruby har jeg muligheten til å splitte dem opp over flere linjer, og da kan jeg enkelt kommentere hver lille del.</p>
+<p>Her ser du samme regex som i telefonnummer-eksempelet over, men med kommentarer:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 35 </span>validation_format =
+<span class="lnr"> 36 </span>  <span class="rubyRegexpDelimiter">/</span><span class="Special">^</span><span class="rubyRegexp">          # Start match at beginning of input</span>
+<span class="lnr"> 37 </span><span class="rubyRegexp">  </span><span class="Special">(</span><span class="rubyRegexp">           </span>
+<span class="lnr"> 38 </span><span class="rubyRegexp">    </span><span class="Special">(</span><span class="rubyRegexp">0047</span><span class="Special">)</span><span class="Special">?</span><span class="rubyRegexp">   # Optional "0047"</span>
+<span class="lnr"> 39 </span><span class="rubyRegexp">   </span><span class="Special">|</span><span class="rubyRegexp">          # or</span>
+<span class="lnr"> 40 </span><span class="rubyRegexp">    </span><span class="Special">(</span><span class="Special">\+</span><span class="rubyRegexp">47</span><span class="Special">)</span><span class="Special">?</span><span class="rubyRegexp">   # optional "</span><span class="Special">+</span><span class="rubyRegexp">47"</span>
+<span class="lnr"> 41 </span><span class="rubyRegexp">   </span><span class="Special">|</span><span class="rubyRegexp">          # or</span>
+<span class="lnr"> 42 </span><span class="rubyRegexp">    </span><span class="Special">(</span><span class="rubyRegexp">47</span><span class="Special">)</span><span class="Special">?</span><span class="rubyRegexp">     # optional "47"</span>
+<span class="lnr"> 43 </span><span class="rubyRegexp">  </span><span class="Special">)</span>
+<span class="lnr"> 44 </span><span class="rubyRegexp">  </span><span class="Special">\d</span><span class="Special">{8}</span><span class="rubyRegexp">       # Followed by 8 digits</span>
+<span class="lnr"> 45 </span><span class="rubyRegexp">  </span><span class="Special">$</span><span class="rubyRegexp">           # And the end should have been reached</span>
+<span class="lnr"> 46 </span><span class="rubyRegexp">  </span><span class="rubyRegexpDelimiter">/x</span>
+</pre>
+<h4>Bruk av grupper</h4>
+<p>Parantesene i regexen danner det vi kaller grupper i uttrykket. Mange regex-metoder returnerer verdien av hver enkelt gruppe når jeg matcher. Dette kan jeg benytte meg av.</p>
+<p>I neste eksempel endrer jeg litt på telefonnummer-regexen, og kjører en ny loop over alle numrene hvor jeg bruker resultatet til å normalisere dem og skrive dem ut. Resultatet av scan-metoden inneholder fem grupper (det er fem sett med paranteser i uttrykket), men jeg er kun interessert i det siste, som jeg binder til variabelen <strong>number</strong>:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 50 </span><span class="Comment"># Adding a group around \d{8}</span>
+<span class="lnr"> 51 </span>validation_format = <span class="rubyRegexpDelimiter">/</span><span class="Special">^</span><span class="Special">((</span><span class="rubyRegexp">0047</span><span class="Special">)</span><span class="Special">?</span><span class="Special">|(</span><span class="Special">\+</span><span class="rubyRegexp">47</span><span class="Special">)</span><span class="Special">?</span><span class="Special">|(</span><span class="rubyRegexp">47</span><span class="Special">)</span><span class="Special">?</span><span class="Special">)(</span><span class="Special">\d</span><span class="Special">{8}</span><span class="Special">)</span><span class="Special">$</span><span class="rubyRegexpDelimiter">/</span>
+<span class="lnr"> 52 </span>
+<span class="lnr"> 53 </span>inputs.each <span class="rubyControl">do</span> |<span class="Identifier">x</span>|
+<span class="lnr"> 54 </span>  x.scan(validation_format) <span class="rubyControl">do</span> |<span class="Identifier">_</span>, <span class="Identifier">_</span>, <span class="Identifier">_</span>, <span class="Identifier">_</span>, <span class="Identifier">number</span>|
+<span class="lnr"> 55 </span>    puts <span class="rubyStringDelimiter">"</span><span class="String">+47 </span><span class="rubyInterpolationDelimiter">#{</span>number<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 56 </span>  <span class="rubyControl">end</span>
+<span class="lnr"> 57 </span><span class="rubyControl">end</span>
+<span class="lnr"> 58 </span><span class="Comment"># .. prints "+47 90909090" four times ..</span>
+</pre>
+<p>Merk at denne loopen kun skriver ut de fire gyldige numrene fra arrayet mitt – kodeblokken blir ikke kalt om jeg ikke får en match.</p>
+<h4>Finne alle treff</h4>
+<p>Et annet vanlig bruksområde for regulære uttrykk er å finne alle treff av et mønster i en tekst. Her parser jeg et fritekst-felt hvor brukeren kan skrive inn telefonnummeret sitt. For å gjøre den enkelt er jeg optimistisk denne gangen og forutsetter at nummeret alltid kun består av 8 siffer. Da kan jeg meget enkelt finne telefonnumrene i teksten slik som dette:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 62 </span>text = <span class="rubyStringDelimiter">"</span><span class="String">Nummeret mitt er 90909090! (eventuelt 80808080)</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 63 </span>
+<span class="lnr"> 64 </span>number_finder = <span class="rubyRegexpDelimiter">/</span><span class="Special">\d</span><span class="Special">{8}</span><span class="rubyRegexpDelimiter">/</span>
+<span class="lnr"> 65 </span>
+<span class="lnr"> 66 </span>print <span class="rubyStringDelimiter">"</span><span class="String">Numbers: </span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 67 </span>puts text.scan(number_finder).join(<span class="rubyStringDelimiter">"</span><span class="String">, </span><span class="rubyStringDelimiter">"</span>)
+<span class="lnr"> 68 </span>
+<span class="lnr"> 69 </span><span class="Comment"># .. prints "Numbers: 90909090, 80808080"</span>
+</pre>
+<p>Hvordan ville du gjort dette uten regex? Du måtte ha behandlet teksten som et array av karakterer, testet hver karakter om det var et siffer, og hvis du fant et siffer måtte du sjekke om de syv neste også var det før du plukket ut delstrengen basert på indeks. Grisete!</p>
+<h4>Søk og erstatt</h4>
+<p>Jeg bruker regex til å søke og erstatte tekst hele tiden – ikke i kode men når jeg editerer tekst. Men i kode er det også ofte nyttig. I dette eksempelet har jeg en tekst som inneholder et versjonsnummer. Når vi oppraderer til en ny revisjon av produktet trenger jeg å oppdatere teksten. Tenk deg at versjonsnummeret står mange steder i teksten, og kanskje i mange dokumenter – da er det ikke kjekt å måtte gjøre det manuelt.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 75 </span>text = <span class="rubyStringDelimiter">"</span><span class="String">Bla bla. Product version: 1.5.16. Bla bla.</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 76 </span>
+<span class="lnr"> 77 </span>version_pattern = <span class="rubyRegexpDelimiter">/</span><span class="rubyRegexp">Product version: </span><span class="Special">\d</span><span class="Special">+</span><span class="Special">\.</span><span class="Special">\d</span><span class="Special">+</span><span class="Special">\.</span><span class="Special">\d</span><span class="Special">+</span><span class="rubyRegexpDelimiter">/</span>
+<span class="lnr"> 78 </span>
+<span class="lnr"> 79 </span>text.gsub! version_pattern, <span class="rubyStringDelimiter">"</span><span class="String">Product version: 1.5.17</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 80 </span>
+<span class="lnr"> 81 </span>puts text
+<span class="lnr"> 82 </span><span class="Comment"># .. prints "Bla bla. Product version: 1.5.17. Bla bla." </span>
+</pre>
+<p>Greit nok, men vi kan bedre. Nedenfor har jeg laget kode som øker revisjonsnummeret med 1, slik at jeg slipper å spesifisere det nye nummeret eksplisitt. Jeg bruker da en kombinasjon av <strong>gsub!</strong> som du nettopp så, og <strong>scan</strong> som jeg brukte da jeg viste deg bruk av grupper. Slik kan jeg hente ut versjonsnummeret, gjøre hvilke endringer jeg vil, og oppdatere teksten med endringene.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 86 </span>text = <span class="rubyStringDelimiter">"</span><span class="String">Bla bla. Product version: 1.5.16. Bla bla.</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 87 </span>
+<span class="lnr"> 88 </span>version_pattern = <span class="rubyRegexpDelimiter">/</span><span class="rubyRegexp">Product version: </span><span class="Special">(</span><span class="Special">\d</span><span class="Special">+</span><span class="Special">)</span><span class="Special">\.</span><span class="Special">(</span><span class="Special">\d</span><span class="Special">+</span><span class="Special">)</span><span class="Special">\.</span><span class="Special">(</span><span class="Special">\d</span><span class="Special">+</span><span class="Special">)</span><span class="rubyRegexpDelimiter">/</span>
+<span class="lnr"> 89 </span>
+<span class="lnr"> 90 </span>text.gsub!(version_pattern) <span class="rubyControl">do</span> |<span class="Identifier">version</span>|
+<span class="lnr"> 91 </span>  version.scan(version_pattern) <span class="rubyControl">do</span> |<span class="Identifier">major</span>, <span class="Identifier">minor</span>, <span class="Identifier">rev</span>|
+<span class="lnr"> 92 </span>    version = <span class="rubyStringDelimiter">"</span><span class="String">Product version: </span><span class="rubyInterpolationDelimiter">#{</span>major<span class="rubyInterpolationDelimiter">}</span><span class="String">.</span><span class="rubyInterpolationDelimiter">#{</span>minor<span class="rubyInterpolationDelimiter">}</span><span class="String">.</span><span class="rubyInterpolationDelimiter">#{</span>rev.to_i + <span class="Number">1</span><span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 93 </span>  <span class="rubyControl">end</span>
+<span class="lnr"> 94 </span>  version
+<span class="lnr"> 95 </span><span class="rubyControl">end</span>
+<span class="lnr"> 96 </span>
+<span class="lnr"> 97 </span>puts text
+<span class="lnr"> 98 </span><span class="Comment"># .. prints "Bla bla. Product version: 1.5.17. Bla bla." </span>
+</pre>
+<h4>Enkel parsing av en logg</h4>
+<p>TIl slutt vil jeg vise hvordan jeg kan parse en loggfil. Denne filen har en viss struktur, men det er ikke en fastbredde-fil, og den har ikke en fast felt-separator. Dette gjør at det er vanskelig å parse den med kun <em>substring</em>- og <em>split</em>-funksjoner.</p>
+<p>Studer regexen nøye. Den lar meg plukke ut elementene jeg er interessert i, slik at jeg kan printe ut en rapport på et litt mere vennlig format.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">102 </span>file_content = &lt;&lt;<span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">103 </span><span class="String">2011-12-23 04:32:56 235 [Main] This is a test</span>
+<span class="lnr">104 </span><span class="String">2011-12-23 04:32:57 311 [Dispatcher] Some stuff..</span>
+<span class="lnr">105 </span><span class="String">2011-12-23 04:33:02 1344 [Dispatcher] More stuff...</span>
+<span class="lnr">106 </span><span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">107 </span>
+<span class="lnr">108 </span>pattern =
+<span class="lnr">109 </span>  <span class="rubyRegexpDelimiter">/</span><span class="Special">^</span><span class="rubyRegexp">                        # beginning of line</span>
+<span class="lnr">110 </span><span class="rubyRegexp">  </span><span class="Special">(</span><span class="rubyRegexp">                         # Group 1:</span>
+<span class="lnr">111 </span><span class="rubyRegexp">  </span><span class="Special">\d</span><span class="Special">{4}</span><span class="rubyRegexp">\-</span><span class="Special">\d</span><span class="Special">{1,2}</span><span class="rubyRegexp">\-</span><span class="Special">\d</span><span class="Special">{1,2}</span><span class="rubyRegexp">   #   date part</span>
+<span class="lnr">112 </span><span class="rubyRegexp">  </span><span class="Special">\s</span><span class="Special">{1}</span><span class="rubyRegexp">                     #   a space</span>
+<span class="lnr">113 </span><span class="rubyRegexp">  </span><span class="Special">\d</span><span class="Special">{1,2}</span><span class="rubyRegexp">:</span><span class="Special">\d</span><span class="Special">{1,2}</span><span class="rubyRegexp">:</span><span class="Special">\d</span><span class="Special">{1,2}</span><span class="rubyRegexp">   #   time part</span>
+<span class="lnr">114 </span><span class="rubyRegexp">  </span><span class="Special">)</span>
+<span class="lnr">115 </span><span class="rubyRegexp">  </span><span class="Special">\s</span><span class="Special">{1}</span><span class="Special">\d</span><span class="Special">+</span><span class="Special">\s</span><span class="Special">{1}</span><span class="rubyRegexp">             # irrelevant thread id</span>
+<span class="lnr">116 </span><span class="rubyRegexp">  </span><span class="Special">\[</span><span class="Special">(</span><span class="Special">\w</span><span class="Special">+</span><span class="Special">)</span><span class="Special">\]</span><span class="rubyRegexp">                 # Group 2: logging entity</span>
+<span class="lnr">117 </span><span class="rubyRegexp">  </span><span class="Special">\s</span><span class="rubyRegexp">                        # a space</span>
+<span class="lnr">118 </span><span class="rubyRegexp">  </span><span class="Special">(</span><span class="Special">.</span><span class="Special">*</span><span class="Special">)</span><span class="rubyRegexp">                      # Group 3: the message</span>
+<span class="lnr">119 </span><span class="rubyRegexp">  </span><span class="Special">$</span><span class="rubyRegexp">                         # line ending</span>
+<span class="lnr">120 </span><span class="rubyRegexp">  </span><span class="rubyRegexpDelimiter">/x</span>
+<span class="lnr">121 </span>
+<span class="lnr">122 </span><span class="PreProc">require</span> <span class="rubyStringDelimiter">'</span><span class="String">time</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr">123 </span>file_content.each_line <span class="rubyControl">do</span> |<span class="Identifier">line</span>|
+<span class="lnr">124 </span>  line.chomp.scan(pattern) <span class="rubyControl">do</span> |<span class="Identifier">time</span>, <span class="Identifier">logger</span>, <span class="Identifier">message</span>|
+<span class="lnr">125 </span>    time = <span class="Type">Time</span>.parse(time).strftime(<span class="rubyStringDelimiter">'</span><span class="String">%H:%M</span><span class="rubyStringDelimiter">'</span>)
+<span class="lnr">126 </span>    puts <span class="rubyStringDelimiter">"</span><span class="String">At </span><span class="rubyInterpolationDelimiter">#{</span>time<span class="rubyInterpolationDelimiter">}</span><span class="String"> </span><span class="rubyInterpolationDelimiter">#{</span>logger<span class="rubyInterpolationDelimiter">}</span><span class="String"> said: '</span><span class="rubyInterpolationDelimiter">#{</span>message<span class="rubyInterpolationDelimiter">}</span><span class="String">'</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">127 </span>  <span class="rubyControl">end</span>
+<span class="lnr">128 </span><span class="rubyControl">end</span>
+<span class="lnr">129 </span>
+<span class="lnr">130 </span><span class="Comment"># prints:</span>
+<span class="lnr">131 </span><span class="Comment"># At 04:32 Main said: 'This is a test'</span>
+<span class="lnr">132 </span><span class="Comment"># At 04:32 Dispatcher said: 'Some stuff..'</span>
+<span class="lnr">133 </span><span class="Comment"># At 04:33 Dispatcher said: 'More stuff...'</span>
+</pre>
+<h4>Oppsummering</h4>
+<p>Dette var bare de mest grunnleggende måtene å bruke regex på. Etterhvert som dette blir et naturlig verktøy for deg vil du se flere bruksområder. Språket vil gjøre deg mere produktiv, og vil gjøre at du unngår å skrive annen parse-logikk som det er lett å introdusere bugs med.</p>
+<p>Du finner et hav av gode regex-referanser og tutorials på nettet. Let opp dokumentasjonen som gjelder for akkurat ditt programmeringsspråk, og lær deg dette grundig. Og med regex er det veldig viktig å eksperimentere – du blir ikke god i dette kun ved å lese, det lover jeg!</p>
+<p>Og så var det bare én dag igjen til Jul :)</p>

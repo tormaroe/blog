@@ -1,0 +1,37 @@
+---
+title: Script IIS Manager med IronRuby
+link: http://blog.kjempekjekt.com/2011/03/23/script-iis-manager-med-ironruby/
+layout: post
+date: 2011-03-23 20:21:36Z
+tags:
+  - Ruby
+  - IronRuby
+  - IIS
+---
+<p>Det er ikke ofte det går <strong>en hel måned</strong> mellom hver gang jeg blogger. Men den siste tiden har jeg slitt endel med nakkesmerter, så noe har desverre måttet vike. Energien er på vei tilbake, og jeg satser på å komme igang igjen med å blogge om <a href="http://blog.kjempekjekt.com/?s=PingLang">PingLang og DSL<em>er</em></a> snart.</p> <p>Men for å starte litt forsiktig kommer det her en liten blogpost om å automatisere konfigurering av Internet Information Server ved hjelp av IronRuby.</p> <p>Jeg fikk nemlig nettopp behov for å laget et script som kunne endre den fysiske stien til en website i IIS. Vi har to ulike sites, la oss kalle dem <u>thesite.com</u> og <u>thesite-staging.com</u>. Den første adressen er produksjonsadressen, den andre bruker vi til testing.</p> <p>På serveren har vi så to ulike, fysiske lokasjoner for disse sitene. Stiene kan for eksempel være <u>c:\sites\thesite-blue\</u> og <u>c:\sites\thesite-green\</u>. Til enhver tid inneholder én av disse produksjonskoden, og den andre folderen brukes til å teste neste versjon. Når den nye vesjonen er godkjent bytter vi om de fysiske stiene til thesite.com og thesite-staging.com, slik at thesite.com nå inneholder den nye versjonen.</p> <p>Dette kalles <strong><a href="http://martinfowler.com/bliki/BlueGreenDeployment.html" target="_blank">blue-green deployment</a></strong>.</p> <p>For å kunne programmere slike ting kommer IIS med en assembly som heter <strong><a href="http://msdn.microsoft.com/en-us/library/microsoft.web.administration(v=vs.90).aspx" target="_blank">Microsoft.Web.Administration</a></strong> – du finner den under katalogen <u>Windows\System32\inetsrv</u>. </p> <p style="padding-left: 20px; padding-right: 20px; font-size: 110%"><i>The different logical objects available include sites, applications, application pools, application domains, virtual directories, and worker processes. You can use the API to obtain and work with the configuration and state of these objects and to perform such actions as creating a site, starting or stopping a site, deleting an application pool, recycling an application pool, and even unloading application domains.</i></p> <p>Du kan bruke den i C#, fra PowerShell, eller hvilket som helst språk som kan kjøre på .net-plattformen. Jeg foretrekker IronRuby til denne typen oppgaver. Her er et script (et noe enklere script enn det jeg faktisk bruker) som henter ut den virtuelle katalogen til to IIS-sites og bytter fysisk sti mellom dem:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="PreProc">require</span> <span class="rubyStringDelimiter">'</span><span class="String">c:</span><span class="Special">\\</span><span class="String">Windows</span><span class="Special">\\</span><span class="String">System32</span><span class="Special">\\</span><span class="String">inetsrv</span><span class="Special">\\</span><span class="String">Microsoft.Web.Administration.dll</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr">11 </span><span class="PreProc">include</span> <span class="Type">Microsoft</span>::<span class="Type">Web</span>::<span class="Type">Administration</span>
+<span class="lnr">12 </span>
+<span class="lnr">13 </span><span class="Comment"># Monkey patch ServerManager: </span>
+<span class="lnr">14 </span><span class="Comment">#   add get_vdir method to get the main virtual dir</span>
+<span class="lnr">15 </span><span class="Keyword">class</span> <span class="Type">ServerManager</span>
+<span class="lnr">16 </span>  <span class="PreProc">def</span> <span class="Function">get_vdir</span> site
+<span class="lnr">17 </span>    <span class="Constant">self</span>.
+<span class="lnr">18 </span>      sites[site].
+<span class="lnr">19 </span>      applications[<span class="rubyStringDelimiter">'</span><span class="String">/</span><span class="rubyStringDelimiter">'</span>].
+<span class="lnr">20 </span>      virtual_directories.
+<span class="lnr">21 </span>      find {|<span class="Identifier">vdir</span>| vdir.path == <span class="rubyStringDelimiter">'</span><span class="String">/</span><span class="rubyStringDelimiter">'</span>}
+<span class="lnr">22 </span>  <span class="PreProc">end</span>
+<span class="lnr">23 </span><span class="Keyword">end</span>
+<span class="lnr">24 </span>
+<span class="lnr">25 </span>server = <span class="Type">ServerManager</span>.new
+<span class="lnr">26 </span>
+<span class="lnr">27 </span>a = server.get_vdir <span class="rubyStringDelimiter">'</span><span class="String">thesite.com</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr">28 </span>b = server.get_vdir <span class="rubyStringDelimiter">'</span><span class="String">thesite-staging.com</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr">29 </span>
+<span class="lnr">30 </span><span class="Comment"># Swapping to variables in Ruby is easy..</span>
+<span class="lnr">31 </span>a.physical_path, b.physical_path = b.physical_path, a.physical_path
+<span class="lnr">32 </span>
+<span class="lnr">33 </span>server.commit_changes
+<span class="lnr">34 </span>server.dispose
+</pre>
+<p>Vanskeligere er det ikke!</p>

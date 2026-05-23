@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="OOP,Polyglot,JavaScript">
+
+    <title>Message Passing Style</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Message Passing Style</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 20. august 2011</small> 
+            <a href="/tags/oop"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OOP</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/javascript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> JavaScript</span></a>
+          </p>
+          <p><strong>Hvor kommer objektorientert programmering fra? Hvilke problemer løser det? Kan man gjøre det samme i programmeringsspråk uten direkte støtte for objekter? I denne blogposten snakker jeg litt om røttene til OO, og demonstrerer – vha. JavaScript – hvordan man gjør OOP med bare funksjoner. Gjør deg klar for litt <em>back to basics!</em></strong></p>
+<p>Og historien begynner med et spørsmål...</p>
+<h4>Hva er en closure?</h4>
+<p><img style="background-image: none; border-right-width: 0px; margin: 0px 0px 0px 15px; padding-left: 0px; padding-right: 0px; display: inline; float: right; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="lexicalclosure" border="0" alt="lexicalclosure" align="right" src="/uploads/2011/08/lexicalclosure.png" width="230" height="137">Jeg har stilt og forsøkt å svare på dette tidligere i blogposten <a href="/2010/08/04/lispy-c-og-hva-er-en-closure/">Lispy C#</a>. En "lexical closure" er en funksjon pluss en referanse til de variablene som brukes i funksjonen men som ikke er definert der – såkalte <em>frie variabler</em>. Selv om variablene faller ut av scope, vil de fortsatt være tilgjengelig i funkjonen, fordi closuren holder referanser til dem.</p>
+<p>Konseptet ble utviklet på 60-tallet, og ble angivelig for første gang implementert i programmeringsspråket Scheme. Imperative språk har tradisjonelt ikke hatt støtte for closures ettersom disse språkene hverken støttet ikke-lokale variabler eller <a href="http://en.wikipedia.org/wiki/Higher-order_function">høyererangs funksjoner</a>.</p>
+<p>Neste spørsmål...</p>
+<h4>Hva er et objekt?</h4>
+<p><img style="background-image: none; border-right-width: 0px; margin: 0px 0px 0px 15px; padding-left: 0px; padding-right: 0px; display: inline; float: right; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="object" border="0" alt="object" align="right" src="/uploads/2011/08/object.png" width="230" height="137">Et objekt er en datastruktur som består av datafelter og metoder. Vi snakker ofte om <a href="http://en.wikipedia.org/wiki/Encapsulation_(object-oriented_programming)">encapsulation</a>, som i praksis betyr at metodene fungerer som mellommenn mellom datafeltene og dem som ønsker å benytte dem. Ingen får røre objektets tilstand direkte, kun via metodene.</p>
+<p>Ideen om objekter startet allerede på 50 og 60-tallet. Det første programmeringsspråket designet for å organisere koden på denne måten ble utviklet i Norge, og het Simula 67. Men det var supergeniet <a href="/2010/12/22/informatisk-julekalender-luke-22/">Alan Key</a> som kom opp med begrepet "objektorientert programmering", basert på sin forståelse av Lisp (hvor man brukte begrepet "objekt" om både tall, tekststrenger, symboler osv.).</p>
+<p>På 70-tallet designet Alan Key språket Smalltalk, som kanskje har vært enda viktigere for utviklingen av dagens objektorientering enn det Simula var. Java, Objective-C, Ruby og mange andre språk hentet mye inspirasjon fra Smalltalks objektmodell.</p>
+<p>
+<table cellspacing="10" width="100%">
+<tbody>
+<tr>
+<td style="padding-bottom: 14px; background-color: #ffff66; padding-left: 10px; padding-right: 10px; padding-top: 14px" valign="top"><b>Simula</b><br>..var en utvidelse med objektorienterte egenskaper til sterkt typet Allgol 60. Objektene eksisterte side om side med tradisjonelle datatyper som tall og strenger.<br />
+<td style="text-align: center" width="25"><b>vs.</b></td>
+</td>
+<td style="padding-bottom: 14px; background-color: #ffff66; padding-left: 10px; padding-right: 10px; padding-top: 14px" valign="top"><b>Smalltalk</b><br>..var basert på det dynamiske, løst typede Lisp, men erstattet funksjoner og s-expressions med metoder og objekter. I Smalltalk er all data representert av objekter. </td>
+</tr>
+</tbody>
+</table>
+<p>(Og så kom 80-tallet, og C++ tok over verden!)</p>
+<p>Ser du på de to figurene mine er det slående hvor mye closures og objekter har til felles. Og det leder meg til det tredje spørsmålet...</p>
+<h4>Hva behøver man for å lage et objekt?</h4>
+<p>Svaret er opplagt. Man trenger funksjoner som har mulighet til å danne closures. Siden closures skjuler tilstand (gjennom frie variabler) kan de brukes til å lage objekter.</p>
+<p>En teknikk for å gjøre dette presenteres blant annet i boken <em>Structure and Interpretation of Computer Programs </em>(Informatikk-pensum på MIT), og kalles&nbsp; <strong>Message Passing Style</strong>. Det vi snakker om her nå er helt grunnleggende objektorientering, en teknikk som brukes til å implementere objektsystemer i programmeringsspråk – eller som lar deg lage objekter i språk hvor du ikke har dette <em>out of the box</em>. </p>
+<p>I Smalltalk (og språk som er inspirert av Smalltalk) sier vi at det <strong>å kalle en metode</strong> på et objekt er det samme som <strong>å sende et objekt en melding</strong>. Er du kjent med Ruby, vet du for eksempel sikkert at de følgende to linjene gjør akkurat det samme:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">1 </span>an_array.length
+<span class="lnr">2 </span>an_array.send(<span class="rubyStringDelimiter">'</span><span class="String">length</span><span class="rubyStringDelimiter">'</span>);
+</pre>
+<h4>Message Passing Style i JavaScript</h4>
+<p>Så hvordan kan man implementere message passing uten å bruke "vanlige" objekter? Her følger et eksempel i JavaScript.</p>
+<p>Jeg ønsker å kunne opprette objekter som skal representere bankkontoer. Kontoene skal ha en balanse, og skal kunne ta i mot meldinger om å sette penger inn på kontoen og å trekke penger ut av kontoen. Jeg trenger da en funksjon som fungerer som en konstruktør av kontoer – kaller jeg denne får jeg opprettet og returnert en ny konto. Her følger koden...</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Special">  </span><span class="Identifier">var</span><span class="Special"> createAccount = </span><span class="Function">function</span>(<span class="Special">balance</span>)<span class="Function">{</span>
+<span class="lnr">11 </span><span class="Special">    </span><span class="Function">function</span><span class="Special"> deposit</span>(<span class="Special">amount</span>)<span class="Function">{</span>
+<span class="lnr">12 </span><span class="Special">      </span><span class="Statement">return</span><span class="Special"> balance += amount;</span>
+<span class="lnr">13 </span><span class="Special">    </span><span class="Function">}</span><span class="Special">;</span>
+<span class="lnr">14 </span><span class="Special">    </span><span class="Function">function</span><span class="Special"> withdraw</span>(<span class="Special">amount</span>)<span class="Function">{</span>
+<span class="lnr">15 </span><span class="Special">      </span><span class="Statement">return</span><span class="Special"> balance -= amount;      </span>
+<span class="lnr">16 </span><span class="Special">    </span><span class="Function">}</span><span class="Special">;  </span>
+<span class="lnr">17 </span><span class="Special">    </span><span class="Statement">return</span><span class="Special"> </span><span class="Function">function</span>(<span class="Special">msg</span>)<span class="Function">{</span>
+<span class="lnr">18 </span><span class="Special">      </span><span class="Conditional">switch</span>(<span class="Special">msg</span>)<span class="Function">{</span><span class="Special"> </span>
+<span class="lnr">19 </span><span class="Special">        </span><span class="Statement">case</span><span class="Special"> </span><span class="String">"deposit"</span><span class="Special">:</span>
+<span class="lnr">20 </span><span class="Special">          </span><span class="Statement">return</span><span class="Special"> deposit</span>(<span class="Identifier">arguments</span><span class="Function">[</span><span class="Number">1</span><span class="Function">]</span>)<span class="Special">;</span>
+<span class="lnr">21 </span><span class="Special">        </span><span class="Statement">case</span><span class="Special"> </span><span class="String">"withdraw"</span><span class="Special">:</span>
+<span class="lnr">22 </span><span class="Special">          </span><span class="Statement">return</span><span class="Special"> withdraw</span>(<span class="Identifier">arguments</span><span class="Function">[</span><span class="Number">1</span><span class="Function">]</span>)<span class="Special">;</span>
+<span class="lnr">23 </span><span class="Special">        </span><span class="Statement">default</span><span class="Special">:</span>
+<span class="lnr">24 </span><span class="Special">          </span><span class="Statement">throw</span><span class="Special"> </span><span class="String">"Unknown message "</span><span class="Special"> + msg;</span>
+<span class="lnr">25 </span><span class="Special">      </span><span class="Function">}</span><span class="Special">;</span>
+<span class="lnr">26 </span><span class="Special">    </span><span class="Function">}</span><span class="Special">;</span>
+<span class="lnr">27 </span><span class="Special">  </span><span class="Function">}</span><span class="Special">;</span>
+</pre>
+<p><tt style="background-color: #eee">deposit</tt> og <tt style="background-color: #eee">withdraw</tt> er to funksjoner som defineres inne i <tt style="background-color: #eee">createAccount</tt>, og de vil <em>ikke</em> være tilgjengelige på utsiden. Fordi de benytter seg av variabelen <tt style="background-color: #eee">balance</tt> danner hver av dem en closure.</p>
+<p>Den tredje funksjonen – som <em>returneres</em> fra <tt style="background-color: #eee">createAccount</tt> – kalles en <i>dispatch</i>-funksjon. Denne danner også en closure, fordi den refererer de to funksjonene <tt style="background-color: #eee">deposit</tt> og <tt style="background-color: #eee">withdraw</tt>. Jeg sa at <tt style="background-color: #eee">createAccount</tt> skulle returnere en konto, og i message passing style vil det altså si en closure som inneholder en dispatch-funksjon.</p>
+<p>For å opprette kontoer kan jeg nå skrive:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">29 </span><span class="Special">  </span><span class="Identifier">var</span><span class="Special"> account1 = createAccount</span>(<span class="Number">100</span>)<span class="Special">;</span>
+<span class="lnr">30 </span><span class="Special">  </span><span class="Identifier">var</span><span class="Special"> account2 = createAccount</span>(<span class="Number">100</span>)<span class="Special">;</span>
+</pre>
+<p>Og for å legge til eller ta ut penger sender jeg de respektive meldingene til "objektet" sammen med beløpet det gjelder:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">32 </span><span class="Special">  account1</span>(<span class="String">"deposit"</span><span class="Special">, </span><span class="Number">10</span>)<span class="Special">; </span><span class="Comment">// returns 110</span>
+<span class="lnr">33 </span><span class="Special">  account1</span>(<span class="String">"withdraw"</span><span class="Special">, </span><span class="Number">5</span>)<span class="Special">; </span><span class="Comment">// returns 105</span>
+<span class="lnr">34 </span><span class="Special">  account2</span>(<span class="String">"withdraw"</span><span class="Special">, </span><span class="Number">5</span>)<span class="Special">; </span><span class="Comment">// returns 95</span>
+</pre>
+<p>Legg merke til at det ikke finnes noen annen måte å modifisere balance på enn å kalle dispatch-metoden. Encapsulation er oppnådd!</p>
+<h4>Oppsummering</h4>
+<p>Det er egentlig ganske simple greier dette her, men likevel synes jeg det er fasinerende. Det hadde nå vært fristende å diskutere hva dette har med <a href="http://en.wikipedia.org/wiki/Actor_model">actor model</a> og <a href="/category/erlang/">Erlang</a> å gjøre. Jeg kunne også ha fortsatt med å snakke om forskjellen mellom <a href="http://en.wikipedia.org/wiki/Turing_machine">Turing-modellen</a>, språk basert på <a href="http://en.wikipedia.org/wiki/Von_Neumann_architecture">Von Neumann-arkitekturen</a>, og <a href="/2010/12/14/informatisk-julekalender-luke-14/">Alonzo Church</a>'s <a href="http://en.wikipedia.org/wiki/Lambda_calculus">Lambda Calculus</a> - og hvordan det eneste man egentlig trenger for å lage et komplett programmeringsspråk er muligheten for å opprette og eksekvere lambdaer.., men det er nok på tide å gi seg mens leken er god.</p>
+<p>Så det du skal huske fra denne blogposten er: <u>Closures er funksjoner pluss referanser til frie variabler.</u> Du kan lage objekter i&nbsp; språk som ikke i utgangspunktet støtter dem, såsant du har førsterangs funksjoner som kan danne closures. I denne sammenhengen er en dispatch-funksjon en clojure som tar imot en melding og eksekverer kode for å aksessere tilstand som ikke kan nås på andre måter. Dispatch-funksjonen er i prinsippet et objekt. Dette kalles <strong><em><u>Message Passing Style</u></em></strong>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

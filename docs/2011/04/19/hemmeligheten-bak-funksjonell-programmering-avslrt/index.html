@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Jobb,Polyglot,Funksjonell programmering">
+
+    <title>Hemmeligheten bak funksjonell programmering avslørt</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hemmeligheten bak funksjonell programmering avslørt</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 19. april 2011</small> 
+            <a href="/tags/jobb"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Jobb</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+          </p>
+          <p>For en liten stund siden holdt jeg en ZipTalk på jobben om funksjonell programmering. Her følger en kort oppsummering, og jeg har også lagt ved “lysbildene” jeg brukte.</p>
+<p>Budskapet i foredraget er rettet mot deg som kanskje har vært på foredrag eller hørt podcasts om funksjonell programmering, men likevel ikke helt fått tak på hva det er. Det gir liksom ikke mening når koden ikke skal ha såkalte “<em>side effects”</em>, og man ikke engang kan endre variabler. Det er noe som ikke stemmer her, noe som mangler. Hvordan kan man bruke funksjonell programmering til å lage programmer som faktisk gjør noe fornuftig?</p>
+<p>Ett av poengene mine er at funksjonell programmering <em>ikke</em> er det samme som å bruke et såkalt funksjonelt programmeringsspråk. Funksjonell programmering er en stil, en filosofi, en måte å strukturere kode, en måte å bruke språket på. Ulike språk støtter og legger til rette for denne typen programmering i ulik grad. Språk som Haskell og Clean gjør det lett å skrive funksjonell kode, og gjør det vanskelig å gjøre noe annet. Språk som Ruby og C# har det som trengs for å skrive funksjonelle programmer, men er ikke optimalisert for det. Og et sted imellom finner du f.eks. F#, som forsøker å forene objektorientering og funksjonell programmering på .net-plattformen.</p>
+<p>Nå passer det at du tar en titt på slidene, og så kan du lese konklusjonen etterpå.</p>
+<div style="width: 425px" id="__ss_7677599"><strong style="margin: 12px 0px 4px; display: block"><a title="The secret of Functional Programming revealed!" href="http://www.slideshare.net/tormaroe/tman-avslrer-hemmligheten-bak-funksjonell-programmering">The secret of Functional Programming revealed!</a></strong> <iframe height="355" marginheight="0" src="http://www.slideshare.net/slideshow/embed_code/7677599" frameborder="0" width="425" marginwidth="0" scrolling="no"></iframe> </div>
+<h4>Hemmeligheten</h4>
+<p>Hemmeligheten, det som veldig ofte ikke blir sagt når man lærer om funksjonell programmering, er altså at det ikke finnes noen magi. Funksjonell programmering alene kan ikke gjøre noe som helst. Et program utviklet i denne stilen består av to deler. Den største delen er ren og funksjonell, mens den minste delen inneholder den skitne koden med bi-effekter.</p>
+<p>Trikset er å klare å separere delene – vite hva som er rent og til å stole på, og hva som ikke er det. Og så må man jobbe mot å la den rene koden gjøre mest mulig.</p>
+<p>Var dette oppklarende?</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

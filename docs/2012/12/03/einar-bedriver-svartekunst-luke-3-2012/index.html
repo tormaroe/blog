@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="C#,Julekalender,CIL,AOP">
+
+    <title>Einar bedriver svartekunst [Luke 3, 2012]</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Einar bedriver svartekunst [Luke 3, 2012]</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 3. desember 2012</small> 
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/cil"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> CIL</span></a>
+          
+            <a href="/tags/aop"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> AOP</span></a>
+          </p>
+          <p>Einar W. Høst (<a href="https://twitter.com/einarwh">@einarwh</a>) er en hyggelig utvikler jeg møtte første gang på ROOTS-konferansen i Bergen. Han var også en av tre helsprø Computas-utviklere som blant annet holdt på å skade en stakkars publikummer på en av NDC 2012's mest underholdende forelesninger. Jeg visste jeg ville få et solid og spennende bidrag da jeg spurte Einar om han ville bidra til julekalenderen i år.</p>
+<p><a href="/uploads/2012/12/einarwh-600x600.jpg"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="einarwh-600x600" border="0" alt="einarwh-600x600" src="/uploads/2012/12/einarwh-600x600_thumb.jpg" width="528" height="528"></a></p>
+<p><strong>Hvem er du?</strong><br>Eventyrlysten akademiker som utforsker den praktiske utviklerverdenen.</p>
+<p><strong>Hva er jobben din?</strong><br>Overingeniør og leder for Software Engineering-fagnettverket i Computas.</p>
+<p><strong>Hva kan du?</strong><br>Programmering som håndverk og vitenskap.</p>
+<p><strong>Hva liker du best med yrket ditt?</strong><br>Oscilleringen mellom å føle seg som en idiot og et geni.
+<p>Her følger Einars post om IL-manipulering...<br />
+<hr>
+<h2>IL Tempo Gigante</h2>
+<p>Lurer du på hvor lang tid de ulike enhetstestene dine bruker på å kjøre? Ikke? Vel, la oss i så fall late som om du gjør det. Vi kan til og med tenke oss at du bruker et enhetstestrammeverk til å kjøre integrasjonstestene dine, og da begynner det jo faktisk å bli litt interessant å vite hvor lang tid ting tar. La gå at integrasjonstester ikke er ytelsestester, men vi kan jo bruke dem som det likevel.</p>
+<p>Så hvis vi antar at det er interessant å få vite hvor lang tid testene bruker på å kjøre, hvordan kan vi gjøre det på en enkel og ikke-invaderende måte? I denne bloggposten skal vi gjøre det fullstendig ortogonalt og i det skjulte - vi skal faktisk ikke røre koden i det hele tatt. Det vil si, det skal vi så klart - men ikke kildekoden. I stedet skal vi bruke bytekodemanipulasjon for å trylle litt. Bytekodemanipulasjon vil si at vi gjør ting på IL-nivå, etter at testene er kompilert. </p>
+<p>Alle .NET-programmerere vet at C# og VB.NET kompileres til IL, som videre kompileres til maskinkode ved behov, såkalt JIT-kompilering. Sånn sett er IL er det <strong>egentlige</strong> .NET-språket! Likevel er det få som noensinne kikker på IL-koden, og enda færre som finner på å endre på den. Men det er synd, for det er både enkelt og nyttig (for eksempel når man ønsker å gjøre akkurat det samme ørten forskjellige steder i koden uten å skitne til kildekoden med masse repetisjon). Og nå som C# går en <a href="http://blogs.msdn.com/b/ericlippert/archive/2012/11/29/a-new-fabulous-adventure.aspx">usikker fremtid i møte</a>, er det en glimrende anledning til å lære seg litt IL. Jeg vet ikke med deg, men jeg skriver heller IL for hånd enn å gå over til VB.NET!</p>
+<p>IL er ikke vanskelig, men det er naturligvis annerledes enn C#. Det første man må venne seg til er at det er et stack-basert språk. En stack er det vi på godt norsk kaller en stabel. Det er to ting man kan gjøre med en stabel: legge en ny ting på toppen, eller ta av den øverste tingen som allerede er der. (Man kan forsåvidt også i mange tilfeller studere den øverste tingen uten å fjerne den.) Yrkesskadd som jeg er, har jeg det med å tenke "stack" hver gang jeg kommer inn i kantinen og får se stablene med tallerkner. Jeg tenker sågar <em>"throw new StackEmptyException()"</em> dersom en av stablene er tomme, men det er ikke min skyld - det skjer helt av seg selv!</p>
+<p>Uansett, IL definerer et sett med bytekodeinstruksjoner som gjør ting med stacken. Generelt sett vil en bytekodeinstruksjon "poppe" y elementer fra stacken, gjøre noe med dem, og "pushe" y elementer tilbake på stacken. Et eksempel er add-instruksjonen som "popper" to verdier fra stacken, legger dem sammen, og "pusher" resultatet tilbake på stacken. Sånn sett fungerer stack-baserte språk ved at man gjør ting i postfix rekkefølge, det vil si at operasjonen kommer etter verdiene det skal opereres på. Det er verdt å merke seg at IL ikke er det eneste stack-baserte språket i verden. Det finnes, hva skal vi si... <strong>sluttbrukerorienterte</strong> språk som f.eks. <a href="/2011/12/18/forth/">Forth</a> og <a href="/2011/12/19/factor/">Factor</a> som fungerer på tilsvarende måte.</p>
+<p>Når man skal starte et bytekodemanipuleringsprosjekt er det viktig å ha to kodeeksempler i C# tilgjengelig. For det første må man naturligvis ha et utgangspunkt: et enkelt, minimalistisk eksempel på opprinnelige, urørte koden. For det andre må man ha et målbilde: koden slik den ville sett ut dersom vi gjort endringene vi ønsker for hånd - altså uten bytekodemanipulering, bare ved å endre på C#-koden. </p>
+<p>I vårt tilfelle er utgangspunktet en meget enkel enhetstest. Her bruker jeg MSTest, men det er naturligvis enkelt å gjøre tilsvarende ting for NUnit eller andre rammeverk. Som du ser har vi en veldig enkel test-klasse med to enhetstester. Det eneste de gjør er å sove.</p>
+<pre>[TestClass]
+public class UnitTest1
+{
+    [TestMethod]
+    public void TestMethod1()
+    {
+        Thread.Sleep(4300);
+    }
+
+    [TestMethod]
+    public void TestMethod2()
+    {
+        Thread.Sleep(2400);
+    }
+}
+</pre>
+<p>Hvordan skal så målbildet vårt se ut? Vel, vi trenger jo å ta tiden. Til det trenger vi en stoppeklokke. Vi må starte stoppeklokken før enhetstesten kjører, og stoppe den etter at testen har kjørt. Vi kunne brukt stoppeklokke direkte i test-metoden, men jeg tror vi heller bruker test-rammeverkets støtte for setup- og teardown-metoder. I MSTest heter det henholdsvis TestInitialize- og TestCleanup-metoder. Vi må altså legge til to metoder og annotere dem med hvert sitt custom attribute. Siden begge disse metodene må ha tilgang til samme stoppeklokke, trenger vi også et felt for selve klokken. Når testen er ferdig må vi på en eller annen måte rapportere hvor lang tid testen brukte på å kjøre. For enkelhets skyld kommer vi bare til å skrive til Trace.</p>
+<p>Og så en litt subtil ting: vi må vite navnet på testen vi kjører! Det blir vi nesten nødt til å fange opp mens selve test-metoden kjører og lagre i et felt, slik at vi får det med når vi rapporterer. Men hvordan gjør man egentlig det? Vi er faktisk nødt til å ta i bruk en liten knivsodd reflection. Slik kan det se ut:</p>
+<pre>[TestClass]
+public class UnitTest1
+{
+    private Stopwatch _stopwatch;
+    private string _method;
+
+    [TestInitialize]
+    public void StartSecretUnitTestPerformanceTimer()
+    {
+        _stopwatch = new Stopwatch();
+        _stopwatch.Start();
+    }
+
+    [TestCleanup]
+    public void StopSecretUnitTestPerformanceTimer()
+    {
+        _stopwatch.Stop();
+        var msg = string.Format("{0}.{1}: {2} ms.", 
+            GetType().FullName, _method, _stopwatch.ElapsedMilliseconds);
+        Trace.WriteLine(msg);
+    }
+
+    [TestMethod]
+    public void TestMethod1()
+    {
+        _method = new StackFrame().GetMethod().Name;
+        Thread.Sleep(4300);
+    }
+
+    [TestMethod]
+    public void TestMethod2()
+    {
+        _method = new StackFrame().GetMethod().Name;
+        Thread.Sleep(2400);
+    }
+}
+</pre>
+<p>Så: hvordan går vi nå fram for å transformere det første kodeeksemplet til det andre? (Merk at vi egentlig ikke skal gjøre en C#-til-C#-transformasjon, men en IL-til-IL-transformasjon. Dvs. vi skal ta IL-koden vi får når vi kompilerer det første eksemplet og transformere den til å bli lik IL-koden vi får når vi kompilerer det andre eksemplet. Ingen tukling på C#-nivå.)</p>
+<p>For å få til alt dette trenger vi verktøy. Det første verktøyet heter <strong>ILSpy</strong>, og brukes til å dekompilere .NET-assemblies. Tidligere brukte jeg Lutz Roeders .NET Reflector, men det begynte jo plutselig å koste penger. ILSpy er gratis og fungerer helt fint. Det kan dekompilere både til "disassembled" IL (IL i tekstformat) og til C#. I første omgang er vi mest interessert i tekstlig IL. Ved å studere IL'en som blir generert når de to kodeeksemplene blir kompilert kan vi finne ulikhetene som vi må kompensere for når vi gjør bytekodemanipulasjonen. Senere kan vi dekompilere vår bytekodemanipulerte assembly til C# for å verifisere at vi virkelig har laget kode som er helt lik originalen.</p>
+<pre>.method public hidebysig 
+	instance void StartSecretUnitTestPerformanceTimer () cil managed 
+{
+	.custom instance void [Microsoft.VisualStudio.QualityTools.UnitTestFramework]Microsoft.VisualStudio.TestTools.UnitTesting.TestInitializeAttribute::.ctor() = (
+		01 00 00 00
+	)
+	// Method begins at RVA 0x20a0
+	// Code size 23 (0x17)
+	.maxstack 2
+
+	IL_0000: ldarg.0
+	IL_0001: newobj instance void [System]System.Diagnostics.Stopwatch::.ctor()
+	IL_0006: stfld class [System]System.Diagnostics.Stopwatch Insoluble.Test.UnitTest1::_secretStopwatchField
+	IL_000b: ldarg.0
+	IL_000c: ldfld class [System]System.Diagnostics.Stopwatch Insoluble.Test.UnitTest1::_secretStopwatchField
+	IL_0011: callvirt instance void [System]System.Diagnostics.Stopwatch::Start()
+	IL_0016: ret
+} // end of method UnitTest1::StartSecretUnitTestPerformanceTimer
+</pre>
+<p>Kodeeksemplet viser den ene av metodene vi må lage: <strong>TestInitialize</strong>-metoden. Jeg har kalt den <strong>StartSecretUnitTestPerformanceTimer</strong>, bare for at det skal være usannsynlig at testen allerede har en annen metode med det samme navnet. </p>
+<p>Hvis dette er første gang du ser IL: ikke få panikk! Dette er egentlig ganske enkle saker. Det burde være mulig å kjenne igjen metodesignaturen fra det andre kodeeksemplet. (Ikke bry deg om <em>hidebysig</em>, det er en teknisk detalj som ikke har noen betydning for oss.) Den tingen som begynner med <strong>.custom</strong> er <strong>TestInitialize</strong>-attributtet. Dybden på stacken er angitt av <strong>.maxstack</strong>; heller ikke det er spesielt skummelt. Det betyr bare at vi ber .NET om å la oss ha inntil to ting i stabelen vår. Og så kommer det morsomme: selve bytekodeinstruksjonene. Det at det står <strong>IL0000</strong> og sånn er bare merkelapper, og ikke spesielt interessant i dette tilfellet. De er mest interessante når man skal lage forgreninger i koden, med andre ord if-setninger og løkker. Vi skal ikke gjøre noe så fancy.</p>
+<p>Selve IL-koden er egentlig ganske grei å lese, så lenge man husker på at vi primært bruker stacken snarere enn lokale variable til å holde på verdier. Instruksjonen <strong>ldarg.0</strong> betyr at vi "pusher" en referanse til "this" på stacken, altså testklasseinstansen. Videre kaller vi konstruktøren til <strong>Stopwatch</strong>-typen med <strong>newobj</strong>-instruksjonen. Da har vi både "this" og en referanse til en Stopwatch-instans på stacken. Når vi så kaller <strong>stfld</strong> med navnet på et felt, lagrer vi <strong>Stopwatch</strong>-referansen i feltet. Denne operasjonen "popper" begge verdiene vi hadde på stacken. Deretter "pusher" vi "this" på stacken igjen, leser feltet vi nettopp skrev til med <strong>ldfld</strong>, og kaller en metode på <strong>Stopwatch</strong>-instansen med <strong>callvirt</strong>-instruksjonen. Til slutt gjør vi en eksplitt retur fra metoden med <strong>ret</strong>.</p>
+<p>Ikke spesielt vanskelig, altså. Men hvordan i all verden går man fram for å dytte all denne koden inn i DLL'en vi fikk da vi kompilerte det første eksemplet? Det ville vært en uoverstigelig kjip oppgave om det ikke hadde vært for to supre verktøy. Det viktigste av dem heter <a href="http://www.mono-project.com/Cecil"><strong>Mono.Cecil</strong></a> og er skrevet av en fyr som heter Jb Evain. Mono.Cecil gir deg et API for å manipulere .NET-assemblies. Det andre verktøyet er mer valgfritt, men gjør det enklere å bruke Mono.Cecil integrert i Visual Studio. Det heter <a href="https://github.com/SimonCropp/Fody"><strong>Fody</strong></a>, og tilbyr en addin-modell for å gjøre bytekodemanipulasjon med Mono.Cecil enklere. Fody sørger for at bytekodemanipulasjonen din blir kjørt når Visual Studio bygger prosjektet ditt, at Visual Studio ikke låser assembly-filen m.m. Tro meg, alt blir så mye lettere! Når man bruker Fody, følger man en konvensjon der man lager en <strong>ModuleWeaver</strong>-klasse med bestemte properties og en metode som heter <strong>Execute</strong>. Fody tar ansvar for å gi inn verdier til propertiene og å kalle <strong>Execute</strong>. </p>
+<pre>public class ModuleWeaver
+{
+    private const string TestClassAttribute = "TestClassAttribute";
+
+    public ModuleDefinition ModuleDefinition { get; set; }
+        
+    public IAssemblyResolver AssemblyResolver { get; set; }
+        
+    public void Execute()
+    {
+        var typeFinder = new TypeFinder(AssemblyResolver, ModuleDefinition);
+
+        var testTypeDefs =
+            ModuleDefinition.GetTypes().Where(
+                t =&gt; t.CustomAttributes.Any(
+                    a =&gt; a.AttributeType.Name == TestClassAttribute));
+
+        foreach (var typeDef in testTypeDefs)
+        {
+            new TypeWeaver(typeDef, typeFinder).Execute();
+        }
+    }
+}
+</pre>
+<p>Her ser du min <strong>ModuleWeaver</strong>-klasse. Den gjør ikke så mye, egentlig. Det eneste som skjer, er at jeg plukker ut alle klasser som er annotert med <strong>TestClass</strong>-attributtet, og itererer over dem. Den virkelige jobben håndteres av en klasse jeg har kalt <strong>TypeWeaver</strong>. Den bruker også hjelpeklassen <strong>TypeFinder</strong> for å lette oppslag av typereferanser når vi skal ta i bruk Mono.Cecil litt mer på ordentlig. </p>
+<p><strong>TypeWeaver</strong>-klassen er stedet hvor IL-manipulasjonen finner sted. Etter mønster fra <strong>ModuleWeaver</strong>-klassen har den sin egen <strong>Execute</strong>-metode.</p>
+<pre>public void Execute()
+{
+    AddStopWatchField();
+    AddTestNameField();
+    AddStartStopwatchSetupMethod();
+    AddStopStopwatchTeardownMethod();
+
+    foreach (var methodDef in _typeDef.Methods.Where(
+                 m =&gt; m.CustomAttributes.Any(
+                     a =&gt; a.AttributeType.Name == TestMethodAttribute)))
+    {
+        InjectCodeToStoreTestName(methodDef);
+    }
+}
+</pre>
+<p>Som du kan se gjør vi her de ulike tingene vi fant ut at vi måtte gjøre da vi definerte målbildet vårt. Det blir litt i overkant å gjennomgå all koden i detalj, men la oss se på hvordan vi lager <strong>TestInitialize</strong>-metoden som vi så på tidligere.</p>
+<pre>private MethodDefinition CreateStartStopwatchSetupMethod()
+{
+    var methodDef = new MethodDefinition(
+        StartTimingMethodName, 
+        MethodAttributes.Public | MethodAttributes.HideBySig, 
+        _types.Void)
+    {
+        Body = { MaxStackSize = 8, InitLocals = true }
+    };
+
+    var initMethodRef = new MethodReference(".ctor", _types.Void, TestInitializeAttributeTypeRef) 
+    { 
+        HasThis = true 
+    };
+    methodDef.CustomAttributes.Add(new CustomAttribute(initMethodRef));
+
+    var il = methodDef.Body.GetILProcessor();
+    Action&lt;opcode&gt; op = x =&gt; il.Append(il.Create(x));
+    Action&lt;opcode   , fieldreference&gt; fop = (x, f) =&gt; il.Append(il.Create(x, f));
+    Action&lt;opcode   , methodreference&gt; mop = (x, m) =&gt; il.Append(il.Create(x, m));
+
+    // Push 'this' reference onto stack.
+    op(OpCodes.Ldarg_0);
+
+    // Create StopWatch object and push onto stack.
+    mop(OpCodes.Newobj, new MethodReference(".ctor", _types.Void, StopWatchTypeRef) 
+    { 
+        HasThis = true 
+    });
+
+    // Store reference to StopWatch object in field.
+    fop(OpCodes.Stfld, _stopWatchFieldRef);
+
+    // Push 'this' reference onto stack.
+    op(OpCodes.Ldarg_0);
+
+    // Load reference to StopWatch object from field.
+    fop(OpCodes.Ldfld, _stopWatchFieldRef);
+
+    // Invoke Start method on StopWatch.
+    mop(OpCodes.Callvirt, new MethodReference("Start", _types.Void, StopWatchTypeRef) 
+    { 
+        HasThis = true 
+    });
+
+    // Return from method.            
+    op(OpCodes.Ret);
+
+    return methodDef;
+}
+</pre>
+<p>Jeg starter med å lage en <strong>MethodDefinition</strong>-instans, med signatur som matcher den vi så i den dekompilerte IL-koden. Deretter legger vi til annoteringen med <strong>TestInitialize</strong>, slik at MSTest vil kjøre metoden vår før testen blir kjørt. For å legge til bytekodeinstruksjoner til metodekroppen, bruker vi noe som kalles en <strong>ILProcessor</strong>. Jeg synes det er litt mye støy for å opprette og legge til instruksjonene, så jeg lager meg en håndfull actions for å gjøre det litt mer kortfattet. Deretter legger jeg bare til de bytekodeinstruksjonene en etter en: legge "this" på stacken, opprette <strong>Stopwatch</strong>-instans, skrive til felt, legge "this" på stacken igjen, lese fra felt, kalle <strong>Start</strong>-metoden, ferdig. Man må naturligvis gjøre seg litt kjent med API'et til Mono.Cecil for å få det til, men det er ikke spesielt vanskelig.</p>
+<p>Resten av koden er egentlig ganske lik. Bytekodemanipulering er ikke vanskelig når man først har blitt kjent med verktøyene, og åpner opp for en del unike muligheter og løsninger som er vanskelig å få til på andre måter. Dessuten får man den berusende følelsen av å drive med svartekunst, mens man egentlig gjør ganske enkle ting. Dersom du vil se et litt mer ambisiøst eksempel på bytekodemanipulering kan du ta en titt på <a href="http://einarwh.posterous.com/a-property-with-a-view">Silver.Needle</a>, et prosjekt jeg har laget for å lette livet til Silverlight-utviklere som blir sprø av å implementere <strong>INotifyPropertyChanged</strong>. </p>
+<p>Men ja! Funket egentlig dette her? Du får nesten laste ned kildekoden fra <a href="https://bitbucket.org/einarwh/tempo">https://bitbucket.org/einarwh/tempo</a> og prøve! Innimellom litt øvrig støy i Output-vinduet i Visual Studio dukket følgende linjer opp hos meg: </p>
+<pre>Tempo.Test.UnitTest1.TestMethod1: 4298 ms
+Tempo.Test.UnitTest1.TestMethod2: 2401 ms</pre>
+<p>Godt nok for meg!</p>
+<hr>
+<p>Om du synes dette var spennende så finer du mer av samme kaliber på <a href="http://einarwh.posterous.com/">Einars posterous-blogg</a>. Og følg med i morgen for en ny luke!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

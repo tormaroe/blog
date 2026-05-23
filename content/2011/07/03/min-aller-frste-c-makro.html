@@ -1,0 +1,38 @@
+---
+title: Min aller første C-makro
+link: http://blog.kjempekjekt.com/2011/07/03/min-aller-frste-c-makro/
+layout: post
+date: 2011-07-03 22:25:41Z
+tags:
+  - C
+  - Macro
+---
+<p>Det er både mest produktivt og mest spennende å programmere i såkalte høynivå-språk. For å kunne kalle seg en komplett programmerer mener jeg derimot det også er nødvendig å beherske et språk som er “tettere på metallet”. Jeg tenker da i praksis at man bør lære seg enten assembler eller C – eller gjerne begge deler.</p> <p>Og nå har også jeg <em>(endelig)</em> begynt å lære meg C. Jeg leser nemlig Kernighan &amp; Ritchies gamle klassiker (sjekk ut <a href="http://blog.kjempekjekt.com/2011/06/15/sommerlektyre/">sommerlektyre</a>). Jeg har ikke gjort så mye praktisk koding enda, men da jeg kom til kapittelet om preprosessering og <em>macro substitution</em> måtte jeg eksperimentere litt. </p> <p>Så uten noe mere <em>snikksnakk</em>, her er min aller første makro i C (min løsning på øvelse 4-14 i boken).</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="PreProc">#include </span><span class="String">&lt;stdio.h&gt;</span>
+<span class="lnr">11 </span>
+<span class="lnr">12 </span><span class="PreProc">#define swap(t,x,y) { &#092;</span>
+<span class="lnr">13 </span><span class="PreProc">  t temp = x; &#092;</span>
+<span class="lnr">14 </span><span class="PreProc">  x = y; &#092;</span>
+<span class="lnr">15 </span><span class="PreProc">  y = temp; &#092;</span>
+<span class="lnr">16 </span><span class="PreProc">}</span>
+<span class="lnr">17 </span>
+<span class="lnr">18 </span><span class="Type">int</span> main()
+<span class="lnr">19 </span>{
+<span class="lnr">20 </span>  <span class="Type">int</span> a, b, temp; <span class="Comment">// declare a temp variable to mess things up</span>
+<span class="lnr">21 </span>                  <span class="Comment">// if I don't implement the macro properly</span>
+<span class="lnr">22 </span>  a = <span class="Number">1</span>; b = <span class="Number">2</span>;
+<span class="lnr">23 </span>
+<span class="lnr">24 </span>  printf(<span class="String">"a = </span><span class="Special">%d</span><span class="String">, b = </span><span class="Special">%d</span><span class="Special">&#092;n</span><span class="String">"</span>, a, b); <span class="Comment">// =&gt; a = 1, b = 2</span>
+<span class="lnr">25 </span>  swap(<span class="Type">int</span>, a, b);
+<span class="lnr">26 </span>  printf(<span class="String">"a = </span><span class="Special">%d</span><span class="String">, b = </span><span class="Special">%d</span><span class="Special">&#092;n</span><span class="String">"</span>, a, b); <span class="Comment">// =&gt; a = 2, b = 1</span>
+<span class="lnr">27 </span>
+<span class="lnr">28 </span>  <span class="Statement">return</span> <span class="Number">0</span>;
+<span class="lnr">29 </span>}
+</pre>
+<p>For dem som ikke kjenner C’s preprosessor så definerer jeg her en macro jeg kaller <strong>swap </strong>som tar tre argumenter. Før programmet kompileres vil preprosessoren bytte ut alle forekomster av token swap i koden med definisjonen av makroen. Linje 25 i koden over vil altså bli erstattet med koden nedenfor.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">25 </span>  {
+<span class="lnr">26 </span>    <span class="Type">int</span> temp = a;
+<span class="lnr">27 </span>    a = b;
+<span class="lnr">28 </span>    b = temp;
+<span class="lnr">29 </span>  }
+</pre>
+<p>Hadde jeg ikke inkludert koden i en blokk ({..}) ville jeg fått problemer med temp-variabelen. Men fordi jeg bruker en blokk har jeg fått laget et nytt <em>scope</em>, hvor jeg får laget en ny variabel jeg kan kaller temp, selv om det eksisterer en temp fra før.</p>
+<p>Nå <em>gru-gleder</em> jeg meg til å begynne på kapittelet om pointere…</p>

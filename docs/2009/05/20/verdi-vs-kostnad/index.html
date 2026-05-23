@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Softwareutvikling">
+
+    <title>Verdi vs. Kostnad</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Verdi vs. Kostnad</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 20. mai 2009</small> 
+            <a href="/tags/softwareutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Softwareutvikling</span></a>
+          </p>
+          <p>Jeg leste nettopp en liten blogpost av Ron Jeffries hvor han sier at <em><a href="http://xprogramming.com/blog/tech/story-cost-does-matter.htm">"story cost does matter"</a></em>. Det er tydeligvis ikke mulig å kommentere på xprogramming-bloggen uten å være medlem, så da lager jeg min egen lille blogpost om temaet.</p>
+<p>Poenget er at noen har foreslått at man ikke skal ta høyde for kostnad når man prioriterer historiene i backloggen. I stedet skal man bare se på verdi. Slik planlegging uten estimater kalles <em>naked planning</em>. Jeffries sier:</p>
+<p style="margin-left: 20px"><em>"Suppose without loss of generality that your highest value stories have value 100. Suppose that stories vary in cost between 1 and 3. And uppose we have time to do 30 points of work."</em></p>
+<p style="margin-left: 20px"><em>"We can do 10 3-point stories and get value 1000. Or we can do 30 1-point stories and get value 3000. 3000 would be more. Story cost does matter."</em></p>
+<p>Dette angrepet er nokså naivt - det virker som om Ron har gått glipp av hele poenget. Saken er nemlig den at de ligger en skjult verdi i de oppgavene som har høy kostnad. Funksjonalitet med høy kostnad og høy verdi er <strong>langtidsinnvesteringer</strong>, og det er dem som vil skille deg fra dine konkurrenter. Ting som er raskt å implementere kan hvem som helst kopiere i løpet av kort tid, og vil ikke gjøre ditt produkt eller din løsning unik.</p>
+<p>Problemet med estimater - i tillegg til den enorme usikkerheten og unøyaktigheten - er at de vil få deg til å favorisere korttidsinvesteringer fremfor langtidsinvesteringer. Du vil gjøre akkurat som Ron gjør - fokusere på at 3000 er et høyere tall enn 1000. Jeg er derimot overbevist om at det er viktig å fordele innsatsen gjevnt mellom oppgaver med lav kostnad og oppgaver med høy kostnad.., det vil man tjene på over tid. Og tanken er at om man ser helt bort fra estimater når man planlegger, så vil denne fordelingen skje helt naturlig.</p>
+<p style="text-align: center"><a title="Short & Long Term Value by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3547360807/"><img height="294" alt="Short & Long Term Value" src="http://farm4.static.flickr.com/3560/3547360807_1ef4c85221_o.png" width="339" border="0" /></a></p>
+<p>Til slutt kommer Ron med et spørsmål til leseren:</p>
+<p style="margin-left: 20px"><em>"Suppose that, like most organizations, you don’t really know much about the value of your stories. Should you do high-cost ones, low-cost ones, or what?"</em></p>
+<p>Hvabehager? Hvis du ikke vet noe om verdien bør du ikke gjøre noen av dem i det hele tatt!!! Du bør istedet finne ut hvilke stories som har verdi. Om du ikke vet noe om verdien så famler du rundt i blinde, og da spiller det liten rolle om kostnaden er høy eller lav.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

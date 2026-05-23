@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender">
+
+    <title>Kalenderluke 22: Når begynner krigen?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kalenderluke 22: Når begynner krigen?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 23. desember 2013</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p>Spenningen er til å ta og føle på! Luke 22 er unnagjort, men det er fortsatt veldig gjevnt i toppen. Her er en fremstilling av hvordan den første timen så ut søndag morgen:</p>
+<p><img title="luke22_photofinish" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 20px auto; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke22_photofinish" src="/uploads/2013/12/luke22_photofinish.png" width="506" height="649"></p>
+<p>Daniel T Johansen imponerte igjen med raskeste korrekte svar. Magnar overtok ledelsen, mens Stian og Eivind praktisk talt deler andreplassen.</p>
+<h2>Oppgaven</h2>
+<p>Oppgaven denne gangen er interessant - den virker vanskelig, men i det øyeblikket den er løst virker den ganske enkel. Oppgaven var å avgjøre det minste tallet <code>dbdcaacdbccdadccbdbcbaaaaaaaaa</code> kunne representere, gitt at hvert ulikt tegn representerer et unikt siffer, at vi ikke vet hvilken radiks det er, og at tallet ikke starter med null.</p>
+<p>Her kommer et forsøk på en forklaring på hvordan man bør tenke, skrveet i Ruby.</p>
+<pre># Vi begynner med et utenomjordisk nummer..
+NUMBER = 'dbdcaacdbccdadccbdbcbaaaaaaaaa'
+</pre>
+<p>Hvor mange unike tegn har vi?</p>
+<pre># Splitt opp strengen så vi kan jobbe med den..
+digits = NUMBER.split ''
+unique_digits = digits.uniq
+puts "DIGITS: #{unique_digits}"
+</pre>
+<p>Output er <code>DIGITS: ["d", "b", "c", "a"]</code></p>
+<pre># Hvor mange fingre har de utenomjordiske?
+# Minimum radiks (basert på antall unike siffer) 
+# gir minimum verdi, så det trenger vi å vite..
+base = unique_digits.size
+puts "MINIMUM BASE: #{base}"
+</pre>
+<p>Output er <code>MINIMUM BASE: 4</code></p>
+<pre># Laveste siffer (bortsett fra 0) bør komme først
+# for å lage et minimalt tall...
+min_sequence = [1, 0] + (2..(base-1)).to_a
+puts "MINIMUM DIGIT SEQUENCE: #{min_sequence}"
+</pre>
+<p>Output er <code>MINIMUM DIGIT SEQUENCE: [1, 0, 2, 3]</code></p>
+<pre># Kombineeerer vi dette med tegnene fra det
+# utenomjordiske nummeret (i riktig rekkefølge),
+# får vi den optimale (minimalle) betydningen
+# avvv tegnene...
+digit_hash = Hash[unique_digits.zip(min_sequence)]
+puts "DIGIT REPRESENTATION: #{digit_hash}"
+</pre>
+<p>Output er <code>DIGIT REPRESENTATION: {"d"=&gt;1, "b"=&gt;0, "c"=&gt;2, "a"=&gt;3}</code></p>
+<pre># For hvert tegn i tallet (fra høyre), finn verdien
+# basert på posisjonen, og summer!
+puts "#{NUMBER} = " + 
+  digits.
+  reverse.
+  each_with_index.
+  inject(0) { |memo, (d, i)|
+    puts "#{
+      NUMBER[(-1*i)..-1].rjust(NUMBER.size)
+    } = #{memo}" if i &gt; 0
+    memo + digit_hash[d] * base**i 
+}.to_s
+</pre>
+<p>Gir output:</p>
+<pre>                             a = 3
+                            aa = 15
+                           aaa = 63
+                          aaaa = 255
+                         aaaaa = 1023
+                        aaaaaa = 4095
+                       aaaaaaa = 16383
+                      aaaaaaaa = 65535
+                     aaaaaaaaa = 262143
+                    baaaaaaaaa = 262143
+                   cbaaaaaaaaa = 2359295
+                  bcbaaaaaaaaa = 2359295
+                 dbcbaaaaaaaaa = 19136511
+                bdbcbaaaaaaaaa = 19136511
+               cbdbcbaaaaaaaaa = 556007423
+              ccbdbcbaaaaaaaaa = 2703491071
+             dccbdbcbaaaaaaaaa = 6998458367
+            adccbdbcbaaaaaaaaa = 58538065919
+           dadccbdbcbaaaaaaaaa = 127257542655
+          cdadccbdbcbaaaaaaaaa = 677013356543
+         ccdadccbdbcbaaaaaaaaa = 2876036612095
+        bccdadccbdbcbaaaaaaaaa = 2876036612095
+       dbccdadccbdbcbaaaaaaaaa = 20468222656511
+      cdbccdadccbdbcbaaaaaaaaa = 161205711011839
+     acdbccdadccbdbcbaaaaaaaaa = 1005630641143807
+    aacdbccdadccbdbcbaaaaaaaaa = 4383330361671679
+   caacdbccdadccbdbcbaaaaaaaaa = 13390529616412671
+  dcaacdbccdadccbdbcbaaaaaaaaa = 31404928125894655
+ bdcaacdbccdadccbdbcbaaaaaaaaa = 31404928125894655
+dbdcaacdbccdadccbdbcbaaaaaaaaa = <strong>319635304277606399</strong>
+</pre>
+<p>Som vanlig er det gøy om andre deler hvordan de løste oppgaven!</p>
+<p>PS: Både denne luken og <a href="/2013/12/22/kalenderluke-21-sty-p-linjen/">oppgaven i luke 21</a> er basert på oppgaver fra <a href="https://code.google.com/codejam/">Google Code Jam</a> – en interessant konkurranse for dem som liker denne typen problemer og programmeringskonkurranser.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

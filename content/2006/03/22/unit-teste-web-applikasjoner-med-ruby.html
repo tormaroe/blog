@@ -1,0 +1,27 @@
+---
+title: Unit-teste web applikasjoner med Ruby..
+link: http://blog.kjempekjekt.com/2006/03/22/unit-teste-web-applikasjoner-med-ruby/
+layout: post
+date: 2006-03-22 21:46:50Z
+tags:
+  - Ruby
+  - Testing / TDD
+---
+Har lest og testet Ruby i hele fem dager nå - og er helt frelst. Jeg har også funnet et område hvor jeg garantert kommer til å benytte Ruby i jobben (om ikke min kommende arbeidsgiver har investert i noe <em>fancy</em> greier da).., nemlig enhetstesting av web UI! <a href="http://wtr.rubyforge.org/">Watir</a> er et bibliotek til Ruby som lar deg helautomatisere IE, og støtte for flere browsere kommer. Du kan også (med litt jobb)<a href="http://www.codeproject.com/useritems/RubyTestExecutor.asp"> plugge unit tester du lager i ruby/watir inn i NUnit</a>, om du skulle ønske det.
+
+Uttalelser folk har kommet med etter å ha oppdager Watir:
+
+<p align="center"><em>"I've been trying to find the Holy Grail of Automated Web UI Testing....
+And the one I'm currently enamored with is Watir."</em> — Scott Hanselman
+<p align="center"><em>"I wanted to run around my office dancing and celebrating."</em> — Beth Ferguson</p>
+<p align="left">For mer om Ruby, se <a href="http://del.icio.us/tormaroe/ruby">mine tags..</a></p>
+---
+
+Jeg surfer ganske mye på ulike programmeringssider for tiden, og oppdaget da denne litt morsomme siden for oss nerder: <a href="http://www.99-bottles-of-beer.net/">99-bottles-of-bear.net</a>! Her kan du se den kjente øl-sangen implementert i forskjellige språk på (p.t.) 927 ulike måter.
+
+Og da fikk jeg forresten lyst til å vise <em>mitt</em> siste program.., <u>ikke</u> et eksempel på hvor lesbar Ruby kode er akkurat - har har jeg forsøkt å obfuskere litt:
+<div><font face="Courier New, Courier, Monospace" color="#339966"># party game</font></div>
+<div align="left"><font face="Courier New, Courier, Monospace" color="#0000ff">a,b,c=1,7,70;def d(i,b)print i.to_s=~/#{b}/||i.modulo(b)==0?
+"ukek!n ".gsub(/(.)(.)/,'\2\1'):i.to_s+" "end;(a..c).each
+{|i| d(i,b)};(c-1).downto(a){|i| d(i,b)}</font></div>
+Noen som ser hva dette programmet gjør? Send inn forslag...

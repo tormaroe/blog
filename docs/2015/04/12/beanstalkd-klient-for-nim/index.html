@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Nimrod,Diverse prosjekter">
+
+    <title>beanstalkd-klient for Nim</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>beanstalkd-klient for Nim</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 12. april 2015</small> 
+            <a href="/tags/nimrod"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Nimrod</span></a>
+          
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          </p>
+          <p class="text-center"> <img src="/uploads/2015/04/beanstalkd.nim.png" alt="beanstalkd.nim logo" /> </p>
+
+<p><strong><a href="http://kr.github.io/beanstalkd/">beanstalkd</a></strong> er en enkel og meget rask <em>open source</em> kø-server, laget av <a href="https://github.com/kr">Keith Rarick</a> og inspirert av memcached. Det er ikke en omfattende meldingsformidler (<em>message broker</em>) som for eksempel RabbitMQ, men et køsystem med egenskaper som gjør den skreddersydd for meldingsbasert arbeidsdistribusjon.</p>
+<p>beanstalkd har blant annet et finkornet prioritetssystem, og når man henter ut en melding (eller en jobb, som nok er den preferete terminologien) så har man X antall sekunder på seg til å løse jobben før man sletter den fra køen. Rekker man ikke dette innen fristen kan man be om mer tid - hvis ikke vil jobben kunne bli gitt til en annen arbeider. Når man putter en jobb inn i en kø kan man også spesifisere et antall sekunder som må løpe før noen kan hente ut jobben.</p>
+<p class="text-center"> <img src="/uploads/2015/04/beanstalkd-flow.png" alt="beanstalkd flow" /> </p>
+
+<h2>Et prosjekt på en helg</h2>
+<p>I helgen har jeg kodet et klientbibliotek for beanstalkd i programmeringspråket <a href="/tags/nimrod/">Nim</a> (tidl. <em>Nimrod</em>) - et språk som fasinerer meg. Jeg har kost meg skikkelig, lært en hel del, laget logo, og fått biblioteket godkjent og tilgjengelig via nim&#39;s <em>package manager</em> nimble. Prosjektet <a href="https://github.com/tormaroe/beanstalkd.nim">finner du på Github</a>.</p>
+<p>Her ser du hvordan git committene fordelte seg utover lørdagen og søndagen:</p>
+<p class="text-center"> <img src="/uploads/2015/04/punch_card.png" alt="beanstalkd.nim punch card" /> </p>
+
+<p>Dette skal ikke være en full gjennomgang av hverken beanstalkd eller prosjektet mitt, men jeg vil trekke frem et par ting...</p>
+<h2>Vagrant</h2>
+<p>Jeg har brukt vagrant til å provisjonere et utviklingsmiljø for prosjektet (jeg nevte vagrant i posten <a href="/2015/02/08/10-verktoy/">10 verktøy jeg ikke hadde brukt for et år siden</a>). Vagrant-filen min kjører opp en Ubuntu og installerer beanstalkd og nim samt et par andre ting jeg bruker. Ekstremt behagelig å jobbe på den måten!</p>
+<p>I prosjektet har jeg inkludert endel eksempler på hvordan man kan bruke modulen min. Og om du også har vagrant så er det ekstremt enkelt for deg å bare laste ned repositoriet fra github, fyre opp VM&#39;en, og så kan du kompilere og kjøre eksemplene med én enkelt kommando. Vagrant blir på den måten den eneste avhengigheten prosjektet har.</p>
+<h2>Spawn</h2>
+<p>Dette prosjektet var forresten første gang jeg har forsøkt meg på samtidighetsprogrammering (tråder og sånt) i Nim. Ikke i selve biblioteket, men i ett av eksemplene. Hvis du skummer gjennom koden nedenfor så ser du en distribuert løsning på Euler1-problemet (summen av alle multipler av 3 og 5 under 1000). Jeg bruker beanstalkd og <code>spawn</code>.</p>
+<p>Først <em>spawner</em> jeg en tråd som putter alle tallene inn i kø <strong>A</strong>. Deretter spawner jeg fire tråder som plukker tall fra <strong>A</strong>, vurderer om de er multipler av 3 eller 5, og putter disse inn på en ny kø: <strong>B</strong>. Til slutt har jeg en tråd som samler opp og summerer tallene i <strong>B</strong>.</p>
+<p>En lite effektiv måte å summere tall på, men en effektiv strategi for mange andre ting.</p>
+<pre><code class="hljs">import beanstalkd, strutils, threadpool
+
+<span class="hljs-keyword">proc</span><span class="hljs-title"> produceNumbers()</span> =<span class="hljs-title">
+  let</span> client =<span class="hljs-title"> beanstalkd.open(&quot;127.0.0.1&quot;)</span>
+<span class="hljs-title">  discard</span> client.use &quot;A&quot;<span class="hljs-title">
+  for</span> n<span class="hljs-title"> in</span> 1.. &lt; 1000:<span class="hljs-title">
+    discard</span> client.put($n)<span class="hljs-title">
+
+proc</span> consumeA(id:<span class="hljs-title"> int)</span> =<span class="hljs-title">
+  let</span> client =<span class="hljs-title"> beanstalkd.open(&quot;127.0.0.1&quot;)</span>
+<span class="hljs-title">  discard</span> client.watch &quot;A&quot;<span class="hljs-title">
+  discard</span> client.ignore &quot;default&quot;<span class="hljs-title">
+  discard</span> client.use &quot;B&quot;<span class="hljs-title">
+  while</span> true:<span class="hljs-title">
+    let</span> next =<span class="hljs-title"> client.reserve(timeout</span> = 1)<span class="hljs-title">
+    if</span> next.success:<span class="hljs-title">
+      let</span> n =<span class="hljs-title"> next.job.parseInt</span>
+<span class="hljs-title">      if</span> (n<span class="hljs-title"> mod</span> 3 == 0)<span class="hljs-title"> or</span> (n<span class="hljs-title"> mod</span> 5 == 0):<span class="hljs-title">
+        discard</span> client.put(next.job)<span class="hljs-title">
+        discard</span> client.delete(next.id)<span class="hljs-title">
+    else:</span>
+<span class="hljs-title">      break</span>
+<span class="hljs-title">
+proc</span> consumeB() :<span class="hljs-title"> int</span> =<span class="hljs-title">
+  let</span> client =<span class="hljs-title"> beanstalkd.open(&quot;127.0.0.1&quot;)</span>
+<span class="hljs-title">  discard</span> client.watch &quot;B&quot;<span class="hljs-title">
+  discard</span> client.ignore &quot;default&quot;<span class="hljs-title">
+  var</span> sum = 0<span class="hljs-title">
+  while</span> true:<span class="hljs-title">
+    let</span> next =<span class="hljs-title"> client.reserve(timeout</span> = 1)<span class="hljs-title">
+    if</span> next.success:<span class="hljs-title">
+      sum</span> +=<span class="hljs-title"> next.job.parseInt</span>
+<span class="hljs-title">      discard</span> client.delete(next.id)<span class="hljs-title">
+    else:</span>
+<span class="hljs-title">      break</span>
+<span class="hljs-title">  result</span> =<span class="hljs-title"> sum</span>
+<span class="hljs-title">
+spawn</span> produceNumbers()<span class="hljs-title">
+for</span> i<span class="hljs-title"> in</span> 1 .. 4:<span class="hljs-title">
+  spawn</span> consumeA(i)<span class="hljs-title">
+let</span> sum =<span class="hljs-title"> spawn</span> consumeB()<span class="hljs-title">
+echo</span> &quot;The<span class="hljs-title"> sum</span> of<span class="hljs-title"> all</span> multiples<span class="hljs-title"> of</span> 3<span class="hljs-title"> and</span> 5<span class="hljs-title"> is</span> &quot; &amp; $(^sum)</code></pre><p>Enkelt, distribuert, fleksibelt, og tråd-sikkert!</p>
+<h2>Dokumentasjon</h2>
+<p>Jeg har også lagt litt vekt på dokumentasjon denne gangen. Nim-kompilatoren kommer med muligheter for å generere fin dokumentasjon basert på kommentarer i koden. Ta en titt på <a href="http://tormaroe.github.io/beanstalkd.nim/">tormaroe.github.io/beanstalkd.nim</a>.</p>
+<h2>Nimble</h2>
+<p>Nimble er <em>package manageren</em> nim-utviklere bruker. For å installere biblioteket mitt kjører man bare..</p>
+<pre><code class="hljs">nimble <span class="hljs-keyword">install</span> beanstalkd</code></pre><p>.. og så er det bare å kode i vei. Får å få dette til måtte jeg klone git-repoen <a href="https://github.com/nim-lang/packages">nim-lang/packages</a>, legge til litt metadata om prosjektet i en JSON-fil, og lage en <em>pull request</em>. Den ble akseptert (manuelt av en utvikler altså) etter et par timer, og dermed var beanstalkd.nim tilgjengelig for verden.</p>
+<p>Denne løsningen skalerer kanskje ikke spesielt bra når nim blir dødspopulært, men foreløpig er det akkurat løsningen vi trenger.</p>
+<p>Når noen installerer biblioteket mitt vil nimble gå til git-repoen min. Der vil den finne den siste committen jeg har tagget med et versjonsnummer (eller en commit med et ønsket versjonsnummer), og laste den ned på utviklerens maskin. Og det er alt - ingen kompilering nødvendig. Når utvikleren så kompilerer sitt eget prosjekt vil mit bibliotek linkes statisk inn og kompileres som en del av løsningen.</p>
+<p>Det finnes også en offisiell liste over klientbiblioteker til beanstalkd for ulike programmeringsspråk - <a href="https://github.com/kr/beanstalkd/wiki/Client-Libraries">i form av en github wiki</a>. Og det er jo superpraktisk, for da kunne jeg legge inn prosjektet mitt selv :)</p>
+<h2>Oppsummering</h2>
+<p>Punkt 1: Jeg har hatt det gøy, og lært mye mer om Nim!</p>
+<p>Punkt 2: I løpet av en helg (og jeg har gjort mye annet i helgen også altså) kan man gjøre og dele et prosjekt som kan vise seg å være nyttig for folk. Jeg håper det i alle fall.</p>
+<p>Punkt 3: Jeg har ikke brukt beanstalkd til noe reelt enda, men jeg har i alle fall gode erfaringer sålangt og tro på produktet. Det har eksistert siden 2007, selv om jeg hørte om det første gang for bare noen uker siden. Jeg håper flere vil ta en titt.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

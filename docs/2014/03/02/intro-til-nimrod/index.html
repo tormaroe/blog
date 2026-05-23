@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Nimrod">
+
+    <title>Introduksjon til Nimrod</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Introduksjon til Nimrod</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 2. mars 2014</small> 
+            <a href="/tags/nimrod"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Nimrod</span></a>
+          </p>
+          <p>Denne artikkelen handler om programmeringsspråket Nimrod - et overraskende spennende språk jeg kom over for noen uker siden.</p>
+<p>Jeg har lenge hatt lyst til å lære meg et såkalt <em>systemutviklingsspråk</em>. Jeg snakker om språk hvor man er &quot;tettere på&quot; datamaskinen. Den åpenbare kandidaten er <a href="/tags/c">C</a>, men jeg klarer liksom aldri å komme orntlig i gang med det.</p>
+<p>Derfor har jeg den siste tiden gått og vurdert alternativene. Ett av dem er <a href="/tags/d">D</a> (tar egentlig opp kampen med C++), og så har vi nykommerne <em>Rust</em> og <em>Go</em>. Go skal være lite, pragmatisk og enkelt å komme i gang med. Rust er mye større, og tar et lengre steg bort fra C-arven. De er altså veldig forskjellige, og jeg er veldig usikker på hva jeg skal gjøre... </p>
+<h2>Et språk som kompilerer til C</h2>
+<p>Og så kommer jeg plutselig over <em>Nimrod</em> (<a href="http://nimrod-lang.org/">nimrod-lang.com</a>). Du behøver ikke å være overrasket over at du ikke har hørt om det før, for det er det ikke mange som har. Men til å være så lite og &quot;betydningsløst&quot; overrasket det meg på flere områder.</p>
+<p>Nimrod er et <em>statisk</em> typet <em>imperativt</em> språk. Målet med språket er at det skal gi utvikleren alle muligheter til å uttrykke seg på en god og elegant måte, men uten å inngå noe kompromi i forhold til kjøretids.</p>
+<p>Kompilatoren produserer kompakt og effektiv C-kode (eller C++ eller Objective-C om man ønsker det). Språket har makroer, type inference, generics, og en rekke spennende features - inkludert et overraskende rikt standardbiblotek (gitt at det er så lite kjent).</p>
+<img src="/uploads/2014/03/nimrod.png" alt="Nimrod logo" />
+
+<h2>En blanding av Python og Pascal</h2>
+<p>Oppfinneren sier språket er inspirert av Python og Pascal, men personlig synes jeg det har vel så mange likhetstrekk med F# / ML. Syntaksen er grei å komme i gang med.</p>
+<p>Som vanlig når jeg tester ut et nytt språk begynner jeg med å løse oppgaven jeg kaller Euler1: <em>Finn summen av alle tall under 1000 som er multipler av 3 eller 5</em>.</p>
+<p>Her er min første løsning. Først oppretter jeg en prosedyre som er en infix-operator for å sjekke om et tall er en multippel av et annet. Dette minner om hva du kan gjøre i F#, og er noe jeg kun gjorde for å være fancy :)</p>
+<pre><code class="hljs ruby"><span class="hljs-comment"># A &quot;is multiple of&quot; operator </span>
+<span class="hljs-built_in">proc</span> <span class="hljs-string">`%=`</span> (x, <span class="hljs-symbol">d:</span> int): bool =
+  x mod d == <span class="hljs-number">0</span></code></pre><p>Deretter implementerer jeg prosedyren som kjører en for-løkke over alle tallene og summerer opp:</p>
+<pre><code class="hljs ruby"><span class="hljs-comment"># sum of all numbers below x</span>
+<span class="hljs-comment"># that is a multiple of 3 or 5</span>
+<span class="hljs-built_in">proc</span> euler1(<span class="hljs-symbol">x:</span> int): int =
+  result = <span class="hljs-number">0</span>
+  <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>.. &lt; <span class="hljs-symbol">x:</span>
+    <span class="hljs-keyword">if</span> (i %= <span class="hljs-number">3</span>) <span class="hljs-keyword">or</span> (i %= <span class="hljs-number">5</span>):
+      result += i</code></pre><p>Legg merke til at vi har <em>type inference</em> lokalt i prosedyren, men at vi må spesifisere typer i selve signaturen. <code>result</code> er en magisk variabel alle prosedyrer har, og med mindre man returnerer noe annet så er den den som returneres til slutt.</p>
+<p>For å beregne og skrive ut svaret kan jeg nå skrive:</p>
+<pre><code class="hljs ruby">echo <span class="hljs-string">&quot;Svaret er &quot;</span>, euler1(<span class="hljs-number">1000</span>)</code></pre><h3>Nimrod har iteratorer</h3>
+<p>I neste løsning lager jeg en iterator som produserer alle tallene som er multipler av 3 eller 5. Dette er noe man finner i flere språk. I F# bruker man for eksempel <em>sequence expressions</em>, og i C# kan man lage en metode som returnerer en <code>IEnumerable</code> og bruke <code>yield return</code> for å returnere ett og ett element av gangen. Et annet navn som ofte betyr det samme er <em>generators</em>.</p>
+<pre><code class="hljs ruby">iterator eulerUpto(<span class="hljs-symbol">n:</span> int): int =
+  var i = <span class="hljs-number">0</span>
+  <span class="hljs-keyword">while</span> i &lt;= <span class="hljs-symbol">n:</span>
+    <span class="hljs-keyword">if</span> (i %= <span class="hljs-number">3</span>) <span class="hljs-keyword">or</span> (i %= <span class="hljs-number">5</span>):
+      <span class="hljs-keyword">yield</span> i
+    inc i</code></pre><p>Nå kan jeg lage en loop som konsumerer iteratoren, og summere opp tallene på denne måten:</p>
+<pre><code class="hljs ruby">var result = <span class="hljs-number">0</span>
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> eulerUpto(<span class="hljs-number">999</span>):
+  result += i
+
+echo <span class="hljs-string">&quot;Svaret er &quot;</span>, result</code></pre><h3>En funksjonell løsning med sekvenser</h3>
+<p>Jeg foretrekker funksjonelle løsninger, og Nimrod støtter dette også:</p>
+<pre><code class="hljs ruby">import sequtils
+
+let
+  eulerSeq = toSeq(eulerUpto(<span class="hljs-number">999</span>))
+  sum = foldl(eulerSeq, a + b)
+
+<span class="hljs-string">&quot;Svaret er &quot;</span>.echo sum</code></pre><p>En liten detalj å legge merke til som jeg synes er spennende: I det siste eksempelet bruker jeg <code>echo</code> på en ny måte - som om det var en metode på et streng-objekt. Men det er akkurat den samme prosedyren. Slik jeg forstår det bruker Nimrod dot-operatoren til å sende verdien på venstresiden som første argument til prosedyren som kalles. Dette gjør at man står friere i forhold til hvordan man strukturerer koden, og man kan kjede sammen prosedyrekall på en enkel måte.</p>
+<p>For ordens skyld - Nimrod har en <code>sum</code>-prosedyre også. Den finner vi i math-modulen:</p>
+<pre><code class="hljs ruby">import math
+let sum2 = eulerSeq.sum
+<span class="hljs-string">&quot;Svaret er &quot;</span>.echo sum2</code></pre><h2>Les mer</h2>
+<p>Det kommer flere poster om Nimrod på Programmeringsbloggen, men mens du venter kan du ta en titt på følgende:</p>
+<ul>
+<li>Video/foredrag: <a href="http://www.infoq.com/presentations/nimrod">Nimrod: A New Approach to Metaprogramming</a> (jeg tror det er fra StrangeLoop 2013)</li>
+<li>Dr.Dobb&#39;s: <a href="http://www.drdobbs.com/open-source/nimrod-a-new-systems-programming-languag/240165321">Nimrod: A New Systems Programming Language</a></li>
+<li>Lambda the Ultimate: <a href="http://lambda-the-ultimate.org/node/4749">Nimrod: A new statically typed, compiled programming language which supports metaprogramming</a> </li>
+<li>Og selvsagt <a href="http://nimrod-lang.org/">nimrod-lang.org</a></li>
+</ul>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

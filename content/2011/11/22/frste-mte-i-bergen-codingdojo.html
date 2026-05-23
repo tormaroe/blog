@@ -1,0 +1,161 @@
+---
+title: Første møte i Bergen CodingDojo
+link: http://blog.kjempekjekt.com/2011/11/22/frste-mte-i-bergen-codingdojo/
+layout: post
+date: 2011-11-22 22:49:14Z
+tags:
+  - CodingDojo
+---
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="CIMG0911" border="0" alt="CIMG0911" src="/uploads/2011/11/CIMG0911.jpg" width="504" height="358"></p> <p>I kveld har jeg vært på det aller første møtet i <a href="http://www.meetup.com/BergenCodingDojo/">Bergen CodingDojo</a>. 17 utviklere med ønske om å trene og bli bedre møttes i Miles' lokaler under Puddefjordsbroen. Stemningen var god, og det ble en veldig kjekk kveld.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="CIMG0914" border="0" alt="CIMG0914" src="/uploads/2011/11/CIMG0914.jpg" width="504" height="305"></p> <p>Oppgaven, som skulle gjøres med TDD, var å lage en løsning som analyserte minesweeper-brett – <a href="http://acm.uva.es/p/v101/10189.html">oppgaveteksten tilgjengelig her</a>. Vi jobbet i par, men siden vi var <em>odde</em> utviklere endte jeg opp som tredjeperson på ett av parene. Å sitte tre stykker forran en liten laptop er ikke så lett, så det gikk ikke lang tid før jeg begynte på en løsning for meg selv.</p> <p>Til gjengjeld ble jeg først ferdig – tre kvarter før neste par. Ikke at det er noe poeng i seg selv, men det er jo kjekt å vinne! ;D</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="CIMG0913" border="0" alt="CIMG0913" src="/uploads/2011/11/CIMG0913.jpg" width="500" height="320"></p> <p>Grunnen til at jeg var så rask er nok at jeg har gjort en del lignende oppgaver før; jeg begynner etterhvert å få ganske mye TDD-erfaring. Det jeg fortsatt synes er vanskelig er å bruke veldig små steg, og det klarte jeg egentlig ikke denne gangen heller.</p> <p>I det siste har jeg derimot forsøkt <strong>å fokusere på å angripe hjertet av problemet direkte</strong>, og det følte jeg gikk veldig bra på denne oppgaven. Jeg løste hovedproblemet med bare én test, og uten å opprette særlig med abstraksjoner – dem la jeg til etterhvert.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="CIMG0912" border="0" alt="CIMG0912" src="/uploads/2011/11/CIMG0912.jpg" width="504" height="301"></p> <p>Flertallet var forresten Java-utviklere. De fleste andre brukte C#, mens jeg og ett av parene brukte Ruby. Nedenfor ser du løsningen min.</p> <div style="margin-bottom: 16px"><tt><b>minesweeper.rb</b></tt><br><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Comment"># Helper function for building arrays</span>
+<span class="lnr"> 2 </span><span class="PreProc">def</span> <span class="Function">build_array</span>; a = []; <span class="Keyword">yield</span> a; a; <span class="PreProc">end</span>
+<span class="lnr"> 3 </span>
+<span class="lnr"> 4 </span><span class="Comment"># Module to parse, solve and output minesweeper data</span>
+<span class="lnr"> 5 </span><span class="Keyword">module</span> <span class="Type">MineIO</span>
+<span class="lnr"> 6 </span>  <span class="PreProc">def</span> <span class="Constant">self</span>.<span class="Function">solve_all</span> input
+<span class="lnr"> 7 </span>    games = <span class="Constant">self</span>.parse_all input
+<span class="lnr"> 8 </span>    games.each {|<span class="Identifier">g</span>| g.solve }
+<span class="lnr"> 9 </span>    <span class="Constant">self</span>.to_s games
+<span class="lnr">10 </span>  <span class="PreProc">end</span>
+<span class="lnr">11 </span>  <span class="PreProc">def</span> <span class="Constant">self</span>.<span class="Function">parse_all</span> input
+<span class="lnr">12 </span>    lines = input.split <span class="rubyRegexpDelimiter">/</span><span class="Special">\n</span><span class="rubyRegexpDelimiter">/</span>
+<span class="lnr">13 </span>    build_array <span class="rubyControl">do</span> |<span class="Identifier">games</span>|
+<span class="lnr">14 </span>      <span class="Statement">until</span> lines.first == <span class="rubyStringDelimiter">"</span><span class="String">0 0</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">15 </span>        games &lt;&lt; <span class="Type">Minesweeper</span>.new(<span class="Constant">self</span>.parse_field(lines))
+<span class="lnr">16 </span>      <span class="Statement">end</span>
+<span class="lnr">17 </span>    <span class="rubyControl">end</span>
+<span class="lnr">18 </span>  <span class="PreProc">end</span>
+<span class="lnr">19 </span>  <span class="PreProc">def</span> <span class="Constant">self</span>.<span class="Function">parse_field</span> input
+<span class="lnr">20 </span>    build_array <span class="rubyControl">do</span> |<span class="Identifier">out</span>|
+<span class="lnr">21 </span>      n, m = input.shift.split.map {|<span class="Identifier">x</span>| x.to_i }
+<span class="lnr">22 </span>      n.times { out &lt;&lt; input.shift.split(<span class="rubyStringDelimiter">""</span>) }
+<span class="lnr">23 </span>    <span class="rubyControl">end</span>
+<span class="lnr">24 </span>  <span class="PreProc">end</span>
+<span class="lnr">25 </span>  <span class="PreProc">def</span> <span class="Constant">self</span>.<span class="Function">to_s</span> games <span class="Comment"># Creates the output format</span>
+<span class="lnr">26 </span>    index = <span class="Number">0</span>
+<span class="lnr">27 </span>    (games.inject(<span class="rubyStringDelimiter">""</span>) <span class="rubyControl">do</span> |<span class="Identifier">memo</span>, <span class="Identifier">game</span>|
+<span class="lnr">28 </span>      <span class="rubyStringDelimiter">"</span><span class="rubyInterpolationDelimiter">#{</span>memo<span class="rubyInterpolationDelimiter">}</span><span class="String">Field #</span><span class="rubyInterpolationDelimiter">#{</span>index += <span class="Number">1</span><span class="rubyInterpolationDelimiter">}</span><span class="String">:</span><span class="Special">\n</span><span class="rubyInterpolationDelimiter">#{</span>game.output<span class="rubyInterpolationDelimiter">}</span><span class="Special">\n</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">29 </span>    <span class="rubyControl">end</span>).chop
+<span class="lnr">30 </span>  <span class="PreProc">end</span>
+<span class="lnr">31 </span><span class="Keyword">end</span>
+<span class="lnr">32 </span>
+<span class="lnr">33 </span><span class="Comment"># Represents and solves a single minesweeper field</span>
+<span class="lnr">34 </span><span class="Keyword">class</span> <span class="Type">Minesweeper</span>
+<span class="lnr">35 </span>  <span class="PreProc">def</span> <span class="Function">initialize</span> field
+<span class="lnr">36 </span>    <span class="Identifier">@field</span> = field
+<span class="lnr">37 </span>  <span class="PreProc">end</span>
+<span class="lnr">38 </span>  <span class="PreProc">def</span> <span class="Function">solve</span>
+<span class="lnr">39 </span>    (<span class="Number">0</span>...<span class="Identifier">@field</span>.size).each <span class="rubyControl">do</span> |<span class="Identifier">y</span>|
+<span class="lnr">40 </span>      (<span class="Number">0</span>...<span class="Identifier">@field</span>[<span class="Number">0</span>].size).each <span class="rubyControl">do</span> |<span class="Identifier">x</span>|
+<span class="lnr">41 </span>        <span class="rubyControl">next</span> <span class="Conditional">if</span> <span class="Identifier">@field</span>[y][x] == <span class="rubyStringDelimiter">"</span><span class="String">*</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">42 </span>        <span class="Identifier">@field</span>[y][x] = <span class="Type">Cell</span>.new(x, y, <span class="Identifier">@field</span>).sum
+<span class="lnr">43 </span>      <span class="rubyControl">end</span>
+<span class="lnr">44 </span>    <span class="rubyControl">end</span>
+<span class="lnr">45 </span>  <span class="PreProc">end</span>
+<span class="lnr">46 </span>  <span class="PreProc">def</span> <span class="Function">output</span>
+<span class="lnr">47 </span>    out = <span class="rubyStringDelimiter">""</span>
+<span class="lnr">48 </span>    <span class="Identifier">@field</span>.each <span class="rubyControl">do</span> |<span class="Identifier">row</span>|
+<span class="lnr">49 </span>      row.each <span class="rubyControl">do</span> |<span class="Identifier">cell</span>|
+<span class="lnr">50 </span>        out += cell.to_s
+<span class="lnr">51 </span>      <span class="rubyControl">end</span>
+<span class="lnr">52 </span>      out += <span class="rubyStringDelimiter">"</span><span class="Special">\n</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">53 </span>    <span class="rubyControl">end</span>
+<span class="lnr">54 </span>    out
+<span class="lnr">55 </span>  <span class="PreProc">end</span>
+<span class="lnr">56 </span>
+<span class="lnr">57 </span>  <span class="Comment"># Class used to analyse a position in the game field</span>
+<span class="lnr">58 </span>  <span class="Keyword">class</span> <span class="Type">Cell</span>
+<span class="lnr">59 </span>    <span class="PreProc">def</span> <span class="Function">initialize</span> x, y, field
+<span class="lnr">60 </span>      <span class="Identifier">@x</span>, <span class="Identifier">@y</span>, <span class="Identifier">@field</span> = x, y, field
+<span class="lnr">61 </span>    <span class="PreProc">end</span>
+<span class="lnr">62 </span>    <span class="PreProc">def</span> <span class="Function">sum</span>
+<span class="lnr">63 </span>      north + south + east + west +
+<span class="lnr">64 </span>        north_west + north_east + south_east + south_west
+<span class="lnr">65 </span>    <span class="PreProc">end</span>
+<span class="lnr">66 </span>    <span class="PreProc">def</span> <span class="Function">north</span>;      get_neighbour(<span class="Identifier">@x</span>, <span class="Identifier">@y</span>-<span class="Number">1</span>); <span class="PreProc">end</span>
+<span class="lnr">67 </span>    <span class="PreProc">def</span> <span class="Function">south</span>;      get_neighbour(<span class="Identifier">@x</span>, <span class="Identifier">@y</span>+<span class="Number">1</span>); <span class="PreProc">end</span>
+<span class="lnr">68 </span>    <span class="PreProc">def</span> <span class="Function">east</span>;       get_neighbour(<span class="Identifier">@x</span>+<span class="Number">1</span>, <span class="Identifier">@y</span>); <span class="PreProc">end</span>
+<span class="lnr">69 </span>    <span class="PreProc">def</span> <span class="Function">west</span>;       get_neighbour(<span class="Identifier">@x</span>-<span class="Number">1</span>, <span class="Identifier">@y</span>); <span class="PreProc">end</span>
+<span class="lnr">70 </span>    <span class="PreProc">def</span> <span class="Function">north_west</span>; get_neighbour(<span class="Identifier">@x</span>-<span class="Number">1</span>, <span class="Identifier">@y</span>-<span class="Number">1</span>); <span class="PreProc">end</span>
+<span class="lnr">71 </span>    <span class="PreProc">def</span> <span class="Function">north_east</span>; get_neighbour(<span class="Identifier">@x</span>+<span class="Number">1</span>, <span class="Identifier">@y</span>-<span class="Number">1</span>); <span class="PreProc">end</span>
+<span class="lnr">72 </span>    <span class="PreProc">def</span> <span class="Function">south_east</span>; get_neighbour(<span class="Identifier">@x</span>+<span class="Number">1</span>, <span class="Identifier">@y</span>+<span class="Number">1</span>); <span class="PreProc">end</span>
+<span class="lnr">73 </span>    <span class="PreProc">def</span> <span class="Function">south_west</span>; get_neighbour(<span class="Identifier">@x</span>-<span class="Number">1</span>, <span class="Identifier">@y</span>+<span class="Number">1</span>); <span class="PreProc">end</span>
+<span class="lnr">74 </span>    <span class="PreProc">def</span> <span class="Function">get_neighbour</span> x, y
+<span class="lnr">75 </span>      <span class="rubyControl">return</span> <span class="Number">0</span> <span class="Conditional">unless</span> x &gt;= <span class="Number">0</span> <span class="rubyControl">and</span> y &gt;= <span class="Number">0</span> <span class="rubyControl">and</span> <span class="Identifier">@field</span>[y] <span class="rubyControl">and</span> <span class="Identifier">@field</span>[y][x]
+<span class="lnr">76 </span>      <span class="Conditional">if</span> <span class="Identifier">@field</span>[y][x] == <span class="rubyStringDelimiter">"</span><span class="String">*</span><span class="rubyStringDelimiter">"</span> <span class="Conditional">then</span> <span class="Number">1</span> <span class="Conditional">else</span> <span class="Number">0</span> <span class="Conditional">end</span>
+<span class="lnr">77 </span>    <span class="PreProc">end</span>
+<span class="lnr">78 </span>  <span class="Keyword">end</span>
+<span class="lnr">79 </span><span class="Keyword">end</span>
+<span class="lnr">80 </span>
+<span class="lnr">81 </span><span class="Comment"># Parse and output ananlysis if file is run directly</span>
+<span class="lnr">82 </span><span class="Conditional">if</span> <span class="Identifier">$0</span> == <span class="Constant">__FILE__</span>
+<span class="lnr">83 </span>  puts <span class="Type">MineIO</span>.solve_all(<span class="Type">File</span>.readlines(<span class="Identifier">ARGV</span>[<span class="Number">0</span>]).join)
+<span class="lnr">84 </span><span class="Conditional">end</span>
+</pre></div>
+<p>Jeg er spesielt fornøyd med Cell-klassen. Den gjør én ting, og den gjør det godt!</p>
+<div style="margin-bottom: 16px"><tt><b>test_minesweeper.rb</b></tt><br><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="PreProc">require</span> <span class="rubyStringDelimiter">"</span><span class="String">./minesweeper</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 2 </span><span class="PreProc">require</span> <span class="rubyStringDelimiter">"</span><span class="String">test/unit</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr"> 3 </span>
+<span class="lnr"> 4 </span><span class="Keyword">class</span> <span class="Type">Spec</span> &lt; <span class="Type">Test</span>::<span class="Type">Unit</span>::<span class="Type">TestCase</span>
+<span class="lnr"> 5 </span>  <span class="PreProc">def</span> <span class="Function">setup</span>
+<span class="lnr"> 6 </span>    <span class="Identifier">@field</span> = [[<span class="rubyStringDelimiter">"</span><span class="String">*</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">*</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>],
+<span class="lnr"> 7 </span>              [<span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>],
+<span class="lnr"> 8 </span>              [<span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">*</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>, <span class="rubyStringDelimiter">"</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>]]
+<span class="lnr"> 9 </span>    <span class="Identifier">@m</span> = <span class="Type">Minesweeper</span>.new <span class="Identifier">@field</span>
+<span class="lnr">10 </span>  <span class="PreProc">end</span>
+<span class="lnr">11 </span>  <span class="PreProc">def</span> <span class="Function">test_individual_cells</span>
+<span class="lnr">12 </span>    <span class="Identifier">@m</span>.solve
+<span class="lnr">13 </span>    assert_equal <span class="Number">1</span>,   <span class="Identifier">@field</span>[<span class="Number">0</span>][<span class="Number">2</span>]
+<span class="lnr">14 </span>    assert_equal <span class="rubyStringDelimiter">"</span><span class="String">*</span><span class="rubyStringDelimiter">"</span>, <span class="Identifier">@field</span>[<span class="Number">0</span>][<span class="Number">1</span>]
+<span class="lnr">15 </span>    assert_equal <span class="Number">2</span>,   <span class="Identifier">@field</span>[<span class="Number">1</span>][<span class="Number">2</span>]
+<span class="lnr">16 </span>    assert_equal <span class="Number">0</span>,   <span class="Identifier">@field</span>[<span class="Number">1</span>][<span class="Number">3</span>]
+<span class="lnr">17 </span>    assert_equal <span class="Number">3</span>,   <span class="Identifier">@field</span>[<span class="Number">1</span>][<span class="Number">1</span>]
+<span class="lnr">18 </span>  <span class="PreProc">end</span>
+<span class="lnr">19 </span>  <span class="PreProc">def</span> <span class="Function">test_output</span>
+<span class="lnr">20 </span>    expected = &lt;&lt;<span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">21 </span><span class="String">**100</span>
+<span class="lnr">22 </span><span class="String">33200</span>
+<span class="lnr">23 </span><span class="String">1*100</span>
+<span class="lnr">24 </span><span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">25 </span>    <span class="Identifier">@m</span>.solve
+<span class="lnr">26 </span>    assert_equal expected, <span class="Identifier">@m</span>.output
+<span class="lnr">27 </span>  <span class="PreProc">end</span>
+<span class="lnr">28 </span>  <span class="PreProc">def</span> <span class="Function">test_parse</span>
+<span class="lnr">29 </span>    input = &lt;&lt;<span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">30 </span><span class="String">3 5</span>
+<span class="lnr">31 </span><span class="String">**...</span>
+<span class="lnr">32 </span><span class="String">.....</span>
+<span class="lnr">33 </span><span class="String">.*...</span>
+<span class="lnr">34 </span><span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">35 </span>    assert_equal <span class="Identifier">@field</span>, <span class="Type">MineIO</span>.parse_field(input.split(<span class="rubyRegexpDelimiter">/</span><span class="Special">\n</span><span class="rubyRegexpDelimiter">/</span>))
+<span class="lnr">36 </span>  <span class="PreProc">end</span>
+<span class="lnr">37 </span>  <span class="PreProc">def</span> <span class="Function">test_complete</span>
+<span class="lnr">38 </span>    input = &lt;&lt;<span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">39 </span><span class="String">4 4</span>
+<span class="lnr">40 </span><span class="String">*...</span>
+<span class="lnr">41 </span><span class="String">....</span>
+<span class="lnr">42 </span><span class="String">.*..</span>
+<span class="lnr">43 </span><span class="String">....</span>
+<span class="lnr">44 </span><span class="String">3 5</span>
+<span class="lnr">45 </span><span class="String">**...</span>
+<span class="lnr">46 </span><span class="String">.....</span>
+<span class="lnr">47 </span><span class="String">.*...</span>
+<span class="lnr">48 </span><span class="String">0 0</span>
+<span class="lnr">49 </span><span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">50 </span>    output = &lt;&lt;<span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">51 </span><span class="String">Field #1:</span>
+<span class="lnr">52 </span><span class="String">*100</span>
+<span class="lnr">53 </span><span class="String">2210</span>
+<span class="lnr">54 </span><span class="String">1*10</span>
+<span class="lnr">55 </span><span class="String">1110</span>
+<span class="lnr">56 </span>
+<span class="lnr">57 </span><span class="String">Field #2:</span>
+<span class="lnr">58 </span><span class="String">**100</span>
+<span class="lnr">59 </span><span class="String">33200</span>
+<span class="lnr">60 </span><span class="String">1*100</span>
+<span class="lnr">61 </span><span class="rubyStringDelimiter">EOF</span>
+<span class="lnr">62 </span>    assert_equal output, <span class="Type">MineIO</span>.solve_all(input)
+<span class="lnr">63 </span>  <span class="PreProc">end</span>
+<span class="lnr">64 </span><span class="Keyword">end</span>
+</pre></div>
+<p>Til slutt et bilde av min kjære, gamle laptop. Drivstoffet står til høyre.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="CIMG0915" border="0" alt="CIMG0915" src="/uploads/2011/11/CIMG0915.jpg" width="504" height="378"></p>

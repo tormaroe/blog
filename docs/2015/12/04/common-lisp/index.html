@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Common Lisp,Lisp">
+
+    <title>Common Lisp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Common Lisp</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 4. desember 2015</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          </p>
+          <p>Lisp er en familie med programmeringsspråk, først skapt av John McCarthy rundt 1958. Lisp ble raskt populært i forskningsmiljøene, spesielt i de såkalte kunstig intelligens-laboratoriene, og ulike implementasjoner spredte seg fra universitet til universitet. </p>
+<p>På 80 og 90-tallet forsøkte man å forene Lisp-miljøene om én felles standard, og denne standarden fikk navnet <strong>Common Lisp</strong>. Det er skrevet og sagt mye om både hvor fantastisk og hvor anderledes Lisp er - <a href="/2010/07/08/er-lisp-bedre-enn-andre-programmeringssprket/">her på bloggen</a>, og <a href="http://www.paulgraham.com/avg.html">andre steder</a> - så jeg skal begrense meg denne gangen. Denne artikkelen skal i stedet hjelpe deg i gang med det essensielle, og gi deg noen viktige råd og tips på veien.</p>
+<img src="/uploads/2015/12/fb_banner.png" alt="Alien technology" />
+
+<p>##Men er ikke Common Lisp gammeldags?</p>
+<p>Du tenker kanskje at noe så gammelt som Lisp ikke kan være like bra som de populære, nye språkene. Er det ikke Node.js alle skal utvikle i nå da? Er det i det hele tatt fortsatt noen som bruker Common Lisp? </p>
+<p>Ja, i høyeste grad! Lisp havner lett i skyggen av alt som er &quot;poppis&quot;, men du finner språket i bruk de mest utrolige steder. Ta for eksempel dette sitatet fra <a href="https://twitter.com/lukego">Luke Gorrie</a>:</p>
+<blockquote>
+<p>I love hanging out with Lisp hackers: I find that we’re an unusually diverse community. How often do you attend a small conference where attendees are building nuclear defense systems, running intensive care wards, designing aeroplane engines, analysing Lute tablature, developing cancer drugs, writing FIFA’s legal contracts, and designing their own microchips?</p>
+</blockquote>
+<p>##Mange implementasjoner</p>
+<p>Common Lisp er som sagt en standard, og det finnes mange implementasjoner. Dette er uvandt, og kan være forvirrende og uoversiktelig. Jeg har erfaring med tre ulike implementasjoner, så la meg fortelle litt om dem.</p>
+<p><strong><a href="http://www.clisp.org/">GNU CLISP</a></strong> var den første implementasjonen jeg prøvde. Den kjører blant annet på Linux, Mac OS X og Windows, og kan distribueres under GNU GPL. Min mening om CLISP er ikke kvalifisert, men jeg har inntrykk av at det er en fin nybegynner-implementasjon, og ikke den du velger for profesjonell utvikling. Den kompilerer til bytecode, ikke native, så den er ikke like rask som enkelte andre.</p>
+<p><strong><a href="http://www.sbcl.org/">Steel Bank Common Lisp</a> (SBCL)</strong> er den implementasjonen jeg bruker nå for tiden. Den er open source og skryter av <strong>høy ytelse</strong>. Den kjører best på Linux, mens Windows-støtten er eksperimentell (jeg har sålangt ikke støtt på noe problem med det).</p>
+<p><strong><a href="http://ccl.clozure.com/">Clozure Common Lisp</a> (CCL)</strong> er muligens et bedre valg på Windows. Kompilatoren er meget rask, og støtten for interop med C-bibloteker er god. Den har også støtte for å produsere selvstendige executables - noe jeg blant annet benytter meg av når jeg skal deploye en Common Lisp-løsning til Heroku (mer om det i en kommende post). Jeg har hørt at mange bruker SBCL i produksjon, men CCL til utvikling (pga. raskere kompilering).</p>
+<p><a href="https://common-lisp.net/~dlw/LispSurvey.html">Se her for en grundig gjennomgang av mange implementasjoner</a>.</p>
+<p>##REPL og Image</p>
+<p>La oss si at du velger å installere SBCL. Hva møter deg? Når du kjører SBCL fra kommandolinjen så kjører du opp et &quot;image&quot; - en <em>minnedump</em> - av et kjørende Common Lisp-miljø. Dette imaget har blitt gradvis bygget opp i løpet av en 20 års tid. Om du så velger å laste noe Lisp-kode så utvider det dette imaget.</p>
+<p>Nå kan du velge; du kan bare avslutte SBCL, og neste gang du starter opp får det det samme imaget som du startet med første gang. Eller du kan lagre et nytt image som inneholder de endringene du har gjort. På denne måter utvider du din SBCL-installasjon. Eller du kan velge å definere en funksjon som &quot;main&quot;, og så lagre imaget som et eksekverbart program.</p>
+<p>Det vanligste er nok å ikke lagre noen endringer, og i stedet alltid laste koden din fra filer.</p>
+<p>Når SBCL har startet kommer du inn i det vi kaller en <strong>REPL</strong> (Read-Eval-Print-Loop). Her kan du skrive kode som eksekveres direkte - <em>interaktiv programmering</em>. Det er vanlig å teste ting der, for så å lagre den ferdige koden i kildekodefiler.</p>
+<p>Den vanligste editore blant Lispere er nok <strong><a href="https://www.gnu.org/software/emacs/">Emacs</a></strong>. Når de jobber har de et Lisp image kjørende i bakgrunnen, og Emacs lar deg sende kodefragmenter til imaget for evaluering. Det er en noe bratt læringskurve for å komme i gang med dette, og det er ikke noe jeg bruker for tiden; jeg klarer meg med enten Vim eller Sublime Text, og en REPL ved siden av.</p>
+<p>##Quicklisp</p>
+<p><strong><a href="https://www.quicklisp.org/beta/">Quicklisp</a></strong> er navnet på verktøyet Lispere bruker for å laste ned og installere tredjeparts bibloteker, og tilsvarer for eksempel npm for node eller NuGet for C#.</p>
+<p>For å ta det i bruk laster du ned en lisp-fil som du loader inn i Common Lisp. </p>
+<pre><code class="hljs"><span class="hljs-variable">$ </span>curl -O <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/beta.quicklisp.org/quicklisp</span>.lisp
+<span class="hljs-variable">$ </span>sbcl --load quicklisp.lisp</code></pre><p>Når SBCL har startet evaluerer du så:</p>
+<pre><code class="hljs">* (<span class="hljs-name">quicklisp-quickstart</span><span class="hljs-symbol">:install</span>)</code></pre><p>.. og du har nå det du trenger. Til slutt kan du evaluere:</p>
+<pre><code class="hljs">* (ql:<span class="hljs-keyword">add</span>-to-<span class="hljs-keyword">init</span>-<span class="hljs-keyword">file</span>)</code></pre><p>.. som gjør at du alltid har tilgang til quicklisp når du starter SBCL. Om du nå for eksempel vil laste ned og ta i bruk bibloteket <a href="http://quickdocs.org/cl-redis/">cl-redis</a> - for å bruke Redis-databaser med Common Lisp - eksekverer du bare:</p>
+<pre><code class="hljs">* (<span class="hljs-symbol">ql:</span>quickload <span class="hljs-symbol">:cl-redis</span>)</code></pre><p>Jeg kan nå koble meg opp mot min lokale Redis-server og teste litt:</p>
+<pre><code class="hljs">* (<span class="hljs-name">redis</span><span class="hljs-symbol">:connect</span> <span class="hljs-symbol">:port</span> <span class="hljs-number">7777</span>)
+* (<span class="hljs-name">red</span><span class="hljs-symbol">:ping</span>)
+
+<span class="hljs-string">&quot;PONG&quot;</span></code></pre><p>##Errors</p>
+<p>En annen ting som må nevnes er hvordan exceptions fungerer i Common Lisp - for også det er ganske ulikt hva du er vandt til fra mere mainstream språk. Om noe går galt når du evaluerer noe kode så stopper alt opp, du får endel info om hva som gikk galt, og noen valgmuligheter (restarts). </p>
+<p>La oss for eksempel se hva som skjer om jeg deler et tall på 0:</p>
+<pre><code class="hljs">* (/ <span class="hljs-number">1</span> <span class="hljs-number">0</span>)
+
+debugger invoked <span class="hljs-keyword">on</span> a DIVISION-<span class="hljs-keyword">BY</span>-ZERO <span class="hljs-keyword">in</span> thread
+#&lt;THREAD &quot;main thread&quot; RUNNING {<span class="hljs-number">23</span>F744D9}&gt;:
+  arithmetic error DIVISION-<span class="hljs-keyword">BY</span>-ZERO signalled
+Operation was /, operands (<span class="hljs-number">1</span> <span class="hljs-number">0</span>).
+
+<span class="hljs-keyword">Type</span> HELP <span class="hljs-keyword">for</span> debugger help, <span class="hljs-keyword">or</span> (SB-EXT:<span class="hljs-keyword">EXIT</span>) <span class="hljs-keyword">to</span> <span class="hljs-keyword">exit</span> <span class="hljs-keyword">from</span> SBCL.
+
+restarts (invokable <span class="hljs-keyword">by</span> number <span class="hljs-keyword">or</span> <span class="hljs-keyword">by</span> possibly-abbreviated <span class="hljs-type">name</span>):
+  <span class="hljs-number">0</span>: [<span class="hljs-keyword">ABORT</span>] <span class="hljs-keyword">Exit</span> debugger, <span class="hljs-keyword">returning</span> <span class="hljs-keyword">to</span> top <span class="hljs-keyword">level</span>.</code></pre><p>I dette tilfellet fikk vi bare ett valg: Å avbryte den ulovelige delingen på 0.</p>
+<p>Til å begynne med vil du nok ofte bli kastet inn i denne debuggeren. Det er ikke noe å frykte, det er bare en naturlig del av det interaktive miljøet. <a href="http://www.gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html">Mer om dette her.</a></p>
+<p>##Kodeorganisering</p>
+<p>Om du bare skal gjøre noe enkelt holder det å putte all koden din i én fil. Men om man skal være litt mere strukturert vil man definere en <strong>pakke</strong>. En pakke er i bunn og grunn et navnerom (namespace) - et objekt som inneholder ulike symboler (variabler, klasser, funksjoner, ..).</p>
+<p>En vanlig konvensjon er at man har én pakke pr fil, og filen starter typisk med noe sånn som:</p>
+<pre><code class="hljs">(<span class="hljs-keyword">in</span>-<span class="hljs-keyword">package</span> <span class="hljs-title">:cl-user)</span>
+(defpackage my-<span class="hljs-keyword">package</span>-name
+  (:<span class="hljs-keyword">use</span> cl <span class="hljs-keyword">some</span>-other-<span class="hljs-keyword">package</span>)
+  (:export #:<span class="hljs-keyword">some</span>-<span class="hljs-keyword">function</span>))
+(<span class="hljs-keyword">in</span>-<span class="hljs-keyword">package</span> <span class="hljs-title">:my-<span class="hljs-keyword">package</span>-name) </span></code></pre><p>Den første linjen sørger for at vi befinner oss i pakken <code>cl-user</code>, som er default. Så definerer vi en ny pakke som vi i dette tilfellet kaller <code>my-package-name</code>. Vi deklarerer at vi internt i vår pakke skal bruke to andre pakker, nemlig <code>cl</code> (som er base-pakken i Common Lisp) og <code>some-other-package</code>. Vi deklarerer også at vi fra vår pakke skal eksportere et symbol <code>some-function</code>.</p>
+<p>Deretter sier vi at vi er i den nye pakken vi har definert, og så kan vi begynne å implementere innholdet.., som da blant annet vil inkludere <code>some-function</code>.</p>
+<p>Og så har vi noe som kalles <strong>systemer</strong>. For å definere et system bruker vi som regel et tool som ofte følger med Common Lisp og som heter **<a href="https://common-lisp.net/project/asdf/">ASDF</a> (Another System Definition Facility). </p>
+<p>Det du typisk gjør er å lage en egen fil som bruker ASDF til å definere hvilke filer/pakker systemet ditt består av, hvilke avhengigheter det har, og hvordan det skal bygges.</p>
+<p>Om vi bruker cl-redis som eksempel igjen, så kan vi ta en titt på det biblotekets systemdefinisjon, fra filen <code>cl-redis.asd</code>:</p>
+<pre><code class="hljs">(<span class="hljs-name">in-package</span> <span class="hljs-symbol">:asdf</span>)
+
+(<span class="hljs-name">defsystem</span> #<span class="hljs-symbol">:cl-redis</span>
+  <span class="hljs-symbol">:version</span> <span class="hljs-string">&quot;2.3.8&quot;</span>
+  <span class="hljs-symbol">:author</span> <span class="hljs-string">&quot;Vsevolod Dyomkin &lt;vseloved@gmail.com&gt;, Oleksandr Manzyuk &lt;manzyuk@gmail.com&gt;&quot;</span>
+  <span class="hljs-symbol">:maintainer</span> <span class="hljs-string">&quot;Vsevolod Dyomkin &lt;vseloved@gmail.com&gt;&quot;</span>
+  <span class="hljs-symbol">:licence</span> <span class="hljs-string">&quot;MIT&quot;</span>
+  <span class="hljs-symbol">:description</span> <span class="hljs-string">&quot;A fast and robust Common Lisp client for Redis&quot;</span>
+  <span class="hljs-symbol">:depends-on</span> (<span class="hljs-name">#</span><span class="hljs-symbol">:rutils</span> #<span class="hljs-symbol">:cl-ppcre</span> #<span class="hljs-symbol">:usocket</span> #<span class="hljs-symbol">:flexi-streams</span> #<span class="hljs-symbol">:babel</span>)
+  <span class="hljs-symbol">:serial</span> <span class="hljs-literal">t</span>
+  <span class="hljs-symbol">:components</span> ((<span class="hljs-symbol">:file</span> <span class="hljs-string">&quot;package&quot;</span>)
+               (<span class="hljs-symbol">:file</span> <span class="hljs-string">&quot;float&quot;</span>)
+               (<span class="hljs-symbol">:file</span> <span class="hljs-string">&quot;connection&quot;</span>)
+               (<span class="hljs-symbol">:file</span> <span class="hljs-string">&quot;redis&quot;</span>)
+               (<span class="hljs-symbol">:file</span> <span class="hljs-string">&quot;commands&quot;</span>)))</code></pre><p>Mer info om dette i <a href="http://weitz.de/packages.html">Packages, systems, modules, libraries - WTF?</a></p>
+<p>##Læringsressurser</p>
+<p>Den aller beste nybegynnerressursen for deg som ønsker å lære Common Lisp er kanskje boken <em><a href="http://www.gigamonkeys.com/book/">Practical Common Lisp</a></em>, som er tilgjengelig online.</p>
+<p>Ellers vil du også få behov for å lese API-dokumentasjonen på <a href="http://www.lispworks.com/documentation/HyperSpec/Front/index.htm">The Common Lisp HyperSpec</a>. Den er ikke så enkel å finne frem i, og dokumentasjonen forventer at du allerede har endel kunnskap. Da er det i starten kanskje enklere å forholde seg til en ressurs som <a href="http://www.jtra.cz/stuff/lisp/sclr/index.html">Simplified Common Lisp reference</a>.</p>
+<p>For å finne informasjon om tredjeparts biblotek bruker du <a href="http://quickdocs.org/">quickdocs.org</a>, og <a href="http://www.cliki.net/">CLiki</a> er en wiki med mye nyttig (men også endel utdatert) informasjon.</p>
+<p>Det var det jeg hadde for i dag. Jeg håper disse postene om Common Lisp gjør deg mer interessert i språket, og kanskje gir deg lyst til å forsøke litt selv. For selv om det er litt &quot;anderledes&quot; så er det et kraftig språk med lang historikk, og det sies å være i bruk overraskende mange steder.</p>
+<p>Og så var det 20 dager igjen til Jul! </p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

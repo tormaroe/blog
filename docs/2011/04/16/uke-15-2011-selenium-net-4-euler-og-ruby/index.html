@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Jobb">
+
+    <title>Uke 15, 2011: Selenium, .Net 4, Euler og Ruby</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Uke 15, 2011: Selenium, .Net 4, Euler og Ruby</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 16. april 2011</small> 
+            <a href="/tags/jobb"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Jobb</span></a>
+          </p>
+          <p>Jeg føler for å oppsummere uken som har gått. Har behov for å skrive litt dagbok liksom. Skrive litt om hva som har skjedd, “dumpe” noen av tankene jeg går rundt med, og fortelle hva jeg har gjort for å bli en bedre utvikler <em>denne</em> uken. </p>
+<p>Jeg tenker jeg vil forsøke å gjøre det hver uke fra nå av. Hvis jeg er skikkelig heldig kan det bli interessant for andre enn meg selv også. <em>So here we go…</em></p>
+<h4>Regresjonstesting</h4>
+<p>Denne uken har jeg testet ut <a href="http://seleniumhq.org/" target="_blank">Selenium</a> – det mest kjente og brukte rammeverket for automatisert testing av webgrensesnitt. Jeg har satt opp et opplegg for å teste <a href="http://pswin.com/produkter/intouch" target="_blank">Intouch</a> (vår komplette webløsning for SMS) - en serie med tester som kjøres hver natt av vår TeamCity buildserver. Jeg bruker .net-versjonen av <a href="http://seleniumhq.org/docs/03_webdriver.html" target="_blank">Selenium 2.0 WebDriver</a>, og valgte å kjøre testene i Firefox 4 (hadde diverse problemer med både Chrome-driveren og IE-driveren).</p>
+<p>Jeg holdt en liten ZipTalk for de andre på teknisk, og jeg tror alle var enige med meg i at automatiserte regresjonstester var noe vi trengte. Spørsmålet nå er hvilke tester vi skal ha, og hvordan vi best skal få implementasjonen av disse testene inn i utviklingsløpet vårt. Jeg ser i utgangspunktet ikke på dette som noe som skal inngå i testdreven utvikling, derimot tror jeg det er best å skrive testene når funksjonaliteten som skal testes har stabilisert seg. Kanskje kan det gå inn som en del av <a href="http://en.wikipedia.org/wiki/Quality_assurance" target="_blank">QA-fasen</a>.</p>
+<h4>.Net 4.0 og Visual Studio 2010</h4>
+<p>Denne uken har teamet vårt også endelig tatt steget over på nyeste versjon av .net-rammeverket. Og det ser ut til å ha gått ganske smertefritt egentlig. </p>
+<p>Men .net 4 er bare én av en hel rekke nye teknologier vi forholder oss til for tiden – av andre ting vi har tatt i bruk i det siste kan jeg nevne <a href="http://www.mongodb.org/" target="_blank">MongoDB</a> og seriøs utnyttelse av <a href="http://jquery.com/" target="_blank">jQuery</a>. Og mye nytt og ukjent kan gi en følelse av manglende mestring og føre til stress. Derfor har jeg bestemt at vi skal ha en ZipTalk-serie om nye ting i .net 4.0. Utviklerne har nå valgt seg ut hver sine områder å utforske og presentere for teamet, og jeg venter spent på resultatet.</p>
+<h4>Og ellers…</h4>
+<p>På fritiden har jeg lest endel i de to bøkene jeg snakket om <a href="/2011/03/27/flere-pragmatiske-bker-bestilt/">her</a>: <em>Metaprogramming Ruby</em> og <em>Pragmatic Thinking & Learning</em>. Jeg har fått en dypere forståelse for hvordan Ruby egentlig fungerer – språket er både fantastisk komplekst og ekstremt elegant på en og samme tid. Og jeg har fått et bedre innblikk i hvordan menneskehjernen fungerer, hvorfor jeg tenker som jeg gjør, og noen verktøy for å påvirke og forhåpentligvis forbedre hvordan jeg tenker og løser problemer.</p>
+<p>Jeg har også rukket å løse noen <a href="http://projecteuler.net/" target="_blank">Euler-oppgaver</a>, og er nå oppe i 29 løste (av i alt 332). Jeg har brukt Clojure, som fortsatt er det mest elegante språket jeg har vært borti noen sinne, og det faller meg mer og mer naturlig å løse oppgaver med funksjonell programmering. Derfor har jeg også bestilt en ny bok – <em><a href="http://joyofclojure.com/" target="_blank">The Joy of Clojure</a></em> – som virker svært lovende.</p>
+<p>Jeg har gått og tenkt på og hatt lyst til å skrive et par blogposter også denne uken – en om <a href="http://en.wikipedia.org/wiki/Dreyfus_model_of_skill_acquisition" target="_blank">Dreyfus-modellen</a> og hvor jeg befinner meg i den i ulike ferdigheter, og en om funksjonell programmering. Men tiden har sålangt ikke strukket til. Jeg har vært på et par årsmøter også denne uken nemlig; i sameiet og i NNUG Bergen.</p>
+<h4>Ukens sitat</h4>
+<p>Jeg kommer hele tiden over mange gode sitat jeg får lyst til å dele med verden. I forbindelse med at jeg nettopp har fylt 35 presenterer jeg denne gang et Douglas Adams-sitat fra <em><a href="http://en.wikipedia.org/wiki/The_Salmon_of_Doubt" target="_blank">The Salmon of Doubt</a></em>:</p>
+<p style="padding-left: 15px; padding-right: 15px; font-size: 110%"><em>“Anything that is in the world when you’re born is normal and ordinary and is just a natural part of the way the world works. Anything that’s invented between when you’re fifteen and twenty-five is new and exiting and revolutionary and you can probably get a career in it. Anything invented after you’re thirty-five is against the natural order of things.”</em></p>
+<p>Det er mye visdom i dette sitatet, men jeg håper jeg kan motarbeide det og fortsette å utvikle meg i årene som kommer.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

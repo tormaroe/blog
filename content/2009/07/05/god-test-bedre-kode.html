@@ -1,0 +1,146 @@
+---
+title: God test, bedre kode
+link: http://blog.kjempekjekt.com/2009/07/05/god-test-bedre-kode/
+layout: post
+date: 2009-07-05 23:02:42Z
+tags:
+  - NDC
+  - TDD
+  - C#
+---
+Av alle de spennende tingene som skulle skje på <a href="http://www.ndc2009.no/">Norwegian Developer Conference 2009</a>, var det en ting jeg gledet meg mere til enn noe annet. Jeg skulle nemlig få oppleve en hel dags workshop med <strong>Scott Bellware</strong>.
+
+<p style="text-align: center"><a href="http://www.flickr.com/photos/digidragon/1515391370/"><img src="http://farm3.static.flickr.com/2412/1515391370_aa508c7f84.jpg" border="0" /></a>
+<a href="http://www.flickr.com/photos/digidragon/" rel="cc:attributionURL">http://www.flickr.com/photos/digidragon/</a> / <a href="http://creativecommons.org/licenses/by-nc-nd/2.0/" rel="license">CC BY-NC-ND 2.0</a>
+
+Bellware er en utvikler og Agile coach fra Austin, Texas. Han har fått MVP-tittelen fra Microsoft fem ganger, men er mest kjent for å være en sentral person i Alt.Net miljøet, og kritiserer Microsoft ganske åpenlyst. Han er en fargerik person, og kan karrakteriseres som en aldri så liten bråkebøtte. Følger du <a href="http://twitter.com/bellware">@bellware</a> på twitter så merker du raskt hva jeg mener.
+
+Jeg var så heldig å få "henge litt" med Scott utenom workshopen og foredragene også, og selv om han er Stor i Kjeften har han mye interessant å komme med, og jeg synes det er helt fantastisk at <a href="http://twitter.com/torresdal/">Jon Arild</a> har invitert Scott til å komme å forelese for <a href="http://twitter.com/NNUGBergen">NNUG i Bergen</a> senere i år.
+
+<strong>Workshop'en</strong>
+
+Workshopen handlet i hovedsak om å skrive automatiserte tester i form av <em>Context Specifictions</em>. Scott's budskap var at vi må gjemme all støyen fra testene/spesifikasjonene våre - testene er dokumentasjon, og skal være enkle å lese. Han sier at man oppnår høy produktivitet i utvikling om man har et godt design, og et godt design kommer av god TDD.
+
+Med dette som bakteppe kom Bellware inn på mange ulike områder, og her er noen høydepunkter fra notatene mine:
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: De to første stegene i TDD - (1) <strong style="color: red">lag en test som feiler</strong> og (2) <strong style="color: green">få den til å passere på enklest mulig måte</strong> - er egentlig en test av selve testen. Ved å bevise at den først feiler og deretter passerer ved forventet "input til asserten" kan man stole på testen. Først etter at testen er grønn implementerer man funksjonaliteten slik den skal være. (Jeg har forsøkt å poengtere det samme flere ganger, men er ikke alltid like flink til å følge det selv.)
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Gjør TDD i så små steg som mulig. <em>"Jeg trodde at de små stegene Kent Beck presenterer <a href="http://blog.kjempekjekt.com/2009/03/23/l%c3%a6r-tdd-gjennom-eksempler/">i TDD boken sin</a> var som de var for å illustrere prinsippene,"</em> sa Scott. <em>"Det tok meg to år å skjønne at det faktisk er sånn de beste utviklerne praktiserer TDD."</em>
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Jobb bare med én test om gangen. Gjør du en endring som fører til at to tester må endres så gjør du sansynlig vis for mye på en gang.
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Ikke bryt testene dine. Skal du gjøre en refakturering som krever en endring av testen er det bedre å legge tilrette for å endre testen uten å fjerne den eksisterende implementasjonen. Når alt er på plass kan du endre testen, uten at den behøvde å bli rød på noe som helst tidspunkt. Til slutt kan du fjerne den delen av implementasjonen som støttet den gamle versjonen av testen.
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />TDD: Husk å alltid skrive hva du ønsker skal eksistere før du implementerer det. <u>Ikke bar når du skriver tester.</u> "Jeg trenger en metode" oppdages ved å kalle metoden (som ikke finnes enda). Først deretter implementeres den.
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />DDD og IoC: Unngå dependency injection inn i metoder
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />DDD og IoC: Unngå dependency injection inn i Enteties
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />DDD: Enteties bør ikke tilby aggregert data (rapportdata) - som f.eks. TotalOfPreviousOrders
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />DDD: customer.Orders er <em>no no!</em> repository.GetOrders(customer) er bra!
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />Verktøy: Check in til kildekode-systemet <em>hele tiden!</em> Hver gang du har gjort en endring som fungerer: Get latest, run the tests (nant/rake), and commit changes.
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />Verktøy: <a href="http://www.autohotkey.com/">Autohotkey</a> er et interresant verktøy. Scott gav oss <a href="http://snookiepoof.googlecode.com/svn/trunk/tools/autohotkey/">et autohotkey script</a> som lar deg bytte ut space med underscore og dermed gjør den enklere å skrive metode_og_klassenavn_som_dette.
+
+<img style="padding-right: 5px" height="16" src="http://kjempekjekt.com/images/redbullet.jpg" width="16" />Verktøy: Sett opp shortcut for å kjøre en eller flere tester med TestDriver.net og en annen shortcut for å kjøre tester om igjen. Dermed går det raskere å kjøre samme test eller testsett flere ganger mens man jobber i koden.
+
+Scott brukte også endel tid på å snakke om det jeg kjenner som <a href="http://jeffreypalermo.com/blog/the-onion-architecture-part-1/">the onion architecture</a>. Han beskrev dette som et <strong>grunnleggende Alt.Net pattern</strong> som brukes over alt for tiden. Det virker veldig logisk og i trå med alt jeg har lest av Uncle Bob i det siste, og jeg må sette meg grundig inn i dette og finne ut hvordan det vil endre hvordan jeg designer løsningene mine.
+
+<strong>En av testene vi skrev..</strong>
+
+Her er et eksempel på hva vi produserte i workshopen. Denne spesifikasjonen beviser at en ordre tar høyde for avslag når man ber om prisen. Scott brukte MSpec, <a href="http://codebetter.com/blogs/aaron.jensen/archive/2008/05/08/introducing-machine-specifications-or-mspec-for-short.aspx">Machine Specification</a>, til å skrive testene.
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    9</span> [<span style="color: yellow">Subject</span>(<span style="color: lime">"Order"</span>)]</p>
+<p style="margin: 0px"><span style="color: #2b91af">   10</span> <span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">when_discounting_an_order</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">   11</span>     : <span style="color: yellow">OrderContext</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">   12</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   13</span>     <span style="color: #2b91af">Establish</span> context = () =></p>
+<p style="margin: 0px"><span style="color: #2b91af">   14</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   15</span>         order = order_with_total_of(100m);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   16</span>         order.DiscountPercentage = 10m;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   17</span>         order_total = order.GetTotal();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   18</span>     };</p>
+<p style="margin: 0px"><span style="color: #2b91af">   19</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   20</span>     <span style="color: #2b91af">It</span> should_discount_the_order_by_10_percent = () =></p>
+<p style="margin: 0px"><span style="color: #2b91af">   21</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   22</span>         order_total.ShouldEqual(90m);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   23</span>     };</p>
+<p style="margin: 0px"><span style="color: #2b91af">   24</span> }</p>
+</div>
+Spesifikasjonen er enkel å forstå, den lar seg lese nesten som vanlig engelsk. <em>Når man har en ordre med en verdi av 100 dollar, og man gir 10% avslag, så skal prisen reduseres med 10%, hvilket vil si at totalen skal være 90 dollar.</em>
+
+Detaljene er gravd ned i OrderContext, som spesifikasjonen arver fra:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">   26</span> <span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">OrderContext</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">   27</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   28</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">static</span> <span style="color: yellow">Order</span> order_with_total_of(<span style="color: #ff8000">decimal</span> amount)</p>
+<p style="margin: 0px"><span style="color: #2b91af">   29</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   30</span>         <span style="color: #ff8000">var</span> newOrder = <span style="color: #ff8000">new</span> <span style="color: yellow">Order</span>(<span style="color: #ff8000">new</span> <span style="color: yellow">Customer</span>());</p>
+<p style="margin: 0px"><span style="color: #2b91af">   31</span>         <span style="color: #ff8000">var</span> item = <span style="color: #ff8000">new</span> <span style="color: yellow">Item</span>(amount);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   32</span>         newOrder.AddItem(item);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   33</span>         <span style="color: #ff8000">return</span> newOrder;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   34</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   35</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   36</span>     <span style="color: #ff8000">protected</span> <span style="color: #ff8000">static</span> <span style="color: #ff8000">decimal</span> order_total;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   37</span>     <span style="color: #ff8000">protected</span> <span style="color: #ff8000">static</span> <span style="color: yellow">Order</span> order;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   38</span> }</p>
+</div>
+<a href="http://blog.kjempekjekt.com/2009/05/23/fra-enhentstester-til-kjørbare-spesifikasjoner/">Jeg har tidligere blogget om</a> hvordan jeg har gått fra å skrive tradisjonelle enhetstester til å skrive <em>GivenWhenThen</em> senarioer med et rammeverk som heter TinyBDD. Bellware gav meg mange flere tips om hvordan slike spesifikasjoner bør konstrueres. Det ironiske er at jeg etter dette har droppet å bruke BDD-rammeverk til fordel for å skrive mine egne DSL'er. TinyBDD, MSpec og lignende skaper mer støy enn nødvendig, og ved å skrive ren og selvdokumenterende kode føler jeg at jeg kan oppnå vel så god effekt uten dem.
+
+Her er et eksempel på hvordan testene jeg skriver for tiden ser ut:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #2b91af">    1</span> [<span style="color: yellow">TestFixture</span>]</p>
+<p style="margin: 0px"><span style="color: #2b91af">    2</span> <span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">ConsoleGameIntroViewTest</span> : <span style="color: yellow">ConsoleTestingFixture</span></p>
+<p style="margin: 0px"><span style="color: #2b91af">    3</span> {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    4</span>     [<span style="color: yellow">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #2b91af">    5</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_display_introduction_text()</p>
+<p style="margin: 0px"><span style="color: #2b91af">    6</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">    7</span>         Given_a_game();</p>
+<p style="margin: 0px"><span style="color: #2b91af">    8</span>         With_introduction(This_is_an_introduction);</p>
+<p style="margin: 0px"><span style="color: #2b91af">    9</span>         When_displaying_view();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   10</span>         Output.should_contain(This_is_an_introduction);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   11</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   12</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   13</span>     [<span style="color: yellow">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #2b91af">   14</span>     <span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Should_display_title()</p>
+<p style="margin: 0px"><span style="color: #2b91af">   15</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   16</span>         Given_a_game();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   17</span>         With_title(A_Long_Time_Ago_in_a_Galaxy_Far_Far_Away);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   18</span>         When_displaying_view();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   19</span>         Output.should_contain(A_Long_Time_Ago_in_a_Galaxy_Far_Far_Away);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   20</span>     }</p>
+<p style="margin: 0px"><span style="color: #2b91af">   21</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   22</span>     <span style="color: #2b91af">Action</span> Given_a_game = () => gameLevel = <span style="color: #ff8000">new</span> <span style="color: yellow">GameLevel</span>();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   23</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   24</span>     <span style="color: #2b91af">Action</span><<span style="color: #ff8000">string</span>> With_introduction = (introduction) =></p>
+<p style="margin: 0px"><span style="color: #2b91af">   25</span>         gameLevel.IntroductionText = introduction;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   26</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   27</span>     <span style="color: #2b91af">Action</span><<span style="color: #ff8000">string</span>> With_title = (title) =></p>
+<p style="margin: 0px"><span style="color: #2b91af">   28</span>         gameLevel.Title = title;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   29</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   30</span>     <span style="color: #2b91af">Action</span> When_displaying_view = () =></p>
+<p style="margin: 0px"><span style="color: #2b91af">   31</span>     {</p>
+<p style="margin: 0px"><span style="color: #2b91af">   32</span>         introView = <span style="color: #ff8000">new</span> <span style="color: yellow">ConsoleGameIntroView</span>();</p>
+<p style="margin: 0px"><span style="color: #2b91af">   33</span>         introView.Show(gameLevel);</p>
+<p style="margin: 0px"><span style="color: #2b91af">   34</span>     };</p>
+<p style="margin: 0px"><span style="color: #2b91af">   35</span> </p>
+<p style="margin: 0px"><span style="color: #2b91af">   36</span>     <span style="color: #ff8000">static</span> <span style="color: yellow">GameLevel</span> gameLevel;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   37</span>     <span style="color: #ff8000">static</span> <span style="color: yellow">ConsoleGameIntroView</span> introView;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   38</span>     <span style="color: #ff8000">const</span> <span style="color: #ff8000">string</span> This_is_an_introduction = <span style="color: lime">"This is an introduction"</span>;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   39</span>     <span style="color: #ff8000">const</span> <span style="color: #ff8000">string</span> A_Long_Time_Ago_in_a_Galaxy_Far_Far_Away = <span style="color: lime">"A Long Time Ago in a Galaxy Far Far Away"</span>;</p>
+<p style="margin: 0px"><span style="color: #2b91af">   40</span> }</p>
+</div>
+Dette er en testklasse for et View i et konsoll-basert spill som bruker <em>Model-View-Presenter</em>. Det viktigste kommer først - selve testene. Og de kan leses av hvem som helst, og lar deg fokusere på adferden - implementasjonsdetaljene er støy, så de kommer lengre nede.
+
+Du synes kanskje dette er galskap? Jeg føler denne måten å spesifisere adferd på hjelper meg å skrive bedre kode, og de dokumenterer ganske bra hva systemet skal gjøre. Forvent mer om mine enhetstester i kommende blogposter..
+
+<strong>Mer Bellware?</strong>
+
+Er du interessert i å høre mer om hva Bellware har å si om TDD/BDD anbefaler jeg at du lytter til Hanselminutes #146: <a href="http://www.hanselminutes.com/default.aspx?showID=164">Test Driven Development is Design - The Last Word on TDD</a>.
+
+Og er du mer interessert i hans bråkete side kan du lytte til <a href="http://www.altnetpodcast.com/episodes/17-the-state-of-alt-net">Alt.Net podcast #17: The State of Alt.Net</a>, hvor han rakker ned på miljøet han har vært med å bygge opp. I så fall bør du også laste ned show nummer 18: <a href="http://www.altnetpodcast.com/episodes/18-talking-with-jeremy-miller-about-alt-net">Talking with Jeremy Miller about Alt.Net</a>, som forsøker å roe ned situasjonen igjen.
+
+<strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=Alt.Net" rel="tag">Alt.Net</a>, <a href="http://blog.kjempekjekt.com/index.php?s=BDD" rel="tag">BDD</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Bellware" rel="tag">Bellware</a>, <a href="http://blog.kjempekjekt.com/index.php?s=DDD" rel="tag">DDD</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Dependency+injection" rel="tag">Dependency injection</a>, <a href="http://blog.kjempekjekt.com/index.php?s=NDC" rel="tag">NDC</a>, <a href="http://blog.kjempekjekt.com/index.php?s=NNUG" rel="tag">NNUG</a>, <a href="http://blog.kjempekjekt.com/index.php?s=TinyBDD" rel="tag">TinyBDD</a>

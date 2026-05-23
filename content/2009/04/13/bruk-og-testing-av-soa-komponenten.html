@@ -1,0 +1,130 @@
+---
+title: Bruk og testing av SOA komponenten
+link: http://blog.kjempekjekt.com/2009/04/13/bruk-og-testing-av-soa-komponenten/
+layout: post
+date: 2009-04-13 16:11:02Z
+tags:
+  - Diverse prosjekter
+  - Testing / TDD
+---
+Dette er en oppfølgingspost til artikkelen hvor jeg beskrev <a href="http://blog.kjempekjekt.com/">hvordan jeg lager små SOA komponenter</a>. Nå viser jeg hvordan jeg tar kompionenten i bruk, og måler hvor bra den virker.
+
+Jeg oppretter et nytt Console application prosjekt, og legger til en Service Reference hvor jeg bruker adressen definert i BrainSpill tjenesten: http://localhost:8000/BrainSpill/service/mex. Dette genererer en <em>MessageRepositoryClient</em> klasse med metodene jeg tidligere definerte i <em>IMessageRepository</em> i BrainSpill-prosjektet. Vil jeg nå for eksempel sende en ny melding til BrainSpill kan jeg gjøre det slik som dette:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="font-weight: bold; color: #eaeaac;">using</span> (<span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">client</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">MessageRepositoryClient</span>())</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="color: #f8ffc6;">client</span>.<span style="color: #f8ffc6;">AddMessage</span>(<span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">AddMessageRequest</span></p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">Text</span> = <span style="color: #c89191;">"Dette er en melding!"</span>,</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">By</span> = <span style="color: #c89191;">"T-Man"</span>,</p>
+<p style="margin: 0px;">    });</p>
+<p style="margin: 0px;">}</p>
+
+</div>
+For å se hvor bra tjenesten håndterer mange requester forsøker jeg å opprette 100 meldinger om gangen i en loop, og måler hvor lang tid det tar:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="font-weight: bold; color: #eaeaac;">static</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Main</span>(<span style="font-weight: bold; color: #eaeaac;">string</span>[] <span style="color: #f8ffc6;">args</span>)</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="font-weight: bold; color: #eaeaac;">using</span> (<span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">client</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">MessageRepositoryClient</span>())</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">System</span>.<span style="color: yellow;">Console</span>.<span style="color: #f8ffc6;">WriteLine</span>(<span style="color: #c89191;">"{0} messages in database"</span>, <span style="color: #f8ffc6;">client</span>.<span style="color: #f8ffc6;">GetTotalNumberOfMessages</span>());</p>
+<p style="margin: 0px;"></p>
+<p style="margin: 0px;">        <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">stopwatch</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">Stopwatch</span>();</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">Start</span>();</p>
+<p style="margin: 0px;"></p>
+<p style="margin: 0px;">        <span style="font-weight: bold; color: #eaeaac;">for</span> (<span style="font-weight: bold; color: #eaeaac;">int</span> <span style="color: #f8ffc6;">i</span> = <span style="color: #8acccf;">0</span>; <span style="color: #f8ffc6;">i</span> &lt; <span style="color: #8acccf;">100</span>; <span style="color: #f8ffc6;">i</span>++)</p>
+<p style="margin: 0px;">        {</p>
+<p style="margin: 0px;">            <span style="color: #f8ffc6;">client</span>.<span style="color: #f8ffc6;">AddMessage</span>(<span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">AddMessageRequest</span></p>
+<p style="margin: 0px;">            {</p>
+<p style="margin: 0px;">                <span style="color: #f8ffc6;">Text</span> = <span style="color: #c89191;">"Testmelding nummer "</span> + <span style="color: #f8ffc6;">i</span>,</p>
+<p style="margin: 0px;">                <span style="color: #f8ffc6;">By</span> = <span style="color: #c89191;">"T-Man"</span>,</p>
+<p style="margin: 0px;">            });</p>
+<p style="margin: 0px;">        }</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">Stop</span>();</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">System</span>.<span style="color: yellow;">Console</span>.<span style="color: #f8ffc6;">WriteLine</span>(<span style="color: #c89191;">"Elapsed time: {0}"</span>, <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">ElapsedMilliseconds</span>);</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+
+</div>
+Resultatet:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: lightgreen; font-family: Courier New;">0 messages in database
+Elapsed time: 587</div>
+Ikke så verst - i overkant av et halvt sekund for å sende og motta 100 requests og lagre dem i basen. For å se om performancen blir dårligere om det finnes mange meldinger i basen fra før kjører jeg testen en del ganger til. Men det ser ikke ut til å ha noen spesiell betydning:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: lightgreen; font-family: Courier New;">10000 messages in database
+Elapsed time: 514</div>
+Jeg bør også teste hvordan tjenesten oppfører seg med mange, samtidige brukere, og fyrer derfor opp seks command-winduer som hver kjører testprogrammet 10 ganger etterhverandre. Det vil altså si at jeg har seks ulike klienter som forsøker å hamre inn meldinger på en gang, samtidig som de hele tiden spør tjenesten hvor mange meldinger som finnes.
+
+Resultatet varierte en god del. På det minste tok det nå 1,6 sekunder å sende 100 meldinger, på det meste helt opp i 16 - de fleste brukte et sted mellom 4 og 10 sekunder.
+
+Jeg må også teste metoden for å hente ut ferske meldinger: <em>GetLatestMessages</em>. Jeg skriver om programmet mitt til å hente ut de 10 siste melding.
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="font-weight: bold; color: #eaeaac;">static</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Main</span>(<span style="font-weight: bold; color: #eaeaac;">string</span>[] <span style="color: #f8ffc6;">args</span>)</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="font-weight: bold; color: #eaeaac;">using</span> (<span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">client</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">MessageRepositoryClient</span>())</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">System</span>.<span style="color: yellow;">Console</span>.<span style="color: #f8ffc6;">WriteLine</span>(<span style="color: #c89191;">"{0} messages in database"</span>, <span style="color: #f8ffc6;">client</span>.<span style="color: #f8ffc6;">GetTotalNumberOfMessages</span>());</p>
+<p style="margin: 0px;"></p>
+<p style="margin: 0px;">        <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">stopwatch</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">Stopwatch</span>();</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">Start</span>();</p>
+<p style="margin: 0px;">        <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">latestMessages</span> = <span style="color: #f8ffc6;">client</span>.<span style="color: #f8ffc6;">GetLatestMessages</span>(<span style="color: #8acccf;">10</span>);</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">Stop</span>();</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">System</span>.<span style="color: yellow;">Console</span>.<span style="color: #f8ffc6;">WriteLine</span>(<span style="color: #c89191;">"Elapsed time: {0}"</span>, <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">ElapsedMilliseconds</span>);</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+
+</div>
+Første gang jeg kjører testen tar det hele 3,3 sekunder, men når jeg forsøker flere ganger tar det bare litt over 0,6 sekunder. Jeg antar at det er db4o-databasen som cacher noe. Venter jeg en stund og så forsøker igjen, tar det igjen i overkant av 3 sekunder første gang, deretter 0,6.
+
+Jeg er interrestert i å se om cachingen blir påvirket av at det kommer inn nye meldinger. Dvs. om det alltid vil ta lang tid første gangen etter at en ny melding har blitt lagret. Jeg skriver derfor et program som henter de siste meldingene noen ganger, legger inn noen meldinger, og så henter nye meldinger igjen:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="font-weight: bold; color: #eaeaac;">static</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Main</span>(<span style="font-weight: bold; color: #eaeaac;">string</span>[] <span style="color: #f8ffc6;">args</span>)</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="font-weight: bold; color: #eaeaac;">using</span> (<span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">client</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">MessageRepositoryClient</span>())</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">System</span>.<span style="color: yellow;">Console</span>.<span style="color: #f8ffc6;">WriteLine</span>(<span style="color: #c89191;">"{0} messages in database"</span>, <span style="color: #f8ffc6;">client</span>.<span style="color: #f8ffc6;">GetTotalNumberOfMessages</span>());</p>
+<p style="margin: 0px;"></p>
+<p style="margin: 0px;">        <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">stopwatch</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">Stopwatch</span>();</p>
+<p style="margin: 0px;"></p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">Get10Messages</span>(<span style="color: #f8ffc6;">client</span>, <span style="color: #f8ffc6;">stopwatch</span>);</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">Get10Messages</span>(<span style="color: #f8ffc6;">client</span>, <span style="color: #f8ffc6;">stopwatch</span>);</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">Get10Messages</span>(<span style="color: #f8ffc6;">client</span>, <span style="color: #f8ffc6;">stopwatch</span>);</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">Add100Messages</span>(<span style="color: #f8ffc6;">client</span>);</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">Get10Messages</span>(<span style="color: #f8ffc6;">client</span>, <span style="color: #f8ffc6;">stopwatch</span>);</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">Get10Messages</span>(<span style="color: #f8ffc6;">client</span>, <span style="color: #f8ffc6;">stopwatch</span>);</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">Get10Messages</span>(<span style="color: #f8ffc6;">client</span>, <span style="color: #f8ffc6;">stopwatch</span>);</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+<p style="margin: 0px;"></p>
+<p style="margin: 0px;"><span style="font-weight: bold; color: #eaeaac;">private</span> <span style="font-weight: bold; color: #eaeaac;">static</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Get10Messages</span>(<span style="color: yellow;">MessageRepositoryClient</span> <span style="color: #f8ffc6;">client</span>, <span style="color: yellow;">Stopwatch</span> <span style="color: #f8ffc6;">stopwatch</span>)</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">Reset</span>();</p>
+<p style="margin: 0px;">    <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">Start</span>();</p>
+<p style="margin: 0px;">    <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">latestMessages</span> = <span style="color: #f8ffc6;">client</span>.<span style="color: #f8ffc6;">GetLatestMessages</span>(<span style="color: #8acccf;">10</span>);</p>
+<p style="margin: 0px;">    <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">Stop</span>();</p>
+<p style="margin: 0px;">    <span style="color: #f8ffc6;">System</span>.<span style="color: yellow;">Console</span>.<span style="color: #f8ffc6;">WriteLine</span>(<span style="color: #c89191;">"Getting 10 messages took {0} milliseconds"</span>, <span style="color: #f8ffc6;">stopwatch</span>.<span style="color: #f8ffc6;">ElapsedMilliseconds</span>);</p>
+<p style="margin: 0px;">}</p>
+<p style="margin: 0px;"></p>
+<p style="margin: 0px;"><span style="font-weight: bold; color: #eaeaac;">private</span> <span style="font-weight: bold; color: #eaeaac;">static</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Add100Messages</span>(<span style="color: yellow;">MessageRepositoryClient</span> <span style="color: #f8ffc6;">client</span>)</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="color: #f8ffc6;">System</span>.<span style="color: yellow;">Console</span>.<span style="color: #f8ffc6;">WriteLine</span>(<span style="color: #c89191;">"Adding 100 messages.."</span>);</p>
+<p style="margin: 0px;">    <span style="font-weight: bold; color: #eaeaac;">for</span> (<span style="font-weight: bold; color: #eaeaac;">int</span> <span style="color: #f8ffc6;">i</span> = <span style="color: #8acccf;">0</span>; <span style="color: #f8ffc6;">i</span> &lt; <span style="color: #8acccf;">100</span>; <span style="color: #f8ffc6;">i</span>++)</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        <span style="color: #f8ffc6;">client</span>.<span style="color: #f8ffc6;">AddMessage</span>(<span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">AddMessageRequest</span></p>
+<p style="margin: 0px;">        {</p>
+<p style="margin: 0px;">            <span style="color: #f8ffc6;">Text</span> = <span style="color: #c89191;">"Hi there........"</span>,</p>
+<p style="margin: 0px;">            <span style="color: #f8ffc6;">By</span> = <span style="color: #c89191;">"BrainSpill.Console"</span>,</p>
+<p style="margin: 0px;">        });</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+
+</div>
+Resultatet bekrefter at cachingen <em>ikke</em> blir påvirket av at det kommer inn nye meldinger:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: lightgreen; font-family: Courier New;">18200 messages in database
+Getting 10 messages took 3373 milliseconds
+Getting 10 messages took 629 milliseconds
+Getting 10 messages took 632 milliseconds
+Adding 100 messages..
+Getting 10 messages took 672 milliseconds
+Getting 10 messages took 633 milliseconds
+Getting 10 messages took 615 milliseconds</div>
+<strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=BrainSpill" rel="tag">BrainSpill</a>, <a href="http://blog.kjempekjekt.com/index.php?s=db4o" rel="tag">db4o</a>, <a href="http://blog.kjempekjekt.com/index.php?s=SOA" rel="tag">SOA</a>

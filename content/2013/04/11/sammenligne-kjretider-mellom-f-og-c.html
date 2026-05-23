@@ -1,0 +1,78 @@
+---
+title: Sammenligne kjøretider mellom F# og C#
+link: http://blog.kjempekjekt.com/2013/04/11/sammenligne-kjretider-mellom-f-og-c/
+layout: post
+date: 2013-04-11 22:33:27Z
+tags:
+  - C#
+  - F#
+  - Ytelse
+---
+<p>Dette er en oppfølger til blogposten <a href="http://blog.kjempekjekt.com/2013/04/09/litt-f-kode-for-mle-kjretid/">Litt F#-kode for å måle kjøretid</a>, hvor jeg blant annet målte tiden på ulike løsninger på Euler1-problemet. Det kom som en stor overraskelse at den rekursive varianten var såpass mye raskere enn å bruke løkker og muterbare variabler.</p> <p>Spørsmålet jeg da stod igjen med var hvor rask den rekursive F#-varianten var i forhold til en løsning i C# – det har jeg nå undersøkt, og det er disse resultatene jeg skal presentere her. Og mot slutten kommer det <strong>en overraskelse!</strong></p> <h2>Et testprogram</h2> <p>Jeg valgte å lage et testprogram i C#. Programmet inneholder tre ulike varianter av Euler1: En som bruker en for-løkke, en som bruker Linq, og en crazy variant som bruker GOTO. I Main-metoden kjører jeg disse tre samt de fire orginale variantene fra <a href="http://blog.kjempekjekt.com/2013/04/09/litt-f-kode-for-mle-kjretid/">F#-bloggposten</a>.</p><pre>public class Program
+{
+    public static void CSharpTest1()
+    {
+        long result = 0;
+        for (int i = 0; i &lt; 1000000; i++)
+            if (i % 3 == 0 || i % 5 == 0)
+                result += i;
+        Console.WriteLine("\nResult by for loop (C#): " 
+            + result);
+    }
+    public static void CSharpTest2()
+    {
+        Console.WriteLine("\nResult by Enumerable (C#): "
+            + Enumerable.Range(1, 1000000)
+                .Where(n =&gt; n % 3 == 0 || n % 5 == 0)
+                .Select(Convert.ToInt64)
+                .Sum());
+    }
+
+    public static void CSharpTest3()
+    {
+        int i = 0;
+        long result = 0;
+    Loop:
+        if (++i &gt; 1000000) 
+            goto End;
+        if (i % 3 == 0 || i % 5 == 0)
+            result += i;
+        goto Loop;
+    End:
+        Console.WriteLine("\nResult by goto (C#): "
+            + result);
+    }
+
+    static void Main(string[] args)
+    {
+        Benchmark.Measure("C# for loop ", 
+                          Program.CSharpTest1);
+        Benchmark.Measure("C# sequence ", 
+                          Program.CSharpTest2);
+        Benchmark.Measure("C# goto     ", 
+                          Program.CSharpTest3);
+        Benchmark.Measure("F# mutable  ", 
+                          MyFSharpProject.Program.test1);
+        Benchmark.Measure("F# sequence ", 
+                          MyFSharpProject.Program.test2);
+        Benchmark.Measure("F# ref cell ", 
+                          MyFSharpProject.Program.test3);
+        Benchmark.Measure("F# recursion", 
+                          MyFSharpProject.Program.test4);
+
+        Console.ReadLine();
+    }
+}</pre>
+<h2>Resultatet</h2>
+<p>Og nå er du vel spent? Kjøringen av dette testprogrammet gav følgende output, presentert som en graf:</p>
+<p><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Measurements" border="0" alt="Measurements" src="/uploads/2013/04/Measurements.jpg" width="483" height="267"></p>
+<p>Resultatet er nedslående. Det er forsåvidt greit nok – og ikke uventet – at en rekursiv løsning er treigere enn en for-løkke i C#, selv om F# har <em>tail call optimization</em>. Men hvorfor er sekvens-løsningen i F# så veldig mye mere tidkrevende enn sekvens-løsningen i C#?</p>
+
+<p>For sikkerhets skyld forsøkte jeg også å kjøre alle variantene fra en F# executable (man vet jo aldri), men det gav akkurat det samme resultatet.</p>
+<p>Og det var da det slo meg: <strong>Jeg kompilerer testene mine i DEBUG modus! Kan det hende kjøretiden vil ble bedre i RELEASE?</strong> Jeg er ikke vandt til at det har så mye å si i C#, men kanskje det er anderledes i F#?</p>
+<h2>RELEASE-modus</h2>
+<p>Så jeg endret prosjektene til å kompilere i RELEASE-modus, og forsøkte C#-testprogrammet på nytt. Ingen merkbar endring!</p>
+<p>Ok – hva om jeg tester fra F# igjen da? <strong>Og da ble resultatet anderledes!</strong></p>
+<p><a href="/uploads/2013/04/Measurements2.jpg"><img style="background-image: none; border-bottom: 0px; border-left: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; margin-left: auto; border-top: 0px; margin-right: auto; border-right: 0px; padding-top: 0px" title="Measurements2" border="0" alt="Measurements2" src="/uploads/2013/04/Measurements2_thumb.jpg" width="615" height="300"></a></p>
+<p>I RELEASE-modus på F# runtime ble plutselig den rekursive algoritmen nøyaktig like rask som for-løkken i C#. Kompilatoren har altså sansynligvis vært i stand til å transformere rekursjonen til mer eller mindre den samme IL-koden som for-løkken. De andre variantene ble også betydelig raskere, selv om de fortsatt er et stykke fra den optimale løsningen.</p>
+<p>Så det er på tide med en <em>Note To Self</em>: <strong>Mål alltid performance i RELEASE. Kompileringsmodus har mye å si for optimalisering av F#-kode.</strong></p>

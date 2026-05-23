@@ -1,0 +1,41 @@
+---
+title: Cobra
+link: http://blog.kjempekjekt.com/2011/12/05/cobra/
+layout: post
+date: 2011-12-05 08:25:34Z
+tags:
+  - Julekalender
+  - Polyglot
+  - Cobra
+---
+<p>Programmeringsspråket du skal få møte i dag har mye til felles med Boo, <a href="http://blog.kjempekjekt.com/2011/12/04/boo/">språket jeg fortalte om i går</a>. <strong><em>Cobra</em></strong> er nemlig også laget for .NET og Mono, og syntaksen er Python-inspirert (men Ruby-utviklere vil også kunne føle seg som hjemme). Det har både statisk og dynamisk binding, og er generelt sett en smeltedigel som forsøker å kombinere det beste fra mange andre språk.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="cobra" border="0" alt="cobra" src="/uploads/2011/12/cobra.jpg" width="280" height="416"></p> <h4>Hvorfor bruke tid på Cobra?</h4> <p>Cobra er utviklet med fokus på å øke kvaliteten i koden din. For det første er enhetstester førsterangs borgere i Cobra. De lever som en naturlig del av metode-definisjonene, og kjøres som en del av kompileringen. </p> <p>Men i tillegg til normale tester støtter språket også <a href="http://en.wikipedia.org/wiki/Design_by_contract">kodekontrakter</a>, inspirert av <a href="http://en.wikipedia.org/wiki/Eiffel_(programming_language)">Eiffel</a>. Dette innebærer at du kan deklarere invarianter, pre- og post-conditions som objekter og metoder må tilfredstille. Kontraktene blir en del av grensesnittet til klassene, og brudd på en kontrakt under kjøring resulterer i exceptions.</p> <p>Ønsker man optimal ytelse kan både tester og kontrakter enkelt elimineres når man kompilerer for produksjon.</p> <p>Andre interessante egenskaper er <em><a href="http://cobra-language.com/trac/cobra/wiki/NilableTypes">compile-time nil-tracking</a></em>. Skal noe kunne være en <em>nil</em> (eller <em>null</em> om du vil) i Cobra så må det deklareres eksplisitt. Er du lei av å bli overrasket av <em>NullReferenceException</em> når du kjører programmet ditt? Da kan dette være noe som hjelper deg.</p> <p>Cobra tilbyr også utvidet informasjon når et problem oppstår. Man kan f.eks. velge å få generert en HTML-formatert <em>post-mortem</em> rapport når programmet kræsjer.</p> <h4>Et eksempel</h4> <p>Jeg tipper du ikke lar deg overraske av at jeg skal bruke Cobra til å <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">finne summen av alle positive heltall under 1000 som er multipler av 3 eller 5</a>. Klassen nedenfor implementerer et komplett program som skriver ut løsningen.</p> <p>Euler1-klassen inneholder to metoder: <em>main</em>, som kjøres når programmet eksekveres, og <em>validNumber</em>, som inneholder både tester og en liten precondition.</p><pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Statement">class</span> <span class="Function">Euler1</span>
+<span class="lnr">11 </span>    shared
+<span class="lnr">12 </span>        <span class="Statement">def</span> <span class="Function">main</span>
+<span class="lnr">13 </span>            <span class="String">"""</span>
+<span class="lnr">14 </span><span class="String">            Finds the sum of all numbers from 1 </span>
+<span class="lnr">15 </span><span class="String">            below 1000 that are multiples of 3 or 5.</span>
+<span class="lnr">16 </span><span class="String">            """</span>
+<span class="lnr">17 </span>            <span class="Function">sum</span> = <span class="Number">0</span>
+<span class="lnr">18 </span>            <span class="Statement">for</span> n <span class="Operator">in</span> <span class="Number">1</span>:<span class="Number">1000</span>
+<span class="lnr">19 </span>                <span class="Conditional">if</span> .validNumber(n)
+<span class="lnr">20 </span>                    <span class="Function">sum</span> += n
+<span class="lnr">21 </span>            <span class="Function">print</span> <span class="Function">sum</span>
+<span class="lnr">22 </span>
+<span class="lnr">23 </span>        <span class="Statement">def</span> <span class="Function">validNumber</span>(n) <span class="Statement">as</span> <span class="Function">bool</span>
+<span class="lnr">24 </span>            require
+<span class="lnr">25 </span>                n &gt; <span class="Number">0</span>
+<span class="lnr">26 </span>            test
+<span class="lnr">27 </span>                <span class="Statement">assert</span> .validNumber(<span class="Number">6</span>)
+<span class="lnr">28 </span>                <span class="Statement">assert</span> .validNumber(<span class="Number">10</span>)
+<span class="lnr">29 </span>                <span class="Statement">assert</span> <span class="Operator">not</span> .validNumber(<span class="Number">1</span>)
+<span class="lnr">30 </span>                <span class="Statement">assert</span> <span class="Operator">not</span> .validNumber(<span class="Number">8</span>)
+<span class="lnr">31 </span>            body
+<span class="lnr">32 </span>                <span class="Statement">return</span> n % <span class="Number">3</span> == <span class="Number">0</span> <span class="Operator">or</span> n % <span class="Number">5</span> == <span class="Number">0</span>
+</pre>
+<h4>Noen bekymringer</h4>
+<p>Cobra har vært under utvikling i mange år nå, men virker fortsatt litt uferdig. Det skal blant annet støtte mixins, men dette virker ikke som det skal. Støtten for anonyme metoder og lamda er heller ikke så bra enda. På den andre siden har det blitt laget en Cobra add-in for Visual Studio 2010, men denne har jeg ikke forsøkt.</p>
+<p>Jeg er litt usikker på hvor aktiv utviklingen egentlig er. Jeg ser det stadig gjøres små bugfikser, men gjeldende release er over ett år gammel. Det er også endel som ikke er oppdatert på websidene, men diskusjonsforumet er i alle fall aktivt.</p>
+<p>Tenker man at Cobra kan være noe å satse på bør man derfor vurdere disse tingene nærmere.</p>
+<h4>Hvordan komme i gang</h4>
+<p>Cobra finner du på <a href="http://cobra-language.com/">cobra-language.com</a>. Der kan du laste ned språket, og så er det rimelig enkelt å komme igang. Dokumentasjonen er brukbar, men som sagt inneholder den både hull og enkelte ting som har gått ut på dato.</p>
+<p>Det er likevel interessant å teste ut et språk hvor <em>Design by Contract</em>-teknikken har fått en så sentral plass. Microsoft er jo i ferd med å levere støtte for dette i sine egne språk på .NET-plattformen, og det kan være lurt å lære seg dette som et suplement til testdrevet utvikling basert på enhetstester.</p>

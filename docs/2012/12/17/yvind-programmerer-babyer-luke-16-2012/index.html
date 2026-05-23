@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="DSL,C#,Julekalender">
+
+    <title>Øyvind programmerer babyer [Luke 17, 2012]</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Øyvind programmerer babyer [Luke 17, 2012]</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 17. desember 2012</small> 
+            <a href="/tags/dsl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DSL</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p><strong>Øyvind Fanebust</strong> (<a href="https://twitter.com/oyvindfanebust">@oyvindfanebust</a>) er et aktivt medlem av utviklermiljøet i Bergen. Han sitter blant annet i styret i <a href="http://bergen.nnug.no/">NNUG</a>, og er med og arrangerer <a href="http://boosterconf.no/">Booster-konferansen</a> (tidligere ROOTS).</p>
+<p>Øyvind har en spesiell forkjærlighet for domenespesifike språk – såkalte DSL'er. I dagens blogpost demonstrerer han i detalj hvordan man ganske enkelt kan lage en DSL ved hjelp av en <strong>parserkombinator</strong> i C#.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="oyvind" border="0" alt="oyvind" src="/uploads/2012/12/oyvind.jpg" width="353" height="495"></p>
+<p><strong>Hvem er du?</strong><br>Systemutvikler med lidenskap for alt som har med programvareutvikling å gjøre.</p>
+<p><strong>Hva er jobben din?</strong><br>Lead developer hos Frende Forsikring AS.</p>
+<p><strong>Hva kan du?</strong><br>Jobber mye med webapplikasjoner .NET / C#, der jeg jobber med alt fra å kartlegge behov, lage arkitektur og utvikle alle deler av løsningen. Har også en brennende interesse for domenespesifikke språk.</p>
+<p><strong>Hva liker du best med yrket ditt?</strong><br>Å hele tiden måtte vri hjernen for å løse nye problemer.<br />
+<hr>
+<h2>Parsing av domenespesifikke språk med C# og Sprache</h2>
+<blockquote><p><b>Language shapes the way we think, and determines what we can think about.</b> <small>- Benjamin Lee Whorf</small></p></blockquote>
+<p>Jeg har siden begynnelsen av oktober vært hjemme i pappaperm, så da Torbjørn spurte om jeg hadde lyst til å fylle en luke i julekalenderen hans tenkte jeg at jeg på en eller annen måte måtte klare å vinkle posten inn på dette temaet. Siden det andre temaet jeg hadde veldig lyst til å skrive noe om var <strong>domenespesifikke språk</strong> (DSL-er) bestemte jeg meg for å lage <em>BabyTalk</em>; et domenespesifikt språk for å programmere babysimulatorer.
+<p>En babysimulator er en dukke som vordende foreldre kan bruke til å forberede seg på å ta vare på en baby (se for eksempel <a href="http://www.realityworks.com/infantsimulations/realcarebaby.asp">RealCare Baby</a>). En babysimulator kan for eksempel simulere barnegråt når babyen har et behov; for eksempel når babyen er sulten, og slutte å gråte når behovet er møtt; for eksempel når babyen har fått mat.
+<p>Et domenespesifikt språk kan i følge Martin Fowler defineres på følgende måte.<br />
+<blockquote>
+<p>et <em>programmeringsspråk</em> med <em>begrenset uttrykksfullhet</em> fokusert på et bestemt <em>domene</em></p>
+</blockquote>
+<p>Vi skal altså lage et programmeringsspråk for et spesifikt domene, nemlig babysimulatorer. Språket kan utelukkende benyttes til å programmere babysimulatorer, en kan altså ikke generere Fibonacci-sekvenser med BabyTalk. Det er dette som menes med begrenset uttrykksfullhet. For en grundig innføring i alt som har med domenespesifikke språk å gjøre anbefaler jeg Fowler sin bok <a href="http://martinfowler.com/books/dsl.html">Domain Specific Languages</a>. I løpet av posten kommer jeg til å lenke til teknikkene jeg har benyttet for å lage DSL-en.
+<p>Kravene til BabyTalk er følgende:
+<ul>
+<li>En skal kunne definere et sett med <em>tilstander</em> babyen kan være i. Eksempler på slike tilstander er "glad", "trøtt" eller "har full bleie".
+<li>En skal kunne definere <em>overganger</em> mellom tilstandene der en spesifiserer hvilke <em>hendelser</em> som gjør at babyen går over i en annen tilstand. For eksempel skal en kunne definere en overgang fra tilstanden "trøtt" der hendelsen "blir bysset" fører til at babyen går over i tilstanden "sover".
+<li>En skal kunne definere et tidsskjema over hendelser som oppstår i et gitt intervall. For eksempel må det være mulig å si at hendelsen "er søvnig" skal utløses hver 3. time eller hvert 30. minutt.
+<li>Et viktig krav er at det må være relativt enkelt for en person med en viss teknisk innsikt både å forstå og skrive simulatorprogrammer.</li>
+</ul>
+<p>Når en skal lage en DSL vil det i de fleste tilfeller være lurt å lage en såkalt <a href="http://martinfowler.com/dslCatalog/semanticModel.html">semantisk modell</a>. En semantisk modell er ikke så skummelt som det høres ut som, i bunn og grunn dreier det seg om noe så kjedelig som en API skrevet i språket som benyttes til å parse DSL-en. I vårt tilfelle er den semantiske modellen en objektmodell i C#.
+<p>Jeg har bestemt meg for å modellere BabyTalk som en <a href="http://en.wikipedia.org/wiki/Finite-state_machine">tilstandsmaskin</a> (State Machine). For å kunne lage en tilstandsmaskin som kan konfigurasjonstyres har jeg benyttet en teknikk som Martin Fowler kaller <a href="http://martinfowler.com/dslCatalog/adaptiveModel.html">tilpassbar modell</a>. Objektmodellen vår definerer et skjelett for tilstandsmaskinen og blir konfigurert av data fra DSL-skriptene.
+<p>I vår semantiske modell innkapsler <em>State</em> klassen en tilstand samt alle hendelser som utløser overgang til andre tilstander. Metoden "AddTransition" brukes til å konfigurere modellen med hendelser og tilstander som metoden "Trigger" bruker når den skal bytte til en annen tilstand.
+<pre><code>public class State
+{
+    public string Name { get; private set; }
+
+    private readonly Dictionary&lt;string, State&gt; _transitions;
+
+    public State(string name)
+    {
+        Name = name;
+        _transitions = new Dictionary&lt;string, State&gt;();
+    }
+
+    public void AddTransition(Transition transition)
+    {
+        _transitions.Add(transition.Event, transition.State);
+    }
+
+    public State Trigger(string @event)
+    {
+        if(!_transitions.ContainsKey(@event))
+        {
+            return this;
+        }
+        return _transitions[@event];
+    }
+}</code></pre>
+<p><em>Baby</em> klassen holder styr på hvilken tilstand babyen til en hver tid befinner seg i og har metoder for å trigge overganger mellom hendelser. Den holder også styr på tidsinnstilte hendelser ved hjelp av en "planlegger" (grensesnittet <em>IScheduleEvents</em>).
+<pre><code>public class Baby
+{
+    private readonly IScheduleEvents _scheduler;
+
+    public string Name { get; private set; }
+    public State State { get; set; }
+
+    public Baby(IScheduleEvents scheduler, string name)
+    {
+        _scheduler = scheduler;
+        _scheduler.EventTriggered += Trigger;
+        Name = name;
+    }
+
+    public void Trigger(string @event)
+    {
+        State = State.Trigger(@event);
+    }
+
+    public void ScheduleEvent(string @event, TimeSpan interval)
+    {
+        _scheduler.Schedule(@event, interval);
+    }
+}
+
+public interface IScheduleEvents
+{
+    event Action&lt;string&gt; EventTriggered; 
+    void Schedule(string @event, TimeSpan interval);
+}</code></pre>
+<p>I det følgende eksempelet definerer vi den svært klossete babyen "Bumpy". Bumpy har to tilstander; <em>happy</em> og <em>angry</em>. I tilstanden <em>happy</em> definerer vi en overgang til tilstanden <em>angry</em> når hendelsen <em>head_bumped</em> inntreffer. I tilstanden <em>angry</em> definerer vi en overgang tilbake til <em>happy</em> når hendelsen <em>comforted</em> inntreffer. Hendelsen<em>head_bumped</em> inntreffer hvert tiende minutt. Bumpy sin tilstand er i utgangspunktet <em>happy</em>.
+<pre><code>var happyState = new State("happy");
+var angryState = new State("angry");
+happyState.AddTransition("head_bumped", angryState);
+angryState.AddTransition("comforted", happyState);
+var baby = new Baby(_fakeScheduler, "Bumpy") { State = happyState };
+baby.ScheduleEvent("head_bumped", TimeSpan.FromMinutes(10));</code></pre>
+<p>Dersom vi simulerer at hendelsen <em>head_bumped</em> blir trigget, ser vi at babyen går over i tilstanden <em>angry</em>.
+<pre><code>_fakeScheduler.SimulateTriggeringOf("head_bumped");
+Assert.That(baby.State.Name, Is.EqualTo("angry"));</code></pre>
+<p>Når babyen får trøst, med andre ord når hendelsen <em>comforted</em> inntreffer, går babyen tilbake til tilstanden <em>happy</em>.
+<pre><code>baby.Trigger("comforted");
+Assert.That(baby.State.Name, Is.EqualTo("happy"));</code></pre>
+<p>Modellen vår tilfredsstiller kravene om at en skal kunne definere hendelser, overganger og lage tidskjema. Måten vi definerer babysimulatoren på når vi bruker den semantiske modellen direkte gjør det derimot ikke særlig lett å forstå intensjonen bak koden, eller å skjønne hvordan alt henger sammen. </p>
+<p>Her er en annen måte å definere den samme babysimulatoren på:
+<pre><code>baby Bumpy
+    events
+        trigger head_bumped every 10 minutes
+    end
+
+    state happy
+        switch to angry when head_bumped
+    end
+
+    state angry
+        switch to happy when comforted
+    end
+end</code></pre>
+<p>Definert som en DSL blir intensjonen bak koden straks mye klarere. Målet mitt er at at vi basert på denne syntaksen kan populere den semantiske modellen i eksempelet over. For å få til dette trenger vi en parser. </p>
+<h3>Å implementere en DSL</h3>
+<p>Det finnes flere alternative måter å parse en DSL på. En kan skrive en parser fra grunnen av, noe som ikke er spesielt vanskelig men krever en del repetativ kode og gjør det vanskelig å skjønne helheten. Et annet alternativ er å benytte en såkalt <a href="http://martinfowler.com/dslCatalog/parserGenerator.html">parser generator</a> og få generert kode for en parser. Det finnes mange parsergeneratorer tilgjengelig og flere av de er svært kraftige. (<a href="http://www.antlr.org/">Antlr</a> er en mye brukt parser generator som er tilgjengelig både for Java og .NET). Problemet med parser generatorer er at de typisk krever et ekstra kompileringssteg for å generere parseren. Dette gjør at de kan være litt krøkkete å jobbe med. Et tredje alternativ er en <a href="http://martinfowler.com/dslCatalog/parserCombinator.html">parserkombinator</a> og det er en slik løsning jeg har valgt å benytte i dette eksempelet. </p>
+<p>En parserkombinator er en måte å bygge parsere på der en setter sammen stadig mer kompliserte parsere av enklere parsere. For eksempel kan en sette sammen en tekststrengparser og en tallparser til en parser som først matcher en tekststreng og så et tall. Parserkombinatorer er mye brukt i funksjonelle språk. Det mest kjente eksempelet jeg kan komme på er <a href="http://www.haskell.org/haskellwiki/Parsec">Parsec</a>, en parserkombinator for Haskell (Parsec er også portet til blant annet <a href="http://www.quanttec.com/fparsec/">F#</a>). </p>
+<p><a href="http://code.google.com/p/sprache/">Sprache</a> er et parserkombinatorbibliotek som gjør det relativt enkelt å bygge parsere ved hjelp av C#. Selv om det ikke kan måle seg med tunge parser generatorer når en skal lage mer komplekse språk er det etter min mening velegnet til enkle domenespesifikke språk. </p>
+<p>Sprache gjør det enkelt å parse strukturert tekst til en datastruktur som matcher strukturen på teksten. Det er derimot ikke fullt så lett å populere en struktur som ikke har samme hierarkiske oppbygning. Dette gjelder blant annet den semantiske modellen vår. Jeg velger derfor å bruke Sprache til å populere dataklasser som jeg deretter bruker til å fylle den semantiske modellen. </p>
+<p>Når en skal skrive en parser synes jeg ofte at det er letterst å starte "innerst" og arbeide seg utover. Jeg begynner derfor med å definere paseren for en overgang til en ny tilstand basert på en hendelse.
+<pre><em>switch to</em> <strong>angry</strong> <em>when</em> <strong>head_bumped</strong></pre>
+<p>Når jeg skal parse en overgang begynner jeg med å parse nøkkelordene "switch to". I eksempelet under bruker jeg Sprache til å lage en parser som prøver å matche denne tekststrengen. Metoden "Token" gjør at parseren ignorerer eventuelle mellomrom før og etter tekststrengen.
+<pre><code>Parse.String("switch to").Token()</code></pre>
+<p>Alle stikkord kan i grunn parses på akkurat samme måte så jeg lager en metode som tar inn en tekststreng og returenerer en parser.
+<pre><code>private static Parser&lt;IEnumerable&lt;char&gt;&gt; Keyword(string keyword)
+{
+    return Parse.String(keyword).Token();
+}</code></pre>
+<p>Deretter trenger vi å matche navnet på tilstanden vi skal bytte til når hendelsen oppstår. Jeg ønsker at en tilstand skal identifiseres med bokstaver eller tall og benytter derfor den innebygde parseren "LetterOrDigit". Identifikatoren kan også inneholde understrek, så jeg benytter metoden "Or" til å kombinere "LetterOrDigit" parseren med en parser som matcher understrek. Jeg ønsker at identifikatoren skal inneholde minst ett tegn og vil gjerne ha resultatet ut som en tekststreng. Dette får jeg til ved å benytte metodene "AtLeastOnce" og "Text". Alle identifikatorer i BabyTalk har samme struktur. Jeg lagrer derfor denne parseren i en egen variabel.
+<pre><code>var id = Parse.LetterOrDigit.Or(Parse.Char('_')).AtLeastOnce().Text().Token()</code></pre>
+<p>Parseren for "when" stikkordet lages på samme måte som parseren for "switch to" stikkordet. Da er vi klare for å sette sammen alt til en parser.
+<pre><code>var transitionStatement = Keyword("switch to")
+    .Then(switchTo =&gt; id
+        .Then(stateName =&gt; Keyword("when")
+            .Then(when =&gt; id
+                .Then(eventName =&gt; Parse.Return(
+                    new TransitionElement(stateName, eventName))))));</code></pre>
+<p>Jeg synes ikke at denne typen nøsting gir særlig lesbar kode. Noen smarte hoder har imidlertid funnet ut at ved å implementere Linq-metodene "From" og "Select" kan en utnytte C# sitt "syntaktiske sukker" for Linq-uttrykk. På denne måten kan parseren skrives sekvensielt og blir etter min mening mye mer lesbar.
+<pre><code>var transitionStatement = from switchTo in Keyword("switch to")
+                          from state in id
+                          from when in Keyword("when")
+                          from @event in id
+                          select new TransitionElement(state, @event);</code></pre>
+<p>Nå som vi er ferdige med å parse overgangen kan vi gå videre til selve tilstanden.
+<pre><em>state</em> <strong>happy</strong>
+    ...
+    ...
+<em>end</em></pre>
+<p>Når vi skal parse seksjonen for en tilstand bruker vi mange av de samme teknikkene som over. I tillegg til å matche stikkordet "state" og navnet på tilstanden benytter vi her transitionStatement, parseren vi laget over. Metoden "Many" gjør at en vil forsøke denne parseren mange ganger og lagre overgangene i en enumerering. Resultatet er et element som representerer en tilstand med et sett hendelseslyttere.
+<pre><code>var stateBlock = from state in Keyword("state")
+                 from name in id
+                 from transitions in transitionStatement.Many()
+                 from end in Keyword("end")
+                 select new StateElement(name, transitions);</code></pre>
+<p>Tidsinnstilte hendelser er ikke mye mer kompliserte å parse.
+<pre><em>trigger</em> <strong>head_bumped</strong> <em>every</em> <strong>10</strong> <em>minutes</em></pre>
+<p>Intervallet for tidsinnstilte hendelser kan defineres enten i minutter eller timer. Her bruker vi "Or" metoden til å matche enten "minutes" eller "hours".
+<pre><code>var eventTriggerStatement = 
+    from trigger in Keyword("trigger")
+    from @event in id
+    from every in Keyword("every")
+    from number in Parse.Number.Text().Token()
+    from timeType in (Keyword("minutes").Or(Keyword("hours"))).Text()
+    select new ScheduledEventElement(@event, timeType, int.Parse(number));</code></pre>
+<p>Hendelsesseksjonen ser omtrent ut som tilstandsseksjonen bare enda enklere.
+<pre><em>events</em>
+    ...
+    ...
+<em>end</em></pre>
+<p>Her benytter vi igjen metoden "Many" til å hente ut alle tidsintstilte hendelser.
+<pre><code>var eventsBlock = from events in Keyword("events")
+                  from statements in eventTriggerStatement.Many()
+                  from end in Keyword("end")
+                  select statements;</code></pre>
+<p>Da var tiden kommet til rotseksjonen "baby".
+<pre><em>baby</em> <strong>Bumpy</strong>
+    ...
+    ...
+<em>end</em></pre>
+<p>Det eneste nye her er måten jeg gjør hendelsesblokken valgfri på. Siden en parser alltid er nødt til å returnere et resultat må jeg bruke metoden "Or" til å si at dersom "eventsBlock" parseren ikke matcher, skal en tom liste returneres. Jeg har laget en enkel utvidelsesmetode for parsere som returnerer enumerables. Dermed kan jeg i stedet gjøre et kall til metoden "Optional" på eventsBlock, noe jeg synes er litt mer lesbart.
+<pre><code>var babyBlock = from baby in Keyword("baby")
+                from babyName in id
+                from eventTriggers in eventsBlock.Optional()
+                from states in stateBlock.Many()
+                from end in Keyword("end")
+                select new BabyElement(babyName, eventTriggers, states);
+
+// ...
+
+public static Parser&lt;IEnumerable&lt;T&gt;&gt; Optional&lt;T&gt;(this Parser&lt;IEnumerable&lt;T&gt;&gt; parser)
+{
+    return parser.Or(Parse.Return(new T[0]));
+}</code></pre>
+<p>Det eneste som gjenstår nå er å populere den semantiske modellen med resultatet av parsingen. Koden for å gjøre dette er i hovedsak nokså grei. Vi begynner med å definere en <a href="http://martinfowler.com/dslCatalog/symbolTable.html">symboltabell</a> med alle tilstandsobjektene. Jeg benytter en Dictionary der nøkkelen er navnet på tilstanden og verdien er selve tilstandsobjektet.
+<pre><code>var stateSymbolTable = babyElement.StateElements.ToDictionary(s =&gt; s.Name, s =&gt; new State(s.Name));</code></pre>
+<p>Deretter opprettes babyobjektet og starttilstanden settes til den første definerte tilstanden.
+<pre><code>var baby = new Baby(_scheduler, babyElement.Name)<br>{<br>    State = stateSymbolTable[babyElement.InitialStateName]<br>};</code></pre>
+<p>Tidsinnstilte hendelser legges til ved å løpe igjennom alle elementene og kalle metoden "Schedule" på den semantiske modellen.
+<pre><code>foreach (var scheduledEventElement in babyElement.ScheduledEventElements)
+{
+    var scheduledEvent = new ScheduledEvent(scheduledEventElement.Event, <br>                                            scheduledEventElement.Interval);
+    baby.Schedule(scheduledEvent);
+}</code></pre>
+<p>Når vi skal opprette overgangene mellom tilstander benyttes symboltabellen til å slå opp kilde- og måltilstand.
+<pre><code>foreach (var stateElement in babyElement.StateElements)
+{
+    var state = stateSymbolTable[stateElement.Name];
+    foreach (var transitionElement in stateElement.TransitionElements)
+    {
+        var targetState = stateSymbolTable[transitionElement.StateName];
+        var transition = new Transition(transitionElement.Event, targetState);
+        state.AddTransition(transition);
+    }
+}</code></pre>
+<p>Da kan vi omsider teste det ferdige resultatet.
+<pre><code>var parser = new BabyParser();
+var translator = new Translator(_fakeScheduler);
+
+var babyElement = parser.ParseBaby(File.ReadAllText("Bumpy.bt"));
+var baby = translator.Translate(babyElement);
+
+Assert.That(baby.State.Name, Is.EqualTo("happy"));</code></pre>
+<pre><code>_fakeScheduler.SimulateTriggeringOf("head_bumped");
+Assert.That(baby.State.Name, Is.EqualTo("angry"));</code></pre>
+<pre><code>baby.Trigger("comforted");
+Assert.That(baby.State.Name, Is.EqualTo("happy"));</code></pre>
+<p>All kildekoden jeg benytter i denne posten er tilgjengelig på <a href="https://github.com/OyvindFanebust/BabyTalk">github</a>. </p>
+<p>Jeg håper at jeg med denne posten har vist at det ikke trenger å være særlig vanskelig å lage enkle parsere og at noen kanskje har blitt inspirert til å prøve å eksperimentere litt med domenespesifikke språk. Flere poster om temaet kommer forhåpentligvis til å dukke opp med jevne mellomrom på den nye bloggen min <a href="http://thedomainlinguist.com/">"The Domain Linguist"</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

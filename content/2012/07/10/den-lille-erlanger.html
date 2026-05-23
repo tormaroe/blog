@@ -1,0 +1,96 @@
+---
+title: Den lille Erlanger
+link: http://blog.kjempekjekt.com/2012/07/10/den-lille-erlanger/
+layout: post
+date: 2012-07-10 20:32:34Z
+tags:
+  - Erlang
+  - Funksjonell programmering
+  - Rekursjon
+---
+<p>Dette er en tutorial som lærer deg grunnleggende Erlang og noen grunnleggende teknikker fra funksjonell programmering. Formatet er inspirert&nbsp;av boken <i><a href="http://www.ccs.neu.edu/home/matthias/BTLS/">The Little Schemer</a></i> (og de andre bøkene i den serien). Vi begynner helt&nbsp;fra scratch, men bygger raskt opp ganske mye kunnskap om språket. Følg nøye med!</p><p>Har du ikke peiling på hva Erlang er for noe kan du leste <a href="http://blog.kjempekjekt.com/2010/04/21/en-introduksjon-til-erlang/">min lille introduksjon som jeg skrev i 2010</a>.</p><h3 style="padding-bottom:18px;">La oss begynne...</h3> <table width="100%"> <tbody> <tr> <td width="50%"> <p>Er du klar for å lære litt Erlang og funksjonell programmering?</p> </td> <td style="padding-left:12px;">Ja!</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er 1?</p> </td> <td style="padding-left:12px;">Det er et <b>heltall</b>.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er X?</p><pre>X = 2.</pre> </td> <td style="padding-left:12px;">X er en <b>variabel</b>. X er bundet til verdien 2.<br>Legg merke til punktumet etter uttrykket. Alle uttrykk avsluttes med et punktum - som om de er normale setninger.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hvilken verdi er Y bundet til?</p><pre>X = 3, 
+Y = X.</pre> </td> <td style="padding-left:12px;">X er bundet til verdien 3, og Y er bundet til X. Y er derfor også bundet til verdien 3.<br>Legg merke til at dette uttrykket består av to del-uttrykk, og at de er separert med komma - akkurat som leddsetninger.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Følgende uttrykk vil feile. Hvorfor?</p><pre>X = 4, 
+Y = 5, 
+Y = X.</pre> </td> <td style="padding-left:12px;">En variabel i Erlang kan kun bindes til en verdi <b>én gang</b>. Etter at vi har sagt at Y er bundet til 5 kan den ikke bindes på nytt. Hvis X er lik 4 og Y er lik 5, så kan X ikke være lik Y.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Følgende uttrykk feiler ikke. Hvorfor?</p><pre>X = 6, 
+Y = 6, 
+Y = X.</pre> </td> <td style="padding-left:12px;">Både X og Y er bundet til verdien 6. X er derfor lik Y, så X = Y feiler ikke.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er X bundet til nå?</p><pre>X = foo.</pre> </td> <td style="padding-left:12px;">X er bundet til <b>atomet</b> foo. Et atom er en grunnleggende datatype på lik linje med tall. De skiller seg fra variabler ved å begynne med en liten bokstav - variabelnavn begynner alltid med en stor bokstav.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er dette?</p><pre>{epler, bananer, plummer}</pre> </td> <td style="padding-left:12px;">En datastruktur som kalles en <b>tuple</b>. I dette tilfellet er det en 3-tuple (også kalt triplet) av tre atomer.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av Person?</p><pre>GivenName = "Bill", 
+SurName = "Gates", 
+Person = {person, GivenName, SurName}.</pre> </td> <td style="padding-left:12px;">Person er bundet til en triplet bestående av atomet 'person' og to strenger. Verdien er <tt>{person, "Bill", "Gates"}</tt>.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av G og S?</p><pre>P = {person, "Steve", "Jobs"}, 
+{person, G, S} = P.</pre> </td> <td style="padding-left:12px;">G er bundet til strengen "Steve" og S er bundet til strengen "Jobs". Dette kalles <b>pattern matching</b>.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Vil dette fungere?</p><pre>P = {author, "Joe", "Armstrong"}, 
+{person, G, S} = P.</pre> </td> <td style="padding-left:12px;">Nei, atomet person matcher ikke atomet author.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av dette uttrykket?</p><pre>P = {man, "Adam"}, 
+{_, Name} = P, 
+Name.</pre> </td> <td style="padding-left:12px;">Verdien av dette uttrykket er strengen "Adam". Og deluttrykk 2 fungerer fordi vi nå matcher et atom med en underscore, som kan matche hva som helst.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er dette?</p><pre>[1, 2, 3, 4, 5].</pre> </td> <td style="padding-left:12px;">Dette er en <b>liste</b>. Listen består av fem tall.&nbsp;</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av X?</p><pre>[_, X, _] = [1, 2, 3].</pre> </td> <td style="padding-left:12px;">X er bundet til heltallet 2. Dette er også et eksempel på pattern matching.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av dette uttrykket?</p><pre>L = [2, 4, 8, 16, 32], 
+[Head|Tail] = L, 
+Head.</pre> </td> <td style="padding-left:12px;">Vertikal strek (pipe) brukes til å splitte en liste mellom <b>"hodet"</b> og <b>"halen"</b>. Dette uttrykket evaluerer til heltallet 2.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Og dette?</p><pre>L = [2, 4, 8, 16, 32], 
+[Head|Tail] = L, 
+Tail.</pre> </td> <td style="padding-left:12px;">Verdien av dette uttrykket er listen <tt>[4, 8, 16, 32]</tt>.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er hodet og halen av en liste med ett element?</p><pre>[Head|Tail] = [a].</pre> </td> <td style="padding-left:12px;">Head = a og Tail = [], den tomme listen.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Kan du plukke ut hode og hale av den tomme listen?</p><pre>[Head|Tail] = [].</pre> </td> <td style="padding-left:12px;">Nei, dette vil feile.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hvilken verdi er det vi har trukket ut fra listen nå?</p><pre>L = [2, 4, 8, 16, 32], 
+[_|T] = L, 
+[_|T2] = T, 
+[H|_] = T2, 
+H.</pre> </td> <td style="padding-left:12px;">T er halen av den opprinnelige listen, dvs. en liste som begynner med 4. T2 er halen av denne listen igjen, og begynner på 8. Variabelen H er bundet til hodet på T2, og uttrykket returnerer derfor 8.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Kan det forrige uttrykket skrives mere kompakt?</p><pre>L = [2, 4, 8, 16, 32], 
+[_, _, H | _] = L, 
+H.</pre> </td> <td style="padding-left:12px;">Tydeligvis, for dette uttrykket returnerer også 8.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av double(1)?</p><pre>double(X) -&gt; X + X.</pre> </td> <td style="padding-left:12px;">double har her blitt definert som en <b>funksjon</b>, og resultatet av å evaluere double(1) er heltallet 2.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av sum([1, 2, 3]) gitt følgende definisjon?</p><pre>sum([A, B, C]) -&gt; A + B + C.</pre> </td> <td style="padding-left:12px;">Her har vi laget en sum-funksjon som har en formell parameter som må være en liste med tre element. Igjen bruker vi pattern matching, og svaret er 6.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av second([1, 2, 3, 4])?</p><pre>second([_, X | _]) -&gt; X.</pre> </td> <td style="padding-left:12px;">2.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er verdien av S1 og S2?</p><pre>second([_,X|_]) -&gt; X; 
+second(_)       -&gt; no_second_element. 
+
+S1 = second([1]), 
+S2 = second([1, 2]).</pre> </td> <td style="padding-left:12px;">S1 er bundet til atomet no_second_element, mens S2 er bundet til tallet 2. Funksjonen second har nå to ulike klauser (clauses), og pattern matching avgjør hvilken av dem som blir brukt.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Nå bruker vi det vi har lært til å telle antall elementer i en liste.</p><pre>count([ ])   -&gt; 0; 
+count([_,T]) -&gt; 1 + count(T).</pre> </td> <td style="padding-left:12px;">Antall elementer i en tom liste er 0. Antall elementer i en liste som ikke er tom er 1 pluss antall elementer i halen av listen. Funksjonen kaller seg selv til den har "spist opp" hele listen. Dette er en <b>rekursjon</b>.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Her er en annen måte vi kan telle elementene i en liste på. Hva er forskjellen?</p><pre>count(List) -&gt; count(List, 0). 
+
+count([], Acc)    -&gt; Acc; 
+count([_|T], Acc) -&gt; count(T, Acc + 1). </pre> </td> <td style="padding-left:12px;">Her har vi to ulike funksjoner med samme navn men med ulikt antall parametre. Vi kaller dem count/1 og count/2 fordi de har henholdsvis ett og to formelle parametre.&nbsp;count/2 bygger opp resultatet i variabelen Acc (står for accumulator).<br><br>Legg merke til at det rekursive kallet til count er det siste som skjer i count. Dette kalles en <b>halerekursjon</b>, og er mye mere effektivt enn rekursjonen i den forrige implementasjonen av count. Men det kan være mere komplisert å forstå koden..&nbsp;</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er resultatet av dette uttrykket?</p><pre>F = fun (X) -&gt; X * 3 end, 
+F(3).</pre> </td> <td style="padding-left:12px;">Variabelen F bindes til en <b>anonym funksjon</b> som multipliserer argumentet sitt med 3. Resultatet av uttrykket er 9.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Funksjoner kan være argumenter til andre funksjoner. Hva er verdien av X her?</p><pre>map(_, [])            -&gt; []; 
+map(Fun, [Head|Tail]) -&gt; 
+    [Fun(Head) | map(Fun, Tail)]. 
+
+X = map(fun (X) -&gt; X div 2 end, 
+        [2, 4, 8, 16]).</pre> </td> <td style="padding-left:12px;">map sier at om det andre argumentet er en tom liste så er resultatet også en tom liste. Om listen ikke er tom er resultatet en ny liste som består av resultatet av å evaluere Fun av det første elementet pluss map av alle de andre elementene. map kaller seg selv rekursivt til den har spist opp hele listen. <br><br>X er listen [1, 2, 4, 8].<br><br>map er en <b>høyereordens funksjon</b> som utfører en gitt funksjon på elementene i en sekvens. Den er også kjent som apply-to-all, mapcar, select, apply_map og collect.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er X?</p><pre>filter(_, [])    -&gt; []; 
+filter(F, [H|T]) -&gt; 
+    case F(H) of 
+        true -&gt; [H | filter(F, T)]; 
+        false -&gt; filter(F, T) 
+    end. 
+
+IsEven = fun (X) -&gt; X rem 2 == 0 end. 
+X = filter(IsEven, [1,2,3,4,5,6]).</pre> </td> <td style="padding-left:12px;">X er listen [2, 4, 6].</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>La oss se på en versjon som bruker halerekursjon. Hva blir X nå?</p><pre>filter(F, L) -&gt; filter(F, L, []). 
+
+filter(_, [], Acc)    -&gt; Acc; 
+filter(F, [H|T], Acc) -&gt; 
+    case F(H) of
+        true -&gt; filter(F, T, [H|Acc]); 
+        false -&gt; filter(F, T, Acc) 
+    end. 
+
+IsEven = fun (X) -&gt; X rem 2 == 0 end, 
+X = filter(IsEven, [1,2,3,4,5,6]).</pre> </td> <td style="padding-left:12px;">X er listen [6, 4, 2]. Listen er i revers i forhold til den første varianten på grunn av måten vi bygger opp Acc på. Det er mest effektivt å plukke elementer fra og legge elementer til hodet av en liste, og derfor blir det sånn. Men Erlang kan raskt reversere en liste, så dette er egentlig ikke noe problem.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Vi har sett på et par veldig grunnleggende funksjoner i funksjonell programmering - map og filter. Det naturlige neste steget kalles <b>fold</b> (også kjent som reduce, aggregate, accumulate, compress og inject):</p><pre>fold(Acc, _, [])    -&gt; Acc; 
+fold(Acc, F, [H|T]) -&gt; fold(F(H, Acc), F, T).</pre> </td> <td style="padding-left:12px;">Hmm, ok?!</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Fold komprimerer en sekvens til én verdi. Hva er verdien av dette uttrykket?</p><pre>fold(0, 
+     fun (X, Acc) -&gt; X + Acc end, 
+     [1, 2, 3, 4]).</pre> </td> <td style="padding-left:12px;">Heltallet 10, som er summen av tallene i listen.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er et bedre navn på funksjonen foo?</p><pre>foo(F, List) -&gt; 
+    G = fun (X, Acc) -&gt; 
+            case F(X) of 
+                true -&gt; [X|Acc]; 
+                false -&gt; Acc 
+            end 
+        end, 
+    fold([], G, List).</pre> </td> <td style="padding-left:12px;">Et bedre navn på foo ville vært filter. foo gjør akkurat samme jobben som filter-funksjonen du så tidligere, men denne gangen ved hjelp av fold.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Hva er et bedre navn på funksjonen bar?</p><pre>bar(F, List) -&gt; 
+    G = fun (X, Acc) -&gt; [F(X)|Acc] end, 
+    fold([], G, List).</pre> </td> <td style="padding-left:12px;">map.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>La oss kombinere filter, map og fold for å analysere et datasett. Hvilken verdi er X bundet til etter å ha evaluert følgende?</p><pre>is_man({man, _, _}) -&gt; true; 
+is_man(_) -&gt; false. 
+
+L = [{man,   "Jan",     23},&nbsp;
+     {woman, "Kari",    25},&nbsp;
+     {man,   "Rune",    30},&nbsp;
+     {man,   "Vidar",   44},&nbsp;
+     {woman, "Cecilie", 35}], 
+L2 = filter(fun is_man/1, L), 
+L3 = map(fun ({_, _, Age}) -&gt; Age end, L2), 
+X = fold(0, fun (X, Acc) -&gt; X + Acc end, L3). </pre> </td> <td style="padding-left:12px;">L er en liste med persondata. L2 er alle mennene. L3 er en liste med aldrene til mennene. Og X er summen av alderen til alle mennene - som er 97.</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>En aller siste fold: Gitt listen L ovenfor, hva er verdien av dette uttrykket?</p><pre>fold({men, 0, women, 0}, 
+     fun (P, Acc) -&gt; 
+         {men, M, women, W} = Acc, 
+         case P of 
+             {man, _, Age} -&gt; 
+                 {men, M + Age, women, W};
+             {woman, _, Age} -&gt; 
+                 {men, M, women, W + Age} 
+         end 
+     end, 
+     L).</pre> </td> <td style="padding-left:13px;">4-tuplet <tt>{men, 97, women, 60}</tt>,</td> </tr> <tr><td colspan="2"><hr></td></tr> <tr> <td width="50%"> <p>Lærte du noe?</p> </td> <td style="padding-left:12px;">Tja, jeg tror jeg begynner å se hvor elegant det er å jobbe med lister med funksjoner som map, filter og fold. Og kanskje jeg skal ta en nærmere titt på Erlang.., pattern matching virker spesielt kult :)</td> </tr> <tr><td colspan="2"><hr></td></tr> </tbody></table>

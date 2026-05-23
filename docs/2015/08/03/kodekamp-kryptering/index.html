@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Python,Kryptering,Konkurranse">
+
+    <title>Kodekamp: Kryptering med engangsnøkkel</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kodekamp: Kryptering med engangsnøkkel</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 3. august 2015</small> 
+            <a href="/tags/python"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Python</span></a>
+          
+            <a href="/tags/kryptering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Kryptering</span></a>
+          
+            <a href="/tags/konkurranse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Konkurranse</span></a>
+          </p>
+          <p style="text-align:center;"><img src="/uploads/2015/08/kodekamp1.png"></p>
+
+<p>Dette er første oppgave i <strong>programmeringsbloggens kodekamp</strong>, en uhøytidelig og vennskapelig utviklerkonkurranse. Ønsker du å delta må du løse oppgaven og sende koden på epost til <a href="mailto:kodekamp@kjempekjekt.com">kodekamp@kjempekjekt.com</a> innen mandag 10. august.</p>
+<p>Jeg velger et nytt programmeringsspråk for hver oppgave, og denne uken skal du løse oppgaven i <strong><a href="https://www.python.org/">Python</a></strong>. Men oppgaven er ikke vanskeligere enn at du bør kunne løse den ved hjelp av litt <em>googling</em>, selv om du ikke har spesielt med Python-erfaring. Faktisk tror jeg du vil synes det er mye kjekkere om du <em>ikke</em> kan Python fra før. </p>
+<p>Du må levere programmet i én fil, som må kunne kjøres i Python 2.7.9 (det er det jeg kjører), uten eksterne avhengigheter. Forventet antall kodelinjer: Et sted mellom 10 og 60 kanskje?!</p>
+<p>Resultater vil bli presentert og vurdert i en oppfølgingspost. Besvarelsene vil da bli vurdert i forhold til <strong>presisjon</strong> (programmet gjør hva det skal), <strong>lesbarhet</strong> (det er lett å forstå) og <strong>eleganse</strong> (gode abstraksjoner, finesse, interessant løsning).</p>
+<h2>Bakgrunn: Engangsnøkler</h2>
+<p>Jeg har akkurat lest en glimrende Sci-Fi-roman som heter <em>Seveneves</em>, skrevet av Neal Stephenson. I boken har vi blant annet noen vitenskapsnerder som er opptatt av ekstrem sikkerhet. For å sende hemmelige meldinger seg imellom bruker de noe som kalles <strong><a href="https://en.wikipedia.org/wiki/One-time_pad">one-time pads</a></strong> (<em>OTP</em>, eller på norsk <em>engangsnøkler</em>).</p>
+<p style="text-align:center;font-size:90%"><img src="/uploads/2015/08/one-time-pad.jpg"><br><i>En one-time pad brukt av Soviet, bildet lånt fra Otto Von Guericke Universität Magdeburg.</i></p>
+
+<p>Ved å bruke OTP kan man sende meldinger som <em>ikke kan</em> crackes (i teorien). Poenget er at avsender og mottaker deler en hemmelighet: En nøkkel som er like lang som meldingen. For å forstå hvordan dette fungerer bør det være tilstrekkelig å se på <a href="https://en.wikipedia.org/wiki/One-time_pad">eksempelet i Wikipedia</a>.</p>
+<h2>Oppgaven</h2>
+<p>Du skal lage et python-program (script) som kan kjøres i terminalvinduet. Programmet skal ta tre argumenter:</p>
+<p>&bull; Første argument forteller programmet om det skal kryptere eller dekryptere (bokstavene <code>e</code> og <code>d</code> funker fint).</p>
+<p>&bull; Andre argument er stien til en fil som inneholder meldingen som skal krypteres eller dekrypteres. Anta at filen er lagret i utf-8.</p>
+<p>&bull; Tredje argument er stien til en fil som inneholder en krypteringsnøkkel, også tegnkodet i utf-8.</p>
+<p>Når programmet kjøres skal det skrive ut resultatet til terminalvinduet.</p>
+<p>Alfabetet som skal benyttes er de 31 bokstavene <code>ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ .</code> (legg merke til mellomrom og punktum på slutten), nummerert fra 0 til 30 fra venstre mot høyre. For å kryptere et tegn <em>plusser</em> du verdien av tegne sammen med verdien av et tegn i nøkkelen.</p>
+<p>Inneholder meldingen et tegn som ikke er i det definerte alfabetet så bare beholder du det som det er (men på egen rissiko).</p>
+<h2>Eksempel</h2>
+<p>Denne lille snutten i C# kan jeg bruke for å generere en nøkkel:</p>
+<pre><code class="hljs">string alphabeth = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ .&quot;;
+<span class="hljs-type">int</span> <span class="hljs-keyword">columns</span> = <span class="hljs-number">6</span>;
+<span class="hljs-type">int</span> <span class="hljs-keyword">rows</span> = <span class="hljs-number">5</span>;
+
+var rnd = <span class="hljs-built_in">new</span> Random();
+<span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> <span class="hljs-keyword">row</span> = <span class="hljs-number">0</span>; <span class="hljs-keyword">row</span> &lt; <span class="hljs-keyword">rows</span>; <span class="hljs-keyword">row</span>++)
+{
+    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> digit = <span class="hljs-number">0</span>; digit &lt; <span class="hljs-keyword">columns</span> * <span class="hljs-number">6</span>; digit++)
+    {
+        <span class="hljs-keyword">if</span> (digit &gt; <span class="hljs-number">0</span> &amp;&amp; digit % <span class="hljs-number">6</span> == <span class="hljs-number">0</span>)
+            Console.<span class="hljs-keyword">Write</span>(&quot;-&quot;);
+        Console.<span class="hljs-keyword">Write</span>(alphabeth[rnd.Next(<span class="hljs-number">0</span>, alphabeth.Length)]);
+    }
+    Console.WriteLine();
+}</code></pre><p>Jeg skriver grupper av seks tegn, separert med en bindestrek, for at det skal være enklere for et menneske (f.eks. en KGB-agent) å lese nøkkelen. Programmet ditt må kunne bruke nøkler generert fra denne koden, samme hvilken verdi jeg har brukt for <code>columns</code> og <code>rows</code>.</p>
+<p>Eksempel på en nøkkel (lagrer den i filen <em>key1.1tp</em>):</p>
+<pre><code class="hljs">ZKD.<span class="hljs-selector-class">.J-ENLAOL-SCFHWK-</span>ÆJRQØL-TLYTDS-MØOVYU
+BAVIÅ<span class="hljs-selector-tag">Q</span>-BZBNTU-OENZJR-AINWLS-QQJXTS-ÅÅJPFV
+TRMBPB-KGXDE<span class="hljs-selector-class">.-ESR</span>ØUQ-GJUCXL-GIGOQW-K XFW 
+F<span class="hljs-selector-class">.YMME-</span>ÆMMKSA-AAHYIØ-ARZAÆ<span class="hljs-selector-tag">G</span>-ZÆVAXF-AMMÆWV
+XZÅQHK-.ÆVFOP-ORVCWT-ØEERRQ-OZTGKF-SEJRBO</code></pre><p>Sett at jeg nå har den krypterte meldingen <code>BOOKNHÆØÅLRJXTFFGØJPDQIXXÅBBJFNHÅØ.YO</code> i filen secret1.txt, kan jeg nå bruke programmet mitt til å dekryptere:</p>
+<pre><code class="hljs">$ <span class="hljs-keyword">python</span> otp.<span class="hljs-keyword">py</span> d secret1.txt key1.<span class="hljs-number">1</span><span class="hljs-keyword">tp</span>
+HELLO WORLD FRA PROGRAMMERINGSBLOGGEN</code></pre><h2>Nå er det din tur!</h2>
+<p>Jeg håper du tar utfordringen - send meg ditt bidrag, jeg gleder meg til å se det! Og husk at det er meningen du skal ha det gøy når du koder :D</p>
+<p>Lykke til, og send løsningen din til <a href="mailto:kodekamp@kjempekjekt.com">kodekamp@kjempekjekt.com</a> innen mandag 10. august (én uke fra nå).</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

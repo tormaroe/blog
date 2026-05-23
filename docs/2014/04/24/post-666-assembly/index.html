@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Assembly">
+
+    <title>Post #666: Assembly</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Post #666: Assembly</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 24. april 2014</small> 
+            <a href="/tags/assembly"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Assembly</span></a>
+          </p>
+          <p>Det gikk plutselig opp for meg at jeg aldri har kodet assembly. Eller, det er ikke helt riktig - jeg kodet noen få linjer Turbo Assembler i studietiden. Jeg har også gjort litt i stack-basert assembler på en VM, men det er jo ikke det samme som å gå native. Så hva passer da bedre for bloggpost nummer 666 enn å gjøre nettopp dette?!</p>
+<p>Og jeg vet selvfølgelig akkurat hvilken oppgave jeg vil løse. Yes, som vanlig skal jeg finne summen av alle multipler av 3 eller 5 under 1000.</p>
+<h2>Valg av assembler</h2>
+<p>Jeg valgte å gjøre dette i Linux, og jeg hadde gcc tilgjengelig. Jeg forstod så at jeg hadde et valg mellom to ulike typer syntakser: intel eller AT&amp;T. Jeg gikk for AT&amp;T-syntaks, selv om jeg skjønte etterpå at denne er mindre populær nå om dagen.</p>
+<p>Etterhvert som programmet utviklet seg ble det mer og mer knotete å få det til å virke. Med litt hjelp fant jeg ut at årsaken var at jeg var på et 64bits OS, så da måtte jeg assemble på en litt spesiell måte. For å assemble koden (filen <code>auler.s</code>) til den eksekverbare filen <code>euler</code> kjørte jeg:</p>
+<pre><code class="hljs">$ gcc -m32 <span class="hljs-built_in">euler</span>.s -o <span class="hljs-built_in">euler</span></code></pre><p>Og så kunne jeg kjøre den med:</p>
+<pre><code class="hljs"><span class="hljs-meta prompt_">$ </span><span class="language-bash">./euler</span></code></pre><h2>Iterere over 1000 tall</h2>
+<p>Jeg bryter opp programmet litt slik at jeg kan forsøke å forklare de ulike delene. Først kommer noen deklarasjoner:</p>
+<pre><code class="hljs avrasm">.code32            <span class="hljs-meta"># jeg ønsker 32bits kode</span>
+.section .data     <span class="hljs-meta"># her begynner dataseksjonen</span>
+<span class="hljs-symbol">msg:</span> 
+  .string <span class="hljs-string">&quot;%u\n&quot;</span>   <span class="hljs-meta"># formatstreng for utskrift</span>
+ 
+.section .text     <span class="hljs-meta"># her begynner kodeseksjonen</span>
+.globl main        <span class="hljs-meta"># &#x27;main&#x27; er en global label</span></code></pre><p>Og så begynner <code>main</code>:</p>
+<pre><code class="hljs avrasm"><span class="hljs-symbol">main:</span>
+  movl $<span class="hljs-number">1000</span>, %ecx <span class="hljs-meta"># move 1000 into range register</span>
+  movl $<span class="hljs-number">0</span>, %ebx    <span class="hljs-meta"># initial sum is zero</span></code></pre><p><code>ecx</code>-registeret skal fungere som en teller, men jeg vil spare summen i <code>ebx</code>. Nå har jeg initiert dem, og kan begynne på kode som skal iterere fra 1000 til 0:</p>
+<pre><code class="hljs avrasm"><span class="hljs-symbol">start_loop:</span>
+  cmpl $<span class="hljs-number">0</span>, %ecx    <span class="hljs-meta"># have we reached the end?</span>
+  je loop_exit     <span class="hljs-meta"># if true, exit loop</span>
+  decl %ecx        <span class="hljs-meta"># next value in range</span></code></pre><p>Jeg sammenligner <code>ecx</code> med 0, og hvis de er like vil jeg hoppe til en label jeg har kalt <code>loop_exit</code> (defineres senere). Hvis vi ikke har nådd 0 dekrementerer jeg telleren med 1. Løkken starter altså egentlig på tallet 999 (som er korrekt i forhold til oppgaven).</p>
+<p>Her følger resten av løkken:</p>
+<pre><code class="hljs avrasm">  movl $<span class="hljs-number">3</span>, %edi
+  <span class="hljs-keyword">call</span> add_if_multiple
+  
+  cmpl $<span class="hljs-number">0</span>, %edx    <span class="hljs-meta"># Skip multiple of 5 test</span>
+  je start_loop    <span class="hljs-meta"># if it was multiple of 3</span>
+  
+  movl $<span class="hljs-number">5</span>, %edi
+  <span class="hljs-keyword">call</span> add_if_multiple
+  
+  <span class="hljs-keyword">jmp</span> start_loop   <span class="hljs-meta"># loop back to top for next number</span></code></pre><p>Jeg kommer til å lage en liten subrutine jeg kaller <code>add_if_multiple</code> som vil legge tellerens verdi til summen hvis telleren er et multippel av et eller annet tall - nemlig det tallet som befinner seg i register <code>edi</code>. Derfor putter jeg først 3 i <code>edi</code> og kaller rutinen.</p>
+<p>Etter subrutinen er ferdig vet jeg (fordi jeg har gjort det sånn) at om <code>edx</code> er lik 0 så var tallet et multippel av 3. Da kan vi hoppe direkte til neste iterasjon med <code>je start_loop</code>. Hvis ikke må vi sjekke for multipler av 5 før vi hopper opp igjen.</p>
+<h2>Multippel?</h2>
+<p>Da er det på tide å se hvordan subrutinen ser ut:</p>
+<pre><code class="hljs avrasm"><span class="hljs-symbol">add_if_multiple:</span>
+  movl $<span class="hljs-number">0</span>, %edx    <span class="hljs-meta"># prepare for divition: clear edx</span>
+  movl %ecx, %eax  <span class="hljs-meta"># set number to be divided..</span>
+  divl %edi        <span class="hljs-meta"># divide %eax by %edi</span>
+                   <span class="hljs-meta"># result in %eax, reminder in %edx </span>
+  cmpl $<span class="hljs-number">0</span>, %edx    <span class="hljs-meta"># is reminder &#x27;0&#x27;?</span>
+  jne add_if_multiple_exit  <span class="hljs-meta"># jump if not...</span>
+  <span class="hljs-keyword">call</span> add_to_sum 
+<span class="hljs-symbol">add_if_multiple_exit:</span>
+  <span class="hljs-keyword">ret</span></code></pre><p>For å finne ut om et tall <code>x</code> er et multippel av <code>y</code> må jeg dele <code>x</code> på <code>y</code> og se om jeg får en rest. Det finnes ingen modulo-operator i x86-assembly, men <code>divl</code> som gjør samme nytten. Hvis resten <em>ikke er lik 0</em> hopper jeg ned til en label som returnerer fra rutinen, men hvis den <em>er</em> 0 så kaller jeg først en ny subrutine som legger telleren til summen:</p>
+<pre><code class="hljs avrasm"><span class="hljs-symbol">add_to_sum:</span>
+  addl %ecx, %ebx  <span class="hljs-meta"># add number to sum</span>
+  <span class="hljs-keyword">ret</span></code></pre><p>Jeg tviler på om en hardbarket assemblykoder ville laget en subrutine for en <em>oneliner</em> som dette, men jeg gjorde nå dette bare for å eksperimentere og lære..</p>
+<h2>Å skrive ut resultatet</h2>
+<p>Det som gjenstår nå er det som skal skje når iterasjonen er ferdig - nemlig å skrive ut resultatet. Jeg knotet endel med hvordan jeg skulle få til dette, og måtte også her ha hjelp av noen som hadde gjort assembly før. Selv da brukte vi litt vel mye tid på å få det til.</p>
+<p>Løsningen vi valgte var å linke inn <em>libc</em> - utskrift med systemkall i rå assembly ble bare for mye stress. gcc linker inn libc automatisk, så alt jeg behøvde å gjøre var å kalle <code>printf</code>-funksjone jeg var ute etter etter å ha lagt argumentete på stacken:</p>
+<pre><code class="hljs avrasm"><span class="hljs-symbol">loop_exit:</span>
+  pushl %ebx       <span class="hljs-meta"># argument to printf (the answer)</span>
+  pushl $msg       <span class="hljs-meta"># argument to printf (format string)</span>
+  <span class="hljs-keyword">call</span> printf      <span class="hljs-meta"># print answer</span></code></pre><h2>Avslutte programmet</h2>
+<p>Helt til slutt må vi avslutte programmet på riktig måte. Dette er et Linux-systemkall, og det ser slik ut:</p>
+<pre><code class="hljs avrasm">  movl $<span class="hljs-number">1</span>, %eax    <span class="hljs-meta"># 1 is the exit() syscall</span>
+  movl $<span class="hljs-number">0</span>, %ebx    <span class="hljs-meta"># 0 blir returverdien (alt ok)</span>
+  int $<span class="hljs-number">0x80</span>        <span class="hljs-meta"># do system call (exit)</span></code></pre><h2>Konklusjon</h2>
+<p>Jeg visste jo at native assembly var tungvindt og smertefullt, men jeg ble likevel overrasket over <em>hvor</em>* tungvindt og smertefullt det faktisk var å komme frem til et program som gjorde det jeg ønsket. Det var ikke logikken som var det verste. Utfordingene lå i å forstå hva som gikk galt når ting sluttet å fungere, å skjønne at problemene var knyttet til 64bit, og å i det hele tatt få skrevet ut noe. Å google etter løsninger var heller ikke uproblematisk.</p>
+<p>Jeg skjønner jo at ting blir bedre når man får litt rutine, men jeg mistet helt lysten til å gjøre mer av dette, og det kan nok gå en stund før du får se assemblykode på denne bloggen igjen :)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

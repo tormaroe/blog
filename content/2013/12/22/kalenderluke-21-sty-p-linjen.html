@@ -1,0 +1,45 @@
+---
+title: "Kalenderluke 21: Støy på linjen"
+link: http://blog.kjempekjekt.com/2013/12/22/kalenderluke-21-sty-p-linjen/
+layout: post
+date: 2013-12-21 23:50:39Z
+tags:
+  - Julekalender
+---
+<p>Dagens oppgave presenterte i bunn og grunn to ting – en liste med ord, og et mønster som matcher med noen av ordene. Oppgaven gikk ut på å finne ut hvor mange av ordene mønsteret passet for. Mønsteret så slik ut:</p><pre>(gatzkq)(ebrhwn)(biadt)(aipxe)(jcakt)(cazxidb)(acki)(fzhab)(ahzbk)(aiokd)</pre>
+<p>Når jeg nå bruker ordene <em>"mønster"</em> og <em>"matcher"</em> (noe jeg ikke gjorde i oppgaven), så gir det hint om hvordan oppgaven kunne løses på raskest mulig måte. Man kunne nemlig bruke <strong>regulære uttrykk</strong>!</p>
+<p>Her er et eksempel på hvordan jeg løser oppgaven i Ruby:</p>
+<ol>
+<li>Jeg åpner en teksteditor og limer inn ordlisten.</li>
+<li>og deretter limer jeg inn mønsteret.</li>
+<li>Så kjører jeg en search/replace hvor jeg bytter ut ( med [ og ) med ].</li>
+<li>Og så koder jeg akkurat nok til å putte ordlisten inn i en streng-variabel og å søke gjennom strengen med mønsteret som et regulært uttrykk.</li></ol>
+<p>Koden kan f.eks. se slik ut (hvor jeg har brutt opp mønsteret bare for å begrense linjelengden):</p><pre>data = &lt;&lt;EOF 
+abbaccafaa, gebaccafaa, motataifaa, abbiccazhi, 
+gebiccaifi, zhifaccaia, zhiataibfa, bebabbahzi, 
+trapaficia, ghifivizhi, qwitziccab, qwetxicabb, 
+aeaacfaiia, ghiaavaaha, mhiatiibaa, aeeibiahbi, 
+aeaacciiai, ghiacciaaa, mhiatacbaa, aeeicbchhi, 
+abdaccafaa, gebajcafaa, motalaifaa, abbiccazho, 
+nebiccaifi, znifaccaia, zhiatwnbfa, bebabbahsi, 
+trhqaficia, ghidivizhi, qwitzdccad, qwedxicabd, 
+aedacfadia, ghiaavadha, mhiatidbaa, deeibiahbd, 
+adaaccfiai, ghidccioaa, dhiatacbaa, adexcbchhi, 
+trakafikia, khifivizki, kwitziccab, kwetxicabk, 
+akaacfaiia, ghiaavakha, mhiktikbaa, aekibiahbi, 
+akaackiiai, ghiackiaaa, mhiatakbaa, aekicbchhi, 
+abdakkafaa, kebajcafaa, motalakfaa, abkiccazho, 
+nebikkaifk, znikaccaia, zhiakwnbfa, kekakkahsi, 
+trhqakicia, khikivizhi, kwitzdccad, qwedxicakd, 
+aekackadia, khiaavakha, mkiatikbaa, deeibikhbd,
+EOF
+
+puts data.scan(
+  /[gatzkq][ebrhwn][biadt][aipxe]
+  [jcakt][cazxidb][acki][fzhab]
+  [ahzbk][aiokd]/x).size
+</pre>
+<p>Var det noen som løste oppgaven på denne måten?</p>
+<h2>Og hvordan gikk det i dag?</h2>
+<p>Stian Eikeland var først ut i dag, og brukte under fem minutter. Magnar klokket inn på litt over 16 minutter - femte beste tid. Mikael Brevik og Eivind Sorteberg brukte begge rundt 20 minutter, og disse fire beholder dermed de fire øverste plassene på resultatlisten, med Stian i en 31-poengs ledelse.</p>
+<p>Så det er altså fremdeles fullstendig åpent i forhold til hvem som stikker av med seieren, og det liker vi :D</p>

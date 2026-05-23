@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Julekalender,Rekursjon">
+
+    <title>cl-arrow</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>cl-arrow</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 3. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/rekursjon"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rekursjon</span></a>
+          </p>
+          <p>Det er gøy å løse små programmeringsutfordringer. Spesielt når man forsøker å &quot;drille inn&quot; et språk man ikke har brukt så mye. I går løste jeg oppgave nummer 2 i <a href="https://julekalender.knowit.no/">Knowit sin julekalender</a>, og her er en rask gjennomgang.</p>
+<p>Oppgaven gav en serie med aksjekurser. Spørsmålet var hva maksimal fortjeneste ville være om man fikk kjøpe kun én aksje, og så selge den igjen på et senere tidspunkt.</p>
+<p>Først laget jeg noen funksjoner som jeg tipper jeg kommer til å få gjenbrukt i mange av oppgavene fremover:</p>
+<pre><code class="hljs">(<span class="hljs-name">ql:quickload</span> <span class="hljs-symbol">:drakma</span>)
+
+(<span class="hljs-name">defun</span> get-pastebin (<span class="hljs-name"><span class="hljs-built_in">id</span></span>)
+  (<span class="hljs-name">drakma:http-request</span> 
+    (<span class="hljs-name"><span class="hljs-built_in">format</span></span> <span class="hljs-literal">nil</span> <span class="hljs-string">&quot;http://pastebin.com/raw.php?i=~A&quot;</span> id)))
+
+(<span class="hljs-name">defun</span> split-lines (<span class="hljs-name">txt</span>)
+  (<span class="hljs-name">cl-ppcre:split</span> <span class="hljs-string">&quot;\\r\\n&quot;</span> txt))
+
+(<span class="hljs-name">defun</span> parse-any-value (<span class="hljs-name">x</span>)
+  (<span class="hljs-name">with-input-from-string</span> (<span class="hljs-name"><span class="hljs-built_in">in</span></span> x)
+    (<span class="hljs-name"><span class="hljs-built_in">read</span></span> in)))</code></pre><p><code>parse-any-value</code> er min lille erstatning for at Common Lisp ikke har noen funksjon for å konvertere en streng til et desimaltall. Den bruker rett og slett read-biten av Read-Eval-Print-Loop til å tolke en hvilken som helst streng som kan bli en gyldig Common Lisp verdi.</p>
+<p>Nå kan jeg hente ned og parse dataene:</p>
+<pre><code class="hljs">(<span class="hljs-string">defun</span> <span class="hljs-built_in">get-rates</span> ()
+  (<span class="hljs-string">mapcar</span> <span class="hljs-comment">#&#x27;parse-any-value</span>
+          (<span class="hljs-string">split-lines</span> (<span class="hljs-built_in">get-pastebin</span> <span class="hljs-string">&quot;sJVZp7BH&quot;</span>))))</code></pre><p><em>MEN</em> jeg kjenner at jeg savner threading-makroen fra Clojure / pipeline-operatoren fra F#. Derfor undersøkte jeg hvordan jeg kunne få den i Common Lisp, og fant pakken <code>cl-arrow</code>:</p>
+<pre><code class="hljs">(<span class="hljs-symbol">ql:</span>quickload <span class="hljs-symbol">:cl-arrows</span>)
+(<span class="hljs-keyword">use</span>-package <span class="hljs-symbol">:cl-arrows</span>)</code></pre><p>Dermed kan vi refakturere <code>get-rates</code>:</p>
+<pre><code class="hljs">(<span class="hljs-string">defun</span> <span class="hljs-built_in">get-rates</span> ()
+  (-&gt;&gt; <span class="hljs-string">&quot;sJVZp7BH&quot;</span>
+       <span class="hljs-built_in">get-pastebin</span>
+       <span class="hljs-string">split-lines</span>
+       (<span class="hljs-string">mapcar</span> <span class="hljs-comment">#&#x27;parse-any-value)))</span></code></pre><p>Mye bedre!</p>
+<p>Da gjenstår selve løsningen, som er en rekursiv <em>&quot;list-eater&quot;</em>. Underveis tar den vare på den sålangt høyeste profitten den har funnet, og for hvert element i listen finner funksjonen den høyeste påfølgende verdien, og ser om det resulterer i et bedre resultat.</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> find-larges-diff (<span class="hljs-name">rates</span> acc)
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> rates)
+    (<span class="hljs-name"><span class="hljs-built_in">let*</span></span> ((<span class="hljs-name">buy-rate</span> (<span class="hljs-name"><span class="hljs-built_in">car</span></span> rates))
+           (<span class="hljs-name">tail</span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> rates))
+           (<span class="hljs-name">sell-rate</span> (<span class="hljs-name">reduce</span> #<span class="hljs-symbol">&#x27;max</span> tail))
+           (<span class="hljs-name">acc?</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> sell-rate buy-rate)))
+      (<span class="hljs-name">find-larges-diff</span> tail (<span class="hljs-name"><span class="hljs-built_in">max</span></span> acc acc?)))
+    acc))  </code></pre><p>Og nå som jeg har <em>threading</em> finner jeg svaret sånn:</p>
+<pre><code class="hljs">(-&gt; (<span class="hljs-built_in">get-rates)</span>
+    (<span class="hljs-string">find-larges-diff</span> <span class="hljs-string">0</span>))</code></pre><p>PS: Dette var bare en bonusluke, <a href="/2015/12/03/may-of-t/">dagens egentlige blogpost finner du her</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Diverse prosjekter,Ping Ring,Boo,Samtidighet">
+
+    <title>Ping Ring del 4: Boo</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Ping Ring del 4: Boo</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 8. september 2010</small> 
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          
+            <a href="/tags/ping-ring"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ping Ring</span></a>
+          
+            <a href="/tags/boo"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Boo</span></a>
+          
+            <a href="/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
+          </p>
+          <p style="border-bottom: darkgrey 1px solid; border-left: darkgrey 1px solid; padding-bottom: 7px; background-color: #ffd79b; padding-left: 7px; padding-right: 7px; border-top: darkgrey 1px solid; border-right: darkgrey 1px solid; padding-top: 7px">Dette er del 4 i artikkelserien <strong><em>Ping Ring</em></strong> hvor jeg implementerer et og samme program i et utall ulike programmeringsspråk - for å se om det er noe å lære gjennom å gjøre det. <a href="/2010/09/04/ping-ring-del-1-introduksjon/">Introduksjonen kan du lese her</a>.</p>
+<p><img style="border-right-width: 0px; margin: 0px 10px 0px 5px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="boo" border="0" alt="boo" align="left" src="/uploads/2010/09/boo.png" width="90" height="106"> Denne gangen har jeg valgt et språk som kanskje er ukjent for en del utviklere, nemlig <strong><a href="http://boo.codehaus.org/">Boo</a></strong>. Boo er et objektorientert, statisk typet språk for Common Language Infrastructure (dvs. .NET). Syntaksen som er inspirert av <a href="http://en.wikipedia.org/wiki/Python_(programming_language)">Python</a> er elegant og kompakt. Selv om koden er like statisk typet som C# så utleder Boo det meste av typene for deg, slik at det nesten ser ut som om Boo er dynamisk typet.</p>
+<p>Igjen har jeg fulgt samme struktur som tidligere (del <a href="/2010/09/06/ping-ring-del-2-c/">2</a> og <a href="/2010/09/07/ping-ring-del-3-ruby/">3</a>), og ettersom det samme rammeverket ligger i bunn her som i C#-varianten så er det ingen forskjeller i hvordan jeg for eksempel gjør sending og mottak med TCP. Den største forskjellen ligger i bruk av tråder: <strong>I Boo kan jeg kjøre hvilken som helst metode asynkront (i en ny tråd) ved å kalle <em>BeginInvoke()</em> på metoden</strong> (se linje 14 til 16, 35 og 48). Dette er ganske elegant – jeg trenger ikke tenke på asynkronitet når jeg implementerer basislogikken, og kan så velge om jeg vil kjøre parallelt eller ikke når jeg etterpå skal bruke den.</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><span style="background-color: #141414"><font color="#665f57">1 </font></span><font color="#7587a6">import</font> System<br><span style="background-color: #141414"><font color="#665f57">2 </font></span><font color="#7587a6">import</font> System.IO<br><span style="background-color: #141414"><font color="#665f57">3 </font></span><font color="#7587a6">import</font> System.Net<br><span style="background-color: #141414"><font color="#665f57">4 </font></span><font color="#7587a6">import</font> System.Net.Sockets<br><span style="background-color: #141414"><font color="#665f57">5 </font></span><font color="#7587a6">import</font> System.Threading<br><span style="background-color: #141414"><font color="#665f57">6 </font></span><br><span style="background-color: #141414"><font color="#665f57">7 </font></span><font color="#cda869"><b>class</b></font>&nbsp;<font color="#7587a6">RingServer</font>:<br><span style="background-color: #141414"><font color="#665f57">8 </font></span>&nbsp; [Property(ThisPort)] _thisPort <font color="#7587a6">as</font> int<br><span style="background-color: #141414"><font color="#665f57">9 </font></span>&nbsp; [Property(OtherPort)] _otherPort <font color="#7587a6">as</font> int<br><span style="background-color: #141414"><font color="#665f57">10 </font></span>&nbsp; [Property(MaxDelay)] _maxDelay = TimeSpan(0, 0, 5) <font color="#665f57"># default</font><br><span style="background-color: #141414"><font color="#665f57">11 </font></span>&nbsp; _lastPingTime = DateTime.Now<br><span style="background-color: #141414"><font color="#665f57">12 </font></span><br><span style="background-color: #141414"><font color="#665f57">13 </font></span>&nbsp; <font color="#cda869"><b>def</b></font>&nbsp;<font color="#7587a6">Start</font>(sendStartupPing):<br><span style="background-color: #141414"><font color="#665f57">14 </font></span>&nbsp;&nbsp;&nbsp; SendDelayedPing.BeginInvoke() <font color="#cda869"><b>if</b></font> sendStartupPing<br><span style="background-color: #141414"><font color="#665f57">15 </font></span>&nbsp;&nbsp;&nbsp; WatchForMissingPings.BeginInvoke()<br><span style="background-color: #141414"><font color="#665f57">16 </font></span>&nbsp;&nbsp;&nbsp; ListenForPings.BeginInvoke()<br><span style="background-color: #141414"><font color="#665f57">17 </font></span>&nbsp;&nbsp;&nbsp; Thread.Sleep(20) <font color="#cda869"><b>while</b></font> true <font color="#665f57"># Wait forever!</font><br><span style="background-color: #141414"><font color="#665f57">18 </font></span><br><span style="background-color: #141414"><font color="#665f57">19 </font></span>&nbsp; <font color="#cda869"><b>def</b></font>&nbsp;<font color="#7587a6">SendDelayedPing</font>():<br><span style="background-color: #141414"><font color="#665f57">20 </font></span>&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>try</b></font>:<br><span style="background-color: #141414"><font color="#665f57">21 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thread.Sleep(1000)<br><span style="background-color: #141414"><font color="#665f57">22 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using tcpClient = TcpClient(<span style="background-color: #141414"><font color="#f8f8f8">'</font></span><font color="#8f9d6a">127.0.0.1</font><span style="background-color: #141414"><font color="#f8f8f8">'</font></span>, OtherPort):<br><span style="background-color: #141414"><font color="#665f57">23 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using streamWriter = StreamWriter(tcpClient.GetStream()):<br><span style="background-color: #141414"><font color="#665f57">24 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; streamWriter.Write(<span style="background-color: #141414"><font color="#f8f8f8">"</font></span><font color="#8f9d6a">PING from ${ThisPort}</font><span style="background-color: #141414"><font color="#f8f8f8">"</font></span>)<br><span style="background-color: #141414"><font color="#665f57">25 </font></span>&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>except</b></font> ex <font color="#7587a6">as</font> Exception:<br><span style="background-color: #141414"><font color="#665f57">26 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>print</b></font>(<span style="background-color: #141414"><font color="#f8f8f8">"</font></span><font color="#8f9d6a">*** Failed sending ping: ${ex.Message}</font><span style="background-color: #141414"><font color="#f8f8f8">"</font></span>)<br><span style="background-color: #141414"><font color="#665f57">27 </font></span><br><span style="background-color: #141414"><font color="#665f57">28 </font></span>&nbsp; <font color="#cda869"><b>def</b></font>&nbsp;<font color="#7587a6">WatchForMissingPings</font>():<br><span style="background-color: #141414"><font color="#665f57">29 </font></span>&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>while</b></font> true:<br><span style="background-color: #141414"><font color="#665f57">30 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thread.Sleep(5000)<br><span style="background-color: #141414"><font color="#665f57">31 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pingDelay = DateTime.Now - _lastPingTime<br><span style="background-color: #141414"><font color="#665f57">32 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>if</b></font> pingDelay &gt; MaxDelay:<br><span style="background-color: #141414"><font color="#665f57">33 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>print</b></font>(<span style="background-color: #141414"><font color="#f8f8f8">"</font></span><font color="#8f9d6a">*** ALERT, RING BROKEN! </font><span style="background-color: #141414"><font color="#f8f8f8">"</font></span> + <br><span style="background-color: #141414"><font color="#665f57">34 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #141414"><font color="#f8f8f8">"</font></span><font color="#8f9d6a">No ping in ${pingDelay.TotalSeconds} seconds.</font><span style="background-color: #141414"><font color="#f8f8f8">"</font></span>)<br><span style="background-color: #141414"><font color="#665f57">35 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SendDelayedPing.BeginInvoke()<br><span style="background-color: #141414"><font color="#665f57">36 </font></span><br><span style="background-color: #141414"><font color="#665f57">37 </font></span>&nbsp; <font color="#cda869"><b>def</b></font>&nbsp;<font color="#7587a6">ListenForPings</font>():<br><span style="background-color: #141414"><font color="#665f57">38 </font></span>&nbsp;&nbsp;&nbsp; tcpListener = TcpListener(IPAddress.Parse(<span style="background-color: #141414"><font color="#f8f8f8">'</font></span><font color="#8f9d6a">127.0.0.1</font><span style="background-color: #141414"><font color="#f8f8f8">'</font></span>), ThisPort)<br><span style="background-color: #141414"><font color="#665f57">39 </font></span>&nbsp;&nbsp;&nbsp; tcpListener.Start()<br><span style="background-color: #141414"><font color="#665f57">40 </font></span>&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>while</b></font> true:<br><span style="background-color: #141414"><font color="#665f57">41 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using connection = tcpListener.AcceptTcpClient():<br><span style="background-color: #141414"><font color="#665f57">42 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using streamReader = StreamReader(connection.GetStream()):<br><span style="background-color: #141414"><font color="#665f57">43 </font></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProcessIncomingPing(streamReader.ReadToEnd())<br><span style="background-color: #141414"><font color="#665f57">44 </font></span><br><span style="background-color: #141414"><font color="#665f57">45 </font></span>&nbsp; <font color="#cda869"><b>def</b></font>&nbsp;<font color="#7587a6">ProcessIncomingPing</font>(message):<br><span style="background-color: #141414"><font color="#665f57">46 </font></span>&nbsp;&nbsp;&nbsp; _lastPingTime = DateTime.Now<br><span style="background-color: #141414"><font color="#665f57">47 </font></span>&nbsp;&nbsp;&nbsp; <font color="#cda869"><b>print</b></font>(<span style="background-color: #141414"><font color="#f8f8f8">"</font></span><font color="#8f9d6a">Received ${message}</font><span style="background-color: #141414"><font color="#f8f8f8">"</font></span>)<br><span style="background-color: #141414"><font color="#665f57">48 </font></span>&nbsp;&nbsp;&nbsp; SendDelayedPing.BeginInvoke()<br><span style="background-color: #141414"><font color="#665f57">49 </font></span><br><span style="background-color: #141414"><font color="#665f57">50 </font></span><font color="#cda869"><b>print</b></font>(<span style="background-color: #141414"><font color="#f8f8f8">"</font></span><font color="#8f9d6a">** Boo Ring Server (${argv[0]})</font><span style="background-color: #141414"><font color="#f8f8f8">"</font></span>)<br><span style="background-color: #141414"><font color="#665f57">51 </font></span>srv = RingServer(<br><span style="background-color: #141414"><font color="#665f57">52 </font></span>&nbsp;&nbsp;&nbsp; ThisPort: int.Parse(argv[0]), <br><span style="background-color: #141414"><font color="#665f57">53 </font></span>&nbsp;&nbsp;&nbsp; OtherPort: int.Parse(argv[1]),<br><span style="background-color: #141414"><font color="#665f57">54 </font></span>&nbsp;&nbsp;&nbsp; MaxDelay: TimeSpan(0, 0, int.Parse(argv[2])))<br><span style="background-color: #141414"><font color="#665f57">55 </font></span>srv.Start(bool.Parse(argv[3]))<br></font></div>
+<p>Hva synes du? For meg er dette ganske mye vakrere enn både C# og Ruby-versjonen, fordi all unødvendig støy er fjernet. Å definere blokker/metoder/klasser ved hjelp av innrykk er noe man må vende seg til, og det er kanskje også en smaksak om man liker det eller ikke. Jeg må si at jeg digger det, og synes det burde være mye mere utbredt.</p>
+<p>Boo er generelt sett et veldig spennende språk. Det eneste som er synd er at det ikke er noen fullverdig støtte for språket i Visual Studio. Hadde det vært det hadde jeg byttet hovedspråk på dagen :)</p>
+<p>Når det gjelder egnethet i forhold til oppgaven er det derimot ingen spesiell forskjell fra de andre variantene. Bruk av BeginInvoke() er interessant, men ikke nødvendigvis <em>bedre</em> (i dette tilfellet i alle fall). Det var dog på høy tid at jeg fikk vist litt Boo-kode på bloggen.</p>
+<p>Jakten på det beste språket fortsetter, så følg med…</p>
+<p style="border-bottom: darkgrey 1px solid; border-left: darkgrey 1px solid; padding-bottom: 7px; background-color: #ffd79b; padding-left: 7px; padding-right: 7px; border-top: darkgrey 1px solid; border-right: darkgrey 1px solid; padding-top: 7px">Kildekoden fra denne blogposten er <a href="http://github.com/tormaroe/Ping-Ring">tilgjengelig på Github</a>. Der står du fritt til å forgrene løsningen og gjøre egne modifikasjoner om du ønsker det (for å illustrere et poeng eller lignende). Som alt annet på bloggen er koden lisensiert under Creative Commons.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

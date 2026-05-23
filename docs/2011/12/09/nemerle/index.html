@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Nemerle">
+
+    <title>Nemerle</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Nemerle</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 9. desember 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/nemerle"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Nemerle</span></a>
+          </p>
+          <p>Nå skal du få møte det jeg oppfatter som det aller mest spennende språket på .NET-plattformen for tiden. <strong><em>Nemerle</em></strong> er som en krysning mellom C# og F#, med Lisp-lignende makro-støtte som en ekstra bonus. Her har du et veldig kraftig verktøy hvor du kan programmere imperative-, objektorienterte- og funksjons-baserte løsninger proppfulle av meta-features. Eller som hjemmesiden sier, et &lt;&lt;<em>Programming language for "special forces" of developers&gt;&gt;</em>. </p>
+<p><a href="/uploads/2011/12/nemerle.jpg"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="nemerle" border="0" alt="nemerle" src="/uploads/2011/12/nemerle_thumb.jpg" width="300" height="467"></a></p>
+<p>Versjon 1.0.0 ble lansert i mai i år, men arbeidet med språket startet så langt tilbake som i 2003. Programmeringsspråk skapes ofte av én person, enten som noe han gjør privat eller med backing av et firma som f.eks. tidligere Sun eller Microsoft. Andre ganger står det en kommité bak, men det resulterer sjelden i noe bra. Nemerle derimot er skapt av en gruppe utviklere ved University of Wroclaw i Polen, og deres innsats er imponerende.</p>
+<p><em>(At flagget på roboten ble russisk var en glipp.., sorry! Det skulle selvsagt vært det polske.)</em></p>
+<p>Nemerle er <u>sterkt typet</u>, og har kraftig <em><u>type inference</u></em>. Utviklere med bakgrunn fra språk som Java eller C# vil kunne kjenne seg igjen, men språket har også mange egenskaper hentet fra funksjonell programmering som <em><u>tail call optimization</u>,</em> <u>pattern matching</u>, <u>algebraiske datatyper</u>, <u>partial application</u>, <u>tupler</u> osv. </p>
+<p>Du finner også såkalte <em><u>Computation expressions</u></em>, som så langt jeg har forstått er det samme som <a href="/2010/08/13/hva-er-en-monad/">monader</a>.</p>
+<p>Videre støtter Nemerle <u>streng-interpolering</u>, noe som ikke er vanlig i statisk typede språk. Det har støtte for <u>LINQ</u>, og du kan benytte deg av <u>aspect-oriented programming</u> (AOP). Dessuten har det <u>XML literals</u>, noe du også finner i språk som Scala og Visual Basic .NET.</p>
+<p>Generelt sett er språket proppfullt av features, og det virker som om de er satt sammen på en meget behagelig måte. For å vise at Nemerle er et allsidig språk har jeg laget fire løsninger på <a href="/2011/11/24/hello-world-euler-style/">Euler-oppgaven</a>...</p>
+<h4>En imperativ løsning</h4>
+<p>La oss først se hvordan et Nemerle-program ser ut, og om vi kan gjøre "vanlig", imperativ programmering i dette språket.</p>
+<p>Nemerle-program består av klasser og/eller moduler (moduler er som statiske klasser). Et program må ha en Main-metode for å kunne kjøres. Merk at using-statements (import av navnerom) er utelatt fra eksemplene.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Keyword">module</span><span class="PreProc"> Program</span>
+<span class="lnr">11 </span>{
+<span class="lnr">12 </span>    <span class="PreProc">Main</span>() : void
+<span class="lnr">13 </span>    {
+<span class="lnr">14 </span>        mutable sum = 0;
+<span class="lnr">15 </span>
+<span class="lnr">16 </span>        for (mutable n = 1; n &lt; 1000; n++)
+<span class="lnr">17 </span>            <span class="Keyword">when</span> <span class="Keyword">(</span>n % <span class="Number">3</span> <span class="Keyword">==</span> <span class="Number">0</span> <span class="Keyword">||</span> n % <span class="Number">5</span> <span class="Keyword">==</span> <span class="Number">0</span><span class="Keyword">)</span>
+<span class="lnr">18 </span>                sum +<span class="Keyword">=</span> n<span class="Keyword">;</span>
+<span class="lnr">19 </span>
+<span class="lnr">20 </span>        <span class="Constant">WriteLine</span><span class="Keyword">(</span>sum<span class="Keyword">)</span><span class="Keyword">;</span>
+<span class="lnr">21 </span>    }
+<span class="lnr">22 </span>}
+</pre>
+<p>I dette eksempelet opprettet jeg en sum-variabel som det er lov å endre (mutable). Nemerle finner selv ut at dette er en integer. Så kjører jeg en for-løkke, gjør en test, og legger tallet til sum om testen var positiv. Ganske rett frem dette her. </p>
+<p>Jeg brukte "when" til testen, fordi "if" krever en else-blokk. Det er vanlig med påkrevd else i funksjonelle språk – Clojure er et eksempel på et språk som har det samme skillet.</p>
+<h4>Range, filter og fold med Labdas</h4>
+<p>Men la oss glemme for-løkken.., den er <em>så</em> gammeldags! Her følger en såkalt stream-basert løsning hvor jeg oppretter en range, filtrerer den, og til slutt aggregerer summen med FoldLeft. </p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">23 </span><span class="Keyword">module</span><span class="PreProc"> Program</span>
+<span class="lnr">24 </span>{
+<span class="lnr">25 </span>    <span class="PreProc">Main</span>() : void
+<span class="lnr">26 </span>    {
+<span class="lnr">27 </span>        def numbers =
+<span class="lnr">28 </span>            <span class="PreProc">NList</span>.<span class="PreProc">Filter</span> ($[<span class="PreProc">1</span>..<span class="PreProc">999</span>], <span class="PreProc">fun</span> (<span class="PreProc">n</span>) { n % <span class="Number">3</span> <span class="Keyword">==</span> <span class="Number">0</span> <span class="Keyword">||</span> n % <span class="Number">5</span> <span class="Keyword">==</span> <span class="Number">0</span> })<span class="Keyword">;</span>
+<span class="lnr">29 </span>
+<span class="lnr">30 </span>        def result <span class="Keyword">=</span> <span class="PreProc">NList</span>.<span class="Constant">FoldLeft</span> <span class="Keyword">(</span>numbers, <span class="Number">0</span>, <span class="Keyword">fun</span> <span class="Keyword">(</span>n, acc<span class="Keyword">)</span> <span class="Keyword">{</span> acc + n <span class="Keyword">})</span><span class="Keyword">;</span>
+<span class="lnr">31 </span>
+<span class="lnr">32 </span>        <span class="Constant">WriteLine</span><span class="Keyword">(</span>result<span class="Keyword">)</span><span class="Keyword">;</span>
+<span class="lnr">33 </span>    }
+<span class="lnr">34 </span>}
+</pre>
+<p>Dette illustrerer først og fremst hvordan lambda-uttrykkene ser ut i Nemerle. Ellers har du jo sett denne løsningen ganske mange ganger nå.</p>
+<h4>Nøstede funksjoner og pattern matching</h4>
+<p>En ting Nemerle skiller seg litt fra endel andre språk på er muligheten til å definere funksjoner inne i andre funksjoner. I den følgende løsningen har jeg opprettet to funksjoner inne i Main-metoden. Disse bruker pattern matching og rekusjon til å finne summen – en teknikk du også <a href="/2011/12/06/f/">så meg bruke i F#.</a></p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">35 </span><span class="Keyword">module</span><span class="PreProc"> Program</span>
+<span class="lnr">36 </span>{
+<span class="lnr">37 </span>    <span class="PreProc">Main</span>() : void
+<span class="lnr">38 </span>    {
+<span class="lnr">39 </span>        def include(n)
+<span class="lnr">40 </span>        {
+<span class="lnr">41 </span>            n % <span class="Number">3</span> <span class="Keyword">==</span> <span class="Number">0</span> <span class="Keyword">||</span> n % <span class="Number">5</span> <span class="Keyword">==</span> <span class="Number">0</span>
+<span class="lnr">42 </span>        }
+<span class="lnr">43 </span>        def euler1<span class="Keyword">(</span>n, sum<span class="Keyword">)</span>
+<span class="lnr">44 </span>        <span class="Keyword">{</span>
+<span class="lnr">45 </span>            <span class="Keyword">|</span> <span class="Keyword">(</span><span class="Number">1000</span>, <span class="Keyword">_</span><span class="Keyword">)</span>              <span class="Keyword">=</span><span class="Keyword">&gt;</span> sum
+<span class="lnr">46 </span>            <span class="Keyword">|</span> <span class="Keyword">(</span><span class="Keyword">_</span>, <span class="Keyword">_</span><span class="Keyword">)</span> <span class="Keyword">when</span> <span class="Keyword">include</span>(n) <span class="Keyword">=</span><span class="Keyword">&gt;</span> euler1<span class="Keyword">(</span>n+<span class="Number">1</span>, sum+n<span class="Keyword">)</span>
+<span class="lnr">47 </span>            <span class="Keyword">|</span> <span class="Keyword">(</span><span class="Keyword">_</span>, <span class="Keyword">_</span><span class="Keyword">)</span>                 <span class="Keyword">=</span><span class="Keyword">&gt;</span> euler1<span class="Keyword">(</span>n+<span class="Number">1</span>, sum<span class="Keyword">)</span>
+<span class="lnr">48 </span>        <span class="Keyword">}</span>
+<span class="lnr">49 </span>        <span class="Constant">WriteLine</span><span class="Keyword">(</span>euler1<span class="Keyword">(</span><span class="Number">0</span>, <span class="Number">0</span><span class="Keyword">))</span><span class="Keyword">;</span>
+<span class="lnr">50 </span>    }
+<span class="lnr">51 </span>}
+</pre>
+<h4>List comprehension</h4>
+<p>Den enkleste løsningen har jeg likevel spart til slutt. Nemerle har støtte for <em>list comprehensions</em>, som er et kraftig verktøy for å opprette filtrerte serier. Jeg kan dermed skrive ut svaret med en ganske leselig <em>one-liner</em>.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">52 </span><span class="Keyword">module</span><span class="PreProc"> Program</span>
+<span class="lnr">53 </span>{
+<span class="lnr">54 </span>    <span class="PreProc">Main</span>() : void
+<span class="lnr">55 </span>    {
+<span class="lnr">56 </span>        <span class="PreProc">WriteLine</span>($[<span class="PreProc">x</span> | <span class="PreProc">x</span> <span class="PreProc">in</span> [<span class="PreProc">1</span>..<span class="PreProc">999</span>], <span class="PreProc">x</span> % <span class="PreProc">3</span> == <span class="PreProc">0</span> || <span class="PreProc">x</span> % <span class="PreProc">5</span> == <span class="PreProc">0</span>].<span class="PreProc">Sum</span>());
+<span class="lnr">57 </span>    }
+<span class="lnr">58 </span>}
+</pre>
+<h4>Hvorfor bruke tid på Nemerle</h4>
+<p>Nemerle er et praktisk og godt verktøy som lar deg kombinere objektorientering og funksjonell programmering. I tilleg har du makroene som lar deg utvide syntaksen og kompilatoren ganske enkelt. Nemerle vil derfor egne seg svært godt til å redusere mengden "boilerplate" i større løsninger, og til å lage interne DSL'er.</p>
+<p>Sammenlignet med F# er Nemerle trolig enklere å forstå og å komme igang med for programmerere som ikke har vært eksponert for ML-lignende språk tidligere. Nemerle's minner nemlig mer om C# gjennom bruk av krøllparanteser, klasser og andre syntaks-elementer. Man kan begynne med objekter om man er vandt til det, og gradvis ta i bruk de andre egenskapene etterhvert som man lærer.</p>
+<h4>Hvordan komme igang</h4>
+<p>Nemerle er støttet gjennom en extension i Visual Studio 2008. 2010-støtten er i beta, men fungerte greit nok for meg. Man får farger, IntelliSense, designtime hints og sikkert andre features jeg ikke har oppdaget. Du finner også støtte for Nemerle til <a href="http://www.icsharpcode.net/OpenSource/SD/">SharpDevelop</a> (om du er på Linux, eller foretrekker open source).</p>
+<p>Jeg tror det vil være svært enkelt for et team med C#-utviklere å konvertere til å bruke Nemerle. Man kan selvfølgelig bruke språket på enkeltdeler; .NET-løsninger kan fint blande prosjekter skrevet i ulike språk. Men med Nemerle kan man i tillegg inkludere C#-kode i Nemerle-prosjekter – noe lignende har jeg aldri sett før.</p>
+<p>Dessuten tilbyr Nemerle-teamet en C#-til-Nemerle converter. Hva med å kjøre den på din eksisterende kodebase, og se hva som kommer ut i andre enden?</p>
+<p>Du finner Nemerle på <a href="http://nemerle.org/">nemerle.org</a>. Språket har også en brukbar <a href="http://nemerle.org/wiki/">wiki</a> med ganske mye informasjon, linker til API-dokumentasjon og tutorials.</p>
+<p>Som sagt synes jeg Nemerle er et veldig spennende språk, og jeg anbefaler deg å ta det i nærmere ettersyn!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

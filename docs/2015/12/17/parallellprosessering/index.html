@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Julekalender,Samtidighet">
+
+    <title>Parallellprosessering i Common Lisp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Parallellprosessering i Common Lisp</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 17. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
+          </p>
+          <img src="/uploads/2015/12/scatter-gather.png" alt="Scatter - Gather" />
+
+<p>I denne bloggposten vil jeg demonstrere ulike teknikker for parallellisering i Common Lisp, jeg vil se på <em>channels</em>, <em>futures</em>, og parallelle versjoner av normale listeoperasjoner. Jeg vil også komme borti hvordan man kan distribuere arbeidsmengden over flere maskiner.</p>
+<h2>Knowit juleluke 16</h2>
+<p>I luke 16 i <a href="https://julekalender.knowit.no">Knowit sin julekalender</a> skulle de ha oss til å telle forekomster av sifferet &quot;2&quot; i serien fra og med 0 til og med 12345678987654321. Det nyttet ikke å <em>brute force&#39;</em> seg frem til svaret her - jeg skal innrømme at det var mitt første forsøk, men det ville ta aaaaalt for lang tid. Dermed ble det litt googling, og jeg kom frem til en matematisk løsning:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> -&gt;int (<span class="hljs-name">x</span>)
+  (<span class="hljs-name">with-input-from-string</span> (<span class="hljs-name">in</span> x)
+    (<span class="hljs-name"><span class="hljs-built_in">read</span></span> in)))
+
+(<span class="hljs-name">defun</span> count-twos-by-math (<span class="hljs-name">&amp;optional</span> (<span class="hljs-name">n</span> <span class="hljs-string">&quot;12345678987654321&quot;</span>))
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">=</span></span> <span class="hljs-number">1</span> (<span class="hljs-name"><span class="hljs-built_in">length</span></span> n))
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> (<span class="hljs-name">-&gt;int</span> n) <span class="hljs-number">2</span>) <span class="hljs-number">1</span> <span class="hljs-number">0</span>)
+    (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name"><span class="hljs-built_in">magnitude</span></span> (<span class="hljs-name">1-</span> (<span class="hljs-name"><span class="hljs-built_in">length</span></span> n)))
+          (  leading (<span class="hljs-name">-&gt;int</span> (<span class="hljs-name">subseq</span> n <span class="hljs-number">0</span> <span class="hljs-number">1</span>)))
+          (     rest (<span class="hljs-name">subseq</span> n <span class="hljs-number">1</span>)))
+      (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">twos</span> (<span class="hljs-name"><span class="hljs-built_in">*</span></span> leading magnitude 
+                     (<span class="hljs-name"><span class="hljs-built_in">expt</span></span> <span class="hljs-number">10</span> (<span class="hljs-name">1-</span> magnitude)))))
+        (<span class="hljs-name"><span class="hljs-built_in">cond</span></span>
+          ((<span class="hljs-name"><span class="hljs-built_in">=</span></span> leading <span class="hljs-number">2</span>) (<span class="hljs-name">incf</span> twos (<span class="hljs-name">1+</span> (<span class="hljs-name">-&gt;int</span> rest))))
+          ((<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> leading <span class="hljs-number">2</span>) (<span class="hljs-name">incf</span> twos (<span class="hljs-name"><span class="hljs-built_in">expt</span></span> <span class="hljs-number">10</span> magnitude))))
+        (<span class="hljs-name"><span class="hljs-built_in">+</span></span> twos (<span class="hljs-name">count-twos-by-math</span> rest))))))</code></pre><p>Men det er ikke dette denne blogposten skal handle om. Gitt at tallrekken man skulle søke i ikke hadde vært så forferdelig lang kunne jo brute force ha vært en grei strategi...</p>
+<h2>Brute force</h2>
+<p>... og da kunne jeg brukt denne enkle løsningen:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> count-twos (<span class="hljs-name">start</span> end)
+  (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for n from start to end
+        for n-string = (<span class="hljs-name"><span class="hljs-built_in">format</span></span> <span class="hljs-literal">nil</span> <span class="hljs-string">&quot;~A&quot;</span> n)
+        summing (<span class="hljs-name"><span class="hljs-built_in">count</span></span> #<span class="hljs-character">\2</span> n-string)))</code></pre><p><code>(count-twos 0 10000)</code> kjører for eksempel (på min maskin) på 0,003 sekunder. Øker vi øvre skranke til én million får vi en kjøretid på drøye 0,6 sekunder, og en serie på 100 millioner tall prosesseres på 66,9 sekunder.</p>
+<h2>Utnytte maskinen maksimalt</h2>
+<p>Men så kom jeg til å tenke på at jeg jo har en Intel Core i7-3820QM CPU, og den har fire kjerner. Min <em>brute forcing</em> utnytter bare én av dem. 66,9 sekunder er jo lenge å vente, men hvordan kan vi parallellisere dette?</p>
+<p>Denne oppgaven er det vi kaller et <strong><a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">pinlig parallelliserbart problem</a></strong>; det er enkelt å dele den opp i flere oppgaver. Derfor begynte jeg å lete etter hvordan man gjør sånt i Common Lisp.</p>
+<h2>lparallel</h2>
+<p>Common Lisp har ulike pakker for parallellisering, men ett som virker populært er <a href="http://lparallel.org/">lparallel</a>. Som vanlig enkelt å installere med quicklisp:</p>
+<pre><code class="hljs">(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-symbol">:lparallel</span>)
+
+(<span class="hljs-name">use-package</span> <span class="hljs-symbol">:lparallel</span>)</code></pre><p>Før man kan bruke funksjonene det tilbyr må man opprette en kjerne som spesifiserer hvor mange tråder man vil ha. Det fungerer som regel greit å bruke antall CPU-kjerner til dette:</p>
+<pre><code class="hljs">(<span class="hljs-name">setf</span> *kernel* (<span class="hljs-name">make-kernel</span> <span class="hljs-number">4</span>))</code></pre><p>Om du glemmer dette steget så gir lparallel deg en fin feilmelding som forteller hva du skal gjøre.</p>
+<p>(Jeg har fire kjerner, men åtte <em>logiske kjerner</em>, eller hva det nå heter. Jeg eksperimenterte med ulike settings, men alt mellom 4 og 8 så ut til å fungere like bra.)</p>
+<h2>Splitte opp oppgaven</h2>
+<p>Første steg for å paralellprosessere tallrekken er å splitte opp oppgaven. I mitt tilfelle ønsker jeg da altså fire rekker i stedet for én. Det er mulig det finnes smartere måter å gjøre dette på, men jeg laget i alle fall denne hjelpefunksjonen:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> split-range (<span class="hljs-name">pieces</span> start end)
+  (<span class="hljs-name"><span class="hljs-built_in">let*</span></span> ((<span class="hljs-name">elm-count</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> end start))
+         (<span class="hljs-name">piece-count</span> (<span class="hljs-name"><span class="hljs-built_in">floor</span></span> (<span class="hljs-name"><span class="hljs-built_in">/</span></span> elm-count pieces))))
+    (<span class="hljs-name">loop</span> for x from <span class="hljs-number">0</span> to (<span class="hljs-name">1-</span> pieces)
+          for pstart = (<span class="hljs-name"><span class="hljs-built_in">+</span></span> start (<span class="hljs-name"><span class="hljs-built_in">*</span></span> x piece-count))
+          for pend = (<span class="hljs-name"><span class="hljs-built_in">+</span></span> pstart (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">=</span></span> x (<span class="hljs-name">1-</span> pieces))
+                                  (<span class="hljs-name"><span class="hljs-built_in">-</span></span> end pstart)
+                                  (<span class="hljs-name">1-</span> piece-count)))
+          collect (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> pstart pend))))</code></pre><p>Om vi nå ber om <code>(split-range 4 0 100000000)</code> så får vi:</p>
+<pre><code class="hljs">((<span class="hljs-number">0</span> . <span class="hljs-number">24999999</span>) 
+ (<span class="hljs-number">25000000</span> . <span class="hljs-number">49999999</span>) 
+ (<span class="hljs-number">50000000</span> . <span class="hljs-number">74999999</span>)
+ (<span class="hljs-number">75000000</span> . <span class="hljs-number">100000000</span>))</code></pre><h2>Channels</h2>
+<p>En av tingene lparallel tilbyr er såkalte <em>channels</em> (kanaler). Dette er et objekt du oppretter, og som du kan sende jobber til. lparallel tar seg av å utføre jobbene med en tilgjengelig worker. Siden kan man be kanalen om å få resultatet tilbake.</p>
+<p>Dette er en modell for samtidighet som man finner i flere og flere språk for tiden, og var for eksempel noe av det som gjorde <a href="https://golang.org/">Go</a> så populært.</p>
+<p>Vi bruker <code>make-channel</code> til å opprette en ny kanal:</p>
+<pre><code class="hljs">(<span class="hljs-name">defvar</span> foo (<span class="hljs-name">make-channel</span>))</code></pre><p>Vi kan så sende kanalen en jobb i form av en funksjon og noen argumenter. I dette tilfelle sender jeg funksjonen <em>pluss</em> og argumentene 1, 2, 3 og 4:</p>
+<pre><code class="hljs">(<span class="hljs-name">submit-task</span> foo #&#x27;+ <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span>)</code></pre><p>Til slutt henter vi resultatet:</p>
+<pre><code class="hljs">(receive-result foo)
+ 
+ <span class="hljs-operator">=</span><span class="hljs-operator">=</span>&gt; <span class="hljs-number">10</span></code></pre><p>Vi kan nå lage en variant av <code>count-twos</code> som først splitter opp problemet i fire deler, og så oppretter en kanal for prosessering av hver del. Vi ber hver kanal om å prosessere sin del vha. <code>submit-task</code>, henter resultatet fra hver kanal, og summerer tilslutt sammen.</p>
+<p>Her er en løsning som fungerer:</p>
+<pre><code class="hljs">(<span class="hljs-name">use-package</span> :cl-arrows)
+
+(<span class="hljs-name">defun</span> count-twos-channels (<span class="hljs-name">start</span> end &amp;key (<span class="hljs-name">threads</span> <span class="hljs-number">4</span>))
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">pieces</span> (<span class="hljs-name">split-range</span> threads start end))
+        (<span class="hljs-name">channels</span> (<span class="hljs-name">loop</span> for i from <span class="hljs-number">1</span> to threads
+                        collect (<span class="hljs-name">make-channel</span>))))
+    (<span class="hljs-name">-&gt;&gt;</span>
+        (<span class="hljs-name">mapc</span> (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (channel piece) 
+                (<span class="hljs-name">submit-task</span> channel 
+                             #<span class="hljs-symbol">&#x27;count-twos</span> 
+                             (<span class="hljs-name"><span class="hljs-built_in">car</span></span> piece) 
+                             (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> piece)))
+          channels
+          pieces)
+        (<span class="hljs-name">mapcar</span> #<span class="hljs-symbol">&#x27;receive-result</span>)
+        (<span class="hljs-name">reduce</span> #<span class="hljs-symbol">&#x27;+</span>)))) </code></pre><p>Tips: <code>mapc</code> er en variant av <em>map</em> som jeg ikke bruker så ofte, men her fungerte den fint. Det den gjør er å kalle funksjonen jeg spesifiserer (lambda-uttrykket) for hvert element i listen(e) (to lister i dette tilfellet), men mapc returnerer så bare den første orginale listen, helt uendret. Det vil si at <code>channels</code> flyter videre ned til neste steg, hvor jeg ber om resultatene.</p>
+<p>Med denne løsningen ser vi en klar forbedring av kjøretiden. <strong>100 millioner tall prosesseres nå på 21,2 sekunder</strong>, en forbedring på 68%. Med teoretisk optimal parallelliseirng over fire kjerner skulle vi forvente noe nærmere 16,7 sekunder, men sånn fungerer det ikke helt i praksis.</p>
+<h2>Futures</h2>
+<p>Kanaler er kult og anvendelig, men lparallel tilbyr også noen andre abstraksjoner. En av dem er <em>futures</em>: &quot;Fremtidige verdier&quot;. Vi kan opprette en future ved å wrappe Lisp-uttrykk (ett eller flere) i makroen <code>future</code>:</p>
+<pre><code class="hljs">(<span class="hljs-name">defvar</span> foo (<span class="hljs-name"><span class="hljs-built_in">future</span></span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span>)))</code></pre><p>Summeringen vil nå bli utført i en ny tråd. For å hente ut verdien (eller vente på den til den er tilgjengelig) bruker vi <code>force</code>:</p>
+<pre><code class="hljs">(force foo)
+
+ <span class="hljs-operator">=</span><span class="hljs-operator">=</span>&gt; <span class="hljs-number">10</span></code></pre><p>Nå kan vi lage en tredje versjon av <code>count-twos</code> som bruker dette: Vi splitter opp oppgaven som før, lager en future for hver del, kaller <code>force</code> på hver av dem, og summerer sammen:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> count-twos-futures (<span class="hljs-name">start</span> end &amp;key (<span class="hljs-name">threads</span> <span class="hljs-number">4</span>))
+  (<span class="hljs-name">-&gt;&gt;</span> (<span class="hljs-name">split-range</span> threads start end)
+       (<span class="hljs-name">mapcar</span> (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (piece)
+                 (<span class="hljs-name">future</span> (<span class="hljs-name">count-twos</span> (<span class="hljs-name"><span class="hljs-built_in">car</span></span> piece)
+                                     (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> piece)))))
+       (<span class="hljs-name">mapcar</span> #<span class="hljs-symbol">&#x27;force</span>)
+       (<span class="hljs-name">reduce</span> #<span class="hljs-symbol">&#x27;+</span>)))</code></pre><p>Sammenligner du med den som brukte kanaler så ser du at det ble enklere med futures.</p>
+<h2>Parallell mapping</h2>
+<p>Men lparallel har mer; pakken tilbyr også paralleliserte versjoner av en rekke mappingfunksjoner. MapReduce er jo et kjent konsept som sier at mapping alltid kan gjøres i parallell.</p>
+<p>Så la oss lage enda en versjon av <code>count-twos</code> hvor det egentlig ser ut som om vi gjør alt sammen sekvensielt med vanlig Common Lisp, men hvor vi bytter ut <code>mapcar</code> med <code>pmapcar</code>:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> count-twos-pmap (<span class="hljs-name">start</span> end &amp;key (<span class="hljs-name">threads</span> <span class="hljs-number">4</span>))
+  (<span class="hljs-name">-&gt;&gt;</span> (<span class="hljs-name">split-range</span> threads start end)
+       (<span class="hljs-name">pmapcar</span> (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (piece)
+                  (<span class="hljs-name">count-twos</span> (<span class="hljs-name"><span class="hljs-built_in">car</span></span> piece)
+                              (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> piece))))
+       (<span class="hljs-name">reduce</span> #<span class="hljs-symbol">&#x27;+</span>)))</code></pre><p>Det var jo en ytterligere forbedring. Og det fine er at ytelsen til alle de tre parallelle versjonene vi har laget er helt identisk! Her gjør vi ingen kjøretids-tradeoff, og kan velge fritt de abstraksjonene som gjør koden vår enklest å lese/skrive.</p>
+<h2>Distribuert prosessering</h2>
+<p>Av og til er antall CPU-kjerner ikke nok, og vi skulle hatt en enkel og tilsvarende måte å spre jobbene ut over flere maskiner. Frykt ikke - til det har vi pakken <a href="http://quickdocs.org/lfarm/">lfarm</a>.</p>
+<p>lfarm gjenbruker samme API som lparallel, men i stedet for å distribuere jobber i en thread pool så distribuerer den jobbene over et sett med servere.</p>
+<p>I skjermdumpen nedenfor ser du tre terminaler. I de to nederste terminalene starter jeg opp en lfarm server (på samme maskin, men det hadde det altså ikke behøvd å være). I den første terminalen registrerer jeg de to serverne i <code>*kernel*</code>, og så bruker jeg <code>pmapcar</code> til å distribuere seks jobber.</p>
+<img src="/uploads/2015/12/lfarm.png" alt="lfarm demo" />
+
+<p>Kult? I alle fall er det enkelt.</p>
+<h2>Konklusjon</h2>
+<p>Du har sett hvordan lparallel tilbyr en rekke abstraksjoner for parallellisering, og hvordan man i beste fall kan gå fra sekvensiell kode til parallell kode ved å bare tilføre ett eneste tegn (<code>p</code>). Og så har du sett at ved å inkludere et annet biblotek og endre litt på setupen så kan vi gå fra å distribuere jobber over tråder til å distribuere dem over flere maskiner.</p>
+<p>Ingenting av dette var nyttig for å løse Knowit sin juleutfordring, men de fikk meg på sporet av noe som både var gøy og interessant.</p>
+<p>Og slik ble det kun 111 dager igjen til Julaften. I binærtall da altså ;)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

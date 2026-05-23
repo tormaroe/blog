@@ -1,0 +1,44 @@
+---
+title: Parrot og PIR
+link: http://blog.kjempekjekt.com/2013/01/17/parrot-og-pir/
+layout: post
+date: 2013-01-17 12:41:49Z
+tags:
+  - Polyglot
+  - Perl
+  - Assembly
+---
+<p>Jeg har lest meg litt opp på noe som heter <strong><a href="http://www.parrot.org/">Parrot</a></strong> i det siste. Parrot er en virtuell maskin på samme måte som JVM (Java-platformen) og CLR (.NET på Windows). Parrot er VM'en som ligger bak <a href="http://rakudo.org/">Rakudo</a>, den mest profilerte implementasjonen av Perl 6.</p> <p>Mens JVM og CLR først og fremst er designet med tanke på statisk typede språk, er Parrot tilrettelagt for dynamiske språk. Dessuten er VM'en register-basert, mens JVM og CLR er stack-baserte. Dette betyr at Parrot's simulering er tettere på hvordan den fysiske datamaskinen faktisk fungerer.</p> <p>Grunnen til at jeg ser på Parrot er at det er en interessant platform for utvikling av nettopp dynamiske språk. Parrot har en mengde kompilerings-verktøy som gjør jobben brukbart enkel (det gjenstår selvsagt å se).</p> <h2>Parrot-kode</h2> <p><em>Parrot Intermediat Representation</em>, eller <strong>PIR</strong>, er lavnivå-språket man normalt bruker får å kode mot Parrot. Parrot er basically et assembly-språk, men har noen høyerenivå-egenskaper i form av syntaktisk sukker. Under PIR finner man PASM – Parrot assembly uten dette sukkeret. Begge deler kan kompileres til PBC – <em>Parrot Byte Code – </em>som er det VM'en eksekverer.</p> <p>Så hvis jeg skal lage et språk som skal kjøre på Parrot så må jeg lære meg PIR. Og her ser du mitt aller første PIR-program. Som vanlig har jeg laget kode som skriver ut summen av alle multipler av 3 eller 5 under 1000 (du finner dusinvis av løsninger på denne oppgaven i ulike språk her på bloggen).</p> <p>Først har vi en subrutine som sjekker om et tall er et multippel av 3 eller 5:</p><pre>.sub multiple_of_3_or_5
+  .param int n
+  $I0 = n % 3
+  unless $I0 goto yes
+  $I0 = n % 5
+  $I0 = not $I0
+  .return ($I0)
+yes:
+  .return (1)
+.end
+</pre>
+<p>Rutinen tar ett parameter <code>n</code> av typen int. Jeg bruker et integer-register <code>$I0</code> hvor jeg først tar vare på resten av å dele n på 3. Og så må jeg bruke <code>goto</code> – det er egentlig den eneste tingen jeg har for å styre programflyten i PIR, bortsett fra funksjonskall da. Merk også at integer-verdien 0 er det samme som false, mens alle andre tall er true. Resten burde da være mulig å forstå. Subrutinen returnerer altså 0 eller 1 alt etter om n er et multippel av 3 eller 5 eller ikke.</p>
+<p>Og så har jeg laget en main-subrutine som ved hjelp av flere goto's looper gjennom alle tall fra 1 til 999 og legger de til en sum om tallet skal inkluderes.</p><pre>.sub main :main
+  .local int sum, n
+  n = 0
+  sum = n
+
+loop:
+  inc n
+  if n == 1000 goto end
+  $I0 = multiple_of_3_or_5(n)
+  if $I0 goto add_it
+  goto loop
+
+add_it:
+  sum += n
+  goto loop
+
+end:
+  say sum
+.end
+</pre>
+<p>Her ser du ett av eksemplene på at PIR er enklere å kode i enn PASM – jeg kan deklarere lokale variabler som <code>sum</code> og <code>n</code>. I bakkant er dette bare ulike registre, men jeg kan i alle fall gi dem fornuftige navn.</p>
+<p>Og det var det! Jeg er helt i startgropen, men vil eksperimentere med PIR og Parrot's kopilatorverktøy en stund fremover for å se om jeg kan lage noe kult noe.</p>

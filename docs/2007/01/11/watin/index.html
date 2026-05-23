@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Ruby,Testing / TDD">
+
+    <title>WatiN</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>WatiN</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 11. januar 2007</small> 
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          
+            <a href="/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
+          </p>
+          <p><a href="http://codebetter.com/blogs/jeremy.miller/archive/2007/01/10/Automated-Web-Testing-with-Watin-.aspx" target="_blank">Jeremy D. Miller kan i dag informere</a> om at det nå eksisterer en .net versjon av watir (uttales "water"), nemlig <a href="http://watin.sourceforge.net/" target="_blank">watin</a> (uttales "what-in"). Disse produktene/biblotekene lar deg automatisere web testing.., med henholdsvis Ruby og .net.</p>
+<p>Jeg har foreløpig brukt <em>watir</em> til helt enkle automatiseringsoppgaver, men kanskje <em>watin</em> kan få litt mer fart på selve test-utviklingen.., skal definitivt ta en titt på dette.</p>
+<p>Et par uttalelser om WatiN:</p>
+<p style="text-align: center" align="center"><em><span lang="EN-GB" style="font-size: 11pt; font-family: Tahoma">“… it feels like it should have shipped out of the box with Visual Studio Team Edition for Software Testers.”</span></em></p>
+<p style="text-align: center" align="center"><span lang="EN-GB" style="font-size: 11pt; font-family: Tahoma">Bruce McLeod<br />
+Principal Consultant for Devtest Pty Ltd.<br />
+<a href="http://www.devtest.com/" target="_blank">www.devtest.com</a></span></p>
+<p class="MsoNormal" style="text-align: center" align="center"><em><span lang="EN-GB" style="font-size: 11pt; font-family: Tahoma">“What a great tool!!! We are using it with CruiseControl.Net. We run roughly 1k tests each build.”</span></em></p>
+<p class="returnaddress" style="margin: 0cm 0cm 0pt; text-align: center" align="center"><span lang="EN-GB" style="font-size: 11pt; font-family: Tahoma">David Strickland</span></p>
+<p class="returnaddress" style="margin: 0cm 0cm 0pt; text-align: center" align="center"><span lang="EN-GB" style="font-size: 11pt; font-family: Tahoma">Vice President of Development</span></p>
+<p class="returnaddress" style="margin: 0cm 0cm 0pt; text-align: center" align="center"><span lang="EN-GB" style="font-size: 11pt; font-family: Tahoma">Swingvote, LLC</span></p>
+<div align="center"><span lang="EN-GB" style="font-size: 11pt; font-family: Tahoma"><a href="http://www.swingvote.com/" target="_blank">www.swingvote.com</a></span></div>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="DSL,C#,Webutvikling">
+
+    <title>C# strukket til det ugjenkjennelige</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>C# strukket til det ugjenkjennelige</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 18. januar 2011</small> 
+            <a href="/tags/dsl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DSL</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+          </p>
+          <p><a href="http://twitter.com/#!/serialseb" target="_blank"><img style="background-image: none; border-right-width: 0px; margin: 0px 0px 7px 13px; padding-left: 0px; padding-right: 0px; display: inline; float: right; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="serialseb" border="0" alt="serialseb" align="right" src="/uploads/2011/01/serialseb.jpg" width="128" height="128"></a>For en gangs skyld skal jeg poste noen andres kode her på bloggen. Jeg har nemlig kommet over et lite stykke C#-kode som jeg syntes var verdt litt ekstra oppmerksomhet. I vinter brukte vi i <a href="http://pswin.com" target="_blank">PSWinCom</a> et rammeverkt som heter <a href="https://github.com/openrasta/openrasta-stable" target="_blank"><strong>OpenRasta</strong></a> til å implementere et REST-API for vårt Intouch-produkt. OpenRasta er et open source-prosjekt utviklet av <a href="http://twitter.com/#!/serialseb" target="_blank">Sebastian Lambla</a>, og det var her jeg oppdaget en mildt sagt spesiell utnyttelse av C#.</p>
+<p>Du kan jo bedømme selv…</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span>    <span class="Type">public</span> <span class="Type">class</span> OperationResultPage : Element
+<span class="lnr">11 </span>    {
+<span class="lnr">12 </span>        <span class="Type">public</span> OperationResultPage(OperationResult result)
+<span class="lnr">13 </span>        {
+<span class="lnr">14 </span>            Root = <span class="Statement">this</span>
+<span class="lnr">15 </span>                [html
+<span class="lnr">16 </span>                     [head[title[result.Title]]]
+<span class="lnr">17 </span>                     [body
+<span class="lnr">18 </span>                        [h1[result.Title]]
+<span class="lnr">19 </span>                        [p[result.Description]]
+<span class="lnr">20 </span>                     ]
+<span class="lnr">21 </span>                ];
+<span class="lnr">22 </span>        }
+<span class="lnr">23 </span>
+<span class="lnr">24 </span>        <span class="Type">protected</span> Element Root { get; set; }
+<span class="lnr">25 </span>    }
+</pre>
+<p>Når du ser koden for første gang tar det noen sekunder før hjernen aksepterer at det er C#-kode du ser på.</p>
+<p>Gjennom serdeles ukonvensjonell bruk av C# har Sebastian rett og slett laget en ganske så fasinerende DSL for å definere HTML-markup. Det minner en god del om (og er helt sikkert inspirert av) tilsvarende DSL’er i mere dynamiske språk – som f.eks. <a href="https://github.com/weavejester/hiccup" target="_blank">Hiccup</a> i Clojure.</p>
+<p>Her er et par utdrag fra den abstrakte klassen <a href="https://github.com/openrasta/openrasta-stable/blob/master/src/core/OpenRasta/Web/Markup/Elements/Element.cs" target="_blank">OpenRasta.Web.Markup.Elements.Element</a>, som kaster litt mer lys over hvordan koden kombinerer bruk av indeksere og properties for de ulike HTML-taggene til å kjede sammen markup på en helt nye måte.</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 8px"><span class="lnr"> 47 </span>        <span class="Type">protected</span> Element <span class="Statement">this</span>[INode child]
+<span class="lnr"> 48 </span>        {
+<span class="lnr"> 49 </span>            <span class="Statement">get</span>
+<span class="lnr"> 50 </span>            {
+<span class="lnr"> 51 </span>                ChildNodes.Add(child);
+<span class="lnr"> 52 </span>                <span class="Statement">return</span> <span class="Statement">this</span>;
+<span class="lnr"> 53 </span>            }
+<span class="lnr"> 54 </span>        }
+</pre>
+<p>..og..</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 8px"><span class="lnr"> 96 </span>        <span class="Type">public</span> IHtmlElement html
+<span class="lnr"> 97 </span>        {
+<span class="lnr"> 98 </span>            <span class="Statement">get</span> { <span class="Statement">return</span> Document.CreateElement&lt;IHtmlElement&gt;(); }
+<span class="lnr"> 99 </span>        }
+</pre>
+<p>Sebastian er en dyktig utvikler med smittsomt humør og pipete stemme som i tillegg til OpenRasta akkurat nå er kjent for prosjektet <a href="https://github.com/openrasta/openwrap" target="_blank">OpenWrap</a>, et “pakkehåndteringssystem” for .NET (ala gems for Ruby). Jeg vet ikke om det er Sebastian som har kommet opp med denne DSL-teknikken, eller om det er noe du kan finne andre steder også, men det er liten tvil om at fyren er genial.</p>
+<p>Så vil jeg bare avslutte med å foreslå en aktivite som garantert vil gjøre deg til en bedre utvikler: <u>Les mer kildekode!</u> Det finnes et hav av prosjekter der ute som du kan lære av. Hvorfor ikke begynne med <a href="https://github.com/openrasta/openrasta-stable" target="_blank">OpenRasta</a> for eksempel?!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

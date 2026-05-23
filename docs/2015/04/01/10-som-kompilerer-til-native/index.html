@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Polyglot">
+
+    <title>10 språk som kompilerer til native</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>10 språk som kompilerer til native</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 1. april 2015</small> 
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          </p>
+          <p class="text-center"><img src="/uploads/2015/04/give_them_java.jpg"></p>
+
+<p>Jeg har aldri hatt særlig lyst til å bruke C eller C++, men de har absolutt sine områder hvor de fungerer bedre enn VM-baserte språk som C# og Java, eller tolkede språk som Ruby / Python / JavaScript. Derfor er jeg på leting etter språk som kan erstatte C/C++.</p>
+<p>La meg kvalifisere hva jeg mener med <em>erstatte</em>: Jeg mener at jeg ønsker et språk som enkelt lar meg kompilere og deploye et program, <strong>uten avhengigheter</strong> til en installert tolker eller virtuell maskin (<em>standalone executable</em>). Programmet bør kunne kompileres til å fungere på alle populære platformer (i alle fall Windows, Linux og Mac). Og programmet bør være raskt - <em>ytelse</em> er en av hovedgrunnene til at C og C++ benyttes i dag.</p>
+<p>Jeg mener ikke at språket jeg ser etter <em>kommer</em> til å erstatte C eller C++, eller at det har potensiale til å gjøre det for <em>alle</em> områder hvor språkene benyttes i dag. Det viktige er at det kan være et bra alternativ <em>for meg</em>!</p>
+<p>I denne posten vil jeg ta en rask titt på 10 språk som alle kan være det jeg ser etter.</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/go.png" alt="Go" /></div>
+
+<h2>Go</h2>
+<p><strong>Go</strong> (<a href="https://golang.org/">golang.org</a>) har fått endel traction (47. plass på Tiobe&#39;s popularitetsindeks), sansynligvis fordi det er Google som står bak. De har utviklet et språk som skulle være enkelt for uerfarne utviklere (rett fra universitetet) å bli produktive i. Det er enkelt å lære, minner mye om C, og det er ikke så lett å skyte seg selv i foten.</p>
+<p>Og det gjør språket litt kjedelig. Noen mener det er <a href="http://nomad.so/2015/03/why-gos-design-is-a-disservice-to-intelligent-programmers/">en fornærmelse av intelligente utviklere</a>. Hovedproblemet er at det begrenser dine muligheter til å lage gode abstraksjoner, og fører til endel <em>boilerplate</em>. Ja, det yter bra, og kompilerer for alle platformer man kan drømme om.., men det er faktisk litt uinspirerende. Og programmering skal være gøy!</p>
+<pre><code class="hljs"><span class="hljs-keyword">package</span> main
+
+<span class="hljs-keyword">import</span> <span class="hljs-string">&quot;fmt&quot;</span>
+
+func main() {
+    <span class="hljs-keyword">for</span> i := <span class="hljs-number">1</span>; i &lt;= <span class="hljs-number">100</span>; i++ {
+        <span class="hljs-keyword">switch</span> {
+        <span class="hljs-keyword">case</span> i%<span class="hljs-number">15</span>==<span class="hljs-number">0</span>:
+            fmt.<span class="hljs-keyword">Println</span>(<span class="hljs-string">&quot;FizzBuzz&quot;</span>)
+        <span class="hljs-keyword">case</span> i%<span class="hljs-number">3</span>==<span class="hljs-number">0</span>:
+            fmt.<span class="hljs-keyword">Println</span>(<span class="hljs-string">&quot;Fizz&quot;</span>)
+        <span class="hljs-keyword">case</span> i%<span class="hljs-number">5</span>==<span class="hljs-number">0</span>:
+            fmt.<span class="hljs-keyword">Println</span>(<span class="hljs-string">&quot;Buzz&quot;</span>)
+        <span class="hljs-keyword">default</span>:
+            fmt.<span class="hljs-keyword">Println</span>(i)
+        }
+    }
+}</code></pre><p>Så jeg dropper Go og går videre... <em>(pun intended, kind of)</em></p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/d.png" alt="D" /></div>
+
+<h2>D</h2>
+<p><strong>D</strong> (<a href="http://dlang.org/">dlang.org</a>) har som mål å være et alternativ til C++. Språket dukket opp i 2001, men D2 (versjon 2, en stor endring fra D1) er fra 2007. Den mest kjente brukeren av D er Facebook - <a href="http://forum.dlang.org/thread/l37h5s$2gd8$1@digitalmars.com#post-l37h5s:242gd8:241:40digitalmars.com">annensert her</a>.</p>
+<pre><code class="hljs"><span class="hljs-keyword">import</span> std.stdio;
+
+<span class="hljs-keyword">void</span> fizzBuzz(<span class="hljs-keyword">in</span> <span class="hljs-built_in">uint</span> n) {
+    <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">immutable</span> i; <span class="hljs-number">1</span> .. n + <span class="hljs-number">1</span>)
+        <span class="hljs-keyword">if</span> (!(i % <span class="hljs-number">15</span>))
+            <span class="hljs-string">&quot;FizzBuzz&quot;</span>.writeln;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!(i % <span class="hljs-number">3</span>))
+            <span class="hljs-string">&quot;Fizz&quot;</span>.writeln;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!(i % <span class="hljs-number">5</span>))
+            <span class="hljs-string">&quot;Buzz&quot;</span>.writeln;
+        <span class="hljs-keyword">else</span>
+            i.writeln;
+}</code></pre><p>Sammenlignet med C++ lover D at problem løses med færre linjer kode, færre bugs, og like god ytelse. Språket ligger akkurat nå på 31. plass på Tiobe&#39;s popularitetsindeks, og jeg spår at flere og flere kommer til å høre om og ta i bruk D i løpet av de neste årene - selv om Go sikkert kommer til å spise opp forspranget om ikke lenge.</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/ocaml.png" alt="OCaml" /></div>
+
+<h2>OCaml</h2>
+<p><strong>OCaml</strong> (<a href="https://ocaml.org/">ocaml.org</a>) er nesten 20 år gammelt, men har utviklet seg endel de siste ti, og jeg tror det stadig får flere brukere. ML ligger på 25. plass på Tiobe&#39;s indeks, og jeg lurer på om OCaml inngår der.</p>
+<pre><code class="hljs"><span class="hljs-keyword">let</span> fizzbuzz i =
+  <span class="hljs-keyword">match</span> i <span class="hljs-keyword">mod</span> <span class="hljs-number">3</span>, i <span class="hljs-keyword">mod</span> <span class="hljs-number">5</span> <span class="hljs-built_in">with</span>
+    <span class="hljs-number">0</span>, <span class="hljs-number">0</span> -&gt; <span class="hljs-string">&quot;FizzBuzz&quot;</span>
+  | <span class="hljs-type">0</span>, <span class="hljs-keyword">_</span> -&gt; <span class="hljs-string">&quot;Fizz&quot;</span>
+  | <span class="hljs-type">_</span>, <span class="hljs-number">0</span> -&gt; <span class="hljs-string">&quot;Buzz&quot;</span>
+  | <span class="hljs-type">_</span>    -&gt; string_of_int i
+
+<span class="hljs-keyword">let</span> <span class="hljs-keyword">_</span> =
+  <span class="hljs-keyword">for</span> i = <span class="hljs-number">1</span> to <span class="hljs-number">100</span> <span class="hljs-built_in">do</span> print_endline (fizzbuzz i) done</code></pre><p>Ocaml velges i stedet for C/C++ til systemprogrammering fordi den kraftige statiske typingen gir færre feil / tryggere kode. Et eksempel på et større prosjekt hvor man har valgt OCaml er <a href="http://openmirage.org/">Mirage OS</a>, et operativsystem for unikernels som kjører på Xen hypervisor.</p>
+<p>OCaml frister, siden det er såpass likt F#. Mine første forsøk med språket gikk derimot ikke så bra - jeg fikk problemer med å bruke tredjeparts biblioteker. Dette er helt sikkert overkommelig, men det fungerte i alle fall ikke helt som lovet.</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/haskell.png" alt="Haskell" /></div>
+
+<h2>Haskell</h2>
+<p><strong>Haskell</strong> (<a href="https://www.haskell.org/">haskell.org</a>) er en god C/C++ erstatter for mange (topp 50 på Tiobe).</p>
+<pre><code class="hljs">main = mapM_ (putStrLn . fizzbuzz) [<span class="hljs-number">1.</span><span class="hljs-number">.100</span>]
+
+fizzbuzz <span class="hljs-variable language_">x</span>
+    | <span class="hljs-variable language_">x</span> `<span class="hljs-keyword">mod</span>` <span class="hljs-number">15</span> == <span class="hljs-number">0</span> = <span class="hljs-string">&quot;FizzBuzz&quot;</span>
+    | <span class="hljs-variable language_">x</span> `<span class="hljs-keyword">mod</span>`  <span class="hljs-number">3</span> == <span class="hljs-number">0</span> = <span class="hljs-string">&quot;Fizz&quot;</span>
+    | <span class="hljs-variable language_">x</span> `<span class="hljs-keyword">mod</span>`  <span class="hljs-number">5</span> == <span class="hljs-number">0</span> = <span class="hljs-string">&quot;Buzz&quot;</span>
+    | otherwise = show <span class="hljs-variable language_">x</span></code></pre><p>For meg blir språket litt for spesielt. Jeg har forsøkt å lære meg det, men det er litt for krevende til at jeg klarer å bruke det uten å gjevnlig holde kunnskapen ved like. Skal jeg velge Haskell så blir det av andre grunner enn at det lar meg kompilere små, standalone programmer.</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/rust.png" alt="Rust" /></div>
+
+<h2>Rust</h2>
+<p><strong>Rust</strong> (<a href="http://www.rust-lang.org/">rust-lang.org</a>) er et programmeringsspråk utviklet av Mozilla Research. En alpha-utgave av versjon 1.0.0 er tilgjengelig, så språket er snart mulig å ta i bruk for alvor.</p>
+<pre><code class="hljs"><span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() {
+    <span class="hljs-keyword">for</span> <span class="hljs-variable">n</span> <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>..<span class="hljs-number">101</span> {
+        <span class="hljs-keyword">if</span> n % <span class="hljs-number">15</span> == <span class="hljs-number">0</span> {
+            <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;fizzbuzz&quot;</span>);
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> n % <span class="hljs-number">3</span> == <span class="hljs-number">0</span> {
+            <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;fizz&quot;</span>);
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> n % <span class="hljs-number">5</span> == <span class="hljs-number">0</span> {
+            <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;buzz&quot;</span>);
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;{}&quot;</span>, n);
+        }
+    }
+}</code></pre><p>Syntaksen minner om C/C++, men semantisk er det svært ulikt. Fokuset er på sikkerhet, kontroll av minnebruk, og samtidighet. Typesystemet har hentet mye inspirasjon fra Haskell, og Rust blir et rikt språk som støtter funksjonell programmering, actors, imperativ kode og objektorientering. Språknerder verden over fryder seg :)</p>
+<p>Jeg så litt på Rust for et par år siden. Den gang syntes jeg det var vanskelig å komme i gang. Det var kanskje ikke så rart, for språket utviklet seg hele tiden, og dokumentasjon skrevet to uker tidligere var ikke lenger noe man kunne stole på. Men nå når versjon 1 lanseres må jeg nok snart ta en ny titt.</p>
+<p>Men om jeg bare skal gjøre noe lite - som å lage en liten konsollapplikasjon - så føles det som litt overkill å sette seg inn i Rust.</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/nim.png" alt="Nim" /></div>
+
+<h2>Nim</h2>
+<p><strong>Nim</strong> (<a href="http://nim-lang.org/">nim-lang.org</a>), tidligere <em>Nimrod</em>, er et språk jeg har eksperimentert endel med, og <a href="/tags/nimrod/">blogget om</a>. Enkelte miljøer er ganske opptatt av språket, og følger spent med på utviklingen - som for eksempel <a href="http://www.reddit.com/r/programming">utviklermiljøet på reddit</a> - men for de aller fleste programmerere er Nim fortsatt totalt ukjent.</p>
+<pre><code class="hljs"><span class="hljs-variable">for</span> <span class="hljs-variable">i</span> <span class="hljs-variable"><span class="hljs-keyword">in</span></span> <span class="hljs-number">1</span>..<span class="hljs-number">100</span>:
+  <span class="hljs-variable"><span class="hljs-keyword">if</span></span> <span class="hljs-variable">i</span> <span class="hljs-variable">mod</span> <span class="hljs-number">15</span> == <span class="hljs-number">0</span>:
+    <span class="hljs-function"><span class="hljs-title">echo</span>(<span class="hljs-string">&quot;FizzBuzz&quot;</span>)</span>
+  <span class="hljs-variable">elif</span> <span class="hljs-variable">i</span> <span class="hljs-variable">mod</span> <span class="hljs-number">3</span> == <span class="hljs-number">0</span>:
+    <span class="hljs-function"><span class="hljs-title">echo</span>(<span class="hljs-string">&quot;Fizz&quot;</span>)</span>
+  <span class="hljs-variable">elif</span> <span class="hljs-variable">i</span> <span class="hljs-variable">mod</span> <span class="hljs-number">5</span> == <span class="hljs-number">0</span>:
+    <span class="hljs-function"><span class="hljs-title">echo</span>(<span class="hljs-string">&quot;Buzz&quot;</span>)</span>
+  <span class="hljs-variable"><span class="hljs-keyword">else</span></span>:
+    <span class="hljs-function"><span class="hljs-title">echo</span>(<span class="hljs-variable">i</span>)</span></code></pre><p>Jeg liker språket svært godt. Det jeg ikke liker er at det foreløpig føles så lite. Såvidt jeg vet utvikles Nim av én person, uten backing fra noe selskap, og det gjør at jeg blir litt usikker i forhold til språkets fremtid. Jeg håper det kan bli mere populært på sikt, få et levende community, og et rikere utvalg av biblioteker - men tiden vil vise.</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/red.png" alt="Red" /></div>
+
+<h2>Red</h2>
+<p><strong>Red</strong> (<a href="http://www.red-lang.org/">red-lang.org</a>) er et språk under utvikling, inspirert av Rebol (<a href="/tags/rebol/">som jeg har litt erfaring med</a>). Utviklerne har nå startet et selskap, fått litt økonomisk backing, og det gir litt mer trygghet i at dette faktisk kan bli til noe. For jeg synes Rebol er et ganske spennende språk, og ønsker gjerne at vi får et lignende språk som kan bli litt mere mainstream (ref. det litt spesielle Rebol-miljøet).</p>
+<pre><code class="hljs">repeat i <span class="hljs-number">100</span> [
+    <span class="hljs-keyword">print</span> <span class="hljs-keyword">switch</span>/<span class="hljs-literal">default</span> <span class="hljs-number">0</span> compose [
+        (<span class="hljs-keyword">mod</span> i <span class="hljs-number">15</span>) [<span class="hljs-string">&quot;fizzbuzz&quot;</span>]
+        (<span class="hljs-keyword">mod</span> i <span class="hljs-number">3</span>)  [<span class="hljs-string">&quot;fizz&quot;</span>]
+        (<span class="hljs-keyword">mod</span> i <span class="hljs-number">5</span>)  [<span class="hljs-string">&quot;buzz&quot;</span>]
+    ][i]
+]</code></pre><p>PS: Koden over er gyldig i Rebol. Om det er gyldig Red-kode aner jeg ikke - det vil tiden vise. Du kan laste ned og bygge Red, men jeg har ikke hatt særlig hell de gangene jeg har forsøkt.</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/racket.png" alt="Racket" /></div>
+
+<h2>Racket</h2>
+<p><strong>Racket</strong> (<a href="http://racket-lang.org/">racket-lang.org</a>) brukte jeg for første gang for bare noen måneder siden (se <a href="/2014/11/29/mitt-forste-program-i-racket/">mitt første program i Racket</a>). Og det var som jeg sier i blogposten en udelt positiv opplevelse.</p>
+<pre><code class="hljs">(<span class="hljs-name">for</span> ([<span class="hljs-name">n</span> (<span class="hljs-name">in-range</span> <span class="hljs-number">1</span> <span class="hljs-number">101</span>)])
+  (<span class="hljs-name">displayln</span>
+   (<span class="hljs-name">match</span> (<span class="hljs-name"><span class="hljs-built_in">gcd</span></span> n <span class="hljs-number">15</span>)
+     [<span class="hljs-name">15</span> <span class="hljs-string">&quot;fizzbuzz&quot;</span>]
+     [<span class="hljs-name">3</span> <span class="hljs-string">&quot;fizz&quot;</span>]
+     [<span class="hljs-name">5</span> <span class="hljs-string">&quot;buzz&quot;</span>]
+     [<span class="hljs-name">_</span> n])))</code></pre><p>Racket har først og fremst to ting som taler mot at det blir en C/C++ erstatning. For det første er det en Lisp, noe som fremkaller allergiske reaskjoner hos mange utviklere. For det andre har det et rykte for å være et lekespråk, eller kanskje mer presist et språk og utviklingsmiljø for akademikere som ønsker å eksperimentere.</p>
+<p>Jeg er også usikker på om ytelsen er sammenlignbar med C. Det bør jeg rett og slett teste.</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/gnome.png" alt="GNOME" /></div>
+
+<h2>Vala (og Genie)</h2>
+<p><strong>Vala</strong> (<a href="https://wiki.gnome.org/Projects/Vala">wiki.gnome.org/Projects/Vala</a>) er et nytt (2006) språk med en syntaks som er nesten identisk med C#. Jeg har ikke testet det enda, men det virker interessant. Språket er en del av GNOME-prosjektet, og vil nok bli mest brukt på Linux, men det er også anvendelig på Windows.</p>
+<pre><code class="hljs">int <span class="hljs-selector-tag">main</span>() {
+    <span class="hljs-built_in">for</span>(int i = <span class="hljs-number">1</span>; i &lt; <span class="hljs-number">100</span>; i++) {
+        <span class="hljs-built_in">if</span>(i % <span class="hljs-number">3</span> == <span class="hljs-number">0</span>) stdout<span class="hljs-selector-class">.printf</span>(&quot;Fizz&quot;);
+        <span class="hljs-built_in">if</span>(i % <span class="hljs-number">5</span> == <span class="hljs-number">0</span>) stdout<span class="hljs-selector-class">.printf</span>(&quot;Buzz&quot;);
+        <span class="hljs-built_in">if</span>(i % <span class="hljs-number">3</span> != <span class="hljs-number">0</span> &amp;&amp; i % <span class="hljs-number">5</span> != <span class="hljs-number">0</span>) stdout<span class="hljs-selector-class">.printf</span>(&quot;%d&quot;, i);
+        stdout<span class="hljs-selector-class">.printf</span>(&quot;\n&quot;);
+    }
+  return <span class="hljs-number">0</span>;
+}</code></pre><p>Vala er interessant fordi man kan gjenbruke C#-kompetanse, men kompilere til <em>native</em>. Men om det ikke er nok kan du også ta en titt på <strong><a href="https://wiki.gnome.org/Projects/Genie">Genie</a></strong>, som bygger på Vala men gir deg en syntaks mer lik Python (eller <a href="/tags/boo/">Boo</a> om du vil).</p>
+<div class="pull-right" style="margin-left:10px;"><img src="/uploads/2015/04/crystal.png" alt="Crystal" /></div>
+
+<h2>Crystal</h2>
+<p><strong>Crystal</strong> (<a href="http://crystal-lang.org/">crystal-lang.org</a>) er det siste programmeringsspråket jeg har hørt om. Det har en Ruby-inspirert syntaks, og det spesielle med Crystal er at selv om det er statisk typet, så må man ALDRI spesifisere en type noe sted.</p>
+<p>Språket er fortsatt under utvikling, så det er alt for tidlig å si hvor det vil ende. Men om det kan generere effektiv <em>native</em> kode så vil det være svært spennende.</p>
+<p>Noe å følge med på...</p>
+<h2>KONKLUSJON</h2>
+<p>Ble du noe klokere?</p>
+<p>Jeg knytter endel emosjoner og magefølelser til valg av språk, men jeg forsøker å rasjonalisere også. Språket som stikker seg frem som mulig C/C++ erstatning for meg akkurat nå, når jeg skal gjøre småting, er faktisk Racket, med Nim på en andreplass og Go på en uinspirerende tredje. Det at jeg har prøvd disse språkene har selvsagt endel å si.</p>
+<p>Når det kommer til mere fullgode erstatninger for C++ så har jeg mest forhåpninger til Rust, med D som et bra alternativ som allerede er klart for <em>prime time</em>.</p>
+<p>Vala (og Genie) er språk jeg må teste ut før jeg tørr si noe mer om hvor anvendelige de vil være. Og så ser jeg frem til at Red, Crystal og forsåvidt også Nim skal bli litt mere modne.</p>
+<p>Hmm, kanskje jeg burde implementere et enkelt program i et utvalg av disse språkene og teste litt ytelse nå?</p>
+<h2>Andre muligheter?</h2>
+<p class="text-center"><img src="/uploads/2015/04/lisplogo_alien_256.png" alt="Common Lisp" /></p>
+
+<p>Flere implementasjoner av <a href="https://common-lisp.net/">Common Lisp</a> gir deg også muligheten til å pakke og <em>shippe</em> eksekverbare programmer. Men jeg har forsøkt, og det er en terskel å få det til - i alle fall når koden har avhengigheter til tredjeparts biblioteker. Dessuten blir den eksekverbare filen gjerne ganske stor. Men om du er interessert kan du <a href="http://stackoverflow.com/questions/25046/lisp-executable">ta en titt her</a>.</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">loop</span></span> as n from <span class="hljs-number">1</span> to <span class="hljs-number">100</span>
+      as fizz = (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> n <span class="hljs-number">3</span>))
+      as buzz = (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> n <span class="hljs-number">5</span>))
+      as numb = (<span class="hljs-name"><span class="hljs-built_in">not</span></span> (<span class="hljs-name"><span class="hljs-built_in">or</span></span> fizz buzz))
+      do
+  (<span class="hljs-name"><span class="hljs-built_in">format</span></span> t
+   <span class="hljs-string">&quot;~&amp;~:[~;Fizz~]~:[~;Buzz~]~:[~;~D~]~%&quot;</span>
+   fizz buzz numb n))</code></pre><p>Til slutt bør det nevnes at Microsoft kommer til å lansere noe de kaller <a href="https://msdn.microsoft.com/en-us/vstudio/dotnetnative.aspx">.NET Native</a>. Dette er spennende, men inntil videre har fokuset kun vært på Windows Store apps.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

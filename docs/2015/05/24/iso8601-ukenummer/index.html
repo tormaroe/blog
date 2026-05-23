@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Databaser,C#">
+
+    <title>ISO 8601: Ukenummer i C# og SQL</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>ISO 8601: Ukenummer i C# og SQL</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 24. mai 2015</small> 
+            <a href="/tags/databaser"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Databaser</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p>Hvilken uke er vi i? Hvilken dato det er husker jeg som regel, men ukenummer må jeg slå opp. Da er det ganske kjekt at vi har tjenester som <a href="http://ukenummer.no/">ukenummer.no</a>.</p>
+<p>Men av og til trenger vi å forholde oss til ukenummer i kode også. Og da bør vi være helt sikre på hva vi snakker om. For ulike steder i verden teller vi uker forskjellig. Hvilken dag uken starter på varierer, og hva som teller som uke nummer 1 varierer også.</p>
+<p><strong><a href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a></strong> er standarden for utvetydig og veldefinert representasjon av dato og tid. Når vi sier &quot;iso-dato&quot; mener vi en dato som er formatert etter reglene i ISO 8601. </p>
+<p>Og standarden har blant annet en <a href="http://en.wikipedia.org/wiki/ISO_week_date">helt presis definisjon</a> for hvordan man teller uker. Kort fortalt:</p>
+<blockquote>
+<p>Et ISO år har 52 eller 53 uker, og vi begynner på ukenummer 1 (uke 0 finnes ikke).
+Uker begynner på mandager, og uke nummer 1 er den uken som inneholder 4. januar.</p>
+</blockquote>
+<p>Denne definisjonen bruker vi i Norge, i EU, og de fleste andre land i Europa. I USA, Canada, Kina, Japan, Israel og det meste av Latin-Amerika derimot gjør de det litt anderledes, og ukene begynner på søndag. I midtøsten begynner uken allerede på lørdagen.</p>
+<h2>Finne ukenummer i C&#35;</h2>
+<p>Denne bloggposten er egentlig bare en huskelapp for meg selv; jeg har akkurat hatt behovet for å finne ukenummer, og nå trenger jeg et sted å dokumentere hva jeg har brukt.</p>
+<p>Når du trenger å finne ukenummer fra en dato i C# kan du gjøre som dette:</p>
+<pre><code class="hljs"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ISO8601</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-built_in">int</span> WeekOfYear(DateTime <span class="hljs-built_in">date</span>)
+    {
+        <span class="hljs-built_in">var</span> cal = CultureInfo.CurrentCulture.Calendar;
+        <span class="hljs-built_in">var</span> day = (<span class="hljs-built_in">int</span>) cal.GetDayOfWeek(<span class="hljs-built_in">date</span>);
+        <span class="hljs-keyword">return</span> cal.GetWeekOfYear(
+            time: <span class="hljs-built_in">date</span>.AddDays(<span class="hljs-number">4</span> - (day == <span class="hljs-number">0</span> ? <span class="hljs-number">7</span> : day)), 
+            rule: CalendarWeekRule.FirstFourDayWeek, 
+            firstDayOfWeek: DayOfWeek.Monday);
+    }
+}</code></pre><p>Denne koden fant jeg nok på nettet et sted, men jeg har pyntet litt på den.</p>
+<h2>Ukenummer i SQL Server</h2>
+<p>Jeg trengte også å beregne ukenummer i SQL Server prosedyrer. Fra versjon 2008 og oppover skal man ha mulighet for å hente ut <code>iso_week</code> med funksjonen <code>DATEPART</code>, men jeg er stuck med SQL Server 2005 (eller versjon 9 som den egentlig heter, codename <em>Yukon</em>).</p>
+<p>For å finne ukenummer bruker jeg derfor denne funksjonen, også klippet fra nettet:</p>
+<pre><code class="hljs"><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">FUNCTION</span> F_ISO_WEEK_OF_YEAR
+  ( <span class="hljs-variable">@Date</span> datetime )
+<span class="hljs-keyword">RETURNS</span> <span class="hljs-type">int</span>
+<span class="hljs-keyword">AS</span>
+<span class="hljs-keyword">BEGIN</span>
+  <span class="hljs-keyword">DECLARE</span> <span class="hljs-variable">@WeekOfYear</span> <span class="hljs-type">int</span>
+  
+  <span class="hljs-keyword">SELECT</span>
+    <span class="hljs-comment">-- Compute week of year as (days since start of year/7)+1</span>
+    <span class="hljs-comment">-- Division by 7 gives whole weeks since start of year.</span>
+    <span class="hljs-comment">-- Adding 1 starts week number at 1, instead of zero.</span>
+    <span class="hljs-variable">@WeekOfYear</span> <span class="hljs-operator">=</span> (datediff(dd,
+      <span class="hljs-comment">-- Case finds start of year</span>
+      <span class="hljs-keyword">CASE</span>
+      <span class="hljs-keyword">WHEN</span> NextYrStart <span class="hljs-operator">&lt;=</span> <span class="hljs-variable">@date</span> <span class="hljs-keyword">then</span> NextYrStart
+      <span class="hljs-keyword">WHEN</span> CurrYrStart <span class="hljs-operator">&lt;=</span> <span class="hljs-variable">@date</span> <span class="hljs-keyword">then</span> CurrYrStart
+      <span class="hljs-keyword">ELSE</span> PriorYrStart
+      <span class="hljs-keyword">END</span>, <span class="hljs-variable">@date</span>) <span class="hljs-operator">/</span> <span class="hljs-number">7</span>) <span class="hljs-operator">+</span> <span class="hljs-number">1</span>
+  <span class="hljs-keyword">FROM</span>
+    (<span class="hljs-keyword">SELECT</span>
+      <span class="hljs-comment">-- First day of first week of prior year</span>
+      PriorYrStart <span class="hljs-operator">=</span> dateadd(dd,(datediff(
+        dd,<span class="hljs-number">-53690</span>,dateadd(yy,<span class="hljs-number">-1</span>,aa.Jan4))<span class="hljs-operator">/</span><span class="hljs-number">7</span>)<span class="hljs-operator">*</span><span class="hljs-number">7</span>,<span class="hljs-number">-53690</span>),
+      <span class="hljs-comment">-- First day of first week of current year</span>
+      CurrYrStart <span class="hljs-operator">=</span> dateadd(dd,(datediff(
+        dd,<span class="hljs-number">-53690</span>,aa.Jan4)<span class="hljs-operator">/</span><span class="hljs-number">7</span>)<span class="hljs-operator">*</span><span class="hljs-number">7</span>,<span class="hljs-number">-53690</span>),
+      <span class="hljs-comment">-- First day of first week of next year</span>
+      NextYrStart <span class="hljs-operator">=</span> dateadd(dd,(datediff(
+        dd,<span class="hljs-number">-53690</span>,dateadd(yy,<span class="hljs-number">1</span>,aa.Jan4))<span class="hljs-operator">/</span><span class="hljs-number">7</span>)<span class="hljs-operator">*</span><span class="hljs-number">7</span>,<span class="hljs-number">-53690</span>)
+    <span class="hljs-keyword">FROM</span>
+      (<span class="hljs-keyword">SELECT</span>
+        <span class="hljs-comment">--Find Jan 4 for the year of the input date</span>
+        Jan4 <span class="hljs-operator">=</span> dateadd(dd,<span class="hljs-number">3</span>,dateadd(yy,datediff(yy,<span class="hljs-number">0</span>,<span class="hljs-variable">@date</span>),<span class="hljs-number">0</span>))
+      ) aa
+    ) a
+  
+  <span class="hljs-keyword">RETURN</span> <span class="hljs-variable">@WeekOfYear</span>
+<span class="hljs-keyword">END</span></code></pre>
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

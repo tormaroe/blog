@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Databaser,MSMQ,Software/verktøy">
+
+    <title>Allsidige Redis</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Allsidige Redis</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 30. mai 2016</small> 
+            <a href="/tags/databaser"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Databaser</span></a>
+          
+            <a href="/tags/msmq"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> MSMQ</span></a>
+          
+            <a href="/tags/software-verktøy"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Software/verktøy</span></a>
+          </p>
+          <p><strong><a href="http://redis.io/">Redis</a></strong> er en spennende dataserver jeg ble for alvor interessert i da jeg leste <em><a href="https://pragprog.com/book/rwdata/seven-databases-in-seven-weeks">Seven Databases in Seven Weeks</a></em> for noen år siden. Denne bloggposten handler om hvordan vi har tatt i bruk Redis i prosjektet jeg jobber på i LINK Mobility - hva Redis er godt for rett og slett!</p>
+<p>Redis er i bunn og grunn en <em>in-memory key-value store</em>. Den er lynrask, støtter ulike cluster-oppsett, og <a href="http://redis.io/topics/persistence">valgfri datapersistering</a>. Men så har den i tillegg en rekke egenskaper som gjør Redis helt unik (såvidt jeg kjenner til).</p>
+<p>Redis (som står for <em>REmote DIctionary Server</em>) tilbyr nemlig datastrukturer: Den har lister, mengder, sorterte mengder, hashtabeller, bitmaps, geospatiale indekser og mere til, samt de vanlige operasjonene man kan forvente på disse. Den støtter atomiske transaksjoner, publish/subscribe, bruker <a href="/2011/12/01/lua/">Lua</a> som skriptspråk, og har et elegant og simplistisk API.</p>
+<p>En mulig bekymring er at Redis i hovedsak vedlikeholdes og utvikles av én person: <a href="https://twitter.com/antirez">Salvatore Sanfilippo</a> a.k.a. antirez. Men selskapet <a href="https://redislabs.com/">Redis Labs</a> sponser utviklingen, og når giganter som Twitter, GitHub, Pinterest, Snapchat, Craigslist, StackOverflow og Flickr bruker Redis så er det ingen fare for at teknologien dør med det første.</p>
+<img src="/uploads/2016/05/redis.png" alt="Redis logo" />
+
+<p>Med alle datastrukturene er Redis som en <em>sveitsisk lommekniv</em>, og dette er grunnen til at vi har løst hele <em>seks</em> helt ulike problemer med den i vårt prosjekt. La meg gå gjennom dem en etter en...</p>
+<h2>1. Cache</h2>
+<p>Det begynte med at jeg trengte en løsning for a cache en rekke rapporter. For caching finnes det mange muligheter, men jeg så på dette som en fin anledning til å få inn Redis i stacken vår.</p>
+<p>Det jeg cacher er json-grunnlaget for noen webrapporter, samt noen CSV-filer. TIl dette bruker jeg key-value funksjonaliteten i Redis med en <em>time-to-live</em> som lar meg bestemme hvor lenge cachen skal være gyldig. I mitt tilfelle er det snakk om flere dager. Etter dette sier det &quot;poff&quot; og dataene er borte.</p>
+<h2>2. Distribuert låsing</h2>
+<p>I løsningen vår har vi en <em>web server farm</em> som eksponerer et API. Når vi behandler en innkommende request må vi forsikre oss om at ingen andre servere får den nøyaktig samme requesten og forsøker å behandle denne. Til dette implementerte vi en låsemekanisme, og til å begynne med brukte vi MongoDB til å registrere låsene.</p>
+<p>Men da vi hadde innført Redis i stacken var det naturlig å gjøre registreringen der. For det første er Redis raskere. For det andre har Redis et <em>single threaded</em> design som gjør det umulig for to prosesser å registrere den samme låsen. Og for det tredje kunne vi også her benytte <em>time-to-live</em> til å automatisk oppheve låser som av en eller annen grunn ikke ble avregistrert.</p>
+<p>Du kan lese mer om <a href="http://redis.io/topics/distlock">distribuert låsing med Redis her</a>.</p>
+<h2>3. Pub/Sub</h2>
+<p>Som sagt kjører vi en web farm med flere servere. Under arbeidet med en ny integrasjon nå i år dukket det opp en problemstilling hvor vi fikk inn en request som måtte behandles av én bestemt server.., som ventet på denne requesten. Utfordringen var at vi i mottaket av requesten ikke kunne vite hvilken server det var som ventet.</p>
+<p>For å løse dette valgte vi å bruke Redis igjen. Når en server venter på en av disse requestene begynner den å lytte til en pub/sub-kanal i Redis. Og når requesten kommer inn publiserer mottakeren dette til samme kanal, slik at serveren som skal behandle den får vite det og kan plukke den opp.</p>
+<p>Dette var den til dags dato mest kompliserte enkeltintegrasjonen i løsningen vår, men med Redis ble det egentlig ganske enkelt likevel. Jeg planlegger å beskrive dette nærmere i en egen bloggpost.</p>
+<h2>4. KPI-beregning og monitorering</h2>
+<p>I løsningen vår er det mye som må overvåkes, og nå når vi var så godt i gang valgte vi å bruke Redis til deler av dette også. Vi har en prosess som mottar samtlige request systemet har behandlet, og som aggregerer (teller antall) gruppert på requesttype, resultatkode og tidspunkt. </p>
+<p>Hvert minutt opprettes det en ny <em>hash</em> i Redis, og prosessen inkrementerer tellere i denne hashen. 60 minutter senere slettes dataene automatisk (<em>time-to-live</em> igjen). I mellomtiden danner dataene grunnlag for grafer og andre indikatorer i et dashboard som forteller oss hvordan systemet har det.</p>
+<h2>5. Live request stream</h2>
+<p>For å virkelig få en god forståelse av hvordan systemet vårt oppfører seg gikk vi ett skritt lengre; vi <em>streamet</em> detaljer om alle de prosesserte requestene direkte til dashboardet, sånn at vi kunne se dem fare over skjermen. </p>
+<p>Til dette brukte vi igjen Redis sin pub/sub funksjonalitet. Alle requestene ble publisert på en Redis-kanal. I dashboard-løsningens backend (en <a href="http://nancyfx.org/">Nancy-applikasjon</a>) lyttet vi på denne kanalen og sendte requestene videre til klientene via <a href="http://signalr.net/">SignalR</a> (web socket).</p>
+<p>Dette fungerte utrolig bra. Jeg skulle ønske jeg kunne vise det frem, men du får nøye deg med å forestille deg hvordan det ser ut ;)</p>
+<h2>6. Meldingskø</h2>
+<p>I denne løsningen som jeg snakker om hele tiden har vi en avhengighet til Microsofts meldingskø: MSMQ. Slik vi benytter den er den et <em><a href="https://en.wikipedia.org/wiki/Single_point_of_failure">single point of failure</a></em>, og det fungerer ikke for oss lengre.</p>
+<p>Vi kunne valgt å oppgradere til å bruke en clustret MSMQ-løsning, eller vi kunne tatt i bruk naturlige alternativer som for eksempel <a href="https://www.rabbitmq.com/">RabbitMQ</a>. Men siden vi allerede hadde tilgang til et Redis-cluster så utforsket vi hvilke muligheter det gav oss.</p>
+<p>Redis har ikke i utgangspunktet støtte for <em>reliable message queueing</em>, men vi fant flere eksempler på at folk før oss med noen enkle grep har implementert dette på toppen av Redis. Og nå har vi gjort det også!</p>
+<p>I skrivende stund kjører vi fortsatt MSMQ i produksjon, men tester ut Redis-løsningen, som ser ut til å fungere bra. Jeg håper jeg kan poste en egen artikkel om dette om ikke så lenge.</p>
+<h2>Konklusjon</h2>
+<p>Redis ble innført i systemet vårt som en enkel cache-server, men når den først var der dukket det opp flere og flere utfordringer hvor Redis var den naturlig løsningen. Erfaringene våre er gode, og databasen (eller <em>datastruktur-serveren</em> som man kanskje heller burde kalle den) har et unikt sett med byggeklosser som gjør at jeg vil anbefale den til alle som utvikler distribuerte systemer.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="CodingDojo,Ruby,WTF">
+
+    <title>No ifs and buts</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>No ifs and buts</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 13. mai 2012</small> 
+            <a href="/tags/codingdojo"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> CodingDojo</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          
+            <a href="/tags/wtf"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> WTF</span></a>
+          </p>
+          <p>For noen dager siden hadde vi en ny <a href="http://www.meetup.com/BergenCodingDojo/">CodingDojo i Bergen</a>. Oppgaven denne gangen var å presse objektorientering til det ytterste og trene på polymorfi gjennom å skrive kode helt uten bruk av IF, SWITCH eller tilsvarende konstruksjoner. Er du interessert i bakgrunnen for denne øvelsen kan du <a href="http://www.cs.uni.edu/~wallingf/blog/archives/monthly/2012-02.html#e2012-02-19T12_17_41.htm">ta en titt her på bloggen til professor Eugene Wallingford</a>. Du bør også sjekke ut <a href="http://www.antiifcampaign.com/">the Anti-If Campaign</a>.</p>
+<p>Jeg jobbet sammen med <a href="https://twitter.com/#!/olsenius">@Olsenius</a> for anledningen. Vi brukte Ruby. Oppgaven vi forsøkte å implementere var en billett-automat. Desverre ble dette mer et eksperiment i hvilke Ruby-triks vi kunne missbruke for å unngå IF enn en trening i god objektorientering. Koden vi produserte er <strong>noe av det værste jeg kan huske å ha laget :)</strong></p>
+<p>Vi ble ikke helt ferdige – jeg måtte gå litt tidlig – men koden vi produserte er gjengitt i sin helhet nedenfor. Vi brukte TDD, men testene har jeg droppet her.</p>
+<p>Ser du hvordan vi har oppfunnet et nytt pattern både for IF og for UNLESS (altså "not if")?</p>
+<pre style="padding-bottom: 6px; background-color: #242424; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Comment"># Monkey patch: Just adding a convenient sum-method to arrays</span>
+<span class="lnr">11 </span><span class="PreProc">class</span> <span class="Type">Array</span>
+<span class="lnr">12 </span>  <span class="PreProc">def</span> <span class="Function">sum</span>
+<span class="lnr">13 </span>    <span class="Constant">self</span>.inject(<span class="Number">0</span>){|<span class="Identifier">x</span>, <span class="Identifier">y</span>| x + y}
+<span class="lnr">14 </span>  <span class="PreProc">end</span>
+<span class="lnr">15 </span><span class="PreProc">end</span>
+<span class="lnr">16 </span>
+<span class="lnr">17 </span><span class="PreProc">class</span> <span class="Type">TicketMachine</span>
+<span class="lnr">18 </span>  <span class="PreProc">def</span> <span class="Function">initialize</span>
+<span class="lnr">19 </span>    <span class="Identifier">@balance</span>, <span class="Identifier">@total</span> = [], []
+<span class="lnr">20 </span>    <span class="Identifier">@printers</span> = { <span class="Special">"</span><span class="String">total=5</span><span class="Special">"</span> =&gt; <span class="Type">ValidTicket</span>.new }
+<span class="lnr">21 </span>    <span class="Identifier">@money_validators</span> = { <span class="Special">"</span><span class="String">-</span><span class="Special">"</span> =&gt; <span class="Type">InvalidMoney</span>.new }
+<span class="lnr">22 </span>  <span class="PreProc">end</span>
+<span class="lnr">23 </span>
+<span class="lnr">24 </span>  <span class="Comment"># Properties:</span>
+<span class="lnr">25 </span>  <span class="PreProc">def</span> <span class="Function">balance</span>; <span class="Identifier">@balance</span>.sum; <span class="PreProc">end</span>
+<span class="lnr">26 </span>  <span class="PreProc">def</span> <span class="Function">total</span>; <span class="Identifier">@total</span>.sum; <span class="PreProc">end</span>
+<span class="lnr">27 </span>
+<span class="lnr">28 </span>  <span class="Comment"># Lets user print his ticket,</span>
+<span class="lnr">29 </span>  <span class="Comment"># but raises an Exception unless @balance is 5 !!!</span>
+<span class="lnr">30 </span>  <span class="PreProc">def</span> <span class="Function">print_ticket</span>
+<span class="lnr">31 </span>    <span class="Identifier">@printers</span>[<span class="Special">"</span><span class="String">total=</span><span class="Special">#{</span><span class="Identifier">@balance</span>.sum<span class="Special">}</span><span class="Special">"</span>].print
+<span class="lnr">32 </span>    <span class="Identifier">@balance</span> = []
+<span class="lnr">33 </span>  <span class="PreProc">end</span>
+<span class="lnr">34 </span>
+<span class="lnr">35 </span>  <span class="Comment"># Lets user insert money into the machine</span>
+<span class="lnr">36 </span>  <span class="Comment"># Will raise exception if money is a negative number !!!</span>
+<span class="lnr">37 </span>  <span class="PreProc">def</span> <span class="Function">add</span> money
+<span class="lnr">38 </span>    <span class="Statement">begin</span>
+<span class="lnr">39 </span>      <span class="Identifier">@money_validators</span>[money.to_s[<span class="Number">0</span>]].fail_if_valid
+<span class="lnr">40 </span>      <span class="Statement">raise</span> <span class="Special">"</span><span class="String">INVALID MONEY</span><span class="Special">"</span>
+<span class="lnr">41 </span>    <span class="Statement">rescue</span> <span class="Type">NoMethodError</span>
+<span class="lnr">42 </span>      <span class="Identifier">@balance</span> &lt;&lt; money
+<span class="lnr">43 </span>      <span class="Identifier">@total</span> &lt;&lt; money
+<span class="lnr">44 </span>    <span class="Statement">end</span>
+<span class="lnr">45 </span>  <span class="PreProc">end</span>
+<span class="lnr">46 </span><span class="PreProc">end</span>
+<span class="lnr">47 </span>
+<span class="lnr">48 </span><span class="PreProc">class</span> <span class="Type">ValidTicket</span>
+<span class="lnr">49 </span>  <span class="PreProc">def</span> <span class="Function">print</span>
+<span class="lnr">50 </span>    puts <span class="Special">"</span><span class="String">THE TICKET</span><span class="Special">"</span>
+<span class="lnr">51 </span>  <span class="PreProc">end</span>
+<span class="lnr">52 </span><span class="PreProc">end</span>
+<span class="lnr">53 </span>
+<span class="lnr">54 </span><span class="PreProc">class</span> <span class="Type">InvalidMoney</span>
+<span class="lnr">55 </span>  <span class="PreProc">def</span> <span class="Function">fail_if_valid</span>; <span class="PreProc">end</span>
+<span class="lnr">56 </span><span class="PreProc">end</span>
+</pre>
+<p>That's all!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

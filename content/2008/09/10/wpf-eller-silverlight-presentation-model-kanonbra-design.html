@@ -1,0 +1,30 @@
+---
+title: WPF eller Silverlight + Presentation Model = KANONBRA DESIGN
+link: http://blog.kjempekjekt.com/2008/09/10/wpf-eller-silverlight-presentation-model-kanonbra-design/
+layout: post
+date: 2008-09-10 07:30:28Z
+tags:
+  - MSDN Live
+---
+<a href="http://blog.goeran.no/">Gøran Hansen</a> holdt hele tre foredrag på gårsdagens MSDN Live i Bergen. Det første var en slags introduksjon til Silverlight, men jeg har allerede brukt en del tid på å sette meg inn i denne teknologien, så her var det ikke noe nytt for meg.
+
+Deretter snakket han om noe som heter <strong>ASP.NET Dynamic Data</strong> som kom i SP1 for .NET 3.5. Det dreier seg om et rammeverk for å automatisk generere en web app basert på et databaseskjema. En komplett site med view og edit muligheter av alle tabeller i basen får man vha. et project template + én linje kode. Deretter kan man gå igang og modifisere de delene man ønsker for å lage en mere skreddersydd løsning.
+
+Hele greia minner faktisk mye om <a href="http://www.rubyonrails.org/">Ruby on Rails</a>. Gøran gav en veldig bra demo av teknologien, og argumenterte godt for hvorfor vi ønsker å gjøre det sånn (DRY.., Don't Repeat Yourself). Han kom også med en prediksjon; han tror at scaffolding-implementasjonen som muligjør Dynamic Data om ikke så alt for lenge også vil dukke opp i WPF og Silverlight. Det høres flott ut. <a href="http://weblogs.asp.net/scottgu/archive/2007/12/14/new-asp-net-dynamic-data-support.aspx">ScottGu har en bra blogpost som går mer i detalj om bruk av Dynamic Data</a>.
+
+<strong>Men skulle ikke denne artikkelen handle om Presentation Model?</strong>
+
+Jo, det skulle den, for Gjørans siste foredrag var nok det mest interessante. Her demonstrerte han nemlig praktisk GUI programmering i WPF, men med fokus på hvordan koden bør struktureres.
+
+Gjøran koder etter to kjente prinsipper
+<ol>
+	<li>Programmer mot et interface, ikke en implementasjon</li>
+	<li>Separation of Concerns</li>
+</ol>
+Jeg har utallige ganger hørt om disse, og jeg har utallige ganger hørt og lest om patterns som MVC, MVP og Presenter Model, men aldri før har jeg fått en så konkret og illustrerende kodedemo som jeg fikk i går. Det gikk opp et aldri så lite lys for meg. Med Gjørans kode får man skilt ut GUI logikken fra selve presentasjonen, slik at den både kan gjenbrukes mellom ulike views (Silverlight, ASP.NET, WinForms etc.) og slik at den kan enhetstestes! Faktisk!
+
+Gjørans Presentation Model er et objekt som abstraherer et brukerinterface. Det er <em>et UI uten UI</em> som han sa. Det inneholder UI'ets state og operasjoner, og i WPF eller Silverlight er det koblet til et view gjennom toveis databinding. Toveis databinding er ekstremt bra i disse nye GUI teknologiene, og det er det som gjør at Presnetation Model patternet fungerer ekstra bra her.
+
+Det ble også poengtert at Presentation Model objektene alltid forholdt seg til data modellen gjennom interface - nødvendig for å få til enhetstesting, men også slik kan gjøre endringer enklere etc.
+
+Koden Gjøran viste var fra hans SPRINT Board prosjekt, som han sa han skulle legge ut på Codeplex - men han lovet også å legge den + presentasjonene ut på bloggen sin, <a href="http://blog.goeran.no/">du finner den her</a>. Koden, også fra Silverlight demone, er absolutt verdt en titt.

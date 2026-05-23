@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender">
+
+    <title>Kalenderluke 16: Et kryptisk program</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kalenderluke 16: Et kryptisk program</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 17. desember 2013</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p>Og hva sier nissen?</p>
+<blockquote><p>Nissen sier Hohohoho Hohohoho!</p>
+</blockquote>
+<p>Jepp, det var det som var output fra det kryptiske programmet du fant i dagens luke. Selvfølgelig var dette ganske vanskelig å finne ut av, siden jeg ikke ville røpe hvilket språk det var. Språket heter <strong>Betterave</strong> (fransk for rødbete), og jeg dedikerte <a href="/2011/12/16/betterave/">en luke til språket i kalenderen for to år siden</a>. Var du så heldig å finne den så kunne du enten løse oppgaven ved å følge reglene og simulere språket i hodet, eller du kunne laste ned tolkeren implementert i Ruby og så kjøre programmet.</p>
+<p>Om du ikke fant ut at språket var Betterave så mener jeg det likevel er mulig for en erfaren og kreativ utvikler å gjette seg til hva koden gjør. Kanskje jeg forventer for mye? Kanskje jeg har studert litt for mange esoteriske språk?</p>
+<p><strong>Daniel T Johansen</strong> var raskest ute med riktig svar, og fikk full pott for andre gang. Stian var også tidlig ute, og tok kraftig innpå Magnar Sveen sammenlagt (som ikke klarte oppgaven). </p>
+<p><img title="luke16_utvikling" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="luke16_utvikling" src="/uploads/2013/12/luke16_utvikling.jpg" width="581" height="368"></p>
+<h2>Gjennomgang av koden</h2>
+<pre>~ Et juleprogram ~
+</pre>
+<p>Første linje (alt mellom to tilde-tegn) er kun en kommentar.</p>
+<pre>"Nissen" "sier"
+</pre>
+<p>Her definerer jeg to strenger, som automatisk plasseres i en egen streng-liste på henholdsvis indeks 0 og 1.</p>
+<pre>A * 89
+</pre>
+<p>Her tilordner jeg en verdi til en variabel jeg kaller <code>A</code>. Variabler i Betterave består av kun én bokstav, og uppercase betyr tilordning.</p>
+<p><code>*</code> er en funksjon som ganger sammen de to neste verdiene – og de to neste verdiene er <code>8</code> og <code>9</code>. Man kan nemlig ikke direkte uttrykke tall med mer enn ett siffer, så man må bruke tallene mellom 0 og 9 til å lage større tegn. Her lager jeg tallet 72, som tilfeldigvis er ASCII-verdien til bokstaven <code>H</code>.</p>
+<pre>B+ * 98 * 84
+</pre>
+<p>Her gjør jeg mye av det samme, men jeg er ute etter et større tall, så utregningen er mer kompleks. Tallet som tilordnes variabel <code>B</code> er (8*9)+(8*4), altså 104, som er ASCII-verdien til bokstaven <code>h</code>.</p>
+<pre>C + 7b
+</pre>
+<p>Og for å lage <code>C</code> plusser jeg sammen tallet 7 og verdien av B, som blir 111 – eller bokstaven <code>o</code>.</p>
+<pre>D  * 48
+</pre>
+<p><code>D</code> er 4 ganger 8, som blir 32 – karakteren "space".</p>
+<pre>&amp;0d &amp;1d</pre>
+<p><code>&amp;</code> er en funksjon som appender et tegn (basert på ASCII-verdien) til en av strengene i streng-listen. <code>&amp;0d</code> appender verdien fra variabel <code>D</code> til strengen med indeks 0. Og så gjør jeg det samme med strengen med indeks 1. Verdien til disse strengene er nå <code>"Nissen "</code> og <code>"sier "</code>.</p>
+<pre>$0 $1
+</pre>
+<p>Og nå begynner vi å skrive output. <code>$0</code> skriver ut streng med indeks 0, og <code>$1</code> skriver ut streng med indeks 1.</p>
+<pre>E0 [
+</pre>
+<p>Her begynner det å bli interessant. Jeg oppretter en variabel <code>E</code> og gir den verdien 0. Og så starter jeg noe som tilsvarer en while-løkke ved å åpne en firkantklamme.</p>
+<pre>,a,c
+</pre>
+<p>Det neste jeg gjør er å skrive ut tegnene som verdiene i variabel <code>A</code> og <code>C</code> representerer, altså <code>H</code> og <code>o</code>. Vi har sålangt skrevet ut <i>"Nissen sier Ho"</i>.</p>
+<pre>F3 [ F-f1,b,c | &gt;f0 ]
+</pre>
+<p>Linjen over er en komplett while-løkke. Først opprettes variabelen <code>F</code> som får verdien 3. <code>F-f1,b,c</code> er det som skjer for hver iterasjon, og løkken itererer sålenge <code>&gt;f0</code> er sant.</p>
+<p><code>F-f1</code> vil si at jeg trekker 1 fra verdien i F, og så tilordner denne verdien til F igjen. Jeg dekrementerer den altså.</p>
+<p>Og <code>,b,c</code> skriver ut verdiene i B og C, som tilsammen utgjør <i>"ho"</i>.</p>
+<p>Til slutt har du kanskje skjønt at <code>&gt;f0</code> tester om F er større enn 0. Dette betyr at løkken itererer fra 3 til 0 – men siden F dekrementeres før testen kjøres må vi trekke fra én, så den itererer og skriver ut "ho" tre ganger. Output er nå <i>"Nissen sier Hohohoho"</i>.</p>
+<pre>,d D+d1
+</pre>
+<p>Vi er fortsatt inne i den ytre while-løkken. Vi skriver ut verdien av <code>D</code> (som er et space), og så inkrementerer vi D. D får da verdien 33, som er ASCII-verdien til et utropstegn. Neste gang denne linjen eksekveres er det altså "!" som blir skrevet ut. Men foreløpig har vi skrevet ut <i>"Nissen sier Hohohoho "</i></p>
+<pre>E+1e
+| &lt;e2 ]
+</pre>
+<p>Og så tar vi siste del av while-løkken (og av programmet). Her inkrementeres variabel <code>E</code> (som staret på 0), og så kommer testen for om vi skal fortsette å iterere. Og testen er om verdien i E er mindre enn 2. Det er den ikke første gang, men etter andre iterasjon vil den være det – og programmet er ferdig.</p>
+<p>I andre iterasjon skriver løkken ut "Hohohoho!". Fullstendig output blir dermed <strong><em>"Nissen sier Hohohoho Hohohoho!"</em></strong>.</p>
+<p>Det var jo enkelt ;P</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Clojure,Ruby">
+
+    <title>Euler</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Euler</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 25. november 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p><a href="/2011/11/24/hello-world-euler-style/">I forrige bloggpost presenterte jeg ulike løsninger på Euler-problem nummer 1</a>. Men alle disse løsningene var i prinsippet like; iterer over alle tall mellom 0 og 1000, og filtrer ut og pluss sammen tallene som er multipler av 3 eller 5.</p>
+<p>Jeg klarer ikke helt å slippe denne oppgaven. Alternativt kan vi nemlig se på det som et matematisk sett-problem, og da kan vi implementere løsninger som er litt mere deklerative. Hvis A er alle tall som er multipler av 3, og B er alle tall som er multipler av 5, så er løsningen å summere tallene i unionen av A og B.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="Euler_sets" border="0" alt="Euler_sets" src="/uploads/2011/11/Euler_sets.png" width="290" height="187"></p>
+<p>La oss ta en titt på ulike måter å implementere dette på...</p>
+<h4>A + B – snittet av a og b</h4>
+<p>Gitt at A og B er settene som beskrevet over. Da er en løsning å legge sammen summen av tallene i A og summen av tallene i B. Problemet nå er at tall som både er multipler av A og multipler av B blir lagt til i summen to ganger. For å løse dette kan vi trekke fra summen av alle <em>disse</em> tallene – nemlig alle tall som er multipler av 3 ganger 5, altså 15.</p>
+<p>Her er en løsning i Ruby:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="PreProc">def</span> <span class="Function">sum_multiples</span> args
+<span class="lnr">11 </span>  (args[<span class="Constant">:of</span>]..args[<span class="Constant">:upto</span>]).
+<span class="lnr">12 </span>    step(args[<span class="Constant">:of</span>]).
+<span class="lnr">13 </span>    reduce(<span class="Constant">:+</span>)
+<span class="lnr">14 </span><span class="PreProc">end</span>
+<span class="lnr">15 </span>
+<span class="lnr">16 </span>sum  = sum_multiples <span class="Constant">:of</span> =&gt; <span class="Number">3</span>, <span class="Constant">:upto</span> =&gt; <span class="Number">999</span>
+<span class="lnr">17 </span>sum += sum_multiples <span class="Constant">:of</span> =&gt; <span class="Number">5</span>, <span class="Constant">:upto</span> =&gt; <span class="Number">999</span>
+<span class="lnr">18 </span>sum -= sum_multiples <span class="Constant">:of</span> =&gt; <span class="Number">3</span>*<span class="Number">5</span>, <span class="Constant">:upto</span> =&gt; <span class="Number">999</span>
+<span class="lnr">19 </span>puts sum
+</pre>
+<p>Jeg liker hvor leselig koden blir: <em>"Sum er lik sum multiples av 3 opp til 999"</em> osv. Men ved å introdusere litt kodeduplisering kan det hele selvsagt gjøres endel enklere:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">23 </span>puts (<span class="Number">3</span>..<span class="Number">999</span>).step(<span class="Number">3</span>).reduce(<span class="Constant">:+</span>) +
+<span class="lnr">24 </span>     (<span class="Number">5</span>..<span class="Number">999</span>).step(<span class="Number">5</span>).reduce(<span class="Constant">:+</span>) -
+<span class="lnr">25 </span>     (<span class="Number">3</span>*<span class="Number">5</span>..<span class="Number">999</span>).step(<span class="Number">3</span>*<span class="Number">5</span>).reduce(<span class="Constant">:+</span>)
+</pre>
+<p>Det vi trekker fra på slutten er altså snittet mellom A og B.</p>
+<h4>Unionen av a og b direkte</h4>
+<p>Mange programmeringsspråk/standard bibloteker har direkte støtte for å beregne unionen av to sett, og det kan vi også benytte. Her er en tilsvarende Ruby-implementasjon som oppretter A og B, tar unionen av disse, og summerer sammen:</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">30 </span><span class="PreProc">def</span> <span class="Function">set</span> args
+<span class="lnr">31 </span>  (args[<span class="Constant">:of</span>]..args[<span class="Constant">:upto</span>]).
+<span class="lnr">32 </span>    step(args[<span class="Constant">:of</span>]).
+<span class="lnr">33 </span>    to_a
+<span class="lnr">34 </span><span class="PreProc">end</span>
+<span class="lnr">35 </span>
+<span class="lnr">36 </span>multiples_of_3 = set <span class="Constant">:of</span> =&gt; <span class="Number">3</span>, <span class="Constant">:upto</span> =&gt; <span class="Number">999</span>
+<span class="lnr">37 </span>multiples_of_5 = set <span class="Constant">:of</span> =&gt; <span class="Number">5</span>, <span class="Constant">:upto</span> =&gt; <span class="Number">999</span>
+<span class="lnr">38 </span>multiples_of_3_or_5 = multiples_of_3 | multiples_of_5
+<span class="lnr">39 </span>
+<span class="lnr">40 </span>puts multiples_of_3_or_5.reduce(<span class="Constant">:+</span>)
+</pre>
+<p>Nå begynner det å komme seg :) Som en referanse slenger jeg med den samme løsningen implementert i Clojure, som har en egen <em>set</em>-datatype: </p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">1 </span><span class="Delimiter">(</span>defn multiples_of [x upto]
+<span class="lnr">2 </span>  <span class="Delimiter">(</span><span class="Statement">set</span> <span class="Delimiter">(</span>range x upto x<span class="Delimiter">)))</span>
+<span class="lnr">3 </span>
+<span class="lnr">4 </span><span class="Delimiter">(</span>defn multiples_of_3_or_5 []
+<span class="lnr">5 </span>  <span class="Delimiter">(</span>clojure.set/union <span class="Delimiter">(</span>multiples_of <span class="Number">3</span> <span class="Number">1000</span><span class="Delimiter">)</span>
+<span class="lnr">6 </span>                     <span class="Delimiter">(</span>multiples_of <span class="Number">5</span> <span class="Number">1000</span><span class="Delimiter">)))</span>
+<span class="lnr">7 </span>
+<span class="lnr">8 </span><span class="Delimiter">(</span>-&gt;&gt; <span class="Delimiter">(</span>multiples_of_3_or_5<span class="Delimiter">)</span> <span class="Delimiter">(</span><span class="Statement">reduce</span> <span class="Statement">+</span><span class="Delimiter">)</span> println<span class="Delimiter">)</span>
+</pre>
+<p>Som du forstår er det mange ulike måter å løse en programmeringsoppgave på – selv en så enkel oppgave som dette. Ulike språk foretrekker ulike løsninger, og det er en av grunnene til at det er interessant å studere dem.</p>
+<p>NÅ er det på tide å gi seg! Håper jeg ikke har kjedet vettet av deg med denne oppgaven – men nå er du i alle fall skikkelig <em>primet</em> og klar til å studere løsninger programmert i diverse språk du sansynligvis aldri har sett før. Neste blogpost kommer 1. desember!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

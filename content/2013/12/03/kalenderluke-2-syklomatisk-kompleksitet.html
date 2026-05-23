@@ -1,0 +1,33 @@
+---
+title: "Kalenderluke 2: Syklomatisk kompleksitet"
+link: http://blog.kjempekjekt.com/2013/12/03/kalenderluke-2-syklomatisk-kompleksitet/
+layout: post
+date: 2013-12-02 23:05:35Z
+tags:
+  - Julekalender
+---
+<p>Luken for 2. desember dreide seg om <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity">syklomatisk kompleksitet</a>. Jeg presenterte litt JavaScript-kode, og deltagerne skulle finne kompleksiteten. Det tok bare fem minutter før <a href="https://twitter.com/bentece">Bente C. Andorsen</a> klarte oppgaven. Hun fikk 20 poeng, og med den tredje beste tiden fra i går inntar hun ledelsen med 28 poeng.</p> <p>På delt andreplass med 19 poeng etter to luker ligger <a href="https://twitter.com/magnars">Magnar Sveen</a> fra Kodemaker (som <a href="http://blog.kjempekjekt.com/2012/12/16/magnar-genererer-testet-og-dokumentasjon-luke-16-2012/">blogget for meg i fjorårets kalender</a>) og <a href="https://twitter.com/bassetassen">Sebastian Holager</a> fra CRM Norge AS.</p> <p>Det var relativt bra trøkk på serveren da luken ble tilgjengelig akkurat klokken 9, men den klarte seg fint – jeg var litt usikker, men ser nå at en gratis-node på <a href="https://www.heroku.com/">Heroku</a> er mer enn godt nok for applikasjonen min.</p> <p><a href="/uploads/2013/12/Google_analytics_luke2.jpg"><img title="Google_analytics_luke2" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="Google_analytics_luke2" src="/uploads/2013/12/Google_analytics_luke2_thumb.jpg" width="602" height="340"></a></p> <p>Oppgaven var litt vanskeligere denne gangen, og de første som forsøkte seg svarte feil. Her er en kjapp oversikt over de ulike svarene som ble gitt den første timen. X-aksen er antall svar:</p> <p><img title="luke2_svar" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="luke2_svar" src="/uploads/2013/12/luke2_svar.jpg" width="430" height="273"></p> <p>Fire stykker svarte også "O(n)", to svarte "n", og en svarte "n+1". Men det var altså <strong>9</strong> som var det riktige svaret.</p> <p>For å bekrefte dette kan du lime koden inn i <a href="http://jscomplexity.org/">jscomplexity.org</a>. Det finnes andre online analyseverktøy for JavaScript – også noen som sier at kompleksiteten er noe annet enn 9, noe som kan være forklaringen på den høye forekomsten av svaret 10. Jeg er derimot ganske sikker på at ut i fra det <em>jeg</em> har lært så er 9 det korrekte svaret. Hvis noen har lyst til å diskutere dette, og kanskje lære meg noe, så er det helt greit. Men de som svarte 9 får uansett poengene.</p> <p>Nedenfor følger koden fra oppgaven. Jeg har markert alle steder i koden som representerer en "branch" i kontrollflyten - der hvor programmet må gjøre et valg. For å finne syklomatisk kompleksitet kan man telle antallet valg og plusse på 1. Merk at et if/else-valg teller som én, og default i en switch teller du ikke med av samme grunn.</p><pre>var foo = function(a, b, c) {
+  <span style="background-color: yellow">if (b.someField)</span> b.doSomething();
+  <span style="background-color: yellow">if (b &amp;&amp; c)</span> {
+    switch (b.someField) {
+    <span style="background-color: yellow">case 0:</span>
+      c.doSomething();
+      break;
+    <span style="background-color: yellow">case 1:</span>
+      c.doSomeOtherThing();
+      break;
+    default:
+      <span style="background-color: yellow">c.someField ?</span> c.doSomeThirdThing() : c.doSomethingElse();
+    }
+  } else <span style="background-color: yellow">if(c)</span> {
+    var a = <span style="background-color: yellow">a || []</span>;
+    <span style="background-color: yellow">while(a.length &gt; 0)</span> {
+      var x = a.pop();
+      c.doSomethingTo(x);
+    }
+  } else {
+    console.log("Nothing to do");
+  } 
+};</pre>
+<p>Det som kan være de ekle fellene her er kondisjonaloperatoren <code>? :</code> og det logiske OR-uttrykket hvor jeg sier <code>a || []</code>. Begge deler kan erstattes direkte med en if/else.</p>
+<p>Så <em>det</em> var dag 2, og vi har 22 luker igjen og mange poeng å dele ut. I morgen vil førstemann få <u>30 poeng</u>, og kan gå rett i ledelsen selv uten å ha svart på luke 1 eller 2. Så billetten til NDC 2014 donert av <a href="http://www.programutvikling.no/">Programutvikling</a> er fortsatt oppnåelig for hvem som helst!</p>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,DevOps">
+
+    <title>Jon Arild leverer kontinuerlig med ConDep [Luke 11, 2012]</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Jon Arild leverer kontinuerlig med ConDep [Luke 11, 2012]</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 11. desember 2012</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/devops"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DevOps</span></a>
+          </p>
+          <p>Jeg ble kjent med <strong>Jon Arild Tørresdal</strong> i første klasse på barneskolen. Siden det har vi mer eller mindre holdt sammen – vi har til og med jobbet sammen to ganger, først i New Technology Consulting og deretter i CMA Contiki. Jon Arild har alltid vært en sånn fyr som bare fikser ting, og det er en god egenskap. Han løftet <a href="http://bergen.nnug.no/">NNUG Bergen</a> til nye høyder for noen år tilbake, og nå er han akkurat ferdig med en periode som landsfader for <a href="http://nnug.no/">NNUG nasjonalt</a>.</p>
+<p><a href="/uploads/2012/12/MeWithHat2_lowres.jpg"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="MeWithHat2_lowres" border="0" alt="MeWithHat2_lowres" src="/uploads/2012/12/MeWithHat2_lowres_thumb.jpg" width="458" height="458"></a></p>
+<p><strong>Hvem er du?<br></strong>Utvikler fra Haugesund med den spede start på gutterommet sammen med Torbjørn, Sharp MZ-700, Amiga 500, Basic, Amos, Cola og Chips :-)</p>
+<p><strong>Hva er jobben din?<br></strong>IT-Arkitekt i Frende Forsikring</p>
+<p><strong>Hva kan du?<br></strong>I tillegg til utvikling – en over norm interesse for OS, nettverk, infrastruktur og automatisering/deployment av disse.</p>
+<p><strong>Hva liker du best med yrket ditt?<br></strong>Variasjon og fleksibilitet – digger å ta tak i ting som ikke er optimalt</p>
+<hr>
+<p><strong>ConDep</strong> (kort for <em>Continuous Deployment</em>) er en open source DSL <em>(Domene Spesifikt Språk)</em> i C#, som jeg har utviklet pga. lite smidighet rundt automatisering av programvarepublisering i Windows. Hovedfokuset mitt har vært publisering av webapplikasjoner og tilhørende infrastruktur på Windows Servere, men er ikke begrenset til dette.</p>
+<p>ConDep er i skrivende stund noen få dager unna RTM, men har vært i pre-release og tilgjengelig på NuGet siden september. I Frende hvor jeg jobber har ConDep vært brukt i nesten 1 år for å publisere våre applikasjoner internt og til produksjon. </p>
+<p>I denne artikkelen vil jeg gi en kort introduksjon til bruk av ConDep med et praktisk eksempel. Koden er basert på den nye versjonen som blir tilgjengelig de nærmeste dagene.</p>
+<h3>Enkelt eksempel – Publisere en web applikasjon til 4 servere uten nedetid</h3>
+<p>Koden (SomeWebApplication.cs):</p>
+<pre>using ConDep.Dsl;
+using ConDep.Dsl.Builders;
+using ConDep.Dsl.Config;
+
+namespace MyDeployment
+{
+  public class SomeWebApplication : 
+    ApplicationArtifact, 
+    IDependOnInfrastructure&lt;MyServerInfrastructure&gt;
+  {
+    public override void Configure(IOfferLocalOperations local, ConDepConfig config)
+    {
+      local.ToEachServer(server =&gt;
+      {
+        server.Deploy
+          .Directory(@"C:\SomeWebApp", @"E:\WebApps\SomeWebApp");
+      });
+    }
+  }
+
+  public class MyServerInfrastructure : InfrastructureArtifact
+  {
+    protected override void Configure(IOfferInfrastructure require)
+    {
+      require.IIS();
+      require.MSMQ();
+    }
+  }
+}
+</pre>
+<p>C# koden over kan leses som følger:</p>
+<blockquote>
+<p>Klassen SomeWebApplication arver fra ApplicationArtifact og er avhengig av infrastrukturen som definert i MyServerInfrastructure. Denne infrastrukturen er IIS og MSMQ. Videre konfigureres ConDep fra lokal maskin til å kopiere folderen C:\SomeWebApp til alle servere som er konfigurert(se under).</p>
+</blockquote>
+<p>Konfigurasjonen (prod.env.json):</p>
+<pre>{
+  "LoadBalancer": 
+  {
+    "Name": "jat-nlb01",
+    "Provider": "ConDep.Dsl.LoadBalancer.Ace"
+  },
+  "Servers" :
+  [
+    {
+      "Name" : "jat-web01"
+    },
+    {
+      "Name" : "jat-web02"
+    },
+    {
+      "Name" : "jat-web03"
+    },
+    {
+      "Name" : "jat-web04"
+    }
+  ]
+}
+</pre>
+<p>Kommandolinjen:</p>
+<pre>ConDep.exe MyDeployment.dll Prod</pre>
+<p>ConDep.exe kommandoen over gjør følgende:</p>
+<ol>
+<li>Finner dll’en MyDeployment.dll på disk (det er i denne dll’en C# koden ligger)
+<li>Finner konfigurasjonen for Prod (json filen – prod.env.json)
+<li>Går til lastbalansereren definert i json-konfigurasjonen og tar den første serveren (jat-web01) offline fra klusteret
+<li>Sørger for at riktig infrastruktur finnes på server (jat-web01):
+<ol>
+<li>Sjekker at IIS er installert, hvis ikke installeres IIS
+<li>Sjekker at MSMQ er installert, hvis ikke installeres MSMQ</li>
+</ol>
+<li>Kopierer C:\SomeWebApp til jat-web01 under E:\WebApps\SomeWebApp
+<li>Tar jat-web01 online igjen i lastbalanserer
+<li>Repeterer steg 3-6 for resterende servere som definert i prod.env.json</li>
+</ol>
+<h3>Generelt om ConDep</h3>
+<p>Under panseret bruker ConDep Microsoft WebDeploy for sikkert og smidig kunne kopiere filer og utføre andre operasjoner mellom “klient” og server over http. Dette gjør bl.a. at du slipper å slite med brannmurproblemer o.l.</p>
+<p>Alle operasjoner i ConDep er “idempotent”&nbsp; – dvs. uansett hvor mange ganger du kjører en operasjon, vil du få samme resultat. Dette betyr også at ConDep kun endrer konfigurasjon og innhold dersom de har blitt endret eller ikke eksiterer. </p>
+<p>Om du vil at ConDep skal kjøre mot flere miljøer, er det bare å konfigurere opp dette i nye json filer. Mange har f.eks. et test, preprod og prod miljø, som da legges i tre json filer: test.env.json, preprod.env.json og prod.env.json. Sender du inn Test til ConDep.exe er det konfigurasjonen for testmiljøet som vil være gjeldende.</p>
+<p>I eksempelet over brukes en provider for lastbalansering mot Cisco ACE, men ConDep har også andre mekanismer for å unngå nedetid under publisering, men som blir utenfor området til denne artikkelen.</p>
+<p>På <a href="http://www.con-dep.net/">www.con-dep.net</a> er det litt mer informasjon om hva ConDep kan gjøre, og mye mer vil dukke om de nærmeste dagene og ukene. </p>
+<h3>Konklusjon</h3>
+<p>Tanken bak ConDep er at du skal kunne starte med en helt ren installasjon av en Windows Server, kjøre ConDep mot den, og applikasjonene dine skal bare fungere. Ved å beskrive til ConDep hva som trengs for at applikasjonene dine skal kunne kjøre på en server, samt hvordan ConDep skal flytte applikasjoner fra utviklingsmiljøet ditt (f.eks. en CI server), har du en fullautomatisert prosess som gir deg mye fleksibilitet. Integrert med en CI server gir ConDep deg det du trenger for å implementere Continous Deployment eller Continuous Delivery om du vil.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

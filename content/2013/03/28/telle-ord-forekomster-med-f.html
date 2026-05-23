@@ -1,0 +1,89 @@
+---
+title: Telle ord-forekomster med F#
+link: http://blog.kjempekjekt.com/2013/03/28/telle-ord-forekomster-med-f/
+layout: post
+date: 2013-03-28 17:05:18Z
+tags:
+  - F#
+  - Jobb
+  - Ruby
+  - Wordle
+---
+<p>I dagens blogpost går jeg gjennom litt F#-kode jeg skrev for en konkret oppgave på jobben. Oppgaven ble først løst i Ruby, men jeg trengte bedre ytelse, og kodet det derfor etterpå i F#. Er du en F#-nybegynner kan det godt tenkes du kan plukke med deg flere tips her. Jeg vil forsøke å trekke frem noen av de mer avanserte elementene i koden.</p> <h2>Oppgaven</h2> <p><a href="http://no.wiktionary.org/wiki/hin">Hin</a> dagen lagde jeg et lite script for å telle opp antall forekomster av ord i en tekstfil – altså gruppere resultatet på hvert ord i filen ("bil" forekom 17 ganger, "båt" forekom 5 ganger osv.). Dette ville jeg gjøre for å kunne lage en ord-sky basert på tekstfilen. Her er for eksempel en ord-sky over de ti siste postene på bloggen min:</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="BLOG_RSS" border="0" alt="BLOG_RSS" src="/uploads/2013/03/BLOG_RSS.jpg" width="600" height="394"></p> <p>Det kan se ut som om jeg er litt selvopptatt :)</p> <p>Her er en beskrivelse av scriptet:</p> <ol> <li>Ta inn stien til en fil med tekst som første argument.  <li>Les linje for line, og splitt linjen opp i ord.  <li>Fjern punktum, komma, utropstegn eller kolon hvis det er siste tegn i ordet.  <li>Se bort fra ordet hvis det er ett av ordene i en svarteliste.  <li>Inkrementer en teller for antall forekomster av hvert ord.  <li>Etter at alle ordene er registrert med antall, fjern ord som ikke forekomer mer enn X ganger.  <li>Skriv ut resultatet til en fil, med ett ord og antallet pr linje.</li></ol> <p>Resultatfilen kan jeg så bruke som innput til <a href="http://www.wordle.net/advanced">Wordle</a> og få generert en ord-sky. Ganske enkelt egentlig, og jeg laget raskt et script for dette i Ruby. Er du interessert <a href="https://gist.github.com/tormaroe/5261088">finner du scriptet her</a>.</p> <h3>Trengte bedre ytelse</h3> <p>Som jeg sa innledningsvis ønsket jeg bedre ytelse enn hva Ruby kunne gi meg. Filen jeg trengte å analysere var på over 50 MB og bestod av 500.000 linjer. Den inneholdt ca 518.000 unike ord, og over 6 millioner ord totalt. Jeg jobber jo med SMS, og dette var faktisk en halv million SMS-meldinger som skulle analyseres.</p> <p>På min superduper-spekkede laptop brukte Ruby-scriptet mitt <strong>88 sekunder</strong> på denne filen, og konsumerte 185 MB minne. Dette var med Ruby versjon 1.9.3. Til sammenligning bruker F#-programmet jeg nå skal lage under <strong>16 sekunder</strong> på den samme filen (82% reduksjon i kjøretid), og trenger ikke mer enn 50 MB RAM (73% reduksjon).</p> <p>88 sekunder er en evighet, mens jeg har tolmodighet nok til å vente i 16.</p> <p><strong>BONUSOPPGAVE TIL LESEREN:</strong> Klarer du å skrelle mer tid av algoritmen – enten i Ruby eller F#?</p> <h2></h2> <h2>En løsning i F#</h2> <p>I F# må du definere en funksjon før du kan bruke den, så det er naturlig både å kode og å presentere koden <em><a href="http://en.wikipedia.org/wiki/Top-down_and_bottom-up_design">bottom up</a></em>. </p> <h3>Partial Application av infix operator</h3><pre>open System
+open System.Collections.Generic
+
+let blacklist = [""; "på"; "og"; "er"; "om"; "fra"; "med"; "i"; "to"; 
+                 "det"; "å"; "ditt"; "til"; "ved"; "fra"; "for"; "av"; 
+                 "en"; "din"; "du"; "at"; "vi"; "har"; "vil"; "nå"; 
+                 "det"; "som"; "dere"; "kan"; "vår"; "så"]</pre>
+<p>Først importerer jeg et par navnerom (samme som <code>using</code> i C#), og så lager jeg en liste med de ordene jeg ikke ønsker å inkludere i analysen.</p>
+<p>Jeg trenger også en liten funksjon for å sjekke om et ord er svartelistet:</p><pre>let blacklisted (word : string) =
+    List.exists ((=) (word.ToLower())) blacklist</pre>
+<p>Her bruker jeg exists-funksjonen i modulen List. Den tar to argumenter: En funksjon som returnerer true hvis elementet er funnet, og listen man skal lete i. Men funksjonsargumentet her er litt spesielt. Hva betyr <code>((=) (word.ToLower()))</code>?</p>
+<p>Dette er en såkalt <em>partial application</em>, som jeg har snakket om mange ganger før. <code>=</code> er en funksjon som sjekker om to verdier er like. Den brukes normalt <em>infix</em>, det vil si at den plasseres mellom sine to argumenter. Men om vi plasserer den mellom to paranteser blir den omgjort til en normal prefix-funksjon.</p>
+<p>Det neste jeg har gjort er å sende ett – og bare ett – argument til funksjonen. Dette blir da omgjort til en ny funksjon som forventer ett argument til. <code>((=) (word.ToLower()))</code> er dermed en funksjon som sjekker om noe er lik lowercase-versjonen av strengen word. De fre følgende uttrykkene er helt ekvivalente, og returnerer alle <em>true</em>:</p><pre>((=) ("Foo".ToLower())) "foo"
+
+(fun x -&gt; ((=) ("Foo".ToLower())) x) "foo"
+    
+(fun x -&gt; x = "Foo".ToLower()) "foo"</pre>
+<h3>Å lage en egen infix operator</h3>
+<p>Vi går videre. Nå vil jeg lage en funksjon som stripper bort siste tegn fra en streng, men bare hvis det siste tegnet er en av et bestemt sett med tegn. <a href="https://gist.github.com/tormaroe/5261088">I Ruby var dette gjort på én linje med gsub og et regulært uttrykk</a>, men i F# benytter jeg anledningen til å eksperimentere litt.</p><pre>(* Removes c from s if c is the last char *)
+let (?&lt;&lt;) (s:string) (c:char) =
+    let lastIndex = s.Length - 1
+    if lastIndex &gt;= 0 &amp;&amp; s.LastIndexOf c = lastIndex
+    then s.Substring (0, lastIndex)
+    else s</pre>
+<p>Her har jeg laget en funksjon med det litt merkelige navnet <code>?&lt;&lt;</code>. I tillegg har jeg lagt paranteser rundt, og slik blir det en operator på lik linje med pluss, minus, gange og deling.</p>
+<p>Det ser rart ut, men den er elegant i bruk:</p><pre>let stripPunctuation (word : string) =
+    word ?&lt;&lt; '.' 
+         ?&lt;&lt; ',' 
+         ?&lt;&lt; '!' 
+         ?&lt;&lt; ':'</pre>
+<p>La oss si at word inneholder strengern <code>"foo!"</code>. Funksjonen <code>?&lt;&lt;</code> kalles da først med argumentene <code>"foo!"</code> og <code>'.'</code>, og resultatet er <code>"foo!"</code> (ingen endring altså). Dette resultatet blir nå første argument til den neste <code>?&lt;&lt;</code>-funksjonen, som har <code>','</code> som andre argument. Og slik fortsetter det. Den tredje <code>?&lt;&lt;</code> kalles med <code>"foo!"</code> og <code>'!'</code>, og returnerer da bare <code>"foo"</code>.</p>
+<p>Denne teknikken kalles gjerne <em><strong>pipelining</strong></em>.</p>
+<h3>Å jobbe med en Dictionary</h3>
+<p>I dette programmet vil jeg bruke en generisk Dictionary&lt;Key, Value&gt;, slik som mange av oss er vandt til fra C#. Koden som følger er ikke spesielt funksjonell, fordi jeg baserer meg på å "mutere" (dvs. endre) dataene i dictionarien direkte. Jeg har likevel valgt å gjøre det fordi jeg jo "oversatte" et Ruby-script som gjorde det på denne måten, og fordi det vil være minst like raskt som en mere funksjonell løsning som ikke muterer data.</p>
+<p>Først definerer jeg en ny type. Dette gjør jeg egentlig kun for å være litt eksplisit i koden, og slippe å måtte skrive <code>Dictionary&lt;string, int&gt;</code> fullt ut diverse steder. </p><pre>type WordMap = Dictionary&lt;string, int&gt;</pre>
+<p>Jeg lager så en hjelpefunksjon som inkrementerer telleren for et bestemt ord, eller setter verdien <code>1</code> om ordet ikke finnes i dictionarien <code>m</code> fra før:</p><pre>let increment (m : WordMap) word =
+    if m.ContainsKey word
+    then m.[word] &lt;- m.[word] + 1
+    else m.[word] &lt;- 1</pre>
+<p>Når man muterer en variabel i F# bruker man ikke <code>=</code> slik man gjør i typiske imperative språk. I stedet bruker man <code>&lt;-</code>.</p><pre>let countWord acc word =
+    if not (blacklisted word)
+    then increment acc word</pre>
+<p><code>countWord</code> er en funksjon som teller et ord fra filen jeg analyserer, men kun hvis ordet ikke er svartelistet. <code>acc</code> er en WordMap, men jeg behøver ikke fortelle F# det (det kan jo ikke være noe annet).</p>
+<h3>På tide å telle ordene</h3>
+<p>Nå har vi kommet til selve funksjonen som parser en fil og teller opp ordene i den – og her bruker vi alt vi har laget sålangt. Dette er den delen av programmet som konsumerer så og si all kjøretiden.</p><pre>let parseWords fileName =
+    let accumulator = new WordMap()
+    let counter = countWord accumulator
+    use file = IO.File.OpenText fileName
+    while not file.EndOfStream do
+        let words = file.ReadLine().Split [|' '|]
+                    |&gt; Array.map stripPunctuation
+        Array.iter counter words
+    accumulator</pre>
+<p>Når jeg oppretter variabelen <code>counter</code> så bruker jeg partial application igjen – du husker kanskje at <code>countWord</code> er en funksjon som tar to argumenter, men her gir jeg bare ett.</p>
+<p>Legg også merke til nøkkelordet <code>use</code> som jeg bruker når jeg åpner filen. Dette er det sammen som using i C#, og <code>file</code> vil bli lukket/disposed før variabelen går ut av <a href="http://en.wikipedia.org/wiki/Scope_(computer_science)">scope</a>.</p>
+<h3>Filtrere bort skjeldne ord</h3>
+<p>Jeg ønsker også å fjerne ord som ikke gjentas mer enn X ganger i input-filen. Jeg har eksperimentert litt, og funnet at X = 1000 fungerer bra for de filene jeg jobber med, så jeg hardkoder likegreit denne verdien.</p><pre>let trimRareWords pairsWithIntValue =
+    Seq.filter (fun (KeyValue(_, count)) -&gt; count &gt; 1000) 
+               pairsWithIntValue</pre>
+<p>Argumentet til <code>trimRareWords</code> kommer til å være en WordMap, altså en Dictionary&lt;string, int&gt;. Og det kan man også se på som en sekvens med KeyValue&lt;string, int&gt;. Derfor kan jeg bruke Seq.filter til å luke bort ord. I den anonyme funksjonen jeg sender til filter bruker jeg <a href="http://en.wikipedia.org/wiki/Pattern_matching"><em>pattern matching</em></a> til å plukke ut antallet forekomster for et ord.</p>
+<h3>Skrive ut i Wordle-format</h3>
+<p>For å produsere filen på det formatet jeg ønsker trenger jeg to funksjoner til. Den første tar et ord med tilhørende antall og lager en tekststreng som Wordle vil forstå:</p><pre>let wordleLine (KeyValue(word, count)) =
+    sprintf "%s:%i" word count</pre>
+<p>Så trenger jeg også en funksjon som kan ta en sekvens av slike strenger og skrive dem til en fil:</p><pre>let linesToFile fileName ls =
+    IO.File.WriteAllLines(fileName, seq ls)</pre>
+<h3>Main</h3>
+<p>Da gjenstår det bare å sy det hele sammen. Jeg må ta imot input-filnavnet (argument til programmet) og sette opp en sekvens med funksjoner som kan ta imot dette og produsere Wordle-filen.</p>
+<p>For å måle og rapportere hvor lang tid dette tar har jeg brukt en funksjon jeg har kalt benchmark. Denne vil jeg presentere i en blogpost senere, men den tar i alle fall to argumenter: En streng som vil bli brukt som en label ved rapportering, og en parameterløs funksjon (også kalt en <a href="http://en.wikipedia.org/wiki/Thunk_(functional_programming)">thunk</a>). Den vil eksekvere thunken, måle og printe ut hvor lang tid den tok, og returnere resultatet av thunken – som i dette tilfellet er <a href="http://msdn.microsoft.com/en-us/library/dd483472.aspx">unit</a> (altså ingen verdens ting).</p><pre>[&lt;EntryPoint&gt;]
+let main argv = 
+    benchmark "Elapsed" 
+              (fun () -&gt; Seq.head argv 
+                      |&gt; parseWords 
+                      |&gt; trimRareWords 
+                      |&gt; Seq.sortBy (fun (KeyValue(_, v)) -&gt; v)
+                      |&gt; Seq.map wordleLine 
+                      |&gt; linesToFile "out2.txt")
+    0 // return an integer exit code</pre>
+<p>Og da var vi ferdige! Jeg håper du lærte noe. Og hvis du tror <em>du</em> kan lære <em>meg</em> noe, så vil jeg gjerne høre det – forslag til strukturelle forbedringer, eller ting som vil redusere kjøretiden mottas med takk!</p>

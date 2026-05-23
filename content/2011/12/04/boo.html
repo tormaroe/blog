@@ -1,0 +1,51 @@
+---
+title: Boo
+link: http://blog.kjempekjekt.com/2011/12/04/boo/
+layout: post
+date: 2011-12-04 07:35:09Z
+tags:
+  - Julekalender
+  - Polyglot
+  - Boo
+---
+<p>Er du interessert i å lære et .NET-språk som er mer elegant og enklere å skrive enn C# og VB.NET, og som i tillegg gir deg samme mulighet for å utvide selve språket som det Lisp gjør? Da kan <strong><em>Boo</em></strong> være et bra valg!</p> <p>Boo er et objektorientert, statisk typet språk med en syntaks inspirert av Python. Det så dagens lys i 2003, og har vært under aktiv utvikling siden det. Gjeldene release ble sluppet i januar 2011.</p> <p>Boo kjører altså på .NET-plattformen (og Mono), og man har tilgang til det meste av hva man er vandt til i rammeverket, som generics, linq osv, og man kan benytte alt man har av eksisterende .NET-biblotek. Ofte bruker man Boo til deler av prosjekt – der hvor Boo's styrker kommer til sin rett.</p> <p>Disse styrkene er blant annet en behagelig syntaks (selv om ikke alle vil være enige i det), og kraftig <em>type inference</em> og automatisk <em>type casting</em> som gjør at den sterke typingen ikke går i veien for deg, og er mer behagelig å jobbe med. Dessuten får du <em>literals</em> (enklere syntaks) for lister, arrays og dictionaries, du trenger bare bruke klasser når du trenger det (funksjoner lever fint for seg selv), og du kan bruke duck-typing (en form for dynamisk typing) når du måtte ha behov for det.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="boo" border="0" alt="boo" src="/uploads/2011/12/boo.jpg" width="500" height="189"></p> <p>Alt dette er vel og bra, men Boo har mer! Fokuset under utviklingen av Boo har vært på å lage en <strong>fleksibel og utvidebar kompilator</strong>. Dette gjør at man kan utvide selve språket gjennom å lage ting som meta-metoder og makroer som kjører under selve kompileringsprosessen. Disse teknikkene gjør blant annet at man kan unngå det vi ofte kaller for <a href="http://en.wikipedia.org/wiki/Boilerplate_code">boilderplate code</a>. Det gjør også Boo til et glimrende verktøy for å lage domenespesifike språk, noe Ayende Rahien beskrev i boken <em><a href="http://www.manning.com/rahien/">DSLs in Boo: Domain-Specific Languages in .NET</a></em>.</p> <p>Jeg har selv fått benyttet Boo på denne måten i et par prosjekter, og synes det fungerer ganske bra.</p> <h4>På tide med litt kode</h4> <p>Som vanlig har jeg implementert en løsning (eller rettere sagt flere løsninger) på <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">Project Euler problem nummer 1</a> – <em>hvordan man summerer opp alle tall opp til 1000 som er delelige på 3 eller 5</em>. Dette vil ikke demonstrere noen makro eller meta-features, men gi et første inntrykk av hvordan Boo-kode ser ut, og hva man kan gjøre.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="String">"""A simple, imperative Boo solution to Euler problem #1"""</span>
+<span class="lnr"> 2 </span>
+<span class="lnr"> 3 </span><span class="Statement">class</span> <span class="Function">Euler1</span>:
+<span class="lnr"> 4 </span>  static <span class="Statement">def</span> <span class="Function">Solve</span>():
+<span class="lnr"> 5 </span>    <span class="Function">sum</span> = <span class="Number">0</span>
+<span class="lnr"> 6 </span>    <span class="Statement">for</span> i <span class="Operator">in</span> <span class="Function">range</span>(<span class="Number">1</span>, <span class="Number">1000</span>):
+<span class="lnr"> 7 </span>      <span class="Conditional">if</span> i % <span class="Number">3</span> == <span class="Number">0</span> <span class="Operator">or</span> i % <span class="Number">5</span> == <span class="Number">0</span>:
+<span class="lnr"> 8 </span>        <span class="Function">sum</span> += i
+<span class="lnr"> 9 </span>    <span class="Statement">return</span> <span class="Function">sum</span>
+</pre>
+<p>I koden over deklarerer jeg en klasse jeg kaller Euler1. Den har en statisk metode som heter Solve. Her kjører jeg en for-løkke over en range og legger til et tall i sum-variabelen hvis det er delelig på 3 eller 5.</p>
+<p>Du bør ha lagt merke til et par ting: For det første bruker Boo indentering til å definere strukturen i koden, akkurat slik Python gjør det. Dessuten har jeg ikke deklarert noen typer her (bortsett fra selve Euler1 da), Boo-kompilatoren skjønner fint at sum er en int, at i er en int, og at Solve dermed også returnerer en int. Ingen grunn til at jeg skal måtte påpeke det.</p>
+<p>For å kjøre koden min skriver jeg følgende:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">11 </span><span class="Function">print</span> Euler1.Solve()
+</pre>
+<p>Siden Solve er en statisk metode trenger jeg ikke opprette en instans av Euler1, men kaller bare metoden direkte på klassen. Print er faktisk en makro som ekspanderer til System.Console.WriteLine(..) under kompilering.</p>
+<p>Her følger en alternativ implementasjon som benytter seg av Sum-funksjonen i System.Linq:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">1 </span><span class="PreProc">import</span> System.Linq.Enumerable
+<span class="lnr">2 </span>
+<span class="lnr">3 </span><span class="Statement">def</span> <span class="Function">Euler1Filter</span>(it <span class="Statement">as</span> <span class="Function">int</span>):
+<span class="lnr">4 </span>  <span class="Conditional">if</span> it % <span class="Number">3</span> == <span class="Number">0</span> <span class="Operator">or</span> it % <span class="Number">5</span> == <span class="Number">0</span>:
+<span class="lnr">5 </span>    <span class="Statement">return</span> it
+<span class="lnr">6 </span>
+<span class="lnr">7 </span><span class="Function">print</span> <span class="Function">range</span>(<span class="Number">1</span>, <span class="Number">1000</span>).Sum(Euler1Filter)
+</pre>
+<p>En range er nemlig en IEnumerable&lt;Int32&gt;, og jeg kan dermed kalle Sum på denne, slik .NET-utviklere er vandt til, og sende inn en funksjon som parameter. Denne funksjonen blir kalt for hvert element i sekvensen. Legg merke til at jeg har gjort noe litt rart i Euler1Filter-funksjonen.., jeg returnerer kun hvis elementet skal være med. Jeg antar Boo er smart nok til å returnere en default-verdi (dvs. 0) når elementet ikke matcher.</p>
+<p>Til slutt har jeg gjort en løsning som benytter det Boo kaller for en <em>Generator Expression</em> (jeg ville kalt det en <em>list comprehension</em>):</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="PreProc">import</span> System.Linq.Enumerable
+<span class="lnr">11 </span>
+<span class="lnr">12 </span><span class="Statement">def</span> <span class="Function">include</span>(i <span class="Statement">as</span> <span class="Function">int</span>):
+<span class="lnr">13 </span>  <span class="Statement">return</span> i % <span class="Number">3</span> == <span class="Number">0</span> <span class="Operator">or</span> i % <span class="Number">5</span> == <span class="Number">0</span>
+<span class="lnr">14 </span>
+<span class="lnr">15 </span><span class="Statement">def</span> <span class="Function">euler1Range</span>():
+<span class="lnr">16 </span><span class="String">""" Function returns a Generator Expression """</span>
+<span class="lnr">17 </span>  <span class="Statement">return</span> x <span class="Statement">for</span> x <span class="Operator">in</span> <span class="Function">range</span>(<span class="Number">1</span>, <span class="Number">1000</span>) <span class="Conditional">if</span> include(x)
+<span class="lnr">18 </span>
+<span class="lnr">19 </span><span class="Function">print</span> euler1Range().Sum()
+</pre>
+<h4>Hvorfor bruke tid på Boo</h4>
+<p>Bakgrunnen for Boo er først og fremst en frustrasjon over syntaksen til C#. Hvis du deler denne, og synes språk som Python er mere elegante, så er Boo noe du bør se på.</p>
+<p>Men styrken til Boo ligger i makroene. Du kan utvide språket med nye kodeord og strukturer som gjør at du kan forme det til å passe dine behov, og gjøre <em>din</em> kode enklere. Dette er kanskje ikke for hvem som helst, men seriøse utviklere bør være klar over hva de eventuelt går glipp av om de ikke bruker makroer.</p>
+<h4>Hvordan komme i gang</h4>
+<p>Boo finner du på <a href="http://boo.codehaus.org/">boo.codehaus.org</a>. Det du kan begynne med er å lese <a href="http://boo.codehaus.org/BooManifesto.pdf">Boo-manifestet (pdf)</a>, skrevet av språkets skaper i 2004-2005.</p>
+<p>Jeg har slitt litt med at noe av dokumentasjonen på Boo er utdatert, og det kan være litt vanskelig å navigere på siden for å finne det man er ute etter. Men det finnes et relativt stort community rundt Boo, og det skal være mulig å finne den hjelpen man trenger om man forsøker.</p>

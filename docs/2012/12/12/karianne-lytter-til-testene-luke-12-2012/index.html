@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,TDD,Java">
+
+    <title>Karianne lytter til testene [Luke 12, 2012]</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Karianne lytter til testene [Luke 12, 2012]</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 12. desember 2012</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> TDD</span></a>
+          
+            <a href="/tags/java"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Java</span></a>
+          </p>
+          <p><strong>Karianne Berg</strong> (<a href="https://twitter.com/karianneberg">@karianneberg</a>) er et relativt kjent navn i det norske utviklermiljøet. Hun er en engasjert utvikler og en dyktig, morsom og uformell foreleser. I dagens adventsluke gir Karianne oss et innblikk i en av hennes åpenbaringer...</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="karianne" border="0" alt="karianne" src="/uploads/2012/12/karianne.jpg" width="380" height="433"></p>
+<p><strong>Hvem er du?</strong><br>Ikke-bergenser i Bergen som liker å bygge ting.
+<p><strong>Hva er jobben din?</strong><br>Seniorutvikler i Vimond Media Solutions og arrangør av <a href="http://www.boosterconf.no">Booster-konferansen</a>
+<p><strong>Hva kan du?</strong><br>Kodekvalitet&nbsp;
+<p><strong>Hva liker du best?</strong><br>Det faglige engasjementet! Det er ingen tannleger som møtes på kveldstid i grupper over en øl for å diskutere den siste rotfyllingstypen, for eksempel.<br />
+<hr>
+<p>Jeg har holdt på med testdrevet utvikling i en del år nå. Det er mulig at jeg er over gjennomsnittlig tjukk i huet, men en av de tingene jeg har hatt aller vanskeligst med å forstå er uttrykket «å lytte til testene». Det var et uttrykk som kom opp i mange bøker, artikler og <a href="http://www.infoq.com/presentations/tdd-ten-years-later">presentasjoner</a> om TDD og enhetstesting, men jeg var aldri i stand til å fatte hva det faktisk betydde. Ikke før i fjor. </p>
+<p>For drøyt et år siden bestemte <a href="https://twitter.com/kjerstibb">den fantastiske Kjersti B. Berg</a> og jeg oss for at vi skulle holde en (i <a href="http://www.smidig2011.no/talks/88">to</a> <a href="http://www.smidig2011.no/talks/89">deler</a>) workshop om refaktorering på Smidigkonferansen. Vi ønsket å lage en hands-on workshop med en eksisterende kodebase som hadde full testdekning, men et dårlig design. Slik kunne vi ha en trygg "sandkasse" med kode som folk kunne bryne seg på å gradvis forbedre, med testene som et sikkerhetsnett. Mens vi laget denne kodebasen støtte vi imidlertid på et problem: Dersom vi innførte en feil, feilet testene slik vi ville de skulle gjøre. Imidlertid var det ikke bare en test som knakk, det var opptil halvparten av dem. Dette strider jo imot hva vi ønsket: En test skal teste bare en ting, og den skal knekke kun dersom du ødelegger funksjonaliteten for denne ene tingen.</p>
+<p>Vi forsøkte alt vi kunne komme på for å bøte på dette: Vi delte opp tester. Vi slo sammen tester. Vi innførte flere mocks. Vi fjernet all mocking. Vi innførte hjemmesnekrede test doubles. Vi trakk ut initialisering av testdata i egne objekter. Vi reduserte antall assertions. Ingenting hjalp. Vi følte oss som totale enhetstestings-newbies. Men konferanser bytter dessverre ikke dato selv om de som skal holde workshops ikke er fornøyde med innholdet sitt, så vi måtte til slutt gi opp å forbedre testene. Det sluttet imidlertid ikke å surre rundt i huet mitt: Hva i alle dager var det vi hadde gjort feil? Hvorfor klarte vi ikke å fikse dette?</p>
+<p>Det var ikke før jeg satt på flyet til Smidig at det endelig gikk opp for meg, og etterpå følte jeg meg så dum som ikke hadde skjønt det før at jeg tror jeg fysisk klaska håndflata i panna (og fikk den dresskledte sidemannen til å se på meg med en viss skepsis). Selvfølgelig! Det var jo ikke testene våre i seg selv det var noe gæærnt med, det var designet av produksjonskoden! Vi hadde jo med vilje laget et design som hadde en god del problemer for at folk skulle få øve se på å forbedre den. Det skulle da bare mangle at ikke testene klaget! «Problemet» vi hadde med testene var egentlig testenes måte å si: «HALLO!!?! Hva for en elendig programmerer er du egentlig? Koden din er pokker meg mer sammenfiltret enn vennekretsen til Trond Giske!»</p>
+<p>Det er dette som etter min (nåværende!) forståelse er å lytte til testene. Det er å registrere at noe er vanskelig eller tungvint å teste, og så spørre seg selv «Hva er det med <b>designet</b> mitt som gjør at det er sånn?»</p>
+<p>Jeg tror egentlig at mange som lærer seg TDD går gjennom et sett med stadier. Det første er "Testing suger!"-stadiet. Når man starter med TDD føles alt bare vanskelig, og det er lett å konkludere med at det er TDD som er en idiotisk teknikk. Når (hvis?) man kommer videre derfra, havner man på "Testene mine suger!"-stadiet. Her tror man gjerne at TDD er en bra måte å jobbe på, men at man bare ikke kan den godt nok og dermed ikke får den til. Det siste stadiet er "Designet mitt suger!"-stadiet. Her plasserer vi ansvaret der det oftest hører hjemme - hos designet til produksjonskoden. Det kan godt være at det er flere stadier her, men de har ikke jeg kommet til enda.</p>
+<p>Dette siste stadiet tar tid å venne seg til. Det handler om å omstille hjernen fra "dette er umulig å teste!" til "hva er det i designet mitt som gjør det umulig å teste?". Fra "pokker, nå brakk alle testene!" til "hvorfor brakk alle testene når jeg gjorde dette?". Det er vanskelig, men for meg har det i alle fall gitt enormt utbytte.</p>
+<p>Dette kan kanskje bli litt abstrakt, så la oss se på et eksempel <em>(Red: Bare scroll ned om du synes det blir litt </em>mye<em> kode)</em>: </p>
+<h4>YahtzeeGame.java</h4>
+<pre>public class YahtzeeGame {
+    private final ThrowResultStrategy throwResultStrategy;
+    private final Set<lt   ;COMBINATION>gt; scoredCombinations;
+
+    private Throw currentThrow;
+    private int currentScore;
+    private int currentRoundNumber;
+    private List&lt;Integer&gt; currentlyHeldDice;
+    private int currentNumberOfThrowsInThisRound = 0;
+
+    public static final int NUMBER_OF_ROUNDS = Combination.values().length;
+    private static final int MAX_NUMBER_OF_THROWS_PER_ROUND = 3;
+
+    public YahtzeeGame(ThrowResultStrategy throwResultStrategy) {
+        this.throwResultStrategy = throwResultStrategy;
+        this.currentlyHeldDice = new ArrayList&lt;Integer&gt;();
+        this.currentRoundNumber = 1;
+        this.scoredCombinations = new HashSet&lt;Combination&gt;();
+    }
+
+    public void throwDice() {
+        if (currentNumberOfThrowsInThisRound &gt;= MAX_NUMBER_OF_THROWS_PER_ROUND) {
+            throw new YahtzeeException("You cannot throw the dice more than "
+                    + MAX_NUMBER_OF_THROWS_PER_ROUND + " times per round!");
+        }
+
+        Throw newThrow = throwResultStrategy.throwDice();
+        currentThrow = currentlyHeldDice.isEmpty()
+                           ? newThrow
+                           : currentThrow.mergeWith(newThrow, currentlyHeldDice);
+        currentNumberOfThrowsInThisRound++;
+    }
+
+    public int scoreFor(Combination combo) {
+        if (noThrowsYetInThisRound()) {
+            throw new YahtzeeException("You have to throw at " +
+                    "least once before you score");
+        }
+
+        if (scoredCombinations.contains(combo)) {
+            throw new YahtzeeException("This combination has " +
+                    "already been taken!");
+        }
+
+        scoredCombinations.add(combo);
+
+        <span style="background-color: yellow">int score = 0;
+
+        switch (combo) {
+            case ONES:
+                score = scoreForNumberOfDiceWithValue(1);
+                break;
+            case TWOS:
+                score = scoreForNumberOfDiceWithValue(2);
+                break;
+            case THREES:
+                score = scoreForNumberOfDiceWithValue(3);
+                break;
+
+             // More cases here for other combinations
+        }</span>
+
+        currentScore += score;
+        currentRoundNumber++;
+        currentNumberOfThrowsInThisRound = 0;
+        currentlyHeldDice = new ArrayList&lt;Integer&gt;();
+        currentThrow = null;
+
+        return score;
+    }
+
+    private int scoreForNumberOfDiceWithValue(int value) {
+        int num = currentThrow.findNumberOfDiceWithValue(value);
+        return num * value;
+    }
+
+    public int finalScore() {
+        return currentScore;
+    }
+
+    // More functionality here...
+}
+</pre>
+<h4>YahtzeeGameTest.java</h4>
+<pre>public class YahtzeeGameTest {
+    private ThrowResultStrategy resultStrategy;
+    private YahtzeeGame game;
+
+    @Before
+    public void setup() {
+        resultStrategy = mock(ThrowResultStrategy.class);
+        game = new YahtzeeGame(resultStrategy);
+    }
+
+    @Test
+    public void allOnesGivesFivePointsForOnes() throws Exception {
+        when(resultStrategy.throwDice()).thenReturn(new Throw(1, 1, 1, 1, 1));
+
+        game.throwDice();
+        int score = game.scoreFor(Combination.ONES);
+
+        assertThat(score).isEqualTo(5);
+    }
+
+    @Test
+    public void allTwosGivesTenPointsForTwos() throws Exception {
+        when(resultStrategy.throwDice()).thenReturn(new Throw(2, 2, 2, 2, 2));
+
+        game.throwDice();
+        int score = game.scoreFor(Combination.TWOS);
+
+        assertThat(score).isEqualTo(10);
+    }
+
+    @Test
+    public void allThreesGivesFifteenPointsForThrees() throws Exception {
+        when(resultStrategy.throwDice()).thenReturn(new Throw(3, 3, 3, 3, 3));
+
+        game.throwDice();
+        int score = game.scoreFor(Combination.THREES);
+
+        assertThat(score).isEqualTo(15);
+    }
+
+    // More similar tests here...
+}
+</pre>
+<p>Klassen under test representerer et yatzyspill. Koden er forkortet litt av hensyn til lesbarheten, men om du leser testene, så bør det være noe som skurrer. Det de tester er at et gitt kast faktisk gir et gitt antall poeng for en gitt kombinasjon (for eksempel enere). For å kunne teste dette, må jeg imidlertid gjøre tre ting:</p>
+<ol>
+<li>Opprette et objekt av klassen YahtzeeGame
+<li>Opprette en mock av interfacet ThrowResultStrategy, som gir oss et kast
+<li>Kalle YahtzeeGame.throwDice()</li>
+</ol>
+<p>Dette synes jeg føles fryktelig tungvint å teste. Jeg vil egentlig bare teste fjorten linjer kode (markert med <font style="background-color: #ffff00">gult</font>) inni en metode i YahtzeeGame-klassen, men ender opp med å måtte mocke ut noe jeg føler jeg ikke trenger (ThrowResultStrategy) og kalle metoder som egentlig ikke er relatert til det jeg ønsker å teste. Med andre ord, testene har vist meg et problem. Dessverre er tester ofte litt som hylende babyer - det er ikke alltid så lett å skjønne <i>hvorfor</i> de klager, selv om du hører veldig godt <i>at</i> de gjør det. </p>
+<p>Når en test krever veldig mye oppsett, slik som denne gjør, er det ofte et tegn på at klassen under test gjør mer enn den burde. Dersom vi ser nærmere på scoreFor()-metoden i YahtzeeGame, ser vi at den egentlig gjør alt. Den regner ut poengsummer (som er det vi forsøker å teste), men den holder også styr på hvilken runde vi er i, legger til poengsummen for akkurat denne kombinasjonen til den endelige poengsummen, resetter antall kast så langt i runden og gjør validering. Det er fryktelig mange ansvarsområder for en metode å ha, og YahtzeeGame-klassen bryter dermed med <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">Single Responsibility Principle</a>. Det er med andre ord ikke et testproblem, men et designproblem. Testene fortalte meg bare at noe var galt. </p>
+<p>Alt jeg trengte å gjøre, var å høre etter.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

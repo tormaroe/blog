@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="OO Patterns,C#">
+
+    <title>Hvordan bryte avhengigheter mellom klasser</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hvordan bryte avhengigheter mellom klasser</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 18. mai 2009</small> 
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p><strong>Tette koblinger</strong> er noe man snakker mye om innen utvikling av software - noe man bør unngå bl.a. fordi det gjør programmene vanskeligere å endre. Og at det vil komme endringer er det eneste sikre i ethvert softwareprosjekt.</p>
+<p>I denne artikkelen forsøker jeg å illustrere et helt vanlig scenario med tett kobling mellom to klasser. Jeg snakker litt om hva to av <a href="http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod">SOLID-prinsippene</a> sier om dette, og viser hvordan avhengighetene kan løses opp ved å benytte et par velkjente design patterns.</p>
+<p>I dette fiktive eksempelet skal jeg implementere en del av programvaren til en mobiltelefon. Man må kunne taste inn et telefonnummer, og når nummeret er tastet skal telefonen ringe opp nummeret. Jeg ser da for meg at jeg behøver en klasse for å representere en knapp: <em>Button</em>. Når en knapp blir trykket på, sender den avgårde sifferet knappen representerer til en annen klasse som skal ringe nummeret; jeg kaller denne klassen for <em>Dialer</em>.</p>
+<p style="text-align: center"><a title="Dependencies1 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3535870758/"><img height="138" alt="Dependencies1" src="http://farm4.static.flickr.com/3362/3535870758_851c27b0ab_o.png" width="425" border="0" /></a></p>
+<p>Disse to klassene danner et typisk <em>klient-tjener</em> forhold: Button bruker Dialer som en tjeneste, og har en sterk knytning og avhengighet til den, f.eks. ved at den holder en referanse til et Dialer objekt, slik som dette:</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Button</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: yellow">Dialer</span> <span style="color: #f8ffc6">_dialer</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">Button</span>(<span style="color: yellow">Dialer</span> <span style="color: #f8ffc6">dialer</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">_dialer</span> = <span style="color: #f8ffc6">dialer</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+<p>Denne harde koblingen er lite fleksibel, og fører til kode som er vanskelig å endre eller utvide. Det finnes flere prinsipper innen objektorientering som kan brukes til å identifisere problemet. Ta for eksempel dette:</p>
+<div style="padding-left: 20px; margin: 20px; background-color: #ffeeee; border: orange 1px solid"><strong>The Open/Close Principle (OCP)</strong><br />
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification. (<a href="http://www.objectmentor.com/resources/articles/ocp.pdf">spec</a>)</div>
+<p>Om du ikke kjenner til OCP fra før er det ikke helt lett å skjønne hva man mener med <em>"åpen for utvidelse men lukket for endringer"</em>. Men se på Button-klassen. Den er som sagt hardt knyttet til Dialer, og skulle vi ønske å benytte en annen dialer, så må vi endre Button. Butten er altså <em>ikke åpen</em> for denne typen utvidelser.</p>
+<p>Et annet prinsipp som sier noe om hva vi kan gjøre med dette er DIP:</p>
+<div style="padding-left: 20px; margin: 20px; background-color: #ffeeee; border: orange 1px solid"><strong>The Dependency-Inversion Principle (DIP)</strong><br />
+High-level modules should not depend on low-level modules. Both should depend upon abstractions. (<a href="http://www.objectmentor.com/resources/articles/dip.pdf">spec</a>)</div>
+<p>For å gjøre noe med dette kan vi bruke det vi kaller for <a href="http://en.wikipedia.org/wiki/Strategy_pattern">STRATEGY PATTERN</a> - vi definerer et interface som Button kan være avhengig av istedet. Mange ville f.eks. opprettet et <em>IDialer</em> interface, slik som dette:</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">interface</span> <span style="color: #2b91af">IDialer</span> { <span style="color: lime">/* some interface */</span> }</p>
+<p style="margin: 0px">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Dialer</span> : <span style="color: #2b91af">IDialer</span> { <span style="color: lime">/* inplementation */</span> }</p>
+<p style="margin: 0px">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Button</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IDialer</span> <span style="color: #f8ffc6">_dialer</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">Button</span>(<span style="color: #2b91af">IDialer</span> <span style="color: #f8ffc6">dialer</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">_dialer</span> = <span style="color: #f8ffc6">dialer</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+<p>Nå kan man utvide med flere typer Dialers uten at man må endre Button-klassen. Men.., det er noe som skurrer litt. Button føles fortsatt for hardt knyttet mot dette Dialer-konseptet. Det kan jo godt tenkes knapper skal benyttes til helt andre ting enn å ringe (som å sende SMS, spille spill o.l.).</p>
+<p>Løsningen er enkel men genial. Interfacer har nemlig mye mer med <em>klienten</em> i avhengighetsforholdet å gjøre (i dette eksempelet <em>Button</em>) enn med klassene som implementerer dem (<em>Dialer</em>). En Dialer er noe som er interessert i å få vite når en knapp blir trykket på. Hvis vi lar Button <em>eie</em> interfacet ved å døpe det om til å hete noe sånt som <em>IButtonListener</em>, og lar Dialer implementere dette, så åpner vi opp for å lage andre klasser som også kan lytte til knappetrykk - uten at de har noe med det å ringe å gjøre - og det uten at vi må modifisere hvordan knappen er implementert.</p>
+<p style="text-align: center"><a title="Dependencies2 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3535052099/"><img height="259" alt="Dependencies2" src="http://farm3.static.flickr.com/2133/3535052099_d926a72bb6_o.png" width="441" border="0" /></a></p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Button</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IButtonListener</span> <span style="color: #f8ffc6">_buttonListener</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">Button</span>(<span style="color: #2b91af">IButtonListener</span> <span style="color: #f8ffc6">buttonListener</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">_buttonListener</span> = <span style="color: #f8ffc6">buttonListener</span>;           </p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+<p>Nå er Button helt uavhengig av alt som har med Dialer å gjøre, selv om den under kjøring av programmet vil motta en referanse til et Dialer-objekt. Og fra knappens ståsted virker dette veldig fornuftig.</p>
+<p>Dialer derimot er avhengig av å implementere IButtonListener. Vil vi ta løsningen vår et steg videre kan vi fjerne denne avhengigheten også. For å gjøre det kan vi bruke et annet mønster som kalles <a href="http://en.wikipedia.org/wiki/Adapter_pattern">ADAPTER PATTERN</a>. Det bruker man bl.a. om man vil skjule/konvertere et interface, f.eks. om man ikke har mulighet til å endre en klasse som Dialer, eller som i dette tilfellet når man ikke ønsker å rote til Dialer med referanser til Button-konseptet.</p>
+<p style="text-align: center"><a title="Dependencies3 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3535052113/"><img height="265" alt="Dependencies3" src="http://farm4.static.flickr.com/3585/3535052113_2d5219b8a3_o.png" width="474" border="0" /></a></p>
+<p>Vi oppretter da en <em>ButtonDialerAdapter</em>-klasse. Denne adapteren lar vi arve fra IButtonListener, og det er den klassen Button nå vil få en instans av under kjøring. ButtonDialerAdapter vil i sin tur ha en referanse til Dialer, og oversetter knappetrykket til den korresponderende meldingen/funksjonskallet i Dialer.</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">interface</span> <span style="color: #2b91af">IButtonListener</span> { <span style="color: lime">/* some interface */</span> }</p>
+<p style="margin: 0px">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Dialer</span> { <span style="color: lime">/* implementation */</span> }</p>
+<p style="margin: 0px">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Button</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IButtonListener</span> <span style="color: #f8ffc6">_buttonListener</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">Button</span>(<span style="color: #2b91af">IButtonListener</span> <span style="color: #f8ffc6">buttonListener</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">_buttonListener</span> = <span style="color: #f8ffc6">buttonListener</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+<p style="margin: 0px">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">ButtonDialerAdapter</span> : <span style="color: #2b91af">IButtonListener</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: yellow">Dialer</span> <span style="color: #f8ffc6">_dialer</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">ButtonDialerAdapter</span>(<span style="color: yellow">Dialer</span> <span style="color: #f8ffc6">dialer</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">_dialer</span> = <span style="color: #f8ffc6">dialer</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+<p>Button har fortsatt bare en avhengighet mot IButtonListener, som gir fullstendig mening. Og Dialer har nå <em>ingen</em> avhengigheter mot noe som har med Button å gjøre. ButtonDialerAdapter avhenger av Dialer og IButtonListener. Ved å bruke strategy pattern og adapter pattern har vi tilfredstilt både Open/Close-prinsippet (OCP) og Dependendcy-Invertion (DIP).</p>
+<p>OCP er på mange måter selve kjernen i objektorientert design. Ved å følge det kan man oppnå fleksibilitet, gjenbruk og vedlikeholdbar kode. Man sier også at å snu avhengighetene (DIP) er det som skiller objektorientert design fra prosedyre/transaksjonsbasert design.</p>
+<p>Det er derimot ikke lurt å innføre abstraksjoner (interfacer og abstrakte klasser) over alt i koden. Utvikleren må passe på å bruke abstraksjoner de stedene i programmet som endres ofte. Robert C. Martin sier blant annet:</p>
+<p style="margin-left: 20px"><em>Confirming to OCP is expensive. It takes development time and effort to create the appropriate abstractions. These abstractions also increase the complexity of the software design. There is a limit to the amount of anstractions that the developers can afford. Clearly, we want to limit the application of OCP to changes that are likely.</em></p>
+<p>Så hvordan bestemmer man seg for når man skal bruke prinsippene? Vi gjør nødvendige undersøkelser, vi stiller de nødvendige spørsmålene, og vi bruker vår erfaring og sunn fornuft. Og så <em>venter vi til endringene inntreffer!</em> Onkel Bob sier nemlig videre:</p>
+<p style="margin-left: 20px"><em>"Fool me once, shame on you. Fool me twice, shame on me." This is a powerful attitude in software design. To keep from loading our software with needless complexity, we may permit ourselves to be fooled <u>once</u>. This means that we initially write our code expecting it not to change. When a change occurs, we implement the abstractions that protect us from future changes of that kind. In short, we take the first bullet and then make sure that we are protected from any more bullets coming from that particular gun.</em></p>
+<p>Men jeg tror likevel man må øve på å bruke disse prinsippene om man skal se behovet når det dukker opp. Og man må også kunne overføre erfaring om endringer fra et utviklingsprosjekt til et annet. For flere synspunkter på akkurat dette kan du se <a href="/2009/05/03/nar-skal-man-bruke-solid-prinsippene/#comments">kommentarene etter posten min om <em>når</em> man skal bruke SOLID prinsippene</a>.</p>
+<p><strong>Les også:</strong> <a href="/2009/03/20/t-man-tipser-om-specification-pattern/">T-Man tipser om specification pattern</a></p>
+<p>Denne artikkelen ble til under inspirasjon fra Robert C. Martins bok <em><a href="http://www.amazon.com/Principles-Patterns-Practices-Robert-Martin/dp/0131857258">Agile Principles, Patterns, and Practices in C#</a> (2006)</em>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

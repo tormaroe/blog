@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Databaser,db4o">
+
+    <title>Objekt-orienterte databaser (del 1)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Objekt-orienterte databaser (del 1)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 26. februar 2009</small> 
+            <a href="/tags/databaser"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Databaser</span></a>
+          
+            <a href="/tags/db4o"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> db4o</span></a>
+          </p>
+          <p>Det finnes en utfordring nesten alle software-prosjekter lever med, og det er den konseptuelle forskjellen mellom objekt-orientering og relasjons-modellen. Koden vår struktureres etter objekt-orienterte prinsipper, og vi forsøker å skape en abstraksjon over vår logikk som best mulig modellerer det domenet/den verden vi skal representere. Men som regel benytter vi også en relasjonsdatabase - og disse to modellene er svært ulike. Vi sier at det eksisterer en <a href="http://en.wikipedia.org/wiki/Object-Relational_impedance_mismatch"><i>impedance mismatch</i></a> mellom objekt-orierntert kode og data i en relasjonsmodell.</p>
+<p>Dette fører til unødvendig kompleksitet. Objektene våre må ofte struktureres på en bestem måte for å kunne persisteres fornuftig i databasen, og vi kan ikke fokusere så mye på domenemodellen som vi skulle ønsket. O/R-mappere som f.eks. NHibernate hjelper oss et stykke på veien, men de kan også føre med seg sine egne problemer, og har et performance overhead. Dessuten er det en ekstra teknologi man da må lære seg.</p>
+<p>Men er vi virkelig nødt til å <i>"skvise"</i> objektene våre ned i relasjonsdatabaser? <b>Svaret er NEI, DET ER VI IKKE NØDT TIL!</b></p>
+<p>Første gangen jeg hørte om objektdatabaser (eller ODBMS som man gjerne kaller det) var på Universitetet. Vi lærte om relasjons-databaser, og ble fortalt at det også fantes databaser som lagret objektstrukturer, men at det var noen <i>rare greier</i> som ingen egentlig brukte. Dette var noe vi bare kunne se bort ifra. (Det er uansett slik jeg husker det - mulig det ikke var foreleseren som sa det i det hele tatt).</p>
+<p>Nå har jeg derimot lest meg opp på ODBMS, og sett at det er et stort miljø rundt dette, og at det brukes i mange, ulike miljøer. De siste par månedene har jeg begynt å bruke det selv også, og for meg er det en aldri så liten <b>REVOLUSJON</b>. ODBMS'er gir deg både en enkelhet jeg aldri har opplevd med andre verktøy, samtidig med en styrke på enkelte områder som ikke finnes i relasjonsdatabaser.</p>
+<p>Men <i>first thing first:</i> Hva er en objektdatabase?</p>
+<p style="text-align:center;"><img id="image424" alt=CropperCapture[2].Png src="/uploads/2009/02/CropperCapture[2].Png" /></p>
+<p>Mens relasjonsdatabaser lagrer data i form av rader i tabeller med relasjoner mellom data representert vha. primær- og fremmednøkler, så lagrer objektdatabasene objekter <i>"slik de er"</i>. I en relasjonsdatabase vil <i>Ordrelinjer</i> ha en fremmednøkkel til en <i>Ordre</i> - i en objektdatabase vil en <i>Ordre</i> ha en liste med <i>Ordrelinjer</i>. Man navigerer i strukturen gjennom pointere eller referanser, som når vi programmerer, i stedet for <i>joins</i> basert på nøkler.</p>
+<p>Styrken for oss utviklere er at databasemodellen er definert av objektene våre, ikke av kravene en relasjonsdatabase stiller. Dette gjør at det er mye enklere å kode mot et ODBMS. Ta for eksempel denne mer eller mindre vanlige kodesnutten for å lagre et domeneobjekt til en relasjonsdatabase gjennom ADO.NET:</p>
+<div style="font-family: Courier New; font-size: 10pt; color: black; background: #f8f8f8;">
+<p style="margin: 0px;"><span style="color: blue;">public</span> <span style="color: blue;">void</span> SaveNewPerson(<span style="color: #2b91af;">Person</span> personToSave)</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="color: blue;">using</span> (<span style="color: #2b91af;">SqlConnection</span> connection = <span style="color: blue;">new</span> <span style="color: #2b91af;">SqlConnection</span>(_connectionString))</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        connection.Open();</p>
+<p style="margin: 0px;">
+<p style="margin: 0px;">        <span style="color: #2b91af;">SqlCommand</span> command = connection.CreateCommand();</p>
+<p style="margin: 0px;">        command.CommandText = </p>
+<p style="margin: 0px;">            <span style="color: #a31515;">"INSERT into TPerson ("</span> + </p>
+<p style="margin: 0px;">            <span style="color: #a31515;">" FirstName, LastName"</span> +</p>
+<p style="margin: 0px;">            <span style="color: #a31515;">") VALUES ("</span> + </p>
+<p style="margin: 0px;">            <span style="color: #a31515;">"@FirstName, @LastName"</span> + </p>
+<p style="margin: 0px;">            <span style="color: #a31515;">")"</span>;</p>
+<p style="margin: 0px;">
+<p style="margin: 0px;">        command.Parameters.Add(<span style="color: #a31515;">"@FirstName"</span>, <span style="color: #2b91af;">SqlDbType</span>.NVarChar, 50);</p>
+<p style="margin: 0px;">        command.Parameters.Add(<span style="color: #a31515;">"@LastName"</span>, <span style="color: #2b91af;">SqlDbType</span>.NVarChar, 50);</p>
+<p style="margin: 0px;">
+<p style="margin: 0px;">        command.Parameters[<span style="color: #a31515;">"@FirstName"</span>].Value = personToSave.GivenName;</p>
+<p style="margin: 0px;">        command.Parameters[<span style="color: #a31515;">"@LastName"</span>].Value = personToSave.FamilyName;</p>
+<p style="margin: 0px;">
+<p style="margin: 0px;">        command.ExecuteNonQuery();</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+</div>
+<p>Det eneste jeg har klart å gjøre på disse 23 linjene er å lagre et fornavn og et etternavn til databasen - helt uten transaksjons- og feilhåndtering - samtidig som jeg har introdusert rissiko ved å referere til databaseinformasjon (tabell- og feltnavn samt felt-type og størrelse) uten noen form for kontroll. Kompleksiteten i dette har fått annenhver utvikler til å designe sine egne dataaksess-løsninger som forsøker å gjøre dette enklere, hvor f.eks. kodegenerering var <i>hot</i> for noen år siden, og O/R-mappere er <i>hot</i> akkurat nå.</p>
+<p>Skal du gjøre det samme med en O/R-mapper som <a href="http://www.hibernate.org/343.html">NHibernate</a> vil koden se omtrent slik ut:</p>
+<div style="font-family: Courier New; font-size: 10pt; color: black; background: #f8f8f8;">
+<p style="margin: 0px;"><span style="color: blue;">public</span> <span style="color: blue;">void</span> SaveNewPerson(<span style="color: #2b91af;">Person</span> personToSave)</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="color: blue;">using</span> (<span style="color: #2b91af;">ISession</span> session = _sessionFactory.OpenSession())</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        session.Save(personToSave);</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+</div>
+<p>Mye bedre, ikke sant?! Men det er noe som mangler her. For å få dette til å virke må vi konfigurere NHibernate til å skjønne hva som skal skje. Vi må lage en mapping-fil for Person-classen vår, som i prinsippet vil inneholde mye av det samme som koden i ADO.NET eksempelet. <a href="http://code.google.com/p/fluent-nhibernate/">Fluent NHibernate</a> kan gjøre dette enklere, men mappingen mellom databasen og objektene MÅ defineres på en eller annen måte. I tillegg må man lage en NHibernate konfigurasjonsfil for databasen. Jeg har forresten også utelatt opprettelsen av sessionFactory.</p>
+<p>Ser vi på den tilsvarende koden for en objektorientert database, ser vi at det ligner svært mye på NHibernate-eksempelet:</p>
+<div style="font-family: Courier New; font-size: 10pt; color: black; background: #f8f8f8;">
+<p style="margin: 0px;"><span style="color: blue;">public</span> <span style="color: blue;">void</span> SaveNewPerson(<span style="color: #2b91af;">Person</span> personToSave)</p>
+<p style="margin: 0px;">{</p>
+<p style="margin: 0px;">    <span style="color: blue;">using</span> (<span style="color: #2b91af;">IObjectContainer</span> db = <span style="color: #2b91af;">Db4oFactory</span>.OpenFile(_databasePath))</p>
+<p style="margin: 0px;">    {</p>
+<p style="margin: 0px;">        db.Store(personToSave);</p>
+<p style="margin: 0px;">    }</p>
+<p style="margin: 0px;">}</p>
+</div>
+<p>Og her har jeg ikke utelatt noe annet en <i>using</i>-deklerasjonene i toppen av fila. Databasen jeg oppretter tar i mot et hvilket som helst C# objekt - det inneholder ingenting spesielt, men basen vet likevel akkurat hva den skal gjøre med den. Enklere kan det rett og slett ikke bli.</p>
+<p style="margin:6px;"><i>Dette er første del av en artikkelserie om objekt-orienterte databaser, basert på mitt NNUG-foredrag om samme tema. Fortsettelsen følger om en dag eller to..</i></p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=db4o" rel="tag">db4o</a>, <a href="/index.php?s=NNUG" rel="tag">NNUG</a>, <a href="/index.php?s=nhibernate" rel="tag">nhibernate</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Lisp,Scheme,C#,Spill">
+
+    <title>Reverser deg frem til svaret</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Reverser deg frem til svaret</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 2. april 2015</small> 
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          
+            <a href="/tags/scheme"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Scheme</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          
+            <a href="/tags/spill"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Spill</span></a>
+          </p>
+          <img src="/uploads/2015/04/play-a-game.png" alt="Play a Game?" />
+
+<p>Når du er ferdig å lese dennne artikkelen vil vi ha implementert et enkelt spill i to forskjellige språk. Du kan allerede C#, Java eller et annet språk med syntaks inspirert av C. Basert på den kunnskapen vil du nå lære lisp. Jeg vil nemlig implementere spillet samtidig i C# og Racket (en lisp), og det vil gi deg gode muligheter til å sammenligne. </p>
+<p>Underveis har vi det gøy.</p>
+<h2>1. Vi trenger en liste</h2>
+<p>Til dette spillet trenger vi en liste med tall. C# har en generisk kolleksjon som heter <code>List&lt;T&gt;</code> (i navnerommet <code>System.Collections.Generic</code>), så den kan vi jo bruke. La oss oppfriske hvordan vi lager to lister; en tom og en med noen tall: </p>
+<pre><code class="hljs"><span class="hljs-built_in">var</span> a = <span class="hljs-keyword">new</span> List&lt;<span class="hljs-built_in">int</span>&gt;();
+<span class="hljs-built_in">var</span> b = <span class="hljs-keyword">new</span> List&lt;<span class="hljs-built_in">int</span>&gt; { <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span> };</code></pre><p>I Lisp-språkene er lister en fundamental datastruktur (Lisp står for <em>List Processing</em>). Jeg definerer <code>a</code> og <code>b</code> i Racket sånn som dette:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> a (<span class="hljs-name"><span class="hljs-built_in">list</span></span>))
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> b (<span class="hljs-name"><span class="hljs-built_in">list</span></span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span>))</code></pre><p>Enkelt, ikke sant? Alternativt kan jeg bruke noe som heter <code>quote</code>, som gjør det enda enklere:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> a &#x27;())
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> b &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span>))</code></pre><h2>2. Reversere en liste</h2>
+<p>Hvis vi har en liste, hvordan kan vi reversere den? Listen i C# er et objekt som har metoden vi trenger. Den lar oss også reversere kun en del av listen, om det er det vi ønsker:</p>
+<pre><code class="hljs"><span class="hljs-selector-tag">b</span><span class="hljs-selector-class">.Reverse</span>();
+<span class="hljs-comment">// b er nå { 5, 4, 3, 2, 1 }</span>
+
+<span class="hljs-selector-tag">b</span><span class="hljs-selector-class">.Reverse</span>(<span class="hljs-attribute">index</span>: <span class="hljs-number">0</span>, <span class="hljs-attribute">count</span>: <span class="hljs-number">3</span>);
+<span class="hljs-comment">// b er nå { 3, 4, 5, 2, 1 }</span></code></pre><p>I Racket har vi en funksjon som heter <code>reverse</code>. Merk at den ikke endrer listen direkte - som i C# - men i stedet returnerer en ny liste. Om vi ønsker å reversere <code>b</code> må vi <em>sette</em> den til den nye verdien:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">set!</span></span> b (<span class="hljs-name"><span class="hljs-built_in">reverse</span></span> b))</code></pre><p><code>set!</code> har et utropstegn for å indikere at dette er en funksjon som muterer data (en &quot;farlig&quot; funksjon).</p>
+<p>Men hvordan kan vi nå reversere kun en del av <code>b</code>? Såvidt jeg vet har ikke Racket noe ferdiglaget for dette, så nå må vi tenke litt. Racket har to funksjoner jeg kan bruke til å plukke ut en del av en liste: <code>take</code> plukker ut x elementer fra starten av en liste, mens <code>drop</code> dropper x elementer fra en liste og returnerer resten:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">take</span></span> &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span>) <span class="hljs-number">2</span>)
+<span class="hljs-comment">; returnerer &#x27;(1 2)</span>
+
+(<span class="hljs-name"><span class="hljs-built_in">drop</span></span> &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span>) <span class="hljs-number">2</span>)
+<span class="hljs-comment">; returnerer &#x27;(3 4)</span></code></pre><img src="/uploads/2015/04/the-slicer.png" alt="The Slicer" />
+
+<p>Ved å kombinere take og drop kan vi lage en ny funksjon vi kaller <code>slice</code> som returnerer en del av en liste gitt en startindeks og et antall elementer:</p>
+<pre><code class="hljs">(<span class="hljs-name">define</span> (<span class="hljs-name">slice</span> list index count)
+  (<span class="hljs-name"><span class="hljs-built_in">take</span></span> (<span class="hljs-name"><span class="hljs-built_in">drop</span></span> list index) count))
+
+(<span class="hljs-name">slice</span> &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span>) <span class="hljs-number">2</span> <span class="hljs-number">3</span>)
+<span class="hljs-comment">; returnerer &#x27;(3 4 5)</span></code></pre><p>Og så kan vi bruke <code>slice</code> til å lage en <code>reverse-slice</code>. Funksjonen bygger opp en ny liste av tre deler: det som kommer før det som reverseres, det som reverseres, og det som kommer etter det som reverseres:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">reverse-slice</span> list index count)
+  (<span class="hljs-name"><span class="hljs-built_in">append</span></span> (<span class="hljs-name">slice</span> list <span class="hljs-number">0</span> index)
+          (<span class="hljs-name"><span class="hljs-built_in">reverse</span></span> (<span class="hljs-name">slice</span> list index count))
+          (<span class="hljs-name">slice</span> list 
+                 (<span class="hljs-name"><span class="hljs-built_in">+</span></span> index 
+                    count) 
+                 (<span class="hljs-name"><span class="hljs-built_in">-</span></span> (<span class="hljs-name"><span class="hljs-built_in">length</span></span> list) 
+                    index 
+                    count))))
+
+(<span class="hljs-name">reverse-slice</span> &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span>) <span class="hljs-number">2</span> <span class="hljs-number">3</span>)
+<span class="hljs-comment">; returnerer &#x27;(1 2 5 4 3 6 7)</span>
+
+(<span class="hljs-name"><span class="hljs-built_in">set!</span></span> b (<span class="hljs-name">reverse-slice</span> b <span class="hljs-number">0</span> <span class="hljs-number">3</span>))
+<span class="hljs-comment">; b er nå &#x27;(3 4 5 2 1)</span></code></pre><p>Jeg må innrømme at dette var ganske mye mere komplisert enn å bruke den ferdiglagde metoden i C#. Men sånn er det av og til :)</p>
+<h2>3. En tilfeldig sortering</h2>
+<p>I dette spillet vi skal lage trenger vi en liste med alle tall fra 1 til og med 9. Men hver gang vi spiller skal rekkefølgen på tallene være tilfeldig. La oss lage en funksjon for å gi oss en ny liste. Først C#:</p>
+<pre><code class="hljs">static List&lt;int&gt; NewGameList()
+{
+    <span class="hljs-keyword">return</span> Enumerable
+        .Range(<span class="hljs-number">1</span>, <span class="hljs-number">9</span>)
+        .<span class="hljs-built_in">OrderBy</span>( <span class="hljs-function"><span class="hljs-params">_</span> =&gt;</span> <span class="hljs-built_in">Guid</span>.NewGuid() )
+        .ToList();
+}
+
+<span class="hljs-keyword">var</span> game = NewGameList();
+<span class="hljs-comment">// gir f.eks. listen { 3, 4, 1, 5, 9, 2, 8, 6, 7 }</span></code></pre><p>Ok, så hvordan ser dette ut i Racket?</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">new-game-list</span>)
+  (<span class="hljs-name">shuffle</span> (<span class="hljs-name">range</span> <span class="hljs-number">1</span> <span class="hljs-number">10</span>)))
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> game (<span class="hljs-name">new-game-list</span>))
+<span class="hljs-comment">; gir f.eks. &#x27;(3 4 1 5 9 2 8 6 7)</span></code></pre><h2>4. Be om et tall</h2>
+<p>La oss glemme lister for en liten stund. Spillet vi skal lage trenger å be brukeren om et tall mellom 0 og 9. I C# kan vi definere en metode <code>PromptChoice</code> som sikrer at vi får et gyldig valg:</p>
+<pre><code class="hljs"><span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-type">PromptChoice</span>()
+{
+    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>)
+    {
+        <span class="hljs-type">Console</span>.<span class="hljs-type">Write</span>(<span class="hljs-string">&quot;Hom many shall I reverse? &quot;</span>);
+        <span class="hljs-type">int</span> <span class="hljs-built_in">result</span>;
+        <span class="hljs-keyword">if</span> (<span class="hljs-type">int</span>.<span class="hljs-type">TryParse</span>(<span class="hljs-type">Console</span>.<span class="hljs-type">ReadLine</span>(), <span class="hljs-keyword">out</span> <span class="hljs-built_in">result</span>)
+            &amp;&amp; <span class="hljs-built_in">result</span> &gt;= <span class="hljs-number">0</span> &amp;&amp; <span class="hljs-built_in">result</span> &lt; <span class="hljs-number">10</span>)
+        {
+            <span class="hljs-keyword">return</span> <span class="hljs-built_in">result</span>;
+        }
+        <span class="hljs-type">Console</span>.<span class="hljs-type">WriteLine</span>(<span class="hljs-string">&quot;Please answer between 0 and 9!&quot;</span>);
+    }
+}</code></pre><p>Det var kanskje en grei måte å gjøre det på i C#. Men hva om vi dropper løkken og bruker rekursjon i stedet; personlig liker jeg det bedre:</p>
+<pre><code class="hljs"><span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-type">PromptChoice</span>()
+{
+    <span class="hljs-type">Console</span>.<span class="hljs-type">Write</span>(<span class="hljs-string">&quot;Hom many shall I reverse? &quot;</span>);
+    <span class="hljs-type">int</span> <span class="hljs-built_in">result</span>;
+    <span class="hljs-keyword">if</span> (<span class="hljs-type">int</span>.<span class="hljs-type">TryParse</span>(<span class="hljs-type">Console</span>.<span class="hljs-type">ReadLine</span>(), <span class="hljs-keyword">out</span> <span class="hljs-built_in">result</span>)
+        &amp;&amp; <span class="hljs-built_in">result</span> &gt;= <span class="hljs-number">0</span> &amp;&amp; <span class="hljs-built_in">result</span> &lt; <span class="hljs-number">10</span>)
+    {
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">result</span>;
+    }
+    <span class="hljs-type">Console</span>.<span class="hljs-type">WriteLine</span>(<span class="hljs-string">&quot;Please answer between 0 and 9!&quot;</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-type">PromptChoice</span>();
+}</code></pre><p>Og sånn som dette ser det ut oversatt til Racket:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">prompt-choice</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">display</span></span> <span class="hljs-string">&quot;How many shall I reverse? &quot;</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ([<span class="hljs-name">input</span> (<span class="hljs-name"><span class="hljs-built_in">read</span></span>)])
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">and</span></span> (<span class="hljs-name"><span class="hljs-built_in">integer?</span></span> input)
+             (<span class="hljs-name"><span class="hljs-built_in">&gt;=</span></span> input <span class="hljs-number">0</span>)
+             (<span class="hljs-name"><span class="hljs-built_in">&lt;</span></span> input <span class="hljs-number">10</span>))
+        input
+        (<span class="hljs-name"><span class="hljs-built_in">begin</span></span>
+          (<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;Please answer between 0 and 9!&quot;</span>)
+          (<span class="hljs-name">prompt-choice</span>)))))</code></pre><p>Synes du denne var vanskelig å forstå kan du ta en titt på dokumentasjonen til <a href="http://docs.racket-lang.org/reference/let.html?q=shuffle#%28form._%28%28lib._racket%2Fprivate%2Fletstx-scheme..rkt%29._let%29%29"><code>let</code></a>, <a href="http://docs.racket-lang.org/reference/if.html?q=shuffle#%28form._%28%28quote._~23~25kernel%29._if%29%29"><code>if</code></a> og <a href="http://docs.racket-lang.org/reference/begin.html?q=shuffle#%28form._%28%28quote._~23~25kernel%29._begin%29%29"><code>begin</code></a> før du leser videre.</p>
+<h2>5. Er listen sortert nå?</h2>
+<p>Målet med spillet er å sortere listen med tall. Derfor trenger vi en enkel funksjon som tester om målet er nådd. Jeg kaller den rett og slett <code>Done</code>:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">bool</span> <span class="hljs-title">Done</span><span class="hljs-params">(List&lt;<span class="hljs-type">int</span>&gt; list)</span>
+</span>{   
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; list.Count; i++)
+        <span class="hljs-keyword">if</span> (list[i] != i + <span class="hljs-number">1</span>) 
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;       
+    <span class="hljs-keyword">return</span> list.Count == <span class="hljs-number">9</span>;
+}</code></pre><p>Det er egentlig greit å anta at listen har lengde 9, men jeg tester det på slutten likevel. Racket-utgaven av denne testen blir mye enklere, fordi jeg der kan sammenligne lister direkte:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">done?</span> list)
+  (<span class="hljs-name"><span class="hljs-built_in">equal?</span></span> list &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>))) </code></pre><p>Alternativt kan jeg ta på meg <em>fancy pants</em> og gjøre det på denne måten (se <a href="/2010/08/11/curry-oppskrift-for-sultne-utviklere/">Curry-oppskrift for sultne utviklere</a>):</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> done? 
+  ((<span class="hljs-name">curry</span> equal?) &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>)))</code></pre><p>Dette er en form av <a href="http://en.wikipedia.org/wiki/Tacit_programming">tacit programming</a>:</p>
+<blockquote>
+<p>Tacit programming, also called <strong>point-free style</strong>, is a programming paradigm in which function definitions do not identify the arguments (or &quot;points&quot;) on which they operate. Instead the definitions merely compose other functions, among which are combinators that manipulate the arguments.</p>
+</blockquote>
+<h2>6. Print listen</h2>
+<p>Nest siste steg: Vi trenger en funksjon som printer ut listen. Jeg ønsker også et ekstra linjeskift før og etter tallene. Her er hvordan jeg løser det i C#:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title">PrintGame</span><span class="hljs-params">(List&lt;<span class="hljs-type">int</span>&gt; list)</span>
+</span>{
+    <span class="hljs-built_in">Console</span>.<span class="hljs-built_in">WriteLine</span>();
+    foreach (var item in list)
+        <span class="hljs-built_in">Console</span>.<span class="hljs-built_in">Write</span>(<span class="hljs-string">&quot; &quot;</span> + item);
+    <span class="hljs-built_in">Console</span>.<span class="hljs-built_in">WriteLine</span>(<span class="hljs-string">&quot;\n&quot;</span>);
+} </code></pre><p>Det blir ikke så helt ulikt i Racket:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">print-game</span> list)
+  (<span class="hljs-name"><span class="hljs-built_in">newline</span></span>)
+  (<span class="hljs-name">for</span> ([<span class="hljs-name">n</span> list])
+    (<span class="hljs-name">printf</span> <span class="hljs-string">&quot; ~a&quot;</span> n))
+  (<span class="hljs-name"><span class="hljs-built_in">newline</span></span>)
+  (<span class="hljs-name"><span class="hljs-built_in">newline</span></span>))</code></pre><h2>7. Game loop</h2>
+<p>Det er på tide å sy alt dette sammen til et ferdig spill. Og vi begynner med C#. Endelig får du se hvordan spillet er ment å fungere..</p>
+<pre><code class="hljs"><span class="hljs-keyword">static</span> void <span class="hljs-type">Main</span>(string[] args)
+{
+    <span class="hljs-type">Console</span>.<span class="hljs-type">WriteLine</span>(
+        <span class="hljs-string">&quot;Welcome to REVERSE -- A Game of Skill!<span class="hljs-subst">\n</span><span class="hljs-subst">\n</span>&quot;</span> <span class="hljs-operator">+</span>
+        <span class="hljs-string">&quot;To win, all you have to do is arrange a list<span class="hljs-subst">\n</span>&quot;</span> <span class="hljs-operator">+</span>
+        <span class="hljs-string">&quot;of numbers (1 through 9) in numberical order<span class="hljs-subst">\n</span>&quot;</span> <span class="hljs-operator">+</span>
+        <span class="hljs-string">&quot;from left to right. To move, you tell me how<span class="hljs-subst">\n</span>&quot;</span> <span class="hljs-operator">+</span>
+        <span class="hljs-string">&quot;many numbers (counted from the left) to reverse.<span class="hljs-subst">\n</span><span class="hljs-subst">\n</span>&quot;</span> <span class="hljs-operator">+</span>
+        <span class="hljs-string">&quot;No doubt you will like this game, but if you want<span class="hljs-subst">\n</span>&quot;</span> <span class="hljs-operator">+</span>
+        <span class="hljs-string">&quot;to quit, reverse 0 (zero).<span class="hljs-subst">\n</span><span class="hljs-subst">\n</span>&quot;</span> <span class="hljs-operator">+</span>
+        <span class="hljs-string">&quot;Here we go ... the list is:&quot;</span>);
+
+    <span class="hljs-keyword">var</span> game <span class="hljs-operator">=</span> <span class="hljs-type">NewGameList</span>();
+    <span class="hljs-type">PrintGame</span>(game);
+    int moves <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; 
+    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>)
+    {
+        int choice <span class="hljs-operator">=</span> <span class="hljs-type">PromptChoice</span>();
+        <span class="hljs-keyword">if</span> (choice <span class="hljs-operator">==</span> <span class="hljs-number">0</span>)
+        {
+            <span class="hljs-type">Console</span>.<span class="hljs-type">WriteLine</span>(<span class="hljs-string">&quot;O.K. Bye Bye!&quot;</span>);
+            <span class="hljs-keyword">break</span>;
+        }
+        moves<span class="hljs-operator">++</span>;
+        game.<span class="hljs-type">Reverse</span>(<span class="hljs-number">0</span>, choice);
+        <span class="hljs-type">PrintGame</span>(game);
+        <span class="hljs-keyword">if</span> (<span class="hljs-type">Done</span>(game))
+        {
+            <span class="hljs-type">Console</span>.<span class="hljs-type">WriteLine</span>(<span class="hljs-string">&quot;You won it in {0} moves!&quot;</span>, moves);
+            <span class="hljs-keyword">break</span>;
+        }
+    }
+}</code></pre><p>Siden du allerede behersker C# eller et lignende språk behøver jeg ikke gå mer i detalj på hva jeg gjorde der. Jeg kan implementere en løsning som konseptuelt er helt lik i Racket, men det blir ikke spesielt fint. Det hadde vært bedre å bruke rekursjon enn en løkke. La oss først prøve å bruke rekursjon i C# for å se hvordan det blir.</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">RunGame</span>(<span class="hljs-params"><span class="hljs-built_in">int</span> moves, List&lt;<span class="hljs-built_in">int</span>&gt; game</span>)</span>
+{
+    <span class="hljs-built_in">int</span> choice = PromptChoice();
+    <span class="hljs-keyword">if</span> (choice == <span class="hljs-number">0</span>)
+    {
+        Console.WriteLine(<span class="hljs-string">&quot;O.K. Bye Bye!&quot;</span>);
+        <span class="hljs-keyword">return</span>;
+    }
+    game.Reverse(<span class="hljs-number">0</span>, choice);
+    PrintGame(game);
+    <span class="hljs-keyword">if</span> (Done(game))
+    {
+        Console.WriteLine(<span class="hljs-string">&quot;You won it in {0} moves!&quot;</span>, moves);
+        <span class="hljs-keyword">return</span>;
+    }
+    RunGame(moves + <span class="hljs-number">1</span>, game);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>(<span class="hljs-params"><span class="hljs-built_in">string</span>[] <span class="hljs-keyword">args</span></span>)</span>
+{
+    <span class="hljs-comment">// .. print header stuff here ..</span>
+
+    <span class="hljs-keyword">var</span> game = NewGameList();
+    PrintGame(game);
+    RunGame(<span class="hljs-number">1</span>, game);
+}</code></pre><p>Ganske likt egentlig. Men denne løsningen er enklere å oversette til Racket:</p>
+<pre><code class="hljs">(<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;Welcome to REVERSE -- A Game of Skill!           &quot;</span>)
+(<span class="hljs-name"><span class="hljs-built_in">newline</span></span>)
+(<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;To win, all you have to do is arrange a list     &quot;</span>)
+(<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;of numbers (1 through 9) in numberical order     &quot;</span>)
+(<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;from left to right. To move, you tell me how     &quot;</span>)
+(<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;many numbers (counted from the left) to reverse. &quot;</span>)
+(<span class="hljs-name"><span class="hljs-built_in">newline</span></span>)
+(<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;No doubt you will like this game, but if you want&quot;</span>)
+(<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;to quit, reverse 0 (zero).                       &quot;</span>)
+(<span class="hljs-name"><span class="hljs-built_in">newline</span></span>)
+(<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;Here we go ... the list is:                      &quot;</span>)
+
+(<span class="hljs-name"><span class="hljs-built_in">define</span></span> (<span class="hljs-name">run-game</span> moves game)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ([<span class="hljs-name">choice</span> (<span class="hljs-name">prompt-choice</span>)])
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">zero?</span></span> choice)
+        (<span class="hljs-name">displayln</span> <span class="hljs-string">&quot;O.K. Bye Bye!&quot;</span>)
+        (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ([<span class="hljs-name">game</span> (<span class="hljs-name">reverse-slice</span> game <span class="hljs-number">0</span> choice)])
+          (<span class="hljs-name">print-game</span> game)
+          (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">done?</span> game)
+              (<span class="hljs-name">printf</span> <span class="hljs-string">&quot;You won it in ~a moves!&quot;</span> moves)
+              (<span class="hljs-name">run-game</span> (<span class="hljs-name">add1</span> moves) game))))))
+
+(<span class="hljs-name"><span class="hljs-built_in">let</span></span> ([<span class="hljs-name">game</span> (<span class="hljs-name">new-game-list</span>)])
+  (<span class="hljs-name">print-game</span> game)
+  (<span class="hljs-name">run-game</span> <span class="hljs-number">1</span> game))</code></pre><p>Og det var det :)</p>
+<h2>8. Til slutt</h2>
+<p>Spillet i sin helhet (både Racket og C#) er <a href="https://gist.github.com/tormaroe/b4706b6f93f09d267e6d">tilgjengelig som en gist</a>. <strong>Reverse</strong> er inspirert av Peter Sessions spill med samme navn, som ble publisert i 1978 i boken <em>BASIC Computer Games</em>. <a href="http://www.atariarchives.org/basicgames/showpage.php?page=135">Du kan studere orginalen her</a>.</p>
+<p>Jeg har tidligere implementert to andre spill fra samme boken, begge i Chicken Scheme (som i praksis nesten er det samme som Racket): <strong><a href="/2014/03/23/spillkata-word/">Word</a></strong> og <strong><a href="/2014/03/24/spillkata-2-kinema/">Kinema</a></strong>. </p>
+<p>Her følger et eksempel på hvordan det ser ut når jeg spiller...</p>
+<pre><code class="hljs"><span class="hljs-attribute">Welcome</span> to REVERSE -- A Game of Skill!
+
+<span class="hljs-attribute">To</span> win, <span class="hljs-literal">all</span> you have to do is arrange a list
+<span class="hljs-attribute">of</span> numbers (<span class="hljs-number">1</span> through <span class="hljs-number">9</span>) in numberical order
+<span class="hljs-attribute">from</span> left to right. To move, you tell me how
+<span class="hljs-attribute">many</span> numbers (counted from the left) to reverse.
+
+<span class="hljs-attribute">No</span> doubt you will like this game, but if you want
+<span class="hljs-attribute">to</span> quit, reverse <span class="hljs-number">0</span> (zero).
+
+<span class="hljs-attribute">Here</span> we go ... the list is:
+
+ <span class="hljs-attribute">1</span> <span class="hljs-number">4</span> <span class="hljs-number">2</span> <span class="hljs-number">6</span> <span class="hljs-number">8</span> <span class="hljs-number">5</span> <span class="hljs-number">7</span> <span class="hljs-number">3</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">5</span>
+
+ <span class="hljs-attribute">8</span> <span class="hljs-number">6</span> <span class="hljs-number">2</span> <span class="hljs-number">4</span> <span class="hljs-number">1</span> <span class="hljs-number">5</span> <span class="hljs-number">7</span> <span class="hljs-number">3</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">8</span>
+
+ <span class="hljs-attribute">3</span> <span class="hljs-number">7</span> <span class="hljs-number">5</span> <span class="hljs-number">1</span> <span class="hljs-number">4</span> <span class="hljs-number">2</span> <span class="hljs-number">6</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">2</span>
+
+ <span class="hljs-attribute">7</span> <span class="hljs-number">3</span> <span class="hljs-number">5</span> <span class="hljs-number">1</span> <span class="hljs-number">4</span> <span class="hljs-number">2</span> <span class="hljs-number">6</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">7</span>
+
+ <span class="hljs-attribute">6</span> <span class="hljs-number">2</span> <span class="hljs-number">4</span> <span class="hljs-number">1</span> <span class="hljs-number">5</span> <span class="hljs-number">3</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">6</span>
+
+ <span class="hljs-attribute">3</span> <span class="hljs-number">5</span> <span class="hljs-number">1</span> <span class="hljs-number">4</span> <span class="hljs-number">2</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">2</span>
+
+ <span class="hljs-attribute">5</span> <span class="hljs-number">3</span> <span class="hljs-number">1</span> <span class="hljs-number">4</span> <span class="hljs-number">2</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">5</span>
+
+ <span class="hljs-attribute">2</span> <span class="hljs-number">4</span> <span class="hljs-number">1</span> <span class="hljs-number">3</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">2</span>
+
+ <span class="hljs-attribute">4</span> <span class="hljs-number">2</span> <span class="hljs-number">1</span> <span class="hljs-number">3</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">4</span>
+
+ <span class="hljs-attribute">3</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">3</span>
+
+ <span class="hljs-attribute">2</span> <span class="hljs-number">1</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">Hom</span> many shall I reverse? <span class="hljs-number">2</span>
+
+ <span class="hljs-attribute">1</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span> <span class="hljs-number">5</span> <span class="hljs-number">6</span> <span class="hljs-number">7</span> <span class="hljs-number">8</span> <span class="hljs-number">9</span>
+
+<span class="hljs-attribute">You</span> won it in <span class="hljs-number">11</span> moves!</code></pre>
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="WTF,Refactoring,C#">
+
+    <title>&#34;Rename method&#34; kan være farlig</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>&#34;Rename method&#34; kan være farlig</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 18. november 2011</small> 
+            <a href="/tags/wtf"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> WTF</span></a>
+          
+            <a href="/tags/refactoring"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Refactoring</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p>Denne historien fra virkeligheten forteller om en tilsynelatende uskyldig og ufarlig refakturering som førte til at en katastrofal feil ble deployet til produksjon. Jeg har anonymisert og forenklet koden for å beskytte den skyldige (som var undertegnede selv) og for å gjøre det enkelt å forstå hva problemet er.</p>
+<p>Det hele begynte med en nokså sentral klasse som vi skal kalle <strong><em>SomeBaseClass</em></strong>. Den hadde blant annet en metode vi for anledningen kaller <strong><em>DoSomething</em></strong>.</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">1 </span>    <span class="Type">class</span> SomeBaseClass
+<span class="lnr">2 </span>    {
+<span class="lnr">3 </span>        <span class="Type">public</span> <span class="Type">void</span> DoSomething()
+<span class="lnr">4 </span>        {
+<span class="lnr">5 </span>        }
+<span class="lnr">6 </span>    }
+</pre>
+<p>Etterhvert som systemet vokste ble det innført mange klasser som arvet fra <em>SomeBaseClass</em>. En av disse var <strong><em>SomeDescendant</em></strong>.</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">1 </span>    <span class="Type">class</span> SomeDescendant : SomeBaseClass
+<span class="lnr">2 </span>    {
+<span class="lnr">3 </span>        <span class="Type">public</span> <span class="Type">void</span> DoIt()
+<span class="lnr">4 </span>        {
+<span class="lnr">5 </span>            DoSomething();
+<span class="lnr">6 </span>        }
+<span class="lnr">7 </span>    }
+</pre>
+<p>Alt fungerte som det skulle i lange tider, og alle var glade. Men så en dag fant en utvikler ut at han ikke likte navnet på metoden <em>DoSomething</em>. Heldigvis hadde han CodeRush-plugin i Visual Studio, og var derfor ganske sikker på at han raskt og trykt kunne endre navnet på metoden med den automatisert refaktureringen <strong>rename</strong>.</p>
+<p>Utvikleren bestemte seg for at <strong><em>DoIt</em></strong> var et mye bedre og mere beskrivende navn!</p>
+<p>Uheldigvis fungerte refaktureringen som den skulle. Koden kompilerte, testene var grønne, og endringen ble med i neste release. Utvikleren husket ikke at han allerede hadde kalt en av metodene i <em>SomeDescendant</em> for det samme.</p>
+<pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span>    <span class="Type">class</span> SomeBaseClass
+<span class="lnr">11 </span>    {
+<span class="lnr">12 </span>        <span class="Type">public</span> <span class="Type">void</span> DoIt()
+<span class="lnr">13 </span>        {
+<span class="lnr">14 </span>        }
+<span class="lnr">15 </span>    }
+<span class="lnr">16 </span>
+<span class="lnr">17 </span>    <span class="Type">class</span> SomeDescendant : SomeBaseClass
+<span class="lnr">18 </span>    {
+<span class="lnr">19 </span>        <span class="Type">public</span> <span class="Type">void</span> DoIt()
+<span class="lnr">20 </span>        {
+<span class="lnr">21 </span>            DoIt();
+<span class="lnr">22 </span>        }
+<span class="lnr">23 </span>    }
+</pre>
+<p>Ser du problemet? <em>DoIt</em> i <em>SomeDescendant</em> er nå en evig rekursjon. </p>
+<p>Blir den kalt vil den føre til et stack overflow exception som det ikke er mulig å fange. Eller hvis JIT-kompilatoren har klart å optimalisere rekursjonen (<a href="http://en.wikipedia.org/wiki/Tail_call">TCO</a>), noe jeg faktisk tror var tilfellet her, så vil programmet bare stå og spinne inn i uendeligheten eller til serveren brenner opp.</p>
+<h4 align="left">Bug retrospective</h4>
+<p>Burde denne feilen ha blitt oppdaget før release? Var det tankeløst å gjennomføre en sånn refakturering? Burde C# tillate denne koden i det hele tatt?</p>
+<p>Jeg har alltid sett på <em>rename</em> som en veldig trygg refakturering i et IDE som Visual Studio og et statisk typet språk som C#, og de fleste av oss gjør det sikkert hele tiden. Navngivning er veldig viktig, og føler man at et navn er feil så bør man endre det.</p>
+<p>Endringen førte derimot til at kompilatoren genererte en <em>warning</em>. Jeg har forsøkt å bruke <em><strong>"treat warnings as errors"</strong></em> opsjonen, men i praksis er det så mange "false positives" i større prosjekter at det å vedlikeholde alle unntakene blir en urimelig oppgave. Jeg tar manuelle gjennomganger av warnings fra tid til annen, men det er ikke rart at ting faller under radaren.</p>
+<p>Vi <em>kunne</em> ha innført en kodestandard fra starten hvor vi alltid kalte metoder i baseklassen eksplisitt – altså <em>base.DoIt()</em> – men det ville også vært vanskelig å overholde.</p>
+<p>Den eneste feilen jeg er villig til å innrømme var å ha for dårlig <strong>test coverage</strong> på koden! Hadde <em>SomeDescendant.DoIt()</em> blitt kalt i en test, ville problemet ha blitt oppdaget. Grunnen til at dette ikke ble gjort i tilfellet her var at <em>DoIt</em> i utgangspunktet var logikkløs, og at funksjonaliteten var blitt testet andre steder. Det føltes veldig trygt å ikke teste. Og det er alltid i slike tilfeller man angrer bittert i etterkant!</p>
+<p>Det jeg sitter igjen med er likevel spørsmålet om C# burde tillate dette i det hele tatt. Som warningen sier: <strong><em>'SomeDescendant.DoIt()' hides inherited member 'SomeBaseClass.DoIt()'. Use the new keyword if hiding was intended.</em></strong> Hvorfor kunne ikke dette vært en error i stedet? Finnes det reelle tilfeller hvor <em>"hiding"</em> uten <em>"new"</em> faktisk kan være nyttig? En error ville gjort at jeg hadde oppdaget problemet og fikset det uten problemer.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

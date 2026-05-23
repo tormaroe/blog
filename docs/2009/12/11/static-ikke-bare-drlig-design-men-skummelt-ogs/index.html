@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="WTF">
+
+    <title>Static: ikke bare dårlig design, men skummelt også</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Static: ikke bare dårlig design, men skummelt også</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 11. desember 2009</small> 
+            <a href="/tags/wtf"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> WTF</span></a>
+          </p>
+          <p><img style="border-right-width: 0px; margin: 0px 0px 0px 18px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="donttrythis" border="0" alt="donttrythis" align="right" src="/uploads/2009/12/donttrythis.png" width="182" height="138"> <strong>Først en advarsel:</strong> Det som følger er <em>ikke</em> representativt for koden vi produserer her på kontoret. Og jeg er selv ansvarlig for akkurat dette makkverket – <em>ikke mitt stolteste øyeblikk</em> - så jeg henger ikke ut noen andre enn meg selv. Like fullt, denne snippeten kan illustrere et poeng..</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 17</span>&nbsp;<span style="color: #136bfd">/* W A R N I N G :</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 18</span>&nbsp;<span style="color: #136bfd"> * </span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 19</span>&nbsp;<span style="color: #136bfd"> * Crappy design - need to fix ASAP !!!</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 20</span>&nbsp;<span style="color: #136bfd"> * padloc static initalizer now needs to come before _formatterFactory initializer,</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 21</span>&nbsp;<span style="color: #136bfd"> * since it is needed in static CatewayConfig which is used there.</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 22</span>&nbsp;<span style="color: #136bfd"> */</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 23</span>&nbsp;<span style="color: #70aeed">private</span> <span style="color: #70aeed">static</span> <span style="color: #70aeed">readonly</span> <span style="color: #70aeed">object</span> padlock = <span style="color: #70aeed">new</span> <span style="color: #70aeed">object</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 24</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 25</span>&nbsp;<span style="color: #70aeed">private</span> <span style="color: #70aeed">static</span> <span style="color: #a0dafc">MessageFormatterFactory</span> _formatterFactory </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 26</span>&nbsp;&nbsp;&nbsp;&nbsp; = <span style="color: #70aeed">new</span> <span style="color: #a0dafc">MessageFormatterFactory</span>(GatewayConfig[<span style="color: #a0dafc">GatewayConfigKeys</span>.MessageFormatterStrategy]);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 27</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 28</span>&nbsp;<span style="color: #70aeed">private</span> <span style="color: #70aeed">static</span> <span style="color: #a0dafc">Dictionary</span>&lt;<span style="color: #70aeed">string</span>, <span style="color: #70aeed">string</span>&gt; _gatewayConfig;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 29</span>&nbsp;<span style="color: #70aeed">public</span> <span style="color: #70aeed">static</span> <span style="color: #a0dafc">Dictionary</span>&lt;<span style="color: #70aeed">string</span>, <span style="color: #70aeed">string</span>&gt; GatewayConfig </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 30</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 31</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">get</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 32</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 33</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">if</span> (_gatewayConfig == <span style="color: #70aeed">null</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 34</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">lock</span> (padlock)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 35</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">if</span> (_gatewayConfig == <span style="color: #70aeed">null</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 36</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _gatewayConfig = <span style="color: #a0dafc">RepositoryFactory</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 37</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Get&lt;<span style="color: #4eb8f8">GatewayConfigRepository</span>&gt;()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 38</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .GetGatewayConfig();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 39</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 40</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">return</span> _gatewayConfig;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 41</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 42</span> }</p>
+</div>
+<p>Dette er en bit fra en statisk klasse som fungerer som en sentral ressurs for å opprette meldingskøer. Klassen holder en statisk referanse til en Dictionary med konfigurasjonselementer kalt <strong>_gatewayConfig</strong> – denne aksesseres via <strong>GatewayConfig</strong> propertien, som er ansvarlig for å opprette den første gang. Den inneholder også en <strong>MessageFormatterFactory</strong> som initialiseres ved hjelp av <strong>GatewayConfig</strong>. Og her finner vi det skumle..</p>
+<p>Initializers – dvs. inline initialisering av variabler før konstruktører kjører – kjøres sekvensielt i den rekkefølgen de er skrevet i koden. Hvis initaliseringen av <strong>padlock</strong> i linje 23 flyttes til linje 27 – til etter initialiseringen av <strong>_formatterFactory</strong> – vil dette ikke fungere i det hele tatt, fordi <strong>padlock</strong> da vil være null når den trengs i <strong>GatewayConfig</strong> propertien. Ikke helt enkelt å få med seg det første gang man leser koden for å si det sånn. Ta gjerne en titt til. </p>
+<p>Koden fungerer altså slik den er presentert her, men når vi har gjort oss avhengig av rekkefølgen variablene i en klasse deklareres er vi ille ute, dette er et sårbart design. Heldigvis fanget jeg opp problemet denne gangen med vår eksellente samling med automatiserte tester.</p>
+<h4>Statiske konstruktører</h4>
+<p>Det er ganske vanlig praksis å initiere statiske variabler inline som i koden over. .NET gir deg derimot også muligheten til å definere klasse-konstruktører (statiske konstruktører) for dette formålet. Og i dette tilfellet – gitt at vi ikke skal gjøre en større refakturering – er den naturlige løsningen å bruke en slik konstruktør.</p>
+<p>Om jeg gjør det gir derimot kodeanalysen i Visual Studio meg følgende advarsel:</p>
+<p style="margin-left: 18px"><i><strong>CA1810 : Microsoft.Performance :</strong><br>Initialize all static fields in 'MessageQueueFactory' when those fields are declared and remove the explicit static constructor.</i></p>
+<p>Så kan altså være en performance penalty knyttet til å bruke statiske konstrultører?! Mer om dette rådet fra Microsoft her: <a href="http://msdn.microsoft.com/en-us/library/ms182275.aspx" target="_blank">Initialize reference type static fields inline</a>. Jeg har lest teksten flere ganger, og er ikke sikker på at jeg skjønner problemet helt. Vel, nå har jeg i alle fall deligert oppgaven med å løse problemet til en annen på teamet, så får vi se hva han kommer opp med :)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

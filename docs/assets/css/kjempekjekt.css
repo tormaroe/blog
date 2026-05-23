@@ -1,0 +1,71 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+h2, h3 {
+  margin-top: 40px;
+}
+h4 {
+  font-weight: bold;
+}
+
+p {
+  margin: 0px 0px 15px;
+  font-size:18px;
+}
+
+.jumbotron {
+  background-color:#FFF8D4;
+  border-bottom:solid 1px #eee
+}
+.tag {
+  font-size:14px;
+  line-height:36px;
+}
+.tagbtn {
+  margin-bottom:3px;
+}
+
+/** LEGACY STYLES **/
+.lnr { color: #3d3d3d; background-color: #000000; }
+.PreProc { color: #96cbfe; }
+.Identifier { color: #c6c5fe; }
+.Todo { color: #8f8f8f; }
+.Function { color: #ffd2a7; }
+.Operator { color: #ffffff; }
+.Conditional { color: #6699cc; }
+.Special { color: #e18964; }
+.Number { color: #ff73fd; }
+.Keyword { color: #96cbfe; }
+.Comment { color: #7c7c7c; }
+.String { color: #a8ff60; }
+.Statement { color: #6699cc; }
+.Delimiter { color: #00a0a0; }
+.Type { color: #ffffb6; }
+.rubyRegexp { color: #b18a3d; }
+.rubyRegexpDelimiter { color: #ff8000; }
+.rubyControl { color: #6699cc; }
+.rubyInterpolationDelimiter { color: #00a0a0; }
+.rubyStringDelimiter { color: #336633; }
+.Constant { color: #99cc99; }
+.term {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  color: lightgreen;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+
+  display: block;
+  padding: 8.5px;
+  margin: 0 0 9px;
+  font-size: 12.025px;
+  line-height: 18px;
+  background-color: #111111;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+}

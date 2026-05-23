@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Ruby">
+
+    <title>En Generisk State Machine i Ruby</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En Generisk State Machine i Ruby</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 12. januar 2010</small> 
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p>Den siste tiden har jeg holdt på å lære meg <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a>, og <em>det</em> er en fantastisk opplevelse. Å lære et så elegant, dynamisk språk åpner dører som jeg ikke ante fantes. Underveis skriver jeg selvsagt endel kode, og tenkte det var på sin plass å dele litt av galskapen. Merk at det er en viss overgang å gå fra C# til Ruby, så hvis de som allerede behersker dette spåket har noe å utsette på koden min så er det forståelig – og kommmentarer mottas med glede.</p>
+<p>For et halvt års tid siden blogget jeg <a href="/2009/06/06/en-generisk-state-machine/">hvordan jeg lagde en generisk state machine i C# basert på en overgangstabell</a>. Jeg tenkte at det kunne være en fin øvelse å gjøre det samme i Ruby.</p>
+<p>Jeg startet med å sette opp en testfixture som definerer tilstandsmaskinen og alle overgangene. I C#-løsningen brukte jeg 30 linjer på dette – i Ruby klarer jeg meg med 13 (en ganske typisk reduksjon i antall kodelinjer når man går fra et statisk typet språk til et som er dynamisk typet). Bortsett fra det har jeg beholdt samme fremgangsmåte som sist:</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 1</span>&nbsp;<span style="color: #a0dafc">require</span> 'test/unit'</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 2</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 3</span>&nbsp;<span style="color: #70aeed">class</span> <span style="color: #a0dafc">GenericStateMachineTests</span> &lt; Test::Unit::TestCase</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 4</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">setup</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 5</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @unlock_called, @alarm_called, @thank_you_called, @lock_action_called <span style="color: #e2e2e2">=</span> false</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 6</span>&nbsp;&nbsp;&nbsp; </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 7</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine <span style="color: #e2e2e2">=</span> GenericStateMachine.new :locked</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 8</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 9</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.add_transition(:locked, :coin, :unlocked) { @unlock_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 10</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.add_transition(:locked, :pass, :locked) { @alarm_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 11</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.add_transition(:unlocked, :coin, :unlocked) { @thank_you_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 12</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.add_transition(:unlocked, :pass, :locked) { @lock_action_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 13</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+</div>
+<p>Jeg "kopierte" også testene fra C# løsningen:</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 15</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">test_initial_conditions</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 16</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assert_equal :locked, @state_machine.state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 17</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 18</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">test_coin_in_locked_state</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 19</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.state <span style="color: #e2e2e2">=</span> :locked</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 20</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.handle_event :coin</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 21</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assert_transition :unlocked, @unlock_called</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 22</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 23</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">test_coin_in_unlocked_state</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 24</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.state <span style="color: #e2e2e2">=</span> :unlocked</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 25</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.handle_event :coin</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 26</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assert_transition :unlocked, @thank_you_called</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 27</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 28</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">test_pass_in_locked_state</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 29</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.state <span style="color: #e2e2e2">=</span> :locked</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 30</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.handle_event :pass</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 31</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assert_transition :locked, @alarm_called</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 32</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 33</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">test_pass_in_unlocked_state</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 34</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.state <span style="color: #e2e2e2">=</span> :unlocked</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 35</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.handle_event :pass</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 36</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assert_transition :locked, @lock_action_called</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 37</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 38</span>&nbsp;&nbsp;&nbsp; </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 39</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">assert_transition</span> expected_state, indicator_should_be_true</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 40</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assert_equal expected_state, @state_machine.state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 41</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assert indicator_should_be_true</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 42</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 43</span>&nbsp;<span style="color: #70aeed">end</span></p>
+</div>
+<p>Det burde ikke være så vanskelig å kjønne hva som skjer i de testene, selv om man ikke har vært borti Ruby før. I Ruby's innebygde testrammeverk blir alle metoder i en testklasse (en klasse som arver fra Test::Unit::TestCase) som starter med "test" oppfattet som en test.</p>
+<p>Og her følger implementasjonen jeg etter hvert kom frem til av GenericStateMachine. C#-varianten, som eksponerer det samme interfacet, var på ca&nbsp; 50 linjer, mens Ruby-klassen ender på 20. Ta en rask titt på koden, så kommer jeg med litt kommentarer og forklaringer etterpå..</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 45</span>&nbsp;<span style="color: #70aeed">class</span> <span style="color: #a0dafc">GenericStateMachine</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 46</span>&nbsp;&nbsp;&nbsp;&nbsp; Struct.new "Transition", :start_state, :trigger, :end_state, :action</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 47</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #a0dafc">attr_accessor</span> :state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 48</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">initialize</span> initial_state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 49</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state <span style="color: #e2e2e2">=</span> initial_state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 50</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @transitions <span style="color: #e2e2e2">=</span> []</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 51</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 52</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">add_transition</span> start_state, trigger, end_state, &amp;action</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 53</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @transitions &lt;&lt; Struct::Transition.new(start_state, trigger, end_state, action)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 54</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 55</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">handle_event</span> event</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 56</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @transitions.each <span style="color: #70aeed">do</span> |t|</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 57</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">if</span> t.start_state <span style="color: #e2e2e2">==</span> @state and t.trigger <span style="color: #e2e2e2">==</span> event</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 58</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state <span style="color: #e2e2e2">=</span> t.end_state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 59</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.action.call</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 60</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 61</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 62</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 63</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 64</span>&nbsp;<span style="color: #70aeed">end</span></p>
+</div>
+<p>Linje 46 illustrerer hvordan man veldig enkelt kan definere en klasse i Ruby som bare består av "properties" (i Ruby kaller vi properties for accessor methods). I linje 53 kan du se hvordan jeg oppretter instanser av denne klassen, og legger dem til et array.</p>
+<p>På linje 47 deklareres tilstandsmaskinens eneste accessor (dvs property), som eksponerer tilstanden. Linje 48 til 51 er konstruktøren (eller gjør i alle fall samme nytten), hvor initiell tilstand settes, og en tom tabell med overganger opprettes.</p>
+<p>Og på linje 55 begynner metoden som skal håndtere events. Jeg itererer over alle overgangene, og hvis start-tilstand og event er riktig så gjennomfører jeg overgangen ved å sette ny tilstand og kjøre kodeblokken (action) som er definert. Referer til linje 9 til 12 i test-oppsettet for å se hvordan overgangene ble definert.</p>
+<p>Det fine med tilstandsmaskinen jeg lagde i C# var at den var generisk – på den måten at jeg kunne bruke ulike enums eller klasser til å definere både tilstander og events. Siden Ruby er dynamisk typet fungerer dette like bra i denne løsningen, og det helt uten at jeg har gjort noe spesielt for å få det til. I koden min bruker jeg Ruby-symboler (de merkelige tingene som begynner med kolon), men jeg kunne f.eks. brukt tall, strenger, konstanter, eller noen helt andre objekter.</p>
+<h4>Flytende konfigurering</h4>
+<p>Jeg lagde også et "flytende interface" (eller intern DSL om du vil) for tilstandsmaskinen min i C#, og tenkte jeg skulle forsøke det samme i Ruby. Her er jeg litt usikker på om jeg har gjort det <em>"the Ruby way", </em>men jeg har brukt endel av det jeg har lært meg i det siste, og er foreløpig fornøyd med løsningen. Her er hvordan jeg har valgt å gjøre det flytende konfigureringen (erstatter linje 9 til 12 i test-oppsettet).</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 72</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @state_machine.configure <span style="color: #70aeed">do</span> |sm|</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 73</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sm.given(:locked).when(:coin).then_set_state(:unlocked).and_run { @unlock_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 74</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sm.given(:locked).when(:pass).then_set_state(:locked).and_run { @alarm_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 75</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sm.given(:unlocked).when(:coin).then_set_state(:unlocked).and_run { @thank_you_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 76</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sm.given(:unlocked).when(:pass).then_set_state(:locked).and_run { @lock_action_called <span style="color: #e2e2e2">=</span> true }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 77</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+</div>
+<p>Jeg vet ærlig talt ikke om dette er bedre, men det lar seg i alle fall lese som en setning <em>(kind of): </em>Gitt tilstand LOCKED, når COIN, set tilstand UNLOCKED og kjør "unlocked_called = true".</p>
+<p>For å implementere muligheten for denne konfigurasjonen gjenåpner jeg klasse-definisjonen og legger til et sett med nye metoder; du kan nemlig se på alle klasser i Ruby som "partial", og ved å spre definisjonen av GenericStateMachine til flere filer kan jeg f.eks. velge om jeg vil inkludere det flytende API'et eller ikke.</p>
+<div style="padding-bottom: 4px; font-family: monospace; margin-bottom: 12px; background: #003d59; color: #e2e2e2; font-size: 9pt; padding-top: 4px">
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 110</span>&nbsp;<span style="color: #70aeed">class</span> <span style="color: #a0dafc">GenericStateMachine</span> <span style="color: #136bfd">#open class definition to add fluent dsl</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 111</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">configure&nbsp;&nbsp; </span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 112</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; yield self</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 113</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 114</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">given</span> start_state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 115</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @temp <span style="color: #e2e2e2">=</span> [start_state]</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 116</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; self</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 117</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 118</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">when</span> event</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 119</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @temp &lt;&lt; event</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 120</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; self</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 121</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 122</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">then_set_state</span> end_state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 123</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; @temp &lt;&lt; end_state</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 124</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; self</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 125</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 126</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">def</span> <span style="color: #a0dafc">and_run</span> &amp;block&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 127</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; add_transition *@temp, &amp;block</p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 128</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #70aeed">end</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="color: #2b91af">&nbsp;&nbsp; 129</span>&nbsp;<span style="color: #70aeed">end</span></p>
+</div>
+<p>Det er litt vanskelig å forklare hvordan dette fungerer, men la meg forsøke: Metoden <strong>configure</strong> kjører blokken som er sendt til den (blokken er linje 73 til 76) med seg selv (<em>self</em>) som argument. Variabelen sm i 72-76 er derfor tilstandsmaskinen. De tre metodene <strong>starte_state</strong>, <strong>event </strong>og <strong>then_set_state</strong> tar bare vare på argumentet som sendes inn til dem, og returnerer self igjen, slik at metodekallene kan kjedes sammen. I <strong>and_run</strong>-metoden tar jeg imot det siste argumentet – en kodeblokk – og legger til en ny overgang ved å kalle den eksisterende metoden add_transition med de tre argumentene pluss kodeblokken.</p>
+<p><em>Merk at dette grensesnittet forutsetter at det brukes riktig – her er det absolutt ingen feilhåndtering.</em></p>
+<p>Jeg håper dette kan være med på å spre interessen for å lære seg flere programmeringsspråk, spesielt blant .Net-utviklerne, og vil fortsette å blogge ting og tang jeg finner på etterhvert som jeg bruker Ruby mer og mer.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

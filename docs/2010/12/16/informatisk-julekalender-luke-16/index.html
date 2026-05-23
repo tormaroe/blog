@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender">
+
+    <title>Informatisk julekalender: Luke 16</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Informatisk julekalender: Luke 16</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 16. desember 2010</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p>Dagens luke handler om en av de mest kjente programmerings-ikonene fra 60-/70-tallet. Han har sagt og ment mye, men passer budskapet hans for den moderne, smidige utvikleren? Les videre for å finne svaret… <img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="dijkstra" border="0" alt="dijkstra" src="/uploads/2010/12/dijkstra.png" width="291" height="271"></p>
+<p><strong>Edsger W. Dijkstra</strong> var en nederlandsk informatiker som har bidratt stort til faget vårt. Han er blant annet kjent for sin <em>korteste sti</em>-algoritme, også kalt <em>Dijkstra’s algoritme</em>, omvendt polsk notasjon og <em>Shunting yard</em> algoritmen, multiprogrammeringssystemet “THE”, Banker’s algoritmen, og bruken av semaforer for å koordinere prosesser og programmer.</p>
+<p>Mange av hans meninger har blitt allmenne oppfatninger blant programmerere. Han brukte f.eks. uttrykket <em>“two or more, use a for”</em>, som betyr at man bør bruke en loop når man prosesserer mer enn ett element av en datastruktur. Han var også den første til å hevde at programmering er en så grunnleggende kompleks aktivitet at programmererne må bruke alle abstraksjoner mulig for å håndtere den på en god måte. Han utdypet dette med å si at <em>programmering (han brukte uttrykket “computer science”) ikke har mer med datamaskiner å gjøre enn astronomi har å gjøre med teleskoper.</em></p>
+<p>For en mer nyansert diskusjon om abstraksjoner anbefaler jeg podcastet <a href="http://thisdeveloperslife.com/post/1361199493/1-0-6-abstraction" target="_blank">This Developers Life 1.0.6</a>, hvor Rob Conery og Scott Hanselmann intervjuer erfarne folk (som Ward Cunningham) om hvor mange lag med abstraksjoner man bør forstå som utvikler.</p>
+<h4>Om GOTO og programmeringsspråk</h4>
+<p>Selv om Edsger hadde programmert mye maskinkode på 50-tallet, så var han kjent for å misslike GOTO-operatoren. I 1969 skrev han en artikkel han kalte <em>“A Case against the GO TO Statement”</em>, som var et stort steg bort fra bruken av GOTO, og istedet en aksept av <strong>strukturert programmering</strong>.</p>
+<p>Han var også en motstander av å undervise i BASIC, et språk som typisk brukte mye GOTO:</p>
+<p style="padding-left: 20px; padding-right: 20px; font-size: 115%"><em>“…the teaching of BASIC should be rated as a criminal offence: it mutilates the mind beyond recovery.” </em></p>
+<p>Han snakket like nedsettende om APL, Fortran og COBOL. Han var derimot en stor fan av ALGOL 60, og var med på teamet som implementerte den første kompilatoren for det språket. Dijkstra og kollegaen Jaap Zonneveld ble enige om å ikke barbere seg før prosjektet var fullført. Kan dette være kilden til at utviklere av programmeringsspråk nesten alltid har langt skjegg?</p>
+<h4>Formalisme</h4>
+<p style="padding-left: 20px; padding-right: 20px; font-size: 115%"><em>“Program testing can be used to show the presence of bugs, but never to show their absence!”</em></p>
+<p>Fra 70-tallet og utover var Dijkstra først og fremst interessert i <strong>formell verifikasjon</strong>. Han mente man først skal definere en matematisk spesifikasjon av hva programmet skal gjøre, og så bruke matematiske transformasjoner på spesifikasjonen til den kan eksekveres som kode. </p>
+<p>Dette passer ikke nødvendigvis så godt med min oppfattelse av effektiv og smidig utvikling – det høres mer ut som <em>Big Design Up Front</em>. Men vi må huske at BDUF ikke er det motsatte <em>No Design Up Front</em>. Dijkstra var ingen tulling, og vi kan nok lære mye av ham selv om vi ikke sluker alt.</p>
+<p>For eksempel fokuserte Dijkstras veldig sterkt på enkelhet, noe som også er et av de viktigste prinsippene i smidig. Her er noen fantastiske sitat som viser at han ikke <em>bare</em> var en idealist, men også tenkte som en pragmatisk programmerer – og at de to faktisk går hånd i hånd:</p>
+<p style="padding-left: 20px; padding-right: 20px; font-size: 115%" font-size:115%;padding-left:20px;padding-right:20px;?><em>“Simplicity is prerequisite for reliability.”</em></p>
+<p style="padding-left: 20px; padding-right: 20px; font-size: 115%"><em>“The competent programmer is fully aware of the strictly limited size of his own skull; therefore he approaches the programming task in full humility, and among other things he avoids clever tricks like the plague.”</em></p>
+<p style="padding-left: 20px; padding-right: 20px; font-size: 115%"><em>“How do we convince people that in programming simplicity and clarity —in short: what mathematicians call "elegance"— are not a dispensable luxury, but a crucial matter that decides between success and failure?”</em></p>
+<p style="padding-left: 20px; padding-right: 20px; font-size: 115%"><em>“Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it. And to make matters worse: complexity sells better.”</em></p>
+<p>Så vil jeg bare avslutte med et sitat om hvordan Dijkstra ville bli husket:</p>
+<p style="padding-left: 20px; padding-right: 20px; font-size: 115%"><em>“..if 10 years from now, when you are doing something quick and dirty, you suddenly visualize that I am looking over your shoulders and say to yourself "Dijkstra would not have liked this", well, that would be enough immortality for me.”</em></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

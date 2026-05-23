@@ -1,0 +1,104 @@
+---
+title: "Informatisk julekalender: Luke 9"
+link: http://blog.kjempekjekt.com/2010/12/09/informatisk-julekalender-luke-9/
+layout: post
+date: 2010-12-09 09:19:09Z
+tags:
+  - Julekalender
+  - Clojure
+---
+<p>I dag blir det ikke en helt vanlig luke i kalenderen. I går inspirerte jeg nemlig meg selv såpass ved å <a href="http://blog.kjempekjekt.com/2010/12/08/informatisk-julekalender-luke-8/">fortelle om Alan Turing</a> at jeg ble nødt til å implementere min egen lille Turingmaskin. Folk kaller meg merkelig, men det får nå bare være :)</p> <p>Denne luken er nok dermed ment for et litt smalere publikum enn vanlig. Det kan f.eks. godt tenkes du ønsker å <a href="http://en.wikipedia.org/wiki/Turing_machine" target="_blank">lese deg opp på turingmaskiner</a> for å få mest utbytte av dette. Jeg planlegger derimot å komme tilbake med en vanlig luke i morgen, så fortvil ikke!</p> <p>Denne koden er forresten implementert i sånn passe trøtt tilstand, delvis på bussen, så den kan helt sikkert forbedres. Hvis du tror at du kunne klart bedre – og du kan velge programmeringsspråk selv - så utfordrer jeg deg til å dele koden din i kommentarfeltet. Jeg er nemlig veldig interessert i å se andre implementasjoner a turingmaskiner. MEN IKKE POST KODEN DIREKTE I KOMMENTARFELTET, lim heller koden din inn på <a href="http://www.pastie.org/" target="_blank">pastie</a>, <a href="http://gist.github.com/" target="_blank">Gist</a> eller lignende, og link til koden i kommentaren din her.</p> <p>Koden min er forresten <a href="https://gist.github.com/734458" target="_blank">tilgjengelig i sin helhet som gist her</a>. I denne artikkelen presenteres koden stykkevist og delt..</p> <h4>Hvordan representere en turingmaskin</h4> <p>Jeg valgte selvsagt å bruke Clojure for å implementere min første Turingmaskin. Den er basert på en tabell med regler som består av fem verdier: Hva som står i tapecellen under lesehodet, hvilken tilstand maskinen er i, hva som skal skrives, hvilken retning man skal flytte, og hvilken ny tilstand maskinen skal settes i.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Delimiter">(</span>ns turing.core<span class="Delimiter">)</span>
+<span class="lnr"> 2 </span>
+<span class="lnr"> 3 </span><span class="Delimiter">(</span>comments <span class="String">"The turing machine runs on a table of rules defined by 5-tuples,</span>
+<span class="lnr"> 4 </span><span class="String">           implemented here as maps with the following format:"</span>
+<span class="lnr"> 5 </span>        { :tape value                 <span class="Comment">; Given cell under head has value</span>
+<span class="lnr"> 6 </span>          :state value                <span class="Comment">; And machine state has value </span>
+<span class="lnr"> 7 </span>          :write value                <span class="Comment">; Then write value in cell </span>
+<span class="lnr"> 8 </span>          :move value                 <span class="Comment">; Move head according to value (:left :right :no) </span>
+<span class="lnr"> 9 </span>          :set-state value }<span class="Delimiter">)</span>         <span class="Comment">; And set new machine state to value</span>
+</pre>
+<p>Så definerer jeg noen variabler for initiell tilstand, default-verdien til en celle, og det spesielle symbolet for når maskinen skal stoppe.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">11 </span><span class="Delimiter">(</span>def <span class="Type">*initial-state*</span> <span class="String">"A"</span><span class="Delimiter">)</span>
+<span class="lnr">12 </span><span class="Delimiter">(</span>def <span class="Type">*empty-cell*</span> <span class="Number">0</span><span class="Delimiter">)</span>
+<span class="lnr">13 </span><span class="Delimiter">(</span>def halt <span class="String">"HALT"</span><span class="Delimiter">)</span>
+</pre>
+<p>Her følger funksjonen for å finne riktig regel som skal brukes for en gitt tilstand og et gitt symbol under lesehodet på tapen.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">15 </span><span class="Delimiter">(</span>defn find-rule
+<span class="lnr">16 </span>      <span class="String">"Find the rule for current state and symbol"</span>
+<span class="lnr">17 </span>      [symbol state rules]
+<span class="lnr">18 </span>      <span class="Delimiter">(</span><span class="Statement">first</span> <span class="Delimiter">(</span>filter <span class="Delimiter">(</span>fn [r] <span class="Delimiter">(</span><span class="Statement">and</span> <span class="Delimiter">(</span><span class="Statement">=</span> <span class="Delimiter">(</span>r :tape<span class="Delimiter">)</span> <span class="Statement">symbol</span><span class="Delimiter">)</span>
+<span class="lnr">19 </span>                                  <span class="Delimiter">(</span><span class="Statement">=</span> <span class="Delimiter">(</span>r :state<span class="Delimiter">)</span> state<span class="Delimiter">)))</span>
+<span class="lnr">20 </span>                     rules<span class="Delimiter">)))</span>
+</pre>
+<p>Og så trenger jeg en litt spesiell funksjon som kan fortelle meg litt om hvilken type bevegelse jeg skal gjøre på tapen. Jeg vil nemlig bruke en vektor (array) til å representere tapen, og vil da få behov for å kjøre litt spesiell kode hvis maskinen ønsker å bevege seg utenfor vektorens størrelse – enten den ene eller den andre veien. Funskjonen skal altså fortelle meg om ny index/posisjon vil bli enten –1 eller går utenfor vektorens lengde.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">22 </span><span class="Delimiter">(</span>defn move-type
+<span class="lnr">23 </span>      <span class="String">"Return the type of tape move to perform. If the move is to a</span>
+<span class="lnr">24 </span><span class="String">      previously unvisited cell, the tape needs to be expanded, so</span>
+<span class="lnr">25 </span><span class="String">      this function should return :off-left or :off-right."</span>
+<span class="lnr">26 </span>      [tape head-position rule]
+<span class="lnr">27 </span>      <span class="Delimiter">(</span><span class="Statement">let</span> [dir <span class="Delimiter">(</span>rule :move<span class="Delimiter">)</span>]
+<span class="lnr">28 </span>        <span class="Delimiter">(</span><span class="Statement">cond</span> <span class="Delimiter">(</span><span class="Statement">and</span> <span class="Delimiter">(</span><span class="Statement">=</span> head-position <span class="Number">0</span><span class="Delimiter">)</span>
+<span class="lnr">29 </span>                   <span class="Delimiter">(</span><span class="Statement">=</span> dir :left<span class="Delimiter">))</span>
+<span class="lnr">30 </span>                :off-left
+<span class="lnr">31 </span>              <span class="Delimiter">(</span><span class="Statement">and</span> <span class="Delimiter">(</span><span class="Statement">=</span> <span class="Delimiter">(</span><span class="Statement">+</span> <span class="Number">1</span> head-position<span class="Delimiter">)</span> <span class="Delimiter">(</span><span class="Statement">count</span> tape<span class="Delimiter">))</span>
+<span class="lnr">32 </span>                   <span class="Delimiter">(</span><span class="Statement">=</span> dir :right<span class="Delimiter">))</span>
+<span class="lnr">33 </span>                :off-right
+<span class="lnr">34 </span>              <span class="Type">:else</span> dir<span class="Delimiter">)))</span>
+</pre>
+<p>Jeg kan nå presentere funksjonen for å gjennomføre en bevegelse på tapen basert på en regel. Funksjonen produserer en ny tape – potensielt med flere celler om det er nødvendig – og oppdaterer også posisjonen.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">36 </span><span class="Delimiter">(</span>defn perform-move
+<span class="lnr">37 </span>      <span class="String">"Returns a two element vector with new tape and new position"</span>
+<span class="lnr">38 </span>      [tape head rule]
+<span class="lnr">39 </span>      <span class="Delimiter">(</span><span class="Statement">let</span> [tape2 <span class="Delimiter">(</span><span class="Statement">assoc</span> tape head <span class="Delimiter">(</span>rule :write<span class="Delimiter">))</span>]
+<span class="lnr">40 </span>        <span class="Delimiter">(</span><span class="Statement">case</span> <span class="Delimiter">(</span>move-type tape head rule<span class="Delimiter">)</span>
+<span class="lnr">41 </span>          :off-right [<span class="Delimiter">(</span>conj tape2 <span class="Type">*empty-cell*</span><span class="Delimiter">)</span>       <span class="Delimiter">(</span>inc head<span class="Delimiter">)</span>]
+<span class="lnr">42 </span>          :off-left  [<span class="Delimiter">(</span>vec <span class="Delimiter">(</span><span class="Statement">cons</span> <span class="Type">*empty-cell*</span> tape2<span class="Delimiter">))</span> head      ]
+<span class="lnr">43 </span>          :right     [tape2                           <span class="Delimiter">(</span>inc head<span class="Delimiter">)</span>]
+<span class="lnr">44 </span>          :left      [tape2                           <span class="Delimiter">(</span>dec head<span class="Delimiter">)</span>]
+<span class="lnr">45 </span>          :no        [tape2                           head      ]<span class="Delimiter">)))</span>
+</pre>
+<p>Og så har vi endelig ankommet til funskjonen som skjører maskinen. Run starter opp med initiell tilstand og en tom celle. Den finnes så hvilken regel som skal brukes for å gå til neste tilstand (linje 57), utfører operasjonen på tapen (linje 60), og looper (via halerekursjon) inntil den spesielle halt-tilstanden blir satt.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">47 </span><span class="Delimiter">(</span>def tableformat <span class="String">"%10s %7s %10s %s%n"</span><span class="Delimiter">)</span>
+<span class="lnr">48 </span>
+<span class="lnr">49 </span><span class="Delimiter">(</span>defn run
+<span class="lnr">50 </span>      <span class="String">"Run turing machine by given rules and print each step.</span>
+<span class="lnr">51 </span><span class="String">      Initial state is \"A\", empty cell symbol is 0."</span>
+<span class="lnr">52 </span>      [rules]
+<span class="lnr">53 </span>      <span class="Delimiter">(</span>printf tableformat <span class="String">"Sequence"</span> <span class="String">"State"</span> <span class="String">"Position"</span> <span class="String">"Tape"</span><span class="Delimiter">)</span>
+<span class="lnr">54 </span>      <span class="Delimiter">(</span><span class="Statement">loop</span> [i <span class="Number">1</span>, state <span class="Type">*initial-state*</span>, tape [*empty-cell*], head <span class="Number">0</span>]
+<span class="lnr">55 </span>            <span class="Delimiter">(</span>printf tableformat i state head tape<span class="Delimiter">)</span>
+<span class="lnr">56 </span>            <span class="Delimiter">(</span><span class="Statement">when</span> <span class="Delimiter">(</span>not= state halt<span class="Delimiter">)</span>
+<span class="lnr">57 </span>              <span class="Delimiter">(</span><span class="Statement">let</span> [rule <span class="Delimiter">(</span>find-rule <span class="Delimiter">(</span><span class="Statement">nth</span> tape head<span class="Delimiter">)</span>
+<span class="lnr">58 </span>                                    state
+<span class="lnr">59 </span>                                    rules<span class="Delimiter">)</span>
+<span class="lnr">60 </span>                    [tape2 head2] <span class="Delimiter">(</span>perform-move tape
+<span class="lnr">61 </span>                                                head
+<span class="lnr">62 </span>                                                rule<span class="Delimiter">)</span>]
+<span class="lnr">63 </span>                <span class="Delimiter">(</span>recur <span class="Delimiter">(</span>inc i<span class="Delimiter">)</span>
+<span class="lnr">64 </span>                       <span class="Delimiter">(</span>rule :set-state<span class="Delimiter">)</span>
+<span class="lnr">65 </span>                       tape2
+<span class="lnr">66 </span>                       head2<span class="Delimiter">)))))</span>
+</pre>
+<h4>Ivrig Bever</h4>
+<p>Jeg skal nå kunne kjøre turingmaskinen min, og velger da et lite program jeg finner på wikipedia som kalles en <strong><em><a href="http://en.wikipedia.org/wiki/Turing_machine_examples#3-state_Busy_Beaver" target="_blank">3-state Buzy Beaver</a></em></strong>. Konseptet om ivrige bevere er veldig akademisk, men den er i alle fall ikke vanskelig å sette opp nå som jeg har implementert turingmaskinen min. Her er kallet til Run som vil kjøre maskinen med bever-reglene.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">68 </span><span class="Comment">;; Set up and run Turing table for 3-state Busy Beaver</span>
+<span class="lnr">69 </span><span class="Delimiter">(</span>run [{ :tape <span class="Number">0</span> :state <span class="String">"A"</span> :write <span class="Number">1</span> :move :right :set-state <span class="String">"B"</span>   }
+<span class="lnr">70 </span>      { :tape <span class="Number">0</span> :state <span class="String">"B"</span> :write <span class="Number">1</span> :move :left  :set-state <span class="String">"A"</span>   }
+<span class="lnr">71 </span>      { :tape <span class="Number">0</span> :state <span class="String">"C"</span> :write <span class="Number">1</span> :move :left  :set-state <span class="String">"B"</span>   }
+<span class="lnr">72 </span>      { :tape <span class="Number">1</span> :state <span class="String">"A"</span> :write <span class="Number">1</span> :move :left  :set-state <span class="String">"C"</span>   }
+<span class="lnr">73 </span>      { :tape <span class="Number">1</span> :state <span class="String">"B"</span> :write <span class="Number">1</span> :move :right :set-state <span class="String">"B"</span>   }
+<span class="lnr">74 </span>      { :tape <span class="Number">1</span> :state <span class="String">"C"</span> :write <span class="Number">1</span> :move :no    :set-state halt  }]<span class="Delimiter">)</span>
+</pre>
+<p>Og her er resultatet:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px">user=&gt; (require 'turing.core :reload)
+  Sequence   State   Position Tape
+         1       A          0 [0]
+         2       B          1 [1 0]
+         3       A          0 [1 1]
+         4       C          0 [0 1 1]
+         5       B          0 [0 1 1 1]
+         6       A          0 [0 1 1 1 1]
+         7       B          1 [1 1 1 1 1]
+         8       B          2 [1 1 1 1 1]
+         9       B          3 [1 1 1 1 1]
+        10       B          4 [1 1 1 1 1]
+        11       B          5 [1 1 1 1 1 0]
+        12       A          4 [1 1 1 1 1 1]
+        13       C          3 [1 1 1 1 1 1]
+        14    HALT          3 [1 1 1 1 1 1]
+nil
+</pre>
+<p>Er det ikke vakkert?! ;)</p>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="F#">
+
+    <title>Komponere funksjoner i F#</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Komponere funksjoner i F#</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 2. juni 2010</small> 
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          </p>
+          <p>Jeg sitter og leser <a href="http://www.manning.com/petricek/"><em>Real-World Functional Programming</em></a> for tiden, og leker meg litt med F#. Boken går (alt for) sakte fremover, men rundt side 160 fikk jeg endelig en <em>a-ha</em> opplevelse. Det dreide seg om noe som kalles <strong>partial function application</strong>, også kalt <a href="http://en.wikipedia.org/wiki/Currying">currying</a>. Kort fortalt betyr det å ta en funksjon som tar to eller flere parametre, for så å kalle den med noen av parametrene spesifisert – men ikke alle. Man får da tilbake en ny funksjon man kan kalle med resten av parametrene.</p>
+<p>Denne teknikken har noen interessante bruksområder, sikkert mange flere enn dem jeg har sett til nå. Det fikk virkelig hjernen min til å begynne å jobbe, og drømmen jeg hadde i natt var følgelig veldig spesiell. En av ideene jeg fikk var at jeg ganske enkelt kan kombinere flere funksjoner, for å oppnå omtrent det samme som <a href="/2009/03/20/t-man-tipser-om-specification-pattern/">composable specification pattern</a> i objektorientert programmering.</p>
+<p>La oss for eksempel si at vi har endel regler for validering av et tall. Vi kan implementere disse reglene som forskjellige funksjoner: </p>
+<pre>
+// some validation rules
+ 
+let larger_than_ten      n = n &gt; 10
+let smaller_than_hundred n = n &lt; 100
+let dividable_by_ten     n = n % 10 = 0    
+let keep_away_from_fifty n = n &lt;&gt; 50
+</pre>
+<p>Disse fire funksjonene tar altså inn en integer <em>n</em> og returnerer en boolean som sier om <em>n</em> tilfredstiller regelen. F# har sterk, statisk typing, men det er sjelden vi må spesifisere typen selv, kompilatoren er nemlig ganske smart, og finner ut av dette på egen hånd.</p>
+<p>Nå ønsker jeg å komponere disse reglene sammen til én valideringsfunksjon. Jeg kan da definere en operator for å kombinere funksjoner, og det er her magien ligger. Input til operatoren <em>(funksjonen '+')</em> er to generiske funskjoner og en verdi. Signaturen for operatoren, om jeg lagde den i C#, ville vært noe sånt som <tt>bool ComposeOperator(Func&lt;T,bool&gt; f, Func&lt;T,bool&gt; g, T x)</tt>. Nok en gang slipper jeg å fortelle kompilatoren dette.</p>
+<p>Deretter kan jeg opprette funksjonen <em>validate</em> ved å kombinere de fire reglene med min nye + operator:</p>
+<pre>
+// compose complex validation rules
+ 
+let (+) f g x = f(x) && g(x)
+ 
+let validate = // the complete validator function 
+    larger_than_ten 
+    + smaller_than_hundred 
+    + dividable_by_ten
+    + keep_away_from_fifty
+</pre>
+<p><em>Did that blow your mind?</em> Dette føles ganske så genialt, om jeg må få si det selv. Nå gjenstår det bare å vise hvordan jeg kan bruke valideringsfunksjonen, og da kan jeg bruke partial application igjen i F#'s støtte for <strong><em>pipelining</em></strong>.</p>
+<p>Først definerer jeg en liten funksjon for å konvertere en boolsk verdi til en streng ("valid" / "NOT valid"). Deretter lager jeg funksjonen check som først validerer tallet <em>n</em>, for deretter å sende resultatet til <em>valid_as_string</em>, som igjen sender resultatet til en print-funksjon. Pipelining minner om <em>method chaining</em> i objektorientert kode.</p>
+<p>Legg spesielt merke til funksjonen printfn. Her har jeg spesifisert to parametre; et format-pattern og tallet <em>n</em>. Verdien som sendes gjennom pipelinen (som nå er streng-representasjonen av valideringsresultatet) legges til som en tredje parameter.</p>
+<pre>
+// use validation rule and report
+ 
+let valid_as_string v =
+    if v then "valid" else "NOT valid"
+ 
+let check n = // illustrates pipelining (and partial application)
+    validate n                 // validate
+    |&gt; valid_as_string         // convert result to string
+    |&gt; printfn "%d is %s" n    // print result
+ 
+let some_numbers = [ 1; 10; 13; 20; 40; 50; 60; 90; 99; 100; 200 ]
+for n in some_numbers do 
+    check n
+</pre>
+<p>Til slutt lager jeg en liste med tall som jeg itererer over og validerer. Her er output:</p>
+<pre style="background-color: #ffeeee; padding-left: 15px; margin-bottom: 15px">1 is NOT valid
+10 is NOT valid
+13 is NOT valid
+20 is valid
+40 is valid
+50 is NOT valid
+60 is valid
+90 is valid
+99 is NOT valid
+100 is NOT valid
+200 is NOT valid</pre>
+<p>So there you have it, min første blogpost om F#. Jeg har såvidt begynt å lære meg språket, og selv om det er en god del som er mer eller mindre direkte overførbart fra Erlang (som touples, lister og pattern matching), så er det mye nytt også, og jeg gleder meg til å blogge mer om funksjonell programmering på .NET-rammeverket.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

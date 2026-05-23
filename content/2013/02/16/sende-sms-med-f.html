@@ -1,0 +1,61 @@
+---
+title: Sende SMS med F#
+link: http://blog.kjempekjekt.com/2013/02/16/sende-sms-med-f/
+layout: post
+date: 2013-02-16 01:27:49Z
+tags:
+  - F#
+  - PSWinCom
+  - SMS
+  - XML
+---
+<p>Jeg fortsetter å leke meg med F# – for å trene og lære. I dag vil jeg vise hvor enkelt det er å sende en SMS-melding fra F# ved å bruke <a href="http://www.pswin.com/Produkter/Gateway/Grensesnitt.aspx">PSWinCom's SMS API</a>. </p> <p>Alt jeg trenger å gjøre for å bruke API'et er å poste litt XML over http(s). XML'en skal se slik ut:</p><pre>&lt;?xml version="1.0"?&gt;
+&lt;SESSION&gt;
+    &lt;CLIENT&gt;gatewaybruker&lt;/CLIENT&gt;
+    &lt;PW&gt;gatewaypassord&lt;/PW&gt;
+    &lt;MSGLST&gt;
+        &lt;MSG&gt;
+            &lt;ID&gt;1&lt;/ID&gt;
+            &lt;SND&gt;avsender&lt;/SND&gt;
+            &lt;RCV&gt;4799999999&lt;/RCV&gt;
+            &lt;TEXT&gt;meldingstekst&lt;/TEXT&gt;
+        &lt;/MSG&gt;
+    &lt;/MSGLST&gt;
+&lt;/SESSION&gt;</pre>
+<h3>Hjelpefunksjon for XML</h3>
+<p>Som sagt skal jeg bygge opp litt XML. Biblotekene i .NET-rammeverket har selvfølgelig klasser for å gjøre dette, men jeg holder det enkelt og lager i stedet en liten hjelpemetode jeg kaller <code>tag</code>:</p><pre>let tag tag content = 
+    sprintf "&lt;%s&gt;%s&lt;/%s&gt;" tag content tag</pre>
+<p><code>tag</code> tar to argumenter (hvor dene ene faktisk også heter tag), og returnerer en XML-streng. Denne funksjonen blir nesten som en liten mini-DSL for å bygge XML-dokumenter.</p>
+<h3>Formatere SMS XML'en</h3>
+<p>Jeg splitter opp konstruksjonen av XML-dokumentet i to funksjoner: En som formaterer en enkelt melding, og en som tar en liste med meldinger og formaterer det komplette dokumentet.</p>
+<p>Her er den første:</p><pre>let makeSms id sender receiver message =
+    tag "MSG" (
+        (tag "ID" id) + 
+        (tag "SND" sender) + 
+        (tag "RCV" receiver) +
+        (tag "TEXT" message))</pre>
+<p>Og her følger den andre:</p><pre>let makeRequest user password messages =
+    """&lt;?xml version="1.0"?&gt;""" +
+    tag "SESSION" (
+        (tag "CLIENT" user) +
+        (tag "PW" password) +
+        (tag "MSGLST" &lt;| String.concat "" messages))</pre>
+<p>Hvis jeg nå vil lage et dokument for å se at det ser riktig ut kan jeg for eksempel gjøre følgende:</p><pre>let test = makeRequest 
+            "tormar" "secretpassword" 
+            [makeSms "1" "TMAN" "4799999999" 
+                     "This is a test from FSharp"]</pre>
+<p><code>test</code> inneholder nå XML'en.</p>
+<h3>Sende XML over HTTP</h3>
+<p>Å gjøre en HTTP POST fra .NET er også ganske enkelt. Til det bruker jeg en <code><a href="http://msdn.microsoft.com/en-us/library/system.net.webclient.aspx">System.Net.WebClient</a></code>. Da får jeg illustrert et par nyttige ting som hvordan man oppretter og bruker .NET-objekter i F#, og hvordan man sørger for at objekter som krever det blir <em><a href="http://msdn.microsoft.com/en-us/library/system.idisposable.aspx">disposet</a></em>.</p>
+<p>La meg først importere <code>System.Net</code>, og lage en variabel som holder på adressen til SMS gateway'en:</p><pre>open System.Net
+            
+let gatewayUrl = "http://gw2-fro.pswin.com:81/"</pre>
+<p>Deretter lager jeg funksjonen <code>postXml</code>, som gjør det navnet sier at den gjør:</p><pre>let postXml url xml =
+    using (new WebClient()) ( fun client -&gt;
+        client.BaseAddress &lt;- url
+        client.Headers.Add("Content-Type", "application/xml")
+        client.UploadString("/", xml) )</pre>
+<p>Legg merke til at <code>using</code> tar en anonym funksjon som siste argument. Denne får inn objektet (<code>client</code>) og gjør selve sendingen. using vil så sørge for at <code>Dispose()</code> blir kalt når den anonyme funksjonen har gjort sitt.</p>
+<h3>Send SMS'en</h3>
+<p>Jeg kan nå sende SMS'en og ta vare på XML-responsen ved å gjøre følgende kall:</p><pre>let result = postXml gatewayUrl test</pre>
+<p>Og det var det hele! Så enkelt kan det være å sende SMS fra F#-kode.</p>

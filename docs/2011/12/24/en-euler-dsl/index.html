@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="DSL,Julekalender,Rebol">
+
+    <title>En Euler DSL</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En Euler DSL</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 24. desember 2011</small> 
+            <a href="/tags/dsl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> DSL</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/rebol"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rebol</span></a>
+          </p>
+          <p>Julekalenderen for i år avsluttes med et programmeringsspråk spesialdesignet for å løse <a href="/2011/11/24/hello-world-euler-style/">Euler 1 oppgaven</a>. Det har ikke noe navn, men er en såkalt DSL, et <em>domenespesifikt språk.</em> Og det er hjemmesnekret av undertegnede i ett av språkene jeg har brukt tidligere i kalenderen – nemlig Rebol.</p>
+<p>For å finne og skrive ut summen av alle multipler av 3 eller 5 under 1000 kan jeg med dette språket skrive følgende:</p>
+<pre style="padding-bottom: 7px; background-color: #000000; padding-left: 7px; padding-right: 7px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 7px"><span class="lnr">100 </span><span class="Identifier">alert</span> <span class="Identifier">to-string</span>
+<span class="lnr">101 </span>  <span class="Identifier">summing</span> [
+<span class="lnr">102 </span>    <span class="Operator">Add</span> <span class="Identifier">multiples</span> <span class="Identifier">of</span> <span class="Number">3</span> <span class="Identifier">below</span> <span class="Number">1000</span>
+<span class="lnr">103 </span>    <span class="Operator">Add</span> <span class="Identifier">multiples</span> <span class="Identifier">of</span> <span class="Number">5</span> <span class="Identifier">below</span> <span class="Number">1000</span>
+<span class="lnr">104 </span>    <span class="Comment">; Since numbers that are both multiples of 3 and 5</span>
+<span class="lnr">105 </span>    <span class="Comment">; will have been added twice, we now have to subtract </span>
+<span class="lnr">106 </span>    <span class="Comment">; those numbers once..    </span>
+<span class="lnr">107 </span>    <span class="Operator">Subtract</span> <span class="Identifier">multiples</span> <span class="Identifier">of</span> (<span class="Number">3</span> <span class="Operator">*</span> <span class="Number">5</span>) <span class="Identifier">below</span> <span class="Number">1000</span>
+<span class="lnr">108 </span>  ]
+</pre>
+<p>Som du ser er språket nokså <u>deklerativt</u>; jeg deklarerer hva jeg trenger i summen min, ikke hvordan man finner tallene. Og det er en DSL blant annet fordi de semantiske reglene er anderledes i deklarasjonen enn i Rebol forøvrig.</p>
+<p>Rebol ble ikke valgt tilfeldig for å lage dette språket. Rebol har nemlig veldig gode muligheter for parsing av både tekst og symboler, og er tilrettelagt for å lage "dialekter" (som de kaller det) internt i språket.</p>
+<h4>Parse</h4>
+<p>Den sentrale funksjonen i implementasjonen av DSL'en heter <strong>parse</strong>. Den tar som input en streng eller en blokk med kode som skal parses, og en blokk med reglene som gjelder for parsingen – selve definisjonen for språket. <a href="/2011/12/23/regex/">Regex</a> blir blant annet helt overflødig i Rebol, fordi denne parse-funksjonen er så kraftig.</p>
+<p>Ser du på den andre linjen i koden over så står det "summing". Det er selve DSL-funksjonen jeg har laget, som utfører parsingen og returnerer en sum. Her er implementasjonen:</p>
+<pre style="padding-bottom: 7px; background-color: #000000; padding-left: 7px; padding-right: 7px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 7px"><span class="lnr"> 40 </span>   <span class="String"> {</span>
+<span class="lnr"> 41 </span><span class="String">      The SUMMING word is set in the global context as a </span>
+<span class="lnr"> 42 </span><span class="String">      function that takes a block of instructions as an</span>
+<span class="lnr"> 43 </span><span class="String">      argument and returns the resulting sum.</span>
+<span class="lnr"> 44 </span><span class="String">    }</span>
+<span class="lnr"> 45 </span>    <span class="Identifier">set</span> '<span class="Identifier">summing</span> <span class="Statement">func</span> [<span class="Identifier">instructions</span>] [
+<span class="lnr"> 46 </span>      <span class="Identifier">result</span>: <span class="Number">0</span>
+<span class="lnr"> 47 </span>      <span class="Statement">parse</span> <span class="Identifier">compose</span> <span class="Identifier">instructions</span> [<span class="Operator">any</span> <span class="Identifier">summing-rules</span>]
+<span class="lnr"> 48 </span>      <span class="Statement">return</span> <span class="Identifier">result</span>
+<span class="lnr"> 49 </span>    ]
+</pre>
+<h4>Reglene</h4>
+<p>Regelsettet som sendes inn til parse er gjengitt nedenfor. Siden språket jeg har laget er ganske enkelt er reglene også enkle. Reglene er faktisk også skrevet i en DSL/dialekt av Rebol, som en <a href="http://en.wikipedia.org/wiki/Context-free_grammar">context-free grammer</a> ala <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">Backus-Naur Form (BNF)</a> – en standard måte å beskrive syntaks for parsere.</p>
+<pre style="padding-bottom: 7px; background-color: #000000; padding-left: 7px; padding-right: 7px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 7px"><span class="lnr"> 51 </span>   <span class="String"> {</span>
+<span class="lnr"> 52 </span><span class="String">      The parsing rules. These are the MAIN PART you have to</span>
+<span class="lnr"> 53 </span><span class="String">      grok in order to use parsing and dialects in Rebol.</span>
+<span class="lnr"> 54 </span><span class="String">    }</span>
+<span class="lnr"> 55 </span>    <span class="Identifier">summing-rules</span>: [
+<span class="lnr"> 56 </span>      <span class="Identifier">set</span> <span class="Identifier">operation</span> [ '<span class="Identifier">Add</span> | '<span class="Identifier">Subtract</span> ]
+<span class="lnr"> 57 </span>      '<span class="Identifier">multiples</span>
+<span class="lnr"> 58 </span>      '<span class="Identifier">of</span>
+<span class="lnr"> 59 </span>      <span class="Identifier">set</span> <span class="Identifier">multiplier</span> <span class="Type">integer!</span>
+<span class="lnr"> 60 </span>      '<span class="Identifier">below</span>
+<span class="lnr"> 61 </span>      <span class="Identifier">set</span> <span class="Identifier">below</span> <span class="Type">integer!</span>
+<span class="lnr"> 62 </span>      (<span class="Identifier">do-instruction</span>) <span class="Comment">; called when instruction has been parsed</span>
+<span class="lnr"> 63 </span>    ]
+</pre>
+<p>Her beskriver jeg altså hvordan en instruksjon i språket mitt skal se ut. Først forventer jeg ett av symbolene <em>Add</em> og <em>Subtract</em>. Symbolet lagres i variabelen <strong>operation</strong>. Deretter forventer jeg symbolene <em>multiples</em> og <em>of</em>. Så følger en integer som jeg lagrer i <strong>multiplier</strong>, etterfulgt av symbolet <em>below</em>, og til slutt en ny integer som lagres i variabelen <strong>below</strong>.</p>
+<p>Når en instruksjon har blitt matchet kjører jeg prosedyren <strong>do-instruction</strong>, som vil utføre den. </p>
+<h4>Utføre beregningene</h4>
+<p>Når <em>do-instruction</em> blir kalt er altså variablene <strong>operation</strong>, <strong>multiplier</strong> og <strong>below</strong> satt til verdiene som er parset. Jeg kan nå generere tallene og oppdatere <strong>result</strong>-variabelen som ble opprettet tidligere. </p>
+<p>Jeg kjører først en for-løkke for å finne multiplene, som jeg legger inn i en liste jeg kaller <strong>temp</strong>. Deretter bruker jeg fold til å summere dem sammen. Til slutt legger jeg summen til eller trekker den fra <strong>result</strong>, avhengig av verdien av <strong>operation</strong>.</p>
+<pre style="padding-bottom: 7px; background-color: #000000; padding-left: 7px; padding-right: 7px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 7px"><span class="lnr"> 65 </span>   <span class="String"> {</span>
+<span class="lnr"> 66 </span><span class="String">      Uses the result of parsing an instruction to create</span>
+<span class="lnr"> 67 </span><span class="String">      the multiples and modify the result</span>
+<span class="lnr"> 68 </span><span class="String">    }</span>
+<span class="lnr"> 69 </span>    <span class="Identifier">do-instruction</span>: <span class="Identifier">has</span> [<span class="Identifier">temp</span>] [
+<span class="lnr"> 70 </span>      <span class="Identifier">temp</span>: <span class="Statement">copy</span> [] <span class="Comment">; block to contain the multiples</span>
+<span class="lnr"> 71 </span>      <span class="Statement">for</span> <span class="Identifier">x</span> <span class="Identifier">multiplier</span> <span class="Identifier">below</span> <span class="Operator">-</span> <span class="Number">1</span> <span class="Identifier">multiplier</span> [
+<span class="lnr"> 72 </span>        <span class="Identifier">append</span> <span class="Identifier">temp</span> <span class="Identifier">x</span>
+<span class="lnr"> 73 </span>      ]
+<span class="lnr"> 74 </span>      <span class="Comment">; Sum all the multiples into temp..</span>
+<span class="lnr"> 75 </span>      <span class="Identifier">temp</span>: <span class="Identifier">fold</span> <span class="Statement">func</span>[<span class="Identifier">acc</span> <span class="Identifier">x</span>][ <span class="Identifier">acc</span> <span class="Operator">+</span> <span class="Identifier">x</span> ] <span class="Identifier">temp</span>
+<span class="lnr"> 76 </span>      <span class="Comment">; Finally, either add or subtract to/from result </span>
+<span class="lnr"> 77 </span>      <span class="Identifier">result</span>: <span class="Identifier">either</span> <span class="Identifier">operation</span> <span class="Operator">=</span> '<span class="Identifier">Add</span> [
+<span class="lnr"> 78 </span>        <span class="Identifier">result</span> <span class="Operator">+</span> <span class="Identifier">temp</span>
+<span class="lnr"> 79 </span>      ] [
+<span class="lnr"> 80 </span>        <span class="Identifier">result</span> <span class="Operator">-</span> <span class="Identifier">temp</span>
+<span class="lnr"> 81 </span>      ]
+<span class="lnr"> 82 </span>    ]
+</pre>
+<p>Og det var hele implementasjonen. Eller i alle fall alt som er viktig! Det som mangler er at jeg egentlig har wrappet DSL'en inn i et objekt, og så har jeg implementert fold selv, siden Rebol ikke har den funksjonen. <a href="https://gist.github.com/1497179">Den komplette koden kan du se her</a>.</p>
+<p>Om jeg nå ønsket at DSL-instruksjonene skulle leve i sin egen fil, og brukt DSL-implementasjonen til å kjøre DSL-filen – som om DSL'en var et selvstendig språk - så hadde ikke de krevd mer enn et par linjer kode til.</p>
+<h4>Oppsummering</h4>
+<p>Jeg har forsøkt å vise hvor enkelt det kan være å implementere en intern DSL i et språk som legger tilrette for det. Rebol er kanskje det mest egnede språket jeg har vært borti, men Lisp-dialektene er heller ikke langt unna. I språk som har mere syntaks blir DSL'ene ofte ikke så elegante, fordi man ikke kan bryte syntaks-reglene i språket.</p>
+<p>Og grunnen til at jeg velger å avslutte julekalenderen med en DSL er at jeg ønsker å påpeke at språk er noe man faktisk kan lage selv. Det eksisterer mange programmeringsspråk allerede – jeg har bare presentert 23 av dem – men av og til kan det være best å designe et helt nytt et for en spesifikk oppgave.</p>
+<p>Jeg håper du satte pris på julekalenderen min i år, og takker nå for følget. Men jeg håper selvsagt du vil fortsette å ta turen innom bloggen min i det nye året. Om ikke lenge vil jeg poste en større oppsummering over hva jeg har snakket om i desember, hva jeg har lært underveis, og hva jeg vil ta med meg videre.</p>
+<p>God Jul alle sammen!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

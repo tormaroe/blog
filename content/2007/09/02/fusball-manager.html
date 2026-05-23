@@ -1,0 +1,19 @@
+---
+title: Fußball Manager
+link: http://blog.kjempekjekt.com/2007/09/02/fusball-manager/
+layout: post
+date: 2007-09-02 22:03:08Z
+tags:
+  - Diverse prosjekter
+  - Jobb
+  - Webutvikling
+---
+<p>I anledning <a href="http://blog.kjempekjekt.com/2007/08/29/nytt-fussball-bord/">vårt nye fussball bord</a> fikk jeg lyst til å lage et lite verktøy for å rangere spillerne på jobben. Jeg fant et enkelt poeng-system på<a href="http://www.foosball.no/" target="_blank"> www.foosball.no</a>, og i løpet av en ettermiddag pluss litt til lagde jeg en liten web app som lar deg registrere spillere og kamper (single og doble).</p>
+<p align="center"><img id="image248" alt="fussmann1.jpg" src="/uploads/2007/09/fussmann1.jpg" /></p>
+<p>Hver spiller får en score som justeres etterhvert som han spiller kamper. Vinner man mot en spiller som er bedre enn seg får man en større <span style="font-style: italic">boost</span> enn om man vinner over en med lavere score - omtrent som i <a href="http://en.wikipedia.org/wiki/ELO_rating_system" target="_blank">ELO rating systemet</a> i sjakk, bare endel forenklet.</p>
+<p>Og som man skal i slike hobbyprosjekt så fikk jeg testet ut eller trent litt på flere ting; jeg var flink å lage enhetstester og bruke TDD, jeg fikk prøvd noen nye AJAX teknikker, og for en gangs skyld var jeg konsekvent og brukte kun TABLE elementer for å liste data, ikke til selve designet.</p>
+<p align="center"><img id="image249" alt="fussmann2.jpg" src="/uploads/2007/09/fussmann2.jpg" /></p>
+<p>Lagring av data gjorde jeg veldig enkelt - spillerne med spillerdata samt en audit log over alle registreringer og poengjusteringer lagres i to XML filer. Er du interessert i dette verktøyet, enten for å bruke det selv eller for å ta en titt på kildenkoden, så er det bare å si fra så sender jeg en kopi.</p>
+<p align="center"><img id="image250" alt="fussmann3.jpg" src="/uploads/2007/09/fussmann3.jpg" /></p>
+<p>Nå blir det veldig spennende å se hvordan ratingen på jobben utvikler seg. Det nye spillebordet er uvandt for alle sammen, så foreløpig er det velig jevnt. Vi har også lest oss litt opp på det internasjonale regelverket, noe som har ført til at <em>spinning</em> av stengene er ut - enkelte tok det svært tungt :)
+</p>

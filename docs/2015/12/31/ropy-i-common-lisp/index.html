@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Diverse prosjekter,Esoteriske språk">
+
+    <title>Ropy får en tolker i Common Lisp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Ropy får en tolker i Common Lisp</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 31. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          
+            <a href="/tags/esoteriske-språk"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Esoteriske språk</span></a>
+          </p>
+          <p>Jeg har nettopp implementert en ny tolker for mitt esoteriske programmeringspråk <strong>Ropy</strong>. Orginalen ble gjort i Ruby i 2012, men nå finnes den altså også i Common Lisp. Du finner begge implementasjonene i samme <a href="https://github.com/tormaroe/ropy/">repo på Github</a>.</p>
+<p>Dette skal ikke bli en lang blogpost eller noen full gjennomgang - jeg vil bare trekke frem noen små ting som jeg ikke har vist før.</p>
+<p>Btw. så har jeg også opprettet en side for <a href="http://esolangs.org/wiki/Ropy">Ropy på esolangs.org</a>, wikien for esoteriske språk. Det oppfordres til å poste info om egetutviklede språk :)</p>
+<h2>Demo</h2>
+<p>Common_Lisp-folderen i repoen inneholder blant annet filen run.lisp. Om du starter med den.. </p>
+<pre><code class="hljs">$ sbcl <span class="hljs-comment">--load run.lisp</span></code></pre><p>..så vil den laste alle de andre filene, tilby deg å kjøre testene, og til slutt gi deg litt brukerinstruksjoner.</p>
+<p>Når Ropy er lastet kan vi bruke tolkeren interaktivt. Jeg kan kalle <code>parse</code>, som vil returnere et program basert på Ropykildekode:</p>
+<pre><code class="hljs">* (parse &quot;123++&quot;)
+
+<span class="hljs-punctuation">#</span><span class="hljs-keyword">S</span><span class="hljs-params">(<span class="hljs-variable">ROPY</span><span class="hljs-operator">-</span><span class="hljs-variable">STATE</span>:<span class="hljs-variable">PROGRAM</span>
+   :<span class="hljs-variable">STACK</span> <span class="hljs-variable">NIL</span>
+   :<span class="hljs-variable">MEMORY</span> <span class="hljs-variable">NIL</span>
+   :<span class="hljs-variable">TOKENS</span> #2<span class="hljs-keyword">A</span><span class="hljs-params">(<span class="hljs-params">(#\1 #\2 #\3 #\<span class="hljs-operator">+</span> #\<span class="hljs-operator">+</span>)</span>)</span>
+   :<span class="hljs-variable">I</span> 0
+   :<span class="hljs-variable">J</span> 0
+   :<span class="hljs-variable">DONE</span> <span class="hljs-variable">NIL</span>
+   :<span class="hljs-variable">SILENT</span> <span class="hljs-variable">NIL</span>
+   :<span class="hljs-variable">PREVIOUS</span><span class="hljs-operator">-</span><span class="hljs-variable">DIRECTION</span> :<span class="hljs-variable">EAST</span>)</span></code></pre><p>Så kan vi kjøre programmet med <code>execute</code>, som printer ut alle stack-operasjonene underveis, og så returnerer programmets endelige tilstand. <code>*</code> i Common Lisp REPL er en peker til siste evaluerte verdi (resultatet av <code>parse</code> i dette tilfellet).</p>
+<pre><code class="hljs">* (execute *)
+
+1 =&gt; [1,
+2 =&gt; [1,2,
+3 =&gt; [1,2,3,
++ =&gt; [1,5,
++ =&gt; [6,
+
+<span class="hljs-punctuation">#</span><span class="hljs-keyword">S</span><span class="hljs-params">(<span class="hljs-variable">ROPY</span><span class="hljs-operator">-</span><span class="hljs-variable">STATE</span>:<span class="hljs-variable">PROGRAM</span>
+   :<span class="hljs-variable">STACK</span> <span class="hljs-params">(6)</span>
+   :<span class="hljs-variable">MEMORY</span> <span class="hljs-variable">NIL</span>
+   :<span class="hljs-variable">TOKENS</span> #2<span class="hljs-keyword">A</span><span class="hljs-params">(<span class="hljs-params">(#\1 #\2 #\3 #\<span class="hljs-operator">+</span> #\<span class="hljs-operator">+</span>)</span>)</span>
+   :<span class="hljs-variable">I</span> 0
+   :<span class="hljs-variable">J</span> 4
+   :<span class="hljs-variable">DONE</span> <span class="hljs-variable">T</span>
+   :<span class="hljs-variable">SILENT</span> <span class="hljs-variable">NIL</span>
+   :<span class="hljs-variable">PREVIOUS</span><span class="hljs-operator">-</span><span class="hljs-variable">DIRECTION</span> :<span class="hljs-variable">EAST</span>)</span></code></pre><p>Og vi kan be om resultatet:</p>
+<pre><code class="hljs">* (<span class="hljs-literal">result</span> *)
+
+<span class="hljs-number">6</span></code></pre><h2>Structs i Common Lisp</h2>
+<p>Til nå har jeg brukt CLOS-objekter (Common Lisp Object System) når jeg har hatt behov for dataobjekter med ulike properties, og når det ikke har vært nok å bare bruke lister.</p>
+<p>Men Common Lisp har også <em>structs</em>, som er enklere - og som egentlig er et bedre valg om man ikke trenger polimorfisme. I min Ropy-tolker holder jeg all <em>state</em> i en struct som ser slik ut:</p>
+<pre><code class="hljs">(<span class="hljs-keyword">defstruct</span> <span class="hljs-title">program</span>
+  (<span class="hljs-name">stack</span> () <span class="hljs-symbol">:type</span> list)
+  (<span class="hljs-name">memory</span> () <span class="hljs-symbol">:type</span> list)
+  (<span class="hljs-name">tokens</span> <span class="hljs-literal">nil</span> <span class="hljs-symbol">:type</span> (<span class="hljs-name">simple-array</span> character (<span class="hljs-name"><span class="hljs-built_in">*</span></span> *)))
+  (<span class="hljs-name">i</span> <span class="hljs-number">0</span> <span class="hljs-symbol">:type</span> fixnum)
+  (<span class="hljs-name">j</span> <span class="hljs-number">0</span> <span class="hljs-symbol">:type</span> fixnum)
+  done 
+  silent 
+  (<span class="hljs-name">previous-direction</span> <span class="hljs-symbol">:east</span> <span class="hljs-symbol">:type</span> keyword))</code></pre><p><code>program</code> har åtte <em>slots</em>, seks av dem har en default verdi og er typet. Det litt kryptiske uttrykket <code>(simple-array character (* *))</code> representerer et todimensjonalt array av characters, med ukjente dimensjoner.</p>
+<h2>Makroer som definerer funksjoner</h2>
+<p>For å definere operasjonene i Ropy lagde jeg noen makroer. De kompilerer en en funksjon med <code>defun</code>, og legger den samtidig til i et register over operasjoner (<code>*operations*</code>). </p>
+<pre><code class="hljs"><span class="hljs-comment">;;; defop Macros</span>
+<span class="hljs-comment">;;;</span>
+<span class="hljs-comment">;;  This is mostly masturbatory I guess</span>
+<span class="hljs-comment">;;  I just wanted to see how it would turn out.</span>
+
+(<span class="hljs-keyword">defmacro</span> <span class="hljs-title">defop</span> (<span class="hljs-name"><span class="hljs-built_in">name</span></span> token &amp;body body)
+  <span class="hljs-string">&quot;Defines an operation function and registers it in 
+   *operations*. The operation will have access to the
+   program state by the anamorphic variable &#x27;program&#x27;.&quot;</span>
+  `(<span class="hljs-name">progn</span> 
+     (<span class="hljs-name">defun</span> <span class="hljs-punctuation">,</span>name (<span class="hljs-name">program</span>) <span class="hljs-punctuation">,</span>@body)
+     (<span class="hljs-name">push</span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> <span class="hljs-punctuation">,</span>token (<span class="hljs-name">function</span> <span class="hljs-punctuation">,</span>name)) 
+           *operations*)))
+
+(<span class="hljs-keyword">defmacro</span> <span class="hljs-title">defop-push</span> (<span class="hljs-name"><span class="hljs-built_in">name</span></span> token &amp;body body)
+  <span class="hljs-string">&quot;Like defop, but pushes the result of the operation
+   onto the program stack.&quot;</span>
+  `(<span class="hljs-name">defop</span> <span class="hljs-punctuation">,</span>name <span class="hljs-punctuation">,</span>token
+     (<span class="hljs-name">push-value</span> program (<span class="hljs-name">progn</span> <span class="hljs-punctuation">,</span>@body))))
+
+(<span class="hljs-keyword">defmacro</span> <span class="hljs-title">defop-binary</span> (<span class="hljs-name"><span class="hljs-built_in">name</span></span> token &amp;body body)
+  <span class="hljs-string">&quot;Like defop-push, but pops out two elements from the
+   stack which are bound to the anamorphic variables a and b.&quot;</span>
+  `(<span class="hljs-name">defop-push</span> <span class="hljs-punctuation">,</span>name <span class="hljs-punctuation">,</span>token
+     (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">a</span> (<span class="hljs-symbol">:pop</span> program))
+           (<span class="hljs-name">b</span> (<span class="hljs-symbol">:pop</span> program)))
+       <span class="hljs-punctuation">,</span>@body)))</code></pre><p>Dette lar meg definere operasjonene på denne måten:</p>
+<pre><code class="hljs">(<span class="hljs-name">defop</span> <span class="hljs-symbol">:pop</span> #<span class="hljs-character">\?</span> (<span class="hljs-name"><span class="hljs-built_in">pop</span></span> (<span class="hljs-name">program-stack</span> program)))
+
+(<span class="hljs-name">defop-binary</span> <span class="hljs-symbol">:add</span> #<span class="hljs-character">\+</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> a b))
+
+(<span class="hljs-name">defop-binary</span> <span class="hljs-symbol">:subtract</span> #<span class="hljs-character">\-</span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> a b))
+
+(<span class="hljs-name">defop</span> <span class="hljs-symbol">:duplicate</span> #<span class="hljs-character">\&gt;</span> 
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">x</span> (<span class="hljs-symbol">:pop</span> program)))
+    (<span class="hljs-name">push-value</span> program x)
+    (<span class="hljs-name">push-value</span> program x)))
+
+(<span class="hljs-name">defop-push</span> <span class="hljs-symbol">:stringify-stack</span> #<span class="hljs-character">\&quot;</span> 
+  (<span class="hljs-name"><span class="hljs-built_in">format</span></span> <span class="hljs-literal">nil</span> <span class="hljs-string">&quot;~{~a~}&quot;</span> 
+          (<span class="hljs-name">mapcar</span> #&#x27;code-char 
+                  (<span class="hljs-name">program-stack</span> program))))</code></pre><h2>Ny Common Lisp-bok på nyåret</h2>
+<p>Til slutt et tips.</p>
+<p>Edi Weitz, utvikleren bak blant annet cl-ppcre og hunchentoot, har jobbet med en ny bok som vil bli klar i begynnelsen av 2016: <em><a href="http://weitz.de/cl-recipes/">Common Lisp Recipes</a></em>.</p>
+<p>Boken vil være på rundt 500 sider, og inneholde tips og oppskrifter relatert til webprogrammering, databaser, grafiske brukergrensesnitt, interop med andre språk, multiprosessering, mobilutvikling, debugging, optimalisering, og mer.</p>
+<p>Denne boken skal bestilles!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

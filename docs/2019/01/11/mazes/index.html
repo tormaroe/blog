@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Go">
+
+    <title>Generere labyrinter (i Go)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Generere labyrinter (i Go)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 11. januar 2019</small> 
+            <a href="/tags/go"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Go</span></a>
+          </p>
+          <p style="text-align:center">
+<img src="/uploads/2019/01/sidewinder.png" alt="Sidewinder maze PNG" />
+</p>
+
+<p>Jeg har akkurat begynt å lese boken <a href="https://pragprog.com/book/jbmaze/mazes-for-programmers"><em>Mazes for Programmers</em></a> fra The Pragmatic Bookshelf, skrevet av Jamis Buck. Og dette er en skikkelig nerdebok, et dypdykk i algoritmer og teknikker for å generere labyrinter.</p>
+<p>Eksemplene i boken bruker Ruby, men språket <em>jeg</em> ønsker å bruke for tiden er Go. I kapittel 2 presenterer Jamis et rammeverk for å representere labyrinter, to enkle algoritmer for generering, samt kode for å skrive ut labyrinter i ASCII og for å tegne dem til PNG. Go-programmet jeg presenterer her inneholder en re-implementering av alt dette.</p>
+<p>Merk at jeg ikke har mye erfaring med Go - jeg har bare lekt meg med det i et par måneder. Men det er et ganske enkelt språk å lære seg, så jeg er ganske komfortabel med at koden ikke er så helt ulik det en mer erfaren Go-utvikler kunne ha produsert.</p>
+<p>Så la oss starte...</p>
+<pre><code class="hljs"><span class="hljs-keyword">package</span> <span class="hljs-title">main</span>
+
+import (
+  <span class="hljs-string">&quot;fmt&quot;</span>
+  <span class="hljs-string">&quot;image/color&quot;</span>
+  <span class="hljs-string">&quot;math/rand&quot;</span>
+  <span class="hljs-string">&quot;strings&quot;</span>
+  <span class="hljs-string">&quot;time&quot;</span>
+
+  <span class="hljs-string">&quot;github.com/fogleman/gg&quot;</span>
+)</code></pre><p>Jeg presenterer koden bit-for-bit fra start (pakkedeklarasjon) til slutt (main). Om du putter all koden i en .go-fil (f.eks. maze.go) så kan du kompilere og kjøre programmet med:</p>
+<pre><code class="hljs">$ <span class="hljs-built_in">go</span> <span class="hljs-built_in">get</span> &amp;&amp; <span class="hljs-built_in">go</span> run maze.<span class="hljs-built_in">go</span></code></pre><p>.. sålenge du har installert Go da. Det må du finne ut av selv.</p>
+<p>Om du ønsker mer detaljert forklaring på hvorfor labyrint-ting er løst som de er så må du kjøpe boken :)</p>
+<h2>En grid-representasjon</h2>
+<p>Den første biten av programmet er en generisk grid-representasjon av en labyrint. Den består av de to struktene <code>cell</code> og <code>grid</code> med tilhørende metoder.</p>
+<p>Her er <code>cell</code>, den minste enheten i en labyrint:</p>
+<pre><code class="hljs"><span class="hljs-keyword">type</span> cell <span class="hljs-keyword">struct</span> {
+    row    <span class="hljs-type">int</span>
+    column <span class="hljs-type">int</span>
+    north  *cell
+    south  *cell
+    east   *cell
+    west   *cell
+    links  <span class="hljs-keyword">map</span>[*cell]<span class="hljs-type">bool</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">newCell</span><span class="hljs-params">(row, column <span class="hljs-type">int</span>)</span></span> *cell {
+    <span class="hljs-keyword">return</span> &amp;cell{row: row, column: column, links: <span class="hljs-built_in">make</span>(<span class="hljs-keyword">map</span>[*cell]<span class="hljs-type">bool</span>)}
+}
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *cell)</span></span> link(other *cell) {
+    c.links[other] = <span class="hljs-literal">true</span>
+    other.links[c] = <span class="hljs-literal">true</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *cell)</span></span> unlink(other *cell) {
+    <span class="hljs-built_in">delete</span>(c.links, other)
+    <span class="hljs-built_in">delete</span>(other.links, c)
+}
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *cell)</span></span> isLinked(other *cell) <span class="hljs-type">bool</span> {
+    _, ok := c.links[other]
+    <span class="hljs-keyword">return</span> ok
+}
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *cell)</span></span> linkedCells() (result []*cell) {
+    result = <span class="hljs-built_in">make</span>([]*cell, <span class="hljs-built_in">len</span>(c.links))
+    i := <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> k := <span class="hljs-keyword">range</span> c.links {
+        result[i] = k
+        i++
+    }
+    <span class="hljs-keyword">return</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(c *cell)</span></span> neighbors() (list []*cell) {
+    list = <span class="hljs-built_in">make</span>([]*cell, <span class="hljs-number">0</span>, <span class="hljs-number">4</span>)
+    <span class="hljs-keyword">if</span> c.east != <span class="hljs-literal">nil</span> {
+        list = <span class="hljs-built_in">append</span>(list, c.east)
+    }
+    <span class="hljs-keyword">if</span> c.west != <span class="hljs-literal">nil</span> {
+        list = <span class="hljs-built_in">append</span>(list, c.west)
+    }
+    <span class="hljs-keyword">if</span> c.north != <span class="hljs-literal">nil</span> {
+        list = <span class="hljs-built_in">append</span>(list, c.north)
+    }
+    <span class="hljs-keyword">if</span> c.south != <span class="hljs-literal">nil</span> {
+        list = <span class="hljs-built_in">append</span>(list, c.south)
+    }
+    <span class="hljs-keyword">return</span>
+}</code></pre><p>Og her er <code>grid</code>:</p>
+<pre><code class="hljs"><span class="hljs-keyword">type</span> grid struct {
+    <span class="hljs-keyword">rows</span>    <span class="hljs-type">int</span>
+    <span class="hljs-keyword">columns</span> <span class="hljs-type">int</span>
+    grid    [][]*cell
+}
+
+func newGrid(<span class="hljs-keyword">rows</span>, <span class="hljs-keyword">columns</span> <span class="hljs-type">int</span>) (g grid) {
+    g = grid{<span class="hljs-keyword">rows</span>: <span class="hljs-keyword">rows</span>, <span class="hljs-keyword">columns</span>: <span class="hljs-keyword">columns</span>}
+    g.grid = make([][]*cell, <span class="hljs-keyword">rows</span>)
+    <span class="hljs-keyword">for</span> i := range g.grid {
+        g.grid[i] = make([]*cell, <span class="hljs-keyword">columns</span>)
+        <span class="hljs-keyword">for</span> j := <span class="hljs-number">0</span>; j &lt; <span class="hljs-keyword">columns</span>; j++ {
+            g.grid[i][j] = newCell(i, j)
+        }
+    }
+    g.eachCell(func(c *cell) {
+        <span class="hljs-keyword">row</span> := c.<span class="hljs-keyword">row</span>
+        col := c.<span class="hljs-keyword">column</span>
+        c.north = g.cellAt(<span class="hljs-keyword">row</span><span class="hljs-number">-1</span>, col)
+        c.south = g.cellAt(<span class="hljs-keyword">row</span>+<span class="hljs-number">1</span>, col)
+        c.west = g.cellAt(<span class="hljs-keyword">row</span>, col<span class="hljs-number">-1</span>)
+        c.east = g.cellAt(<span class="hljs-keyword">row</span>, col+<span class="hljs-number">1</span>)
+    })
+    <span class="hljs-keyword">return</span>
+}
+
+func (g *grid) cellAt(<span class="hljs-keyword">row</span>, <span class="hljs-keyword">column</span> <span class="hljs-type">int</span>) *cell {
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">row</span> &gt;= <span class="hljs-number">0</span> &amp;&amp; <span class="hljs-keyword">row</span> &lt; g.<span class="hljs-keyword">rows</span> {
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">column</span> &gt;= <span class="hljs-number">0</span> &amp;&amp; <span class="hljs-keyword">column</span> &lt; len(g.grid[<span class="hljs-keyword">row</span>]) {
+            <span class="hljs-keyword">return</span> g.grid[<span class="hljs-keyword">row</span>][<span class="hljs-keyword">column</span>]
+        }
+    }
+    <span class="hljs-keyword">return</span> nil
+}
+
+func (g *grid) randomCell() *cell {
+    <span class="hljs-keyword">row</span> := rand.Intn(g.<span class="hljs-keyword">rows</span>)
+    <span class="hljs-keyword">column</span> := rand.Intn(len(g.grid[<span class="hljs-keyword">row</span>]))
+    <span class="hljs-keyword">return</span> g.cellAt(<span class="hljs-keyword">row</span>, <span class="hljs-keyword">column</span>)
+}
+
+func (g grid) size() <span class="hljs-type">int</span> {
+    <span class="hljs-keyword">return</span> g.<span class="hljs-keyword">rows</span> * g.<span class="hljs-keyword">columns</span>
+}</code></pre><p>Ruby-koden i boken inneholder også noen høyerenivå-funksjoner får å iterere rader og celler i griddet. Denne teknikken er nok mer ideomatisk i Ruby enn i Go, men jeg implementerte det så tett opp mot orginalen som jeg klarte. Så her er mine to iteratorer:</p>
+<pre><code class="hljs">func (<span class="hljs-selector-tag">g</span> *<span class="hljs-attribute">grid</span>) <span class="hljs-built_in">eachRow</span>(fn <span class="hljs-built_in">func</span>([]*cell)) {
+    <span class="hljs-keyword">for</span> _, row := range <span class="hljs-selector-tag">g</span><span class="hljs-selector-class">.grid</span> {
+        <span class="hljs-built_in">fn</span>(row)
+    }
+}
+
+func (<span class="hljs-selector-tag">g</span> *<span class="hljs-attribute">grid</span>) <span class="hljs-built_in">eachCell</span>(fn <span class="hljs-built_in">func</span>(*cell)) {
+    <span class="hljs-selector-tag">g</span><span class="hljs-selector-class">.eachRow</span>(<span class="hljs-built_in">func</span>(row <span class="hljs-selector-attr">[]</span>*cell) {
+        <span class="hljs-keyword">for</span> _, sell := range row {
+            <span class="hljs-built_in">fn</span>(sell)
+        }
+    })
+}</code></pre><h2>Labyrint som ASCII art</h2>
+<p>For å konvertere en <code>grid</code> strukt til en streng lager vi en <code>String() string</code>. Det er det samme som å implementere en <code>to_s</code> metode på et objekt i Ruby, eller som å implementere <code>override string ToString()</code> i C#.</p>
+<p>Metoden er også det første eksempelet på hvordan jeg bruker iteratoren <code>eachRow</code> som vi nettopp lagde.</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(g grid)</span></span> String() <span class="hljs-type">string</span> {
+    <span class="hljs-keyword">var</span> sb strings.Builder
+    sb.WriteString(<span class="hljs-string">&quot;+&quot;</span>)
+    <span class="hljs-keyword">for</span> i := <span class="hljs-number">0</span>; i &lt; g.columns; i++ {
+        sb.WriteString(<span class="hljs-string">&quot;---+&quot;</span>)
+    }
+    sb.WriteString(<span class="hljs-string">&quot;\n&quot;</span>)
+
+    g.eachRow(<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(row []*cell)</span></span> {
+        top := <span class="hljs-string">&quot;|&quot;</span>
+        bottom := <span class="hljs-string">&quot;+&quot;</span>
+
+        <span class="hljs-keyword">for</span> _, c := <span class="hljs-keyword">range</span> row {
+            <span class="hljs-keyword">if</span> c == <span class="hljs-literal">nil</span> {
+                c = newCell(<span class="hljs-number">-1</span>, <span class="hljs-number">-1</span>)
+            }
+
+            body := <span class="hljs-string">&quot;   &quot;</span>
+            eastBoundary := <span class="hljs-string">&quot;|&quot;</span>
+            <span class="hljs-keyword">if</span> c.isLinked(c.east) {
+                eastBoundary = <span class="hljs-string">&quot; &quot;</span>
+            }
+            top += body + eastBoundary
+
+            southBoundary := <span class="hljs-string">&quot;---&quot;</span>
+            <span class="hljs-keyword">if</span> c.isLinked(c.south) {
+                southBoundary = <span class="hljs-string">&quot;   &quot;</span>
+            }
+            corder := <span class="hljs-string">&quot;+&quot;</span>
+            bottom += southBoundary + corder
+        }
+        sb.WriteString(top)
+        sb.WriteString(<span class="hljs-string">&quot;\n&quot;</span>)
+        sb.WriteString(bottom)
+        sb.WriteString(<span class="hljs-string">&quot;\n&quot;</span>)
+    })
+
+    <span class="hljs-keyword">return</span> sb.String()
+}</code></pre><p>Nå har vi kodet nok til at vi kan skrive en liten main-metode og printe et grid:</p>
+<pre><code class="hljs">func <span class="hljs-selector-tag">main</span>() {
+    <span class="hljs-attribute">grid</span> := <span class="hljs-built_in">newGrid</span>(<span class="hljs-number">4</span>, <span class="hljs-number">4</span>)
+    fmt.<span class="hljs-built_in">Print</span>(grid)
+}</code></pre><p>Om vi nå kjører programmet skal vi se dette:</p>
+<pre><code class="hljs"><span class="hljs-code">+---+</span>---<span class="hljs-code">+---+</span>---+
+<span class="hljs-section">|   |   |   |   |
++---+---+---+---+</span>
+<span class="hljs-section">|   |   |   |   |
++---+---+---+---+</span>
+<span class="hljs-section">|   |   |   |   |
++---+---+---+---+</span>
+<span class="hljs-section">|   |   |   |   |
++---+---+---+---+</span></code></pre><h2>Algoritme: Binary Tree</h2>
+<p>Boken presenterer <em>Binary Tree</em> som den absolutt enkleste algoritmen for å generere en labyrint. Nå når vi har gjort en grundig jobb med å representere og printe ut labyrinter så er selve genereringen ganske enkel. Her er min implementasjon av Binary Tree:</p>
+<pre><code class="hljs">func (<span class="hljs-selector-tag">g</span> *<span class="hljs-attribute">grid</span>) <span class="hljs-built_in">binaryTreeMaze</span>() {
+    <span class="hljs-selector-tag">g</span><span class="hljs-selector-class">.eachCell</span>(<span class="hljs-built_in">func</span>(c *cell) {
+        neighbors := <span class="hljs-built_in">make</span>(<span class="hljs-selector-attr">[]</span>*cell, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>)
+        <span class="hljs-keyword">if</span> c<span class="hljs-selector-class">.north</span> != nil {
+            neighbors = <span class="hljs-built_in">append</span>(neighbors, c.north)
+        }
+        <span class="hljs-keyword">if</span> c<span class="hljs-selector-class">.east</span> != nil {
+            neighbors = <span class="hljs-built_in">append</span>(neighbors, c.east)
+        }
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(neighbors) &gt; <span class="hljs-number">0</span> {
+            index := rand<span class="hljs-selector-class">.Intn</span>(<span class="hljs-built_in">len</span>(neighbors))
+            neighbor := neighbors<span class="hljs-selector-attr">[index]</span>
+            c<span class="hljs-selector-class">.link</span>(neighbor)
+        }
+    })
+}</code></pre><p>Om du nå endrer main til dette:</p>
+<pre><code class="hljs">func <span class="hljs-selector-tag">main</span>() {
+    rand<span class="hljs-selector-class">.Seed</span>(<span class="hljs-selector-tag">time</span><span class="hljs-selector-class">.Now</span>()<span class="hljs-selector-class">.UnixNano</span>())
+    <span class="hljs-attribute">grid</span> := <span class="hljs-built_in">newGrid</span>(<span class="hljs-number">4</span>, <span class="hljs-number">4</span>)
+    grid.<span class="hljs-built_in">binaryTreeMaze</span>()
+    fmt.<span class="hljs-built_in">Print</span>(grid)
+}</code></pre><p>.. så vil du få output som ligner på dette:</p>
+<pre><code class="hljs">+---+---+---+---+
+|               |
++---+---+   +   +
+|           |   |
++---+   +   +   +
+|       |   |   |
++---+---+   +   +
+|           |   |
++---+---+---+---+</code></pre><p>Labyrinter generert med Binary Tree har alltid lange korridorer langs den nordlige og østlige kanten. Den neste algoritmen er en forbedring...</p>
+<h2>Algoritme: Sidewinder</h2>
+<p>La oss første lage et par hjelpefunksjoner for tilfeldighet. <code>sample()</code> gir deg et tilfeldig element fra et array / en slice, og <code>coinflip()</code> gir deg en tilfeldig boolean.</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">sample</span><span class="hljs-params">(cells []*cell)</span></span> *cell {
+    <span class="hljs-keyword">return</span> cells[rand.Intn(<span class="hljs-built_in">len</span>(cells))]
+}
+
+<span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">coinflip</span><span class="hljs-params">()</span></span> <span class="hljs-type">bool</span> {
+    <span class="hljs-keyword">return</span> rand.Intn(<span class="hljs-number">2</span>) == <span class="hljs-number">0</span>
+}</code></pre><p>Og her er implementasjonen av <em>Sidewinder</em>-algoritmen:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(g *grid)</span></span> sidewinderMaze() {
+    g.eachRow(<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(row []*cell)</span></span> {
+        run := <span class="hljs-built_in">make</span>([]*cell, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(row))
+
+        <span class="hljs-keyword">for</span> _, c := <span class="hljs-keyword">range</span> row {
+            run = <span class="hljs-built_in">append</span>(run, c)
+            atEastBound := c.east == <span class="hljs-literal">nil</span>
+            atNorthBound := c.north == <span class="hljs-literal">nil</span>
+            shouldClose := atEastBound || (!atNorthBound &amp;&amp; coinflip())
+
+            <span class="hljs-keyword">if</span> shouldClose {
+                member := sample(run)
+                <span class="hljs-keyword">if</span> member.north != <span class="hljs-literal">nil</span> {
+                    member.link(member.north)
+                }
+                run = <span class="hljs-built_in">make</span>([]*cell, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(row))
+            } <span class="hljs-keyword">else</span> {
+                c.link(c.east)
+            }
+        }
+    })
+}</code></pre><p>La oss sammenligne output fra de to algoritmene ved å endre main til dette:</p>
+<pre><code class="hljs">func <span class="hljs-selector-tag">main</span>() {
+    fmt<span class="hljs-selector-class">.Println</span>(&quot;\nBinary Tree Maze:&quot;)
+    rand<span class="hljs-selector-class">.Seed</span>(<span class="hljs-number">420</span>)
+    <span class="hljs-attribute">grid</span> := <span class="hljs-built_in">newGrid</span>(<span class="hljs-number">7</span>, <span class="hljs-number">10</span>)
+    grid.<span class="hljs-built_in">binaryTreeMaze</span>()
+    fmt.<span class="hljs-built_in">Print</span>(grid)
+
+    fmt.<span class="hljs-built_in">Println</span>(<span class="hljs-string">&quot;\nSidewinder Maze:&quot;</span>)
+    rand.<span class="hljs-built_in">Seed</span>(<span class="hljs-number">420</span>)
+    grid = <span class="hljs-built_in">newGrid</span>(<span class="hljs-number">7</span>, <span class="hljs-number">10</span>)
+    grid.<span class="hljs-built_in">sidewinderMaze</span>()
+    fmt.<span class="hljs-built_in">Print</span>(grid)
+}</code></pre><p>Siden jeg nå har gitt random et konstant seed kan jeg med sikkerhet si at output blir dette:</p>
+<pre><code class="hljs"><span class="hljs-type">Binary</span> <span class="hljs-type">Tree</span> <span class="hljs-type">Maze</span>:
++---+---+---+---+---+---+---+---+---+---+
+|                                       |
++   +---+---+---+   +   +   +   +---+   +
+|   |               |   |   |   |       |
++---+   +   +---+---+   +---+---+   +   +
+|       |   |           |           |   |
++   +   +---+---+   +   +---+---+   +   +
+|   |   |           |   |           |   |
++---+---+   +---+---+---+---+---+---+   +
+|           |                           |
++---+   +---+   +---+---+   +---+---+   +
+|       |       |           |           |
++---+   +   +   +   +---+---+   +---+   +
+|       |   |   |   |           |       |
++---+---+---+---+---+---+---+---+---+---+
+
+<span class="hljs-type">Sidewinder</span> <span class="hljs-type">Maze</span>:
++---+---+---+---+---+---+---+---+---+---+
+|                                       |
++   +   +   +   +   +   +---+---+   +   +
+|   |   |   |   |   |           |   |   |
++   +   +---+   +---+   +---+   +---+   +
+|   |   |           |       |   |       |
++   +---+---+   +---+   +---+   +---+---+
+|   |           |           |           |
++   +---+---+   +   +---+   +---+---+   +
+|           |   |   |       |           |
++   +   +   +---+---+   +---+   +   +   +
+|   |   |           |   |       |   |   |
++   +   +---+---+---+---+   +---+---+---+
+|   |   |                               |
++---+---+---+---+---+---+---+---+---+---+</code></pre><p>Sidewinder gir fortsatt en lang korridor langs den nordlige kanten, men ikke langs øst.</p>
+<h2>Tegne labyrinter til PNG</h2>
+<p>For å generere bilder gjorde jeg et raskt søk etter et enkelt tegnebiblotek i Go, og fant <a href="https://github.com/fogleman/gg">fogleman/gg</a>. Teknikken for å tegne labyrinten er nokså lik den som ble brukt for å generere ASCII-representasjonen.</p>
+<p>Her er en funksjon som skriver ut en <code>grid</code> struct i svart og lysegrønn til en vilkårlig path:</p>
+<pre><code class="hljs">func (g grid) Png(path string) error {
+    <span class="hljs-attribute">cellSize</span> := 10
+    imgWidth := cellSize * g<span class="hljs-variable">.columns</span>
+    imgHeight := cellSize * g<span class="hljs-variable">.rows</span>
+    dc := gg<span class="hljs-variable">.NewContext</span>(imgWidth+4, imgHeight+4)
+
+    dc<span class="hljs-variable">.SetColor</span>(color<span class="hljs-variable">.Black</span>)
+    dc<span class="hljs-variable">.DrawRectangle</span>(0.0, 0.0, float64(imgWidth), float64(imgHeight))
+    dc<span class="hljs-variable">.Fill</span>()
+
+    dc<span class="hljs-variable">.SetLineWidth</span>(2.0)
+    dc<span class="hljs-variable">.SetRGB</span>255(66, 244, 116)
+
+    g<span class="hljs-variable">.eachCell</span>(func(c *cell) {
+        x1 := float64(c<span class="hljs-variable">.column</span>*cellSize + 1)
+        y1 := float64(c<span class="hljs-variable">.row</span>*cellSize + 1)
+        x2 := float64((c<span class="hljs-variable">.column</span>+1)*cellSize + 1)
+        y2 := float64((c<span class="hljs-variable">.row</span>+1)*cellSize + 1)
+
+        if c<span class="hljs-variable">.north</span> == nil {
+            dc<span class="hljs-variable">.DrawLine</span>(x1, y1, x2, y1)
+            dc<span class="hljs-variable">.Stroke</span>()
+        }
+        if c<span class="hljs-variable">.west</span> == nil {
+            dc<span class="hljs-variable">.DrawLine</span>(x1, y1, x1, y2)
+            dc<span class="hljs-variable">.Stroke</span>()
+        }
+        if !c<span class="hljs-variable">.isLinked</span>(c<span class="hljs-variable">.east</span>) {
+            dc<span class="hljs-variable">.DrawLine</span>(x2, y1, x2, y2)
+            dc<span class="hljs-variable">.Stroke</span>()
+        }
+        if !c<span class="hljs-variable">.isLinked</span>(c<span class="hljs-variable">.south</span>) {
+            dc<span class="hljs-variable">.DrawLine</span>(x1, y2, x2, y2)
+            dc<span class="hljs-variable">.Stroke</span>()
+        }
+    })
+
+    return dc<span class="hljs-variable">.SavePNG</span>(path)
+}</code></pre><p>Så kan vi bruke den i main:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> {
+    rand.Seed(time.Now().UnixNano())
+    path := <span class="hljs-string">&quot;out.png&quot;</span>
+    fmt.Println(<span class="hljs-string">&quot;Saving 15x60 Sidewinder maze to &quot;</span> + path)
+    grid := newGrid(<span class="hljs-number">15</span>, <span class="hljs-number">60</span>)
+    grid.sidewinderMaze()
+    <span class="hljs-keyword">if</span> err := grid.Png(path); err != <span class="hljs-literal">nil</span> {
+        <span class="hljs-built_in">panic</span>(err)
+    }
+}</code></pre><p>.. og få generert et bilde som dette:</p>
+<p style="text-align:center">
+<img src="/uploads/2019/01/sidewinder.png" alt="Sidewinder maze PNG" />
+</p>
+
+<h2>Oppsummering</h2>
+<p><a href="https://pragprog.com/book/jbmaze/mazes-for-programmers"><em>Mazes for Programmers</em></a> virker som en fasinerende og inspirerende bok med praktiske eksempler som gir meg lyst til å kode. Og i forhold til Go så må jeg innrømme at jeg begynner å bli glad i språket, på tross av alle reservasjoner jeg har hatt mot det tidligere. I likhet med labyrint-boken er programmeringsspråket pragmatisk, og jeg klarte enkelt å oversette denne koden fra Ruby <em>nesten</em> helt uten å gjøre noen feil. </p>
+<p>Jeg gleder meg til både å fortsette å lese og lære om labyrinter og til å kode mer i Go!</p>
+<p>PS: Koden fra denne blogposten er tilgjengelig <a href="https://gist.github.com/tormaroe/78f7f784e0801ca0281c3335bb98936d">som en gist her</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

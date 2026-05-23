@@ -1,0 +1,106 @@
+---
+title: Actor Model i F# ved hjelp av MailboxProcessor
+link: http://blog.kjempekjekt.com/2013/02/16/actor-model-i-f-ved-hjelp-av-mailboxprocessor/
+layout: post
+date: 2013-02-16 19:09:25Z
+tags:
+  - F#
+  - Polyglot
+  - Actor model
+  - Samtidighet
+---
+<p>Jeg fortsetter å eksperimentere med F#, og nå går vi over til noe litt mere avansert. <strong><code>MailboxProcessor</code></strong> er en klasse man finner i modulen Microsoft.FSharp.Control. Den er en slags agent som prosesserer meldinger asynkront. Den har en meldingskø som mange kan skrive til, men kun MailboxProcessor-agenten kan lese fra den.</p> <p>Dette minner veldig om <strong>Actor Model</strong>, som jeg har eksperimentert med blant annet i Erlang tidligere. Se <a href="http://blog.kjempekjekt.com/2010/04/21/en-introduksjon-til-erlang/">En introduksjon til Erlang</a> og&nbsp; <a href="http://blog.kjempekjekt.com/2010/09/12/ping-ring-del-5-erlang/">Ping Ring del 5</a> for mer info – begge fra 2010.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="Actors" border="0" alt="Actors" src="/uploads/2013/02/Actors.png" width="510" height="307"></p> <p>I denne artikkelen vil jeg gi et grunnleggende eksempel på hvordan Actors fungerer i F#. Jeg vil lage starten på en asynkron kalkulator, og så bruke den til å plusse sammen en rekke tall.</p> <h2>En liten debug-funksjon</h2> <p>Når jeg skal illustrere hvordan asynkron kode fungerer kan det være greit å printe ut litt til konsollet, slik at man kan se hvilken rekkefølge ting skjer i. Derfor lager jeg en funksjon jeg kaller <code>dbg</code> som skriver ut en streng sammen med et timestamp (med millisekund-presisjon).</p><pre>open System
+open Microsoft.FSharp.Control
+
+let dbg msg =
+    printfn "%s %s" 
+        (DateTime.Now.ToString "HH:mm:ss,fff") 
+        msg</pre>
+<p>De to første linjene importerer namespacene jeg trenger i programmet. Hvis jeg nå kaller funksjonen noen ganger:</p><pre>dbg "test 1"
+dbg "test 2"
+dbg "test 3"
+dbg "test 4"</pre>
+<p>Vil jeg få output som dette:</p><pre style="background-color: lightyellow">08:32:30,834 test 1
+08:32:30,835 test 2
+08:32:30,835 test 3
+08:32:30,835 test 4</pre>
+<p><strong>Et tips:</strong> Jeg koder i F# i Visual Studio. Men jeg kompilerer ikke, og kjører ikke programmet med F5 som jeg ville gjort i C#. I stedet har jeg åpnet et vindu som kalles F# Interactive, og hvis jeg markerer litt kode i editoren og trykker Alt+ENTER vil koden eksekveres og resultatet vises i det vinduet.</p>
+<h2>En Actor-basert kalkulator</h2>
+<p>En actor skal som sagt prosessere meldinger. F# er sterkt typet, så jeg trenger en meldingstype. Jeg bruker en <a href="http://msdn.microsoft.com/en-us/library/dd233226.aspx">Discriminated Union</a> til det i dette tilfellet. Her sier jeg at en melding kan være enten en pluss-operasjon med et tilhørende tall, eller en get-operasjon for å lese ut verdien til kalkulatoren. Get-operasjonen sin verdi er en <code>AsyncReplyChannel&lt;int&gt;</code>. Dette er et objekt som kan brukes til å sende en melding tilbake fra actoren til den som sendte Get-meldingen.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="AsyncReplyChannel" border="0" alt="AsyncReplyChannel" src="/uploads/2013/02/AsyncReplyChannel.png" width="478" height="247"></p>
+<p>Her definerer jeg meldingstypene:</p><pre>type Message =
+    | Add of int 
+    | Get of AsyncReplyChannel&lt;int&gt;</pre>
+<p>Skulle dette vært en orntlig kalkulator hadde jeg lagt til meldinger for å gange, dele og trekke fra også, men <code>Add</code> er godt nok for dette eksempelet. </p>
+<p>Og nå følger opprettelsen av actoren. Jeg oppretter en instans av <code>MailboxProcessor</code>, og sender inn en anonym metode. I den oppretter jeg en rekursiv funksjon som jeg kaller <code>loop</code>, og så kaller jeg den. Argumentet til loop er i dette tilfellet minnet til kalkulatoren, som i utgangspunktet er tallet 0.</p><pre>let asyncCalculator = new MailboxProcessor&lt;Message&gt;(fun inbox -&gt;
+    let rec loop state =
+        async { let! msg = inbox.Receive()
+                match msg with
+                | Add x -&gt;
+                    sprintf "Actor adding %d" x |&gt; dbg 
+                    return! loop (state + x)
+                | Get replyChannel -&gt;
+                    replyChannel.Reply state
+                    return! loop state }
+    loop 0)</pre>
+<p>Det første loop gjør er å forsøke å motta en melding fra mailboksen sin. Hvis mailboksen er tom vil dette kallet blokkere inntil det kommer en melding. Deretter avgjør loop hvilken type melding det er jeg har mottat, utfører det som skal gjøres, og kaller seg selv.</p>
+<p>loop bruker noe vi kaller <a href="http://msdn.microsoft.com/en-us/library/dd233250.aspx">en asynkron blokk</a> (eller <em>asynkron workflow</em>): <code>async { .. }</code>. Blokken er en <a href="http://msdn.microsoft.com/en-us/library/dd233182.aspx">computation expression</a>, og har jeg forstått det riktig så inneholder den det Haskel-utviklere kaller en <a href="http://en.wikipedia.org/wiki/Monad_(functional_programming)">monade</a>. Men du trenger ikke nødvendigvis forstå monader (en nesten umulig oppgave) for å bruke dem. Så vi kjører videre..</p>
+<h2>Sende meldinger til kalkulatoren</h2>
+<p>I kodesnutten nedenfor starter jeg først actoren. Deretter kjører jeg en løkke fra 1 til 10 og sender Add-meldinger ved hjelp av kalkulatorens <code>Post</code>-metode. Til slutt bruker jeg <code>PostAndReply</code> for å sende en Get-melding og vente på svaret. Siste linje skriver ut svaret.</p><pre>asyncCalculator.Start()
+
+for n in [1..10] do
+    Add n |&gt; asyncCalculator.Post
+
+let result = asyncCalculator.PostAndReply(fun replyChannel -&gt;
+    dbg "Getting result"
+    Get (replyChannel))
+
+sprintf "Result is %d" result |&gt; dbg</pre>
+<p>Når jeg kjører denne koden får jeg følgende output i F# Interactive-vinduet:</p><pre style="background-color: lightyellow">08:33:14,972 Getting result
+08:33:14,977 Actor adding 1
+08:33:14,977 Actor adding 2
+08:33:14,977 Actor adding 3
+08:33:14,978 Actor adding 4
+08:33:14,978 Actor adding 5
+08:33:14,978 Actor adding 6
+08:33:14,978 Actor adding 7
+08:33:14,978 Actor adding 8
+08:33:14,979 Actor adding 9
+08:33:14,979 Actor adding 10
+08:33:14,979 Result is 55</pre>
+<p>Her ser du to ting: For det første så virker det som om actoren behandler meldingene i "riktig" rekkefølge. MailboxProcessor behandler meldingene sine synkront, og i den rekkefølgen de ankommer i køen. Og for det andre ser du at kalkulatore som forventet <em>er</em> asynkron, siden den ikke kom igang med å behandle meldingene før siste melding ble sendt ("Getting result" ble skrevet ut før actoren begynte å "adde".</p>
+<h2>Asynkron "getter"</h2>
+<p>I koden over blokkerer jeg hovedtråden mens jeg venter på svar fra Get-meldingen. Det trenger jeg ikke å gjøre. I stedet for å bruke PostAndReply kan jeg bruke en annen variant som heter <code>PostAndAsyncReply</code>. Da må jeg sende Get-meldingen og vente på svaret i en async-blokk.</p>
+<p>Slik ser det ut:</p><pre>let asyncGetter =
+    async {
+        let! reply = asyncCalculator.PostAndAsyncReply(fun channel -&gt;
+            dbg "Getting result async"
+            Get (channel))
+        sprintf "Result is %d" reply |&gt; dbg }
+
+
+for n in [1..10] do
+    Add n |&gt; asyncCalculator.Post
+
+Async.Start (asyncGetter)
+
+dbg "Main thread done!"</pre>
+<p>Og da fikk jeg en litt mere spennende output:</p><pre style="background-color: lightyellow">08:45:37,670 Actor adding 1
+08:45:37,670 Actor adding 2
+08:45:37,670 Actor adding 3
+08:45:37,670 Main thread done!
+08:45:37,671 Actor adding 4
+08:45:37,671 Actor adding 5
+08:45:37,671 Actor adding 6
+08:45:37,671 Actor adding 7
+08:45:37,672 Getting result async
+08:45:37,672 Actor adding 8
+08:45:37,672 Actor adding 9
+08:45:37,672 Actor adding 10
+08:45:37,677 Result is 110</pre>
+<p>Denne gangen ser vi at kalkulatoren kommer igang med prosesseringen av Add-meldinger før hovedtråden er ferdig. Vi ser også at Get-meldingen blir fyrt avgårde før Add-prosesseringen er ferdig.</p>
+<h2>Konklusjon</h2>
+<p>Jeg har vært veldig fasinert av Actor Model siden jeg lørte om det for tre år siden, og det føles som en intuitiv og lur måte å designe samtidighetssystemer på. Men jeg har fortsatt aldri brukt det til noe fornuftig. Hovedgrunnen er nok at støtten for det har vært dårlig (eller lite kjent) på de plattformene jeg har utviklet for. Men nå vet jeg at støtten er der på .NET-plattformen!</p>
+<p>For ordens skyld, du kan bruke MailboxProcessor fra andre .NET-språk enn F#. Da heter den <code>FSharpMailboxProcessor</code>.</p>
+<p>Måten det gjøres på i F# virker grei nok – det er litt mere "knotete" enn i Erlang, men det der med AsyncReplyChannel var egentlig ganske elegant. Jeg ser derimot at jeg bør bli komfortabel med asynkrone workflows før jeg tør bruke MailboxProcessor for fullt.</p>
+<p>For mer info om MailboxProcessor se <a href="http://msdn.microsoft.com/en-us/library/ee370357.aspx">MSDN</a> og <a href="http://en.wikibooks.org/wiki/F_Sharp_Programming/MailboxProcessor">denne siden på wikibooks</a>.</p>

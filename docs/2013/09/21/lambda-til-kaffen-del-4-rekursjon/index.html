@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Polyglot,CoffeeScript,Lambda,Rekursjon">
+
+    <title>Lambda til kaffen (del 4: rekursjon)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Lambda til kaffen (del 4: rekursjon)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 21. september 2013</small> 
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/coffeescript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> CoffeeScript</span></a>
+          
+            <a href="/tags/lambda"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lambda</span></a>
+          
+            <a href="/tags/rekursjon"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rekursjon</span></a>
+          </p>
+          <p>I min demonstrasjon av lambda calculus har vi nå kommet til utfordringen knyttet til hvordan man itererer – gjør noe mange ganger. I løpet av denne posten vil jeg vise hvordan man kan støtte rekursjon i et funksjonelt språk som i utgangspunktet ikke har denne muligheten "innebygd".</p>
+<p>Og hvis du havnet på denne siden uten å ha lest begynnelsen så finner du <a href="/2013/09/19/lambda-til-kaffen-del-1/">del 1 her</a>.</p>
+<h2>Vanlig rekursjon</h2>
+<p>I <a href="/2013/09/20/lambda-til-kaffen-del-3-modulo/">del 3</a> definerte jeg funksjonen MOD ved hjelp av et vanlig rekursivt kall, noe som ikke er tillat i lambda calculus. Definisjonen så ut som dette:</p>
+<pre><b style="color: darkred">MOD</b> = (m) -&gt; (n) -&gt;
+  IF(IS_LESS_OR_EQUAL(n)(m))(
+    (x) -&gt; <b style="color: darkred">MOD</b>(SUBTRACT(m)(n))(n)(x)
+  )(
+    m
+  )</pre>
+<p>I programmeringsspråk du er vandt med har du ulike former for løkker (for, while, until) som brukes til å iterere. Disse er implementert med GOTO-statements. I det teoretiske språket lambda calculus har man kun funksjoner, og i likhet med rekursjon kan vi ikke benytte oss av noen goto heller. Det vi trenger er et lurt triks...</p>
+<h2>Z combinator</h2>
+<p>Og trikset vi skal bruke kalles Z-kombinatoren (også referert til som <em>call-by-value Y combinator</em>). Den er veldig vanskelig å forstå, og derfor ekstremt vakker :)</p>
+<p>La oss definere den først:</p>
+<pre>Z = (f) -&gt; ((x) -&gt; f((y) -&gt; x(x)(y)))((x) -&gt; f((y) -&gt; x(x)(y)))</pre>
+<p>Ok. Hva i alle dager er det som skjer her?</p>
+<p>Jo, Z er en funksjon som har en annen funksjon f som parameter. f-funksjonen er den som trenger rekursjon, og hemmeligheten er at gjennom noen funksjonelle krumspring så får den seg selv inn som parameter. Dermed kan jeg for eksempel gjøre følgende for å eksekvere en uendelig rekursjon:</p>
+<pre>r = Z((x) –&gt; () –&gt; x())
+r()</pre>
+<p>Kjører jeg denne får jeg raskt feilmeldingen <em>"Maximum call stack size exceeded"</em>. Men jeg kan jo gjøre noe litt mere fornuftig, for eksempel summere alle tall fra 0 til 10:</p>
+<pre>sumRange = Z((f) -&gt;
+  (i) -&gt; (sum) -&gt;
+    show "i=#{i} sum=#{sum}"
+    if i == 0
+      sum
+    else
+      f(i-1)(sum+i))
+
+show "Result = " + sumRange(10)(0)</pre>
+<p>Her bruker jeg altså flere ting fra CoffeeScript - dette er <em>ikke</em> lambda calculus, kun en liten test - men jeg holder meg likevel til funksjoner med kun én parameter. Koden gir følgende output som viser at Z virker:</p>
+<pre>i=10 sum=0
+i=9 sum=10
+i=8 sum=19
+i=7 sum=27
+i=6 sum=34
+i=5 sum=40
+i=4 sum=45
+i=3 sum=49
+i=2 sum=52
+i=1 sum=54
+i=0 sum=55
+Result = 55</pre>
+<h2>Hvordan Z virker..</h2>
+<p>Å forklare hvordan Z- eller Y-kombinatoren virker er desverre utenfor scope for denne blogposten. Jeg håper du ikke blir alt for skuffet. Det finnes flere andre som har forsøkt, og jeg kan anbefale <a href="http://mvanier.livejournal.com/2700.html">denne lenken</a> for dem som er interessert. Kanskje forsøker jeg meg på en forklaring selv i en fremtidig post, men det holder ikke med en enkelt kaffepause :)</p>
+<h2>Modulo vha. Z</h2>
+<p>Det jeg derimot skal gjøre er å implementere en ny versjon av MOD som ikke bryter med reglene i lambda calculus. Og når jeg nå har definert Z så går det ganske greit:</p>
+<pre>MOD = Z((f) -&gt;
+  (m) -&gt; (n) -&gt;
+    IF(IS_LESS_OR_EQUAL(n)(m))(
+      (x) -&gt; <b style="color: darkred">f</b>(SUBTRACT(m)(n))(n)(x)
+    )(
+      m
+    ))</pre>
+<p>Her har jeg tatt definisjonen jeg hadde og pakket den inn i en funksjon som jeg sender som et argument til Z. Dette er ganske likt som sumRange-funksjonen jeg nettopp laget, men nå bruker jeg kun lambda calculus-funksjonene og verdiene mine.</p>
+<p>Og det var det!</p>
+<h2>Neste gang..</h2>
+<p>I neste del av <em>Lambda til kaffen</em> vil vi se på noe litt enklere, og som jeg har vært borti flere ganger før, nemlig <strong>lister</strong>. Jeg vil også definere en RANGE-funksjon som kan gi meg en liste av alle tall mellom to verdier, og da vil vi igjen ta i bruk Z-kombinatoren.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

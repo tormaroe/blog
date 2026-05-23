@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Erlang,F#,Pattern matching">
+
+    <title>Likheter mellom F# og Erlang</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Likheter mellom F# og Erlang</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 18. november 2011</small> 
+            <a href="/tags/erlang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Erlang</span></a>
+          
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          
+            <a href="/tags/pattern-matching"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Pattern matching</span></a>
+          </p>
+          <p>Jeg hadde meg en tur innom bloggen til <a href="http://codernub.blogspot.com">Christian Abildsø</a> a.k.a. <a href="http://twitter.com/#!/mcmuttons">@mcmuttons</a> i dag, og oppdaget en blogpost han skrev for halvannet år siden <a href="http://codernub.blogspot.com/2010/05/bowling-kata-in-f-yup-more-bowling.html">om å gjøre bowling kata i F#.</a> Og jeg synes koden han kom opp med var så vakker at jeg nesten bare måtte dele det. </p>
+<p>Her bruker Christian patter matching til å beregne poengene for et sett med bowlingkast.</p>
+<pre style="padding-bottom: 3px; background-color: #000000; padding-left: 3px; padding-right: 3px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 3px"><span class="lnr">10 </span><span class="Keyword">module</span><span class="PreProc"> Scorer</span>
+<span class="lnr">11 </span>
+<span class="lnr">12 </span><span class="PreProc">let</span> <span class="Keyword">rec</span> <span class="Constant">CalculateFrame</span> rolls frame <span class="Keyword">=</span>
+<span class="lnr">13 </span>    <span class="Keyword">match</span> rolls <span class="Keyword">with</span>
+<span class="lnr">14 </span>        <span class="Keyword">|</span> <span class="Keyword">_</span> <span class="Keyword">when</span> frame <span class="Keyword">=</span> <span class="Number">10</span>         <span class="Keyword">-&gt;</span> <span class="Number">0</span>
+<span class="lnr">15 </span>        <span class="Keyword">|</span> 10<span class="Keyword">::</span>y<span class="Keyword">::</span>z<span class="Keyword">::</span>rest            <span class="Keyword">-&gt;</span> 10+y+z + <span class="Constant">CalculateFrame</span> <span class="Keyword">(</span>y<span class="Keyword">::</span>z<span class="Keyword">::</span>rest<span class="Keyword">)</span> <span class="Keyword">(</span>frame+1<span class="Keyword">)</span>
+<span class="lnr">16 </span>        <span class="Keyword">|</span> x<span class="Keyword">::</span>y<span class="Keyword">::</span>z<span class="Keyword">::</span>rest <span class="Keyword">when</span> x+y<span class="Keyword">=</span>10 <span class="Keyword">-&gt;</span> 10+z   + <span class="Constant">CalculateFrame</span> <span class="Keyword">(</span>z<span class="Keyword">::</span>rest<span class="Keyword">)</span>    <span class="Keyword">(</span>frame+1<span class="Keyword">)</span>
+<span class="lnr">17 </span>        <span class="Keyword">|</span> x<span class="Keyword">::</span>y<span class="Keyword">::</span>rest                <span class="Keyword">-&gt;</span> x+y    + <span class="Constant">CalculateFrame</span> rest         <span class="Keyword">(</span>frame+1<span class="Keyword">)</span>
+<span class="lnr">18 </span>        <span class="Keyword">|</span> <span class="Keyword">_</span>                         <span class="Keyword">-&gt;</span> <span class="Number">0</span>
+<span class="lnr">19 </span>
+<span class="lnr">20 </span><span class="Keyword">let</span> <span class="Constant">CalculateScore</span> rolls <span class="Keyword">=</span>
+<span class="lnr">21 </span>    <span class="Constant">CalculateFrame</span> rolls <span class="Number">0</span>
+</pre>
+<p>Dette fikk meg til å se hvor kort avstand det kan være fra F# til et språk jeg selv har jobbet endel med, nemlig Erlang. Jeg har blogget om <a href="/2010/04/23/mnstergjenkjenning-i-erlang/">pattern matching i Erlang</a> tidligere, og her kan du se hvordan Christians algoritme ville sett ut:</p>
+<pre style="padding-bottom: 3px; background-color: #000000; padding-left: 3px; padding-right: 3px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 3px"><span class="lnr">10 </span><span class="Type">-module</span>(<span class="Normal">scorer</span>)<span class="Special">.</span>
+<span class="lnr">11 </span><span class="Type">-export</span>([<span class="Normal">calculate_score</span><span class="Operator">/</span><span class="Number">1</span>])<span class="Special">.</span>
+<span class="lnr">12 </span>
+<span class="lnr">13 </span><span class="Normal">calculate_frame</span>(<span class="Normal">Rolls</span>, <span class="Normal">Frame</span>) <span class="Operator">-&gt;</span>
+<span class="lnr">14 </span>  <span class="Keyword">case</span> <span class="Normal">Rolls</span> <span class="Keyword">of</span>
+<span class="lnr">15 </span>    <span class="Normal">_</span> <span class="Keyword">when</span> <span class="Normal">Frame</span> <span class="Operator">==</span> <span class="Number">10</span>        <span class="Operator">-&gt;</span> <span class="Number">0</span>;
+<span class="lnr">16 </span>    [<span class="Number">10</span>,<span class="Normal">Y</span>,<span class="Normal">Z</span>|<span class="Normal">Rest</span>]             <span class="Operator">-&gt;</span> <span class="Number">10</span><span class="Operator">+</span><span class="Normal">Y</span><span class="Operator">+</span><span class="Normal">Z</span> <span class="Operator">+</span> <span class="Normal">calculate_frame</span>([<span class="Normal">Y</span>,<span class="Normal">Z</span>|<span class="Normal">Rest</span>], <span class="Normal">Frame</span><span class="Operator">+</span><span class="Number">1</span>);
+<span class="lnr">17 </span>    [<span class="Normal">X</span>,<span class="Normal">Y</span>,<span class="Normal">Z</span>|<span class="Normal">Rest</span>] <span class="Keyword">when</span> <span class="Normal">X</span><span class="Operator">+</span><span class="Normal">Y</span><span class="Operator">==</span><span class="Number">10</span> <span class="Operator">-&gt;</span> <span class="Number">10</span><span class="Operator">+</span><span class="Normal">Z</span>   <span class="Operator">+</span> <span class="Normal">calculate_frame</span>([<span class="Normal">Z</span>|<span class="Normal">Rest</span>], <span class="Normal">Frame</span><span class="Operator">+</span><span class="Number">1</span>);
+<span class="lnr">18 </span>    [<span class="Normal">X</span>,<span class="Normal">Y</span>|<span class="Normal">Rest</span>]                <span class="Operator">-&gt;</span> <span class="Normal">X</span><span class="Operator">+</span><span class="Normal">Y</span>    <span class="Operator">+</span> <span class="Normal">calculate_frame</span>(<span class="Normal">Rest</span>, <span class="Normal">Frame</span><span class="Operator">+</span><span class="Number">1</span>);
+<span class="lnr">19 </span>    <span class="Normal">_</span>                         <span class="Operator">-&gt;</span> <span class="Number">0</span>
+<span class="lnr">20 </span>  <span class="Keyword">end</span><span class="Special">.</span>
+<span class="lnr">21 </span>
+<span class="lnr">22 </span><span class="Normal">calculate_score</span>(<span class="Normal">Rolls</span>) <span class="Operator">-&gt;</span>
+<span class="lnr">23 </span>  <span class="Normal">calculate_frame</span>(<span class="Normal">Rolls</span>, <span class="Number">0</span>)<span class="Special">.</span>
+</pre>
+<p>Noen små syntaksforskjeller er det jo, men ellers er det jo det samme. Desverre, får jeg vel nesten si, er det F#-versjonen som har flest estetiske kvaliteter.</p>
+<p>Det var det hele. Årets korteste blogpost fra denne kanten? :D</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

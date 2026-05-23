@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="CodingDojo,Clojure,Kata">
+
+    <title>CodingDojo: Mengenlehreuhr</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>CodingDojo: Mengenlehreuhr</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 9. januar 2014</small> 
+            <a href="/tags/codingdojo"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> CodingDojo</span></a>
+          
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          
+            <a href="/tags/kata"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Kata</span></a>
+          </p>
+          <p><img style="float: none; margin-left: auto; display: block; margin-right: auto" src="http://photos4.meetupstatic.com/photos/event/4/e/4/0/global_90200032.jpeg"></p>
+<p>I går deltok jeg på Bergen CodingDojo. Det var alt for lenge siden jeg hadde vært der, men i år skal jeg forsøke å gå oftere, for det er nemlig veldig gøy.</p>
+<p>Etter pizzaen skulle vi gjøre en <a href="http://content.codersdojo.org/code-kata-catalogue/berlin-clock/">kodekata som heter Berlin Clock</a>: Gitt et klokkeslett som innput skal du produsere output som representerer en grafisk klokke, nærmere bestemt en <a href="http://en.wikipedia.org/wiki/Mengenlehreuhr">Mengenlehreuhr</a>.</p>
+<p>Stian Eikeland (vinner av utviklernes julekalender 2013) var også med, og jeg spurte om jeg kunne få parprogrammere med ham. Han ville jobbe med Clojure, og det er jo gøy.</p>
+<p>Første del av oppgaven gjorde vi testdrevet. Vi var egentlig ganske grundige, og brukte Clojures styrker i forhold til hvordan vi internt representerte elementene i klokken. Koden vår var nok ganske langt unna det de andre gjorde, men når man velger å &#8220;lispe&#8221; er det å forvente.</p>
+<p>Etter konvertering fra et klokkelsett til en representasjon bestående av lister av Clojure-keywords ville vi forsøke å lage en grafisk representasjon av klokken. Stian hadde funnet frem til et biblotek som heter <a href="https://github.com/quil/quil"><strong>Quil</strong></a>, som kombinerer Clojure og <a href="http://processing.org/">Processing</a>. Processing er et API/programmeringsspråk/utviklingsmiljø som tar digital tegning til neste nivå, og er noe jeg har hatt lyst til å se nærmere på ganske lenge.</p>
+<p>Og her ser du hvordan klokken vår ble seende ut til slutt:</p>
+<p><img style="float: none; margin: 22px auto 21px; display: block" alt="Berlin clock" src="https://github-camo.global.ssl.fastly.net/831eba93d628d4adcea6d6795c79e93998f11467/687474703a2f2f7777772e65696b656c616e642e73652f6f746865722f6265726c696e636c6f636b75692e706e67" width="400" height="314"></p>
+<p>Stian har gjort tilgjengelig <a href="https://github.com/stianeikeland/Mengenlehreuhr">koden vår på github</a>, så ta en titt om du vil.</p>
+<p>Det var ikke så veldig mange folk på dojo-møtet, men likevel var det ganske mange programmeringsspråk i sving. I tillegg til vår løsning i Clojure fikk vi se Java, C#, Go, Ruby, Python og JavaScript, og vi så grensesnitt i Swing, HTML og ASCII.</p>
+<p><a href="http://www.meetup.com/BergenCodingDojo/">Bergen CodingDojo</a> anbefales på det varmeste for alle som har lyst til å møte andre programmerere i en uformell og ufarlig setting, eksperimentere med nye ting, og rett og slett ha det gøy med koding.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

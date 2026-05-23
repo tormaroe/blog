@@ -1,0 +1,114 @@
+---
+title: DRY == Don't repeat yourself!
+link: http://blog.kjempekjekt.com/2009/03/11/dry-dont-repeat-yourself/
+layout: post
+date: 2009-03-11 16:07:30Z
+tags:
+  - WTF
+  - C#
+---
+Noe av det første man lærer seg som utvikler - eller i alle fall noe av det første man <em>bør</em> lære seg - er at man ikke skal repetere kode. Informasjon skal finnes ett og kun ett sted. Vi kaller prinsippet for <a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself"><strong>DRY</strong></a>, og slik jeg ser det er dette hele grunnprinsippet med programmering. I stedet for å gjenta manuelle prosedyrere gang på gang, automatiserer man det gjennom å sentralisere kunnskapen i programkode.
+
+Fordelene man oppnår gjennom å følge DRY riktig, er at koden enklere lar seg både lese og endre, og man unngår feil som oppstår om man gjør endringer ett sted men glemmer et annet.
+
+På jobben har vi mye repeterende kode, og desverre er det bare <em>ett</em> av problemene våre. Jeg kommer stadig over stygge ting i produktet vårt, og i dag fant jeg følgende kodesnutt. Read it and weep!
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #ff8000">public</span> <span style="color: yellow">colVRFXDOCUMENTINOBJECTS</span> GetDocumentsInDocumentTypeForRfxObject(</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> objectID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> documentTypeID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> mikValid,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> all_mikValidOrNot)</p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">if</span> (all_mikValidOrNot)</p>
+<p style="margin: 0px">        <span style="color: #ff8000">return</span> <span style="color: yellow">DbLoadOMDocument</span>.LoadVRFXDOCUMENTINOBJECTS(</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            Contiki.Logic.Sushi.SushiRegistration.Attributes.<span style="color: #2b91af">BusinessObject</span>.RFX,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            documentTypeID == -1 ? (<span style="color: #ff8000">object</span>)<span style="color: #ff8000">null</span> : (<span style="color: #ff8000">object</span>)documentTypeID,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, objectID,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, 0);</p>
+<p style="margin: 0px">    <span style="color: #ff8000">else</span></p>
+<p style="margin: 0px">        <span style="color: #ff8000">return</span> <span style="color: yellow">DbLoadOMDocument</span>.LoadVRFXDOCUMENTINOBJECTS(</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            Contiki.Logic.Sushi.SushiRegistration.Attributes.<span style="color: #2b91af">BusinessObject</span>.RFX,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            documentTypeID == -1 ? (<span style="color: #ff8000">object</span>)<span style="color: #ff8000">null</span> : (<span style="color: #ff8000">object</span>)documentTypeID,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, mikValid, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, objectID,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, 0);</p>
+<p style="margin: 0px">}</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px"><span style="color: #ff8000">public</span> <span style="color: yellow">colVRFXDOCUMENTINOBJECTS</span> GetBidDocumentsInDocumentType(</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> objectID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> documentTypeID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> mikValid,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> all_mikValidOrNot)</p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">if</span> (all_mikValidOrNot)</p>
+<p style="margin: 0px">        <span style="color: #ff8000">return</span> <span style="color: yellow">DbLoadOMDocument</span>.LoadVRFXDOCUMENTINOBJECTS(</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            documentTypeID == -1 ? (<span style="color: #ff8000">object</span>)<span style="color: #ff8000">null</span> : (<span style="color: #ff8000">object</span>)documentTypeID,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, objectID,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, 0);</p>
+<p style="margin: 0px">    <span style="color: #ff8000">else</span></p>
+<p style="margin: 0px">        <span style="color: #ff8000">return</span> <span style="color: yellow">DbLoadOMDocument</span>.LoadVRFXDOCUMENTINOBJECTS(</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            documentTypeID == -1 ? (<span style="color: #ff8000">object</span>)<span style="color: #ff8000">null</span> : (<span style="color: #ff8000">object</span>)documentTypeID,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, mikValid, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, objectID,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, 0);</p>
+<p style="margin: 0px">}</p>
+</div>
+Det er så mange ting galt her at det er vanskelig å vite hvor man skal begynne. Det mest åpenbare er at vi bruker en funksjon som tar <strong>39</strong> parametre. Og svært få av dem er i bruk, slik at vi repeterer <strong>null 143 ganger</strong>. Vi benytter kodegenerering basert på database-skjemaet vårt, og metoden med 39 parametre er en av disse som lar deg gjøre spørringer mot et view.
+
+Dette er overhodet ingen unnskyldning.., det er knapt nok en forklaring. Kodegenerering skal sørge for at vi kan unngå repeterende kode, ikke føre til mer kode!
+
+Problemet jeg følte et øyeblikkelig behov for å fikse var derimot repeteringen av kallet til denne stygge metoden. Hvorfor kunne man ikke ha tatt seg bryet med å fikse dette? Ikke at løsningen min (se under) er spesielt mye finere å se på, men det er i alle fall litt enklere å forholde seg til.
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #ff8000">public</span> <span style="color: yellow">colVRFXDOCUMENTINOBJECTS</span> GetDocumentsInDocumentTypeForRfxObject(</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> objectID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> documentTypeID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> mikValid,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> all_mikValidOrNot)</p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">return</span> LoadVRFXDOCUMENTINOBJECTS(<span style="color: #2b91af">BusinessObject</span>.RFX, documentTypeID,</p>
+<p style="margin: 0px">        objectID, mikValid, all_mikValidOrNot);</p>
+<p style="margin: 0px">}</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px"><span style="color: #ff8000">public</span> <span style="color: yellow">colVRFXDOCUMENTINOBJECTS</span> GetBidDocumentsInDocumentType(</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> objectID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> documentTypeID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> mikValid,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> all_mikValidOrNot)</p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">return</span> LoadVRFXDOCUMENTINOBJECTS(<span style="color: #ff8000">null</span>, documentTypeID,</p>
+<p style="margin: 0px">        objectID, mikValid, all_mikValidOrNot);</p>
+<p style="margin: 0px">}  </p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px"><span style="color: #ff8000">private</span> <span style="color: yellow">colVRFXDOCUMENTINOBJECTS</span> LoadVRFXDOCUMENTINOBJECTS(</p>
+<p style="margin: 0px">    <span style="color: #ff8000">object</span> businessObject,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> documentTypeID,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">long</span> objectId,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> mikValid,</p>
+<p style="margin: 0px">    <span style="color: #ff8000">bool</span> all_mikValidOrNot)</p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">object</span> documentTypeIdObject = documentTypeID == -1 ? <span style="color: #ff8000">null</span> : (<span style="color: #ff8000">object</span>)documentTypeID;</p>
+<p style="margin: 0px">    <span style="color: #ff8000">object</span> mikValidObject = all_mikValidOrNot ? <span style="color: #ff8000">null</span> : (<span style="color: #ff8000">object</span>)mikValid;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="color: #ff8000">return</span> <span style="color: yellow">DbLoadOMDocument</span>.LoadVRFXDOCUMENTINOBJECTS(</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            businessObject,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>,</p>
+<p style="margin: 0px">            documentTypeIdObject,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, mikValidObject, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, objectId,</p>
+<p style="margin: 0px">            <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, <span style="color: #ff8000">null</span>, 0);</p>
+<p style="margin: 0px">}</p>
+</div>
+Nå kaller vi i alle fall den styggeste metoden bare én gang, og vi har sentralisert den stygge logikken for documentTypeID og mikValid til ett sted (don't get me started on why it has to be like that). Og med gjeldende formatering har vi til og med gått fra 46 til 37 linjer, selv om vi har laget en ny funksjon. Jeg har mye å gjøre her, men dette var i alle fall en begynnelse...
+
+Jeg er klar over at dette ikke er det perfekte eksempelet å bruke for å forklare DRY-prinsippet, det var bare tilfeldigvis den kodesnutten som irriterte meg mest i dag. En grei start på min nye blog-kategori som jeg har valgt å kalle WTF!
+
+<em>PS: Jeg har ikke publisert denne koden for å henge ut utviklerne jeg jobber med, men for at de som leser dette her skal lære noe. Og for at man skal få seg en god latter. Jeg håper disse to tingene lar seg kombinere uten at noen føler seg støtt.</em>

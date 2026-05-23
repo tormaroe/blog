@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender">
+
+    <title>Kalenderluke 17 og 18</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kalenderluke 17 og 18</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 19. desember 2013</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p>Åhh, det er spennende nå! Magnar har mistet ledelsen, og Stian er nå utvikleren med flest poeng i årets julekalender.</p>
+<p><img title="luke18_utvikling" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="luke18_utvikling" src="/uploads/2013/12/luke18_utvikling.png" width="586" height="362"></p>
+<h2>Luke 17: Ut på tur</h2>
+<p>Luke 17 beskrev en klassisk oppgave som kalles <a href="http://en.wikipedia.org/wiki/Knapsack_problem">the knapsack problem</a><strong></strong>. Det finnes flere varianter, og dette var en variant hvor man har et begrenset antall av de ulike tingene som skal pakkes.</p>
+<p>Det er lett å finne løsninger på nettet om man kjenner til problemet. På rosetta code finner du <a href="http://rosettacode.org/wiki/Knapsack_problem/Bounded">løsningen implementert i et hav av ulike språk</a>. Likevel var det usedvanlig mange gale svar som ble forsøkt i løpet av dagen.</p>
+<p>Raskest ute med riktig svar var <strong>Sølve Heggem</strong>, som brukte 8 minutter og 27 sekunder. Magnar tok andreplassen, og Stian tredje.</p>
+<h2>Luke 18: Søk og erstatt</h2>
+<p>I denne luken presenterte jeg litt kode, om man skulle finne ut hva output ville bli. Jeg hadde også "scrablet" koden med seks søk/erstatt-operasjoner. Dette var et forsøk på å gjøre det vanskeligere å se hvilket språk det var snakk om, og unngå at man bare kunne lime koden inn i <a href="http://www.tryfsharp.org/Create">en online REPL</a> for å få svaret gratis.</p>
+<p>Koden slik den ble presentert var:</p>
+<pre>
+def f max x : 
+    query {
+        for y in [for i in 1 .. max =&gt; i * x] do
+        where (y &lt;: max)
+        select y
+    }
+
+[&lt;Abbreviate&gt;]
+def main argv :
+    def f : f 999 
+    ( f 4 , f 7 )
+    ||&gt; int.append |&gt; int.sub
+    |&gt; (fun s =&gt; s = (f (4*7) |&gt; int.sub))
+    |&gt; printfn "%d" 
+    0</pre>
+<p>Dette er F# i forkledning. Ved å kjøre følgende replace-operasjoner:</p>
+<pre>s/=/-/g         // 3 tilfeller
+s/:/=/g         // 4 tilfeller
+s/sub/sum/g     // 2 tilfeller
+s/int/Seq/g     // 3 tilfeller
+s/def/let/g     // 3 tilfeller
+s/Abbreviation/EntryPoint/g  // 1 tilfelle</pre>
+<p>får vi denne orginalkoden:</p>
+<pre>let multiples max x = 
+    query {
+        for y in [for i in 1 .. max -&gt; i * x] do
+        where (y &lt;= max)
+        select y
+    }
+
+[&lt;EntryPoint&gt;]
+let main argv =
+    let multiples = multiples 999 
+    ( multiples 4 , multiples 7 )
+    ||&gt; Seq.append |&gt; Seq.sum
+    |&gt; (fun s -&gt; s - (multiples (4*7) |&gt; Seq.sum))
+    |&gt; printfn "%d"
+    0 </pre>
+<p>For dem som har fulgt med på bloggen min de siste årene så bør de dra kjensel på denne algoritmen. Jeg har nemlig en oppgave jeg sikkert har implementert hundre ganger i diverse artikler (med ulike språk og ulike teknikker): Hvordan finne summen av alle multipler av 3 eller 5 som er mindre enn 1000.</p>
+<p>Teknikken her var å se på oppgaven som et sett-problem, <a href="/2011/11/25/euler-1-som-et-sett-problem/">noe jeg har blogget om her</a>.</p>
+<p>Selv om jeg her brukte multipler av 4 og 7 tenkte jeg at det var mulig å gjenkjenne problemet, og dermed løse oppgaven, selv om man ikke klarte å få F#-koden helt riktig.</p>
+<h3>Flere løsninger</h3>
+<p><a href="https://twitter.com/kjerstibb">Kjersti BB</a> og <a href="https://twitter.com/stianeikeland">Stian</a> gjorde meg derimot oppmerksom på at det finnes flere løsninger på oppgaven. sub kunne også byttes ut med enten min eller max og fortsatt gi et korrekt program – men et annet output. Jeg gav derfor manuelt poeng for disse svarene etter når de ble levert inn for alle som ville ha fått mer enn 10 poeng.</p>
+<p>Den som var raskest ute med svaret var <strong>Stian Veum Møllersen</strong> (BEKK Consulting). Jonas Follesø, som <a href="/2012/12/08/folles-utforsker-med-f/">blogget om F# her for ett år siden</a>, kom på andre plass, og Stian inntok sammenlagtledelsen med tredjeplass. Magnar "snublet" (hans ord) og klarte ikke å finne løsningen på denne oppgaven.</p>
+<h2>Litt om de neste lukene</h2>
+<p>Det er nå 6 luker igjen å åpne i <a href="http://kodejul.herokuapp.com/">kalenderen</a>. Vi nærmer oss nå 200+ poeng for første riktige svar, så stillingen i toppen kan raskt endre seg igjen – ingen bør føle seg trygge.</p>
+<p>Luke 19 er en litt gøy luke som alle kan løse, og hvor man må bruke litt fantasi. Jeg er spent på å se hvor raskt folk klarer den.</p>
+<p>Luke 20 derimot mener jeg er ganske krevende – <em>det blir kanskje den vanskeligste luken av alle</em> – og kan derfor bli helt avgjørende.</p>
+<p>Takk til alle som fortsatt henger med og "koser seg" med kalenderen!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

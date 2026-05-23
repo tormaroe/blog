@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Common Lisp">
+
+    <title>Opp-ned-tall</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Opp-ned-tall</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 15. desember 2015</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          </p>
+          <p>Luke 14 i <a href="https://julekalender.knowit.no/">Knowit sin julekalender</a> ba oss om å..</p>
+<blockquote>
+<p>finne tall som kan leses likt når de blir rotert 180° (med andre ord; opp ned).
+Sifrene vi kan tolke opp ned er 0, 1, 6, 8 og 9 og noen eksempler på tall som blir like opp ned er: 181, 916 og 8008.
+Din oppgave er å finne antall heltall, fra og med 0 til og med 100 000, som kan leses likt opp ned.</p>
+</blockquote>
+<p>Jeg har to løsninger på denne oppgaven: Én kort en, og en litt lengre.</p>
+<h2>Løsning nummer 1</h2>
+<p>I denne løsningen finner jeg svaret med ett enkelt uttrykk - ingen avhengigheter til noe annet ann hva som finnes i Common Lisp fra før. Den demonstrerer derimot et par ting jeg ikke har vist tidligere..</p>
+<p>Det første av disse er det lispere kaller <strong>property lists</strong>, eller bare <em>plist</em>. En plist er egentlig en helt vanlig lenket liste, men annenhvert element behandles som en nøkkel, mens de andre elementene er verdiene. I praksis en veldig enkel hashmap. Den egner seg dårlig til store datamengder, men ofte kan den være svært praktisk. I koden nendefor er <code>digimap</code> en plist som sier hvilket tall jeg skal bytte ut et annet tall med.</p>
+<p>Operasjonen jeg bruker for å hente ut en verdi av plisten er <a href="http://clhs.lisp.se/Body/f_getf.htm"><code>getf</code></a>. Første parameter er listen, andre parameter er en nøkkel, og den valgfrie tredjeparameteren er en default verdi som returneres om nøkkelen ikke ble funnet.</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">digitmap</span> 
+       &#x27;(<span class="hljs-literal">#\0</span> <span class="hljs-literal">#\0</span> <span class="hljs-literal">#\1</span> <span class="hljs-literal">#\1</span> <span class="hljs-literal">#\6</span> <span class="hljs-literal">#\9</span> <span class="hljs-literal">#\8</span> <span class="hljs-literal">#\8</span> <span class="hljs-literal">#\9</span> <span class="hljs-literal">#\6</span>)))
+  (<span class="hljs-name">labels</span> ((<span class="hljs-name">map-digit</span> (<span class="hljs-name">x</span>) (<span class="hljs-name">getf</span> digitmap x <span class="hljs-literal">#\?</span>))
+           (<span class="hljs-name">flip</span> (<span class="hljs-name">x</span>) (<span class="hljs-name"><span class="hljs-built_in">reverse</span></span> (<span class="hljs-name"><span class="hljs-built_in">map</span></span> <span class="hljs-symbol">&#x27;string</span> 
+                                   #<span class="hljs-symbol">&#x27;map-digit</span> 
+                                   x))))
+    (<span class="hljs-name">loop</span> for i from <span class="hljs-number">0</span> upto <span class="hljs-number">100000</span>
+          for i-string = (<span class="hljs-name">format</span> nil <span class="hljs-string">&quot;~A&quot;</span> i)
+          when (<span class="hljs-name">equal</span> i-string (<span class="hljs-name">flip</span> i-string))
+          counting i)))</code></pre><p>Det andre jeg ikke har brukt tidligere er <a href="http://www.lispworks.com/documentation/HyperSpec/Body/s_flet_.htm#labels"><code>labels</code></a>. Du kan se på den som en variant av <code>let</code> som lar meg definere lokale funksjoner. Funksjonene jeg definerer her er <code>map-digit</code> og <code>flip</code>.</p>
+<p>Resten av løsningen er en loop hvor jeg itererer over alle tallene, flipper dem, og så &quot;teller&quot; tallet om orginalen og det flippede taller er like. </p>
+<h2>Løsning nummer 2</h2>
+<p>Den andre løsningen (som faktisk er den jeg lagde først) er brutt opp i mindre funksjoner, bruker flere av biblotekene jeg har presentert i tidligere poster, og er rett og slett litt mere forseggjort: Jeg undersøker om tall kan flippes vha et regulært uttrykk, jeg flipper vha pattern matching, jeg bruker threading (<code>-&gt;&gt;</code>) for å øke lesbarheten et par steder, og jeg sammenligner tall i stedenfor strenger.</p>
+<p>Her er den komplette løsningen:</p>
+<pre><code class="hljs">(<span class="hljs-name">ql:quickload</span> <span class="hljs-symbol">:cl-ppcre</span>)
+(<span class="hljs-name">ql:quickload</span> <span class="hljs-symbol">:cl-arrows</span>)
+(<span class="hljs-name">ql:quickload</span> <span class="hljs-symbol">:optima</span>)
+
+(<span class="hljs-name">use-package</span> <span class="hljs-symbol">:cl-arrows</span>)
+(<span class="hljs-name">use-package</span> <span class="hljs-symbol">:optima</span>)
+
+(<span class="hljs-name">defun</span> parse-any-value (<span class="hljs-name">x</span>)
+  (<span class="hljs-name">with-input-from-string</span> (<span class="hljs-name">in</span> x)
+    (<span class="hljs-name"><span class="hljs-built_in">read</span></span> in)))
+
+(<span class="hljs-name">defun</span> any-value-to-string (<span class="hljs-name">x</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">format</span></span> <span class="hljs-literal">nil</span> <span class="hljs-string">&quot;~A&quot;</span> x))
+
+(<span class="hljs-name">defun</span> can-flip-p (<span class="hljs-name">x</span>)
+  (<span class="hljs-name">cl-ppcre:scan</span> <span class="hljs-string">&quot;^[01689]+$&quot;</span> x))
+
+(<span class="hljs-name">defun</span> flip-digit-char (<span class="hljs-name">x</span>)
+  (<span class="hljs-name">match</span> x
+    (#<span class="hljs-character">\6</span> #<span class="hljs-character">\9</span>)
+    (#<span class="hljs-character">\9</span> #<span class="hljs-character">\6</span>)
+    (<span class="hljs-name">otherwise</span> x)))
+
+(<span class="hljs-name">defun</span> flip-digit-string (<span class="hljs-name">x</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">-&gt;&gt;</span></span> x
+       (<span class="hljs-name"><span class="hljs-built_in">map</span></span> &#x27;string #&#x27;flip-digit-char)
+       reverse))
+
+(<span class="hljs-name">defun</span> equal-flipped-p (<span class="hljs-name">x</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">x-string</span> (<span class="hljs-name">any-value-to-string</span> x)))
+    (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name">can-flip-p</span> x-string)
+      (<span class="hljs-name"><span class="hljs-built_in">=</span></span> x (<span class="hljs-name"><span class="hljs-built_in">-&gt;&gt;</span></span> x-string 
+                flip-digit-string
+                parse-any-value))))) 
+
+(<span class="hljs-name">defun</span> solve ()
+  (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for i from <span class="hljs-number">0</span> upto <span class="hljs-number">100000</span>
+        when (<span class="hljs-name">equal-flipped-p</span> i)
+        counting i))</code></pre><p>.. og dermed var det bare 9 dager igjen til Jul!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

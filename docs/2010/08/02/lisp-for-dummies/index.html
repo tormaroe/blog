@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Lisp,Clojure">
+
+    <title>Lisp for Dummies</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Lisp for Dummies</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 2. august 2010</small> 
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          </p>
+          <p>Har du problemer med å forstå Lisp? Blir du svimmel allerede på parantes nummer tre? Ser det rett og slett så merkelig ut at du ikke engang aner hvor du skal begynne? Fortvil ikke, her følger ALT du behøver å vite for å forstå Lisp-kode!</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="lisp_for_dummies" border="0" alt="lisp_for_dummies" src="/uploads/2010/08/lisp_for_dummies.png" width="240" height="102"></p>
+<p>Begynn med et vanlig metodekall i ditt favoritt-språk med C-lignende syntax:</p>
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace">add<font color="#cda869">(</font><font color="#cf6a4c">1</font>, <font color="#cf6a4c">2</font><font color="#cda869">)</font><font color="#665f57">;</font><br></font></div>
+<p>Du kan nå forvandle dette metodekallet til perfekt Lisp-kode med tre enkle steg. Lispen jeg bruker her er Clojure, men reglene er nokså universelle.</p>
+<p>1: Flytt start-parantesen forran metodenavnet.</p>
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>add <font color="#cf6a4c">1</font>, <font color="#cf6a4c">2</font><font color="#cda869">)</font><font color="#665f57">;</font><br></font></div>
+<p>2: Semikolon er for pyser, så fjern det.</p>
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>add <font color="#cf6a4c">1</font>, <font color="#cf6a4c">2</font><font color="#cda869">)</font><br></font></div>
+<p>3: Komma likeså.., helt unødvendig (du kan faktisk beholde komma der om du vil, Clojure tolker komma som whitespace).</p>
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>add <font color="#cf6a4c">1</font> <font color="#cf6a4c">2</font><font color="#cda869">)</font><br></font></div>
+<p>La oss ta et litt mer komplisert eksempel:</p>
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace">multiply(add(inc(<font color="#cf6a4c">1</font>), floor(<font color="#cf6a4c">2.5</font>)), subtract(<font color="#cf6a4c">3</font>, <font color="#cf6a4c">4</font>));<br></font></div>
+<p>På en-to-tre blir dette forvandlet til vakker Lisp:</p>
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>multiply <font color="#cda869">(</font>add <font color="#cda869">(</font>inc <font color="#cf6a4c">1</font><font color="#cda869">)</font>&nbsp;<font color="#cda869">(</font><font color="#cda869"><b>floor</b></font>&nbsp;<font color="#cf6a4c">2.5</font><font color="#cda869">))</font>&nbsp;<font color="#cda869">(</font>subtract <font color="#cf6a4c">3</font>&nbsp;<font color="#cf6a4c">4</font><font color="#cda869">))</font><br></font></div>
+<p>Og det er omtrent alt du trenger å kunne. All Lisp er bygd opp på denne måten; to paranteser med et funksjonskall og en rekke argumenter innenfor.</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="lists_breakdown" border="0" alt="lists_breakdown" src="/uploads/2010/08/lists_breakdown.png" width="464" height="187"> </p>
+<p>Lisp bryr seg ingen ting om linjeskift og indentering, men det gjør utviklere som skal lese koden. Så for å gjøre Lisp-koden enklere å lese legger vi normalt på litt av det..</p>
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>multiply <br>&nbsp;<font color="#cda869">(</font>add <br>&nbsp; <font color="#cda869">(</font>inc <font color="#cf6a4c">1</font><font color="#cda869">)</font>&nbsp;<br>&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>floor</b></font>&nbsp;<font color="#cf6a4c">2.5</font><font color="#cda869">))</font>&nbsp;<br>&nbsp;<font color="#cda869">(</font>subtract <font color="#cf6a4c">3</font>&nbsp;<font color="#cf6a4c">4</font><font color="#cda869">))</font><br></font></div>
+<p>Det er nå ganske lett å se hvilke to ting som multipliseres sammen, og hvilke to ting som adderes sammen.</p>
+<p>I "vanlige" programmeringsspråk har vi operatorer som +, –, * og /. De er også egentlig funksjoner, men vi får lov til å bruke infix-notasjon, og da ser det noe anderledes ut. I Lisp tillater vi ALDRI infix-notasjon, operatorer/funksjoner brukes alltid i prefix-form. Og med ett ble Lisp dobbelt så enkelt som andre språk :)</p>
+<table border="0" cellspacing="4" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td valign="top" width="24%" align="middle"><b>Operatorer i C</b></td>
+<td valign="top" width="2%">&nbsp;</td>
+<td valign="top" width="24%" align="middle"><b>Lisp-kode</b></td>
+</tr>
+<tr>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cf6a4c">1</font> + <font color="#cf6a4c">2</font> + <font color="#cf6a4c">3</font> + <font color="#cf6a4c">4</font>;<br><br>(<font color="#cf6a4c">10</font> * <font color="#cf6a4c">3.14</font>) / <font color="#cf6a4c">2.5</font>;<br></font></div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font><font color="#cda869"><b>+</b></font>&nbsp;<font color="#cf6a4c">1</font>&nbsp;<font color="#cf6a4c">2</font>&nbsp;<font color="#cf6a4c">3</font>&nbsp;<font color="#cf6a4c">4</font><font color="#cda869">)</font><br><br><font color="#cda869">(</font><font color="#cda869"><b>/</b></font>&nbsp;<font color="#cda869">(</font><font color="#cda869"><b>*</b></font>&nbsp;<font color="#cf6a4c">10</font>&nbsp;<font color="#cf6a4c">3.14</font><font color="#cda869">)</font>&nbsp;<font color="#cf6a4c">2.5</font><font color="#cda869">)</font><br></font></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>I C-lignende språk har vi også diverse kontroll-strukturer som <em>if, for, while</em> etc. I Lisp er også alle disse funksjoner, og de følger de samme syntax-reglene som vi har snakket om sålangt. Jeg sa jo jeg hadde fortalt ALT du trengte å vite for å forstå Lisp!</p>
+<table border="0" cellspacing="4" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td valign="top" width="24%" align="middle"><b>En typisk if-else</b></td>
+<td valign="top" width="2%">&nbsp;</td>
+<td valign="top" width="24%" align="middle"><b>Lisp's versjon av if-else</b></td>
+</tr>
+<tr>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869"><b>if</b></font> (n &gt; <font color="#cf6a4c">0</font>) {<br>&nbsp; doSomething(n);<br>}<br><font color="#cda869"><b>else</b></font> {<br>&nbsp; doSomeOtherThing(n);<br>}<br></font></div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font><font color="#cda869"><b>if</b></font>&nbsp;<font color="#cda869">(</font><font color="#cda869"><b>&gt;</b></font> n <font color="#cf6a4c">0</font><font color="#cda869">)</font><br>&nbsp; <font color="#cda869">(</font>doSomething n<font color="#cda869">)</font><br>&nbsp; <font color="#cda869">(</font>doSomeOtherThing n<font color="#cda869">))</font><br></font></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>I feltet til høyre ser du at <strong><em>if</em></strong> er en funksjon som tar tre parametre: En sannhetstest, et then-uttrykk, og et else-uttrykk. Hvis sannhetstesten evaluerer til true vil if-funksjonen evaluere og returnere then-uttrykket. Hvis ikke vil den evaluere og returnere else-uttrykket.</p>
+<p>Så det er altså ikke så vanskelig å skjønne hvordan den fungerer. Det som er vanskelig å skjønne etterhvert er hvorfor man har innebygde spesial-strukturer for slike ting i andre språk…</p>
+<table border="0" cellspacing="4" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td valign="top" width="24%" align="middle"><b>En switch-case</b></td>
+<td valign="top" width="2%">&nbsp;</td>
+<td valign="top" width="24%" align="middle"><b>Clojure's condp</b></td>
+</tr>
+<tr>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869"><b>switch</b></font> (language){<br>&nbsp; <font color="#cda869"><b>case</b></font>&nbsp;<font color="#8f9d6a">"en"</font>: <font color="#cda869"><b>return</b></font>&nbsp;<font color="#8f9d6a">"Hello"</font>;<br>&nbsp; <font color="#cda869"><b>case</b></font>&nbsp;<font color="#8f9d6a">"es"</font>: <font color="#cda869"><b>return</b></font>&nbsp;<font color="#8f9d6a">"Hola"</font>;<br>&nbsp; <font color="#cda869"><b>case</b></font>&nbsp;<font color="#8f9d6a">"dk"</font>: <font color="#cda869"><b>return</b></font>&nbsp;<font color="#8f9d6a">"Hej"</font>;<br>&nbsp; <font color="#cda869"><b>case</b></font>&nbsp;<font color="#8f9d6a">"ru"</font>: <font color="#cda869"><b>return</b></font>&nbsp;<font color="#8f9d6a">"Privet"</font>;<br>&nbsp; <font color="#cda869"><b>case</b></font>&nbsp;<font color="#8f9d6a">"it"</font>: <font color="#cda869"><b>return</b></font>&nbsp;<font color="#8f9d6a">"Ciao"</font>;<br>&nbsp; <font color="#cda869"><b>default</b></font>: <font color="#cda869"><b>return</b></font>&nbsp;<font color="#8f9d6a">"Hi"</font>;<br>}<br></font></div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>condp <font color="#cda869"><b>=</b></font> language<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"en"</font>&nbsp;<font color="#8f9d6a">"Hello"</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"es"</font>&nbsp;<font color="#8f9d6a">"Hola"</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"dk"</font>&nbsp;<font color="#8f9d6a">"Hej"</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"ru"</font>&nbsp;<font color="#8f9d6a">"Privet"</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"it"</font>&nbsp;<font color="#8f9d6a">"Ciao"</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"Hi"</font><font color="#cda869">)</font><br></font></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Clojure's versjon av den kjente switch-case-strukturen er enda mer genial. <strong><em>Condp</em></strong> tar først inn et predikat (altså en funksjon som returnere true eller false) og et uttrykk som skal brukes til sannhetstesting. Deretter sender man inn så mange argumenter man vil – i par, hvor det første i hvert par brukes til å evaluere predikatet og finne ut om det andre elementet i paret skal evalueres og brukes som returverdi.</p>
+<p>Hvis du ikke skjønte det så er altså <strong>=</strong> <em>(erlik)</em> en funksjon, og er første argument til <em>condp</em> i dette eksempelet. Det er altså ikke en del av en spesialstruktur, og har heller ikke noe med tilordning å gjøre – ting man kanskje kunne tippe om man kommer fra C-lignende språk.</p>
+<table border="0" cellspacing="4" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td valign="top" width="24%" align="middle"><b>En uendelig løkke</b></td>
+<td valign="top" width="2%">&nbsp;</td>
+<td valign="top" width="24%" align="middle"><b>Clojure's versjon av while</b></td>
+</tr>
+<tr>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869"><b>while</b></font>(<font color="#cf6a4c">true</font>) {<br>&nbsp; Console.WriteLine(<font color="#8f9d6a">"To Infinity and Beyond"</font>);<br>}<br></font></div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>while true<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>println <font color="#8f9d6a">"To Infinity and Beyond"</font><font color="#cda869">))</font><br></font></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Igjen er while i Clojure ikke annet enn en funksjon. Den tar to argumenter; et sannhetsuttrykk, og et annet uttrykk som evalueres igjen og igjen sålenge det første evaluerer til <em>true</em>.</p>
+<p>Antagelig begynner du å tro meg nå – Lisp har en genialt enkel struktur som brukes til ALT. Som et siste bevis kan vi se på deklarering av variabler (eller verdier som vi sier i funksjonelle språk) og funksjoner.</p>
+<table border="0" cellspacing="4" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td valign="top" width="24%" align="middle"><b>Deklarasjon av variabel med initiell verdi</b></td>
+<td valign="top" width="2%">&nbsp;</td>
+<td valign="top" width="24%" align="middle"><b>Definisjon av verdi med initiering</b></td>
+</tr>
+<tr>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#9b859d"><b>int</b></font> i = <font color="#cf6a4c">0</font>;<br></font></div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>def i <font color="#cf6a4c">0</font><font color="#cda869">)</font><br></font></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Def</em></strong> er også en funksjon. Første argument er et symbol <em>(i)</em> som skal representere verdien. Andre argument er et valgfritt uttrykk <em>(0)</em>, og hvis det er der evalueres det, og symbolet vil nå representere resultatet av uttrykket.</p>
+<table border="0" cellspacing="4" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td valign="top" width="24%" align="middle"><b>En enkel metode</b></td>
+<td valign="top" width="2%">&nbsp;</td>
+<td valign="top" width="24%" align="middle"><b>En enkel funksjon</b></td>
+</tr>
+<tr>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#9b859d"><b>int</b></font> Double(<font color="#9b859d"><b>int</b></font> n) {<br>&nbsp; <font color="#cda869"><b>return</b></font> n * n;<br>}<br></font></div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div style="padding-bottom: 10px; background-color: #141414; padding-left: 20px; padding-right: 10px; margin-bottom: 18px; color: #f8f8f8; font-size: 120%; padding-top: 10px"><font face="monospace"><font color="#cda869">(</font>defn double [n]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>*</b></font> n n<font color="#cda869">))</font><br></font></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong><em>Defn</em></strong> er (du gjettet det) også en funksjon. Her tar den tre argumenter: et symbol som representerer funksjonen, et array med argumentene funksjonen tar, og et uttrykk som evalueres når funksjonen kalles.</p>
+<p>PS: Jeg snakker hele tiden om <em>funksjoner</em>, men i Lisp/Clojure snakker vi egentlig om tre ulike ting: funksjoner, makroer og "special forms". Når vi bruker dem forholder vi oss derimot til dem alle på samme måte.</p>
+<p>Det var det! Du skal nå være klar til å lese og forstå Lisp. Ta gjerne en tur innom <a href="/2010/06/18/lisp-er-vakkert/">noen</a> av <a href="/2010/06/24/filtrer-projiser-og-aggreger-i-clojure/">mine</a> <a href="/2010/06/29/kassaapparat-kata-i-clojure/">tidligere</a> <a href="/2010/07/01/enhetstester-i-clojure/">poster</a> om <a href="/2010/07/08/er-lisp-bedre-enn-andre-programmeringssprket/">Lisp/Clojure</a> og se om det gir mere mening nå. Lykke til!</p>
+<h4>Noen ressurser</h4>
+<p>For å komme igang med Clojure har jeg først og fremst brukt artikkelen <em><a href="http://java.ociweb.com/mark/clojure/article.html">Clojure – Functional Programming for the JVM</a></em> av R. Mark Volkmann, som er en meget god gjennomgang. <a href="http://richhickey.github.com/clojure/index.html">API-dokumentasjonen</a> og diverse informasjon på <a href="http://clojure.org/">clojure.org</a> har også vært nyttige. I tillegg har jeg lest en interessant <a href="http://thinkrelevance.com/blog/2008/09/16/pcl-clojure.html">blog-serie hvor Clojure sammenlignes med Common Lisp</a>.</p>
+<p>Og så et par ressurser jeg ikke har lest enda. <a href="http://p-cos.net/lisp/guide.html">Pascal Costanza's Highly Opinionated Guide to Lisp</a> virker ganske interessant, og skal leses straks. Deretter vil jeg gå igang med boken <em><a href="http://www.gigamonkeys.com/book/">Practical Common Lisp</a></em>, som er tilgjengelig online i sin helhet. Håpet er at jeg kan overføre det jeg leser der direkte til Clojure, selv om det handler om Common Lisp.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

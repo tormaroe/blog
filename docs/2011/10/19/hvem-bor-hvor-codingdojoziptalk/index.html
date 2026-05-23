@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Polyglot,Ruby,Prolog,Kata">
+
+    <title>Hvem bor hvor? (CodingDojo/ZipTalk)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hvem bor hvor? (CodingDojo/ZipTalk)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 19. oktober 2011</small> 
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          
+            <a href="/tags/prolog"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Prolog</span></a>
+          
+            <a href="/tags/kata"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Kata</span></a>
+          </p>
+          <p>I forrige uke hadde jeg en litt spesiell Coding Dojo / ZipTalk på jobben. Jeg startet med å gi utviklerne på teamet en oppgave, og sa at de hadde en halv time til å komme opp med en løsning i felleskap. Oppgaven er hentet fra <em><a href="http://en.wikipedia.org/wiki/Structure_and_Interpretation_of_Computer_Programs">Structure and Interpretation of Computer Programs</a></em> (hvor den ble brukt til å illustrere <a href="http://en.wikipedia.org/wiki/Nondeterministic_programming">ikke-deterministisk programmering</a>), og lød som følger:</p>
+<div style="border-bottom: silver 1px solid; border-left: silver 1px solid; padding-bottom: 0px; background-color: #eeeeee; padding-left: 15px; padding-right: 15px; margin-bottom: 10px; border-top: silver 1px solid; border-right: silver 1px solid; padding-top: 15px">
+<p><i>Baker, Cooper, Fletcher, Miller og Smith bor i samme hus med fem etasjer, men i hver sin etasje. Baker bor ikke i øverste etasje, og Cooper bor ikke nederst. Fletcher bor hverken øverst eller nederst. Miller bor høyere opp enn Cooper. Smith bor ikke i etasjen direkte over eller under Fletcher. Fletcher bor ikke i etasjen direkte over eller under Cooper.</i></p>
+<p><i>Lag et program som forteller i hvilken etasje hver av dem bor!</i></p>
+</div>
+<p>Hvis du ønsker å forsøke deg på oppgaven selv anbefaler jeg at du gjør det før du leser videre!</p>
+<p>Jeg kastet med vilje utviklerne ut på dypt vann, og hadde ikke regnet med at de ville komme i mål. Noe de heller ikke gjorde. Målet <em>mitt</em> med oppgaven var blant annet å gi dem erfaring med å kaste seg over en oppgave under sterkt tidspress, og se hvordan de sammarbeidet. Men det var også å presentere en alternativ måte å løse slike oppgaver på – mer om det litt lenger nede.</p>
+<p>Da halvtimen var over snakket vi litt om oppgaven og hvordan det hadde gått, og så presenterte jeg et par løsninger på problemet i Ruby. Den første er ikke spesielt elegant, men fungerer. Prinsippet er at jeg ved hjelp av fem nøstede for-løkker genererer alle mulige kombinasjoner av etasjer for de fem beboerne. I den innerste løkken skipper jeg løsninger som ikke er korrekte i forhold til reglene i oppgaven ved å bruke <em>next</em> (samme som <em>continue</em> i C# og andre steder).</p>
+<p>Til slutt skriver jeg ut de akseptable løsningene. Her følger koden:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Statement">for</span> baker <span class="rubyControl">in</span> <span class="Number">1</span>..<span class="Number">5</span>
+<span class="lnr">11 </span>  <span class="Statement">for</span> cooper <span class="rubyControl">in</span> <span class="Number">1</span>..<span class="Number">5</span>
+<span class="lnr">12 </span>    <span class="Statement">for</span> fletcher <span class="rubyControl">in</span> <span class="Number">1</span>..<span class="Number">5</span>
+<span class="lnr">13 </span>      <span class="Statement">for</span> miller <span class="rubyControl">in</span> <span class="Number">1</span>..<span class="Number">5</span>
+<span class="lnr">14 </span>        <span class="Statement">for</span> smith <span class="rubyControl">in</span> <span class="Number">1</span>..<span class="Number">5</span>
+<span class="lnr">15 </span>          all = [baker, cooper, fletcher, miller, smith]
+<span class="lnr">16 </span>          <span class="rubyControl">next</span> <span class="Conditional">unless</span> all.count(<span class="Number">1</span>) == <span class="Number">1</span>
+<span class="lnr">17 </span>          <span class="rubyControl">next</span> <span class="Conditional">unless</span> all.count(<span class="Number">2</span>) == <span class="Number">1</span>
+<span class="lnr">18 </span>          <span class="rubyControl">next</span> <span class="Conditional">unless</span> all.count(<span class="Number">3</span>) == <span class="Number">1</span>
+<span class="lnr">19 </span>          <span class="rubyControl">next</span> <span class="Conditional">unless</span> all.count(<span class="Number">4</span>) == <span class="Number">1</span>
+<span class="lnr">20 </span>          <span class="rubyControl">next</span> <span class="Conditional">unless</span> all.count(<span class="Number">5</span>) == <span class="Number">1</span>
+<span class="lnr">21 </span>
+<span class="lnr">22 </span>          <span class="rubyControl">next</span> <span class="Conditional">if</span> baker == <span class="Number">5</span>
+<span class="lnr">23 </span>          <span class="rubyControl">next</span> <span class="Conditional">if</span> cooper == <span class="Number">1</span>
+<span class="lnr">24 </span>          <span class="rubyControl">next</span> <span class="Conditional">if</span> fletcher == <span class="Number">1</span> <span class="rubyControl">or</span> fletcher == <span class="Number">5</span>
+<span class="lnr">25 </span>          <span class="rubyControl">next</span> <span class="Conditional">unless</span> miller &gt; cooper
+<span class="lnr">26 </span>          <span class="rubyControl">next</span> <span class="Conditional">if</span> (smith - fletcher).abs() == <span class="Number">1</span>
+<span class="lnr">27 </span>          <span class="rubyControl">next</span> <span class="Conditional">if</span> (fletcher - cooper).abs() == <span class="Number">1</span>
+<span class="lnr">28 </span>
+<span class="lnr">29 </span>          puts <span class="rubyStringDelimiter">"</span><span class="String">Baker = </span><span class="rubyInterpolationDelimiter">#{</span>baker<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">30 </span>          puts <span class="rubyStringDelimiter">"</span><span class="String">Cooper = </span><span class="rubyInterpolationDelimiter">#{</span>cooper<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">31 </span>          puts <span class="rubyStringDelimiter">"</span><span class="String">Fletcher = </span><span class="rubyInterpolationDelimiter">#{</span>fletcher<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">32 </span>          puts <span class="rubyStringDelimiter">"</span><span class="String">Miller = </span><span class="rubyInterpolationDelimiter">#{</span>miller<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">33 </span>          puts <span class="rubyStringDelimiter">"</span><span class="String">Smith = </span><span class="rubyInterpolationDelimiter">#{</span>smith<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">34 </span>          puts
+<span class="lnr">35 </span>        <span class="Statement">end</span>
+<span class="lnr">36 </span>      <span class="Statement">end</span>
+<span class="lnr">37 </span>    <span class="Statement">end</span>
+<span class="lnr">38 </span>  <span class="Statement">end</span>
+<span class="lnr">39 </span><span class="Statement">end</span>
+</pre>
+<p>Deretter demonstrerte jeg en løsning hvor jeg utnytter litt flere av Ruby's muligheter. I linje 10 til 16 nedenfor monkey-patcher jeg Array-klassen med litt syntakstisk sukker for å gjøre løsningen mere lesbar. Linje 27 til 34 skriver ut de gyldige løsningene.</p>
+<p>Selve løsningen på problemet ligger i linje 18 til 25. Her bruker jeg permutation-metoden til å gi meg alle kombinasjonene av et array – det tilsvarer de 10 første linjene i løsningen over. Deretter bruker jeg <em>find_all</em> (tilsvarer <em>filter</em> i mange andre språk) til å begrense permutasjonene til de som er gyldige.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Keyword">class</span> <span class="Type">Array</span>
+<span class="lnr">11 </span>  <span class="PreProc">def</span> <span class="Function">baker</span>; <span class="Constant">self</span>[<span class="Number">0</span>] <span class="PreProc">end</span>
+<span class="lnr">12 </span>  <span class="PreProc">def</span> <span class="Function">cooper</span>; <span class="Constant">self</span>[<span class="Number">1</span>] <span class="PreProc">end</span>
+<span class="lnr">13 </span>  <span class="PreProc">def</span> <span class="Function">fletcher</span>; <span class="Constant">self</span>[<span class="Number">2</span>] <span class="PreProc">end</span>
+<span class="lnr">14 </span>  <span class="PreProc">def</span> <span class="Function">miller</span>; <span class="Constant">self</span>[<span class="Number">3</span>] <span class="PreProc">end</span>
+<span class="lnr">15 </span>  <span class="PreProc">def</span> <span class="Function">smith</span>; <span class="Constant">self</span>[<span class="Number">4</span>] <span class="PreProc">end</span>
+<span class="lnr">16 </span><span class="Keyword">end</span>
+<span class="lnr">17 </span>
+<span class="lnr">18 </span>answer = [<span class="Number">1</span>,<span class="Number">2</span>,<span class="Number">3</span>,<span class="Number">4</span>,<span class="Number">5</span>].permutation.find_all <span class="rubyControl">do</span> |<span class="Identifier">solution</span>|
+<span class="lnr">19 </span>  <span class="rubyControl">not</span> solution.baker == <span class="Number">5</span> <span class="rubyControl">and</span>
+<span class="lnr">20 </span>  <span class="rubyControl">not</span> solution.cooper == <span class="Number">1</span> <span class="rubyControl">and</span>
+<span class="lnr">21 </span>  <span class="rubyControl">not</span> solution.fletcher == <span class="Number">1</span> <span class="rubyControl">and</span> <span class="rubyControl">not</span> solution.fletcher == <span class="Number">5</span> <span class="rubyControl">and</span>
+<span class="lnr">22 </span>  solution.miller &gt; solution.cooper <span class="rubyControl">and</span>
+<span class="lnr">23 </span>  <span class="rubyControl">not</span> (solution.smith - solution.fletcher).abs() == <span class="Number">1</span> <span class="rubyControl">and</span>
+<span class="lnr">24 </span>  <span class="rubyControl">not</span> (solution.fletcher - solution.cooper).abs() == <span class="Number">1</span>
+<span class="lnr">25 </span><span class="rubyControl">end</span>
+<span class="lnr">26 </span>
+<span class="lnr">27 </span>answer.each <span class="rubyControl">do</span> |<span class="Identifier">a</span>|
+<span class="lnr">28 </span>  puts <span class="rubyStringDelimiter">"</span><span class="String">Baker = </span><span class="rubyInterpolationDelimiter">#{</span>a.baker<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">29 </span>  puts <span class="rubyStringDelimiter">"</span><span class="String">Cooper = </span><span class="rubyInterpolationDelimiter">#{</span>a.cooper<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">30 </span>  puts <span class="rubyStringDelimiter">"</span><span class="String">Fletcher = </span><span class="rubyInterpolationDelimiter">#{</span>a.fletcher<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">31 </span>  puts <span class="rubyStringDelimiter">"</span><span class="String">Miller = </span><span class="rubyInterpolationDelimiter">#{</span>a.miller<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">32 </span>  puts <span class="rubyStringDelimiter">"</span><span class="String">Smith = </span><span class="rubyInterpolationDelimiter">#{</span>a.smith<span class="rubyInterpolationDelimiter">}</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">33 </span>  puts
+<span class="lnr">34 </span><span class="rubyControl">end</span>
+
+</pre>
+<p>Men poenget mitt med denne CodingDojoen/ZipTalken var å introdusere noe helt annet...</p>
+<h4>En løsning i prolog</h4>
+<p>Prolog er et logisk programmeringsspråk. I motsetning til Ruby, som er imperativt, er logiske språk deklerative. Det vil si at i stedet for å implementere en algoritme for å løse problemet så beskriver vi bare selve problemet, og Prolog løser det for deg!</p>
+<p>Prolog kan se ganske gresk ut for dem som ikke har vært borti det før, men la oss bare hoppe i det. Jeg skal forsøke å forklare underveis.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Constant">apartments([]).</span>
+<span class="lnr"> 2 </span><span class="Constant">apartments([Head|Tail]) :-</span>
+<span class="lnr"> 3 </span>  member(Head, [<span class="Number">1</span>,<span class="Number">2</span>,<span class="Number">3</span>,<span class="Number">4</span>,<span class="Number">5</span>]), apartments(Tail).
+</pre>
+<p>Linjene over er en regel som forteller Prolog hva en liste av leiligheter/etasjer er for noe. Linje 1 sier at en tom liste, alstå [], er en liste av leiligheter. De neste to linjene er en rekursiv regel som sier at en ikke-tom liste er en liste av leiligheter om det første elementet (Head) er et medlem av listen [1,2,3,4,5], og resten av elementene (Tail) også er en gyldig liste av leiligheter.</p>
+<p>Tok du den?</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 5 </span><span class="Constant">distinct([]).</span>
+<span class="lnr"> 6 </span><span class="Constant">distinct([Head|Tail]) :-</span>
+<span class="lnr"> 7 </span>  <span class="Operator">\+</span>member(Head, Tail), distinct(Tail).
+</pre>
+<p>Linje 5 til 7 beskriver regelen som sier at alle må bo i forskjellige etasjer – altså at løsningen må være en liste hvor alle elementene er unike. Først sier jeg at en tom liste er ok. Deretter sier jeg at en ikke-tom liste er ok om det første elementet (Head) ikke finnes i resten av elementene (Tail), og resten av elementene også er en unik liste. Backslash og pluss betyr "ikke" i Prolog.</p>
+<p>I den neste linjen lager jeg for enkelhets skyld en regel som kombinerer de to forrige reglene:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 9 </span><span class="Constant">distinct_apartments(L) :-</span> apartments(L), distinct(L).
+</pre>
+<p>Og så er det på tide å fortelle Prolog hva det vil si å bo rett over eller rett under en annen beboer. I linje 11 og 12 sier jeg at X og Y bor i tilstøtende etasjer hvis absoluttverdien av X minus Y (som jeg kaller Diff) er lik 1. </p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">11 </span><span class="Constant">adjacent(X, Y) :-</span>
+<span class="lnr">12 </span>  Diff <span class="Keyword">is</span> abs(X - Y), Diff <span class="Operator">=</span> <span class="Number">1</span>.
+</pre>
+<p>Da gjenstår det bare å lage en hovedregel som inkluderer alle detaljene fra oppgaven. I <em>dwelling</em> sier jeg at Baker, Cooper, Fletcher, Miller og Smith bor i hver sin etasje, at Baker ikke bor i femte, at Cooper ikke bor i første, at Fletcher hverken bor i femte eller første, at Miller bor høyere opp enn Cooper, og at Smith og Fletcher, og Fletcher og Cooper ikke bor like over eller under hverandre.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">14 </span><span class="Constant">dwelling(Baker, Cooper, Fletcher, Miller, Smith) :-</span>
+<span class="lnr">15 </span>  distinct_apartments([Baker, Cooper, Fletcher, Miller, Smith]),
+<span class="lnr">16 </span>  Baker <span class="Operator">\=</span> <span class="Number">5</span>,
+<span class="lnr">17 </span>  Cooper <span class="Operator">\=</span> <span class="Number">1</span>,
+<span class="lnr">18 </span>  Fletcher <span class="Operator">\=</span> <span class="Number">1</span>, Fletcher <span class="Operator">\=</span> <span class="Number">5</span>,
+<span class="lnr">19 </span>  Miller <span class="Operator">&gt;</span> Cooper,
+<span class="lnr">20 </span>  <span class="Operator">\+</span>adjacent(Smith, Fletcher),
+<span class="lnr">21 </span>  <span class="Operator">\+</span>adjacent(Fletcher, Cooper).
+</pre>
+<p>Og da er vi ferdige. Fyrer jeg opp Prolog og kjører regelen min så får jeg svaret:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="dwelling" border="0" alt="dwelling" src="/uploads/2011/10/dwelling.png" width="500" height="373"></p>
+<p>Prolog sier helt til slutt "no" fordi jeg spurte om det fantes flere løsninger – og det gjorde det ikke.</p>
+<h4>Hva var poenget?</h4>
+<p>Poenget var at med Prolog så har jeg ikke behøvd å tenke på hvordan jeg skulle løse oppgaven algoritmisk. Jeg har ikke behøvd å generere en masse forslag til løsninger som jeg så må filtrere. I stedet har jeg bare reformulert oppgaven på en måte som Prolog forstår, og Prolog finner selv den korrekte løsningen for meg.</p>
+<p>Det er dette vi kaller deklerativ programmering.</p>
+<p>Da teamet forsøkte å løse oppgaven under sterkt tidspress klarte de ikke å komme opp med den nødvendige algoritmen. Om de hadde kunnet Prolog hadde de ikke behøvd det. Er ikke det ganske interessant?</p>
+<h4>Bergen CodingDojo</h4>
+<p>For de som er interessert i Coding Dojo konseptet vil jeg benytte anledningen til å nevne at det i disse dager er tatt initiativ til en <a href="http://www.meetup.com/BergenCodingDojo/"><strong>CodingDojo i Bergen</strong></a>. Det er <a href="http://twitter.com/#!/kjerstibb">Kjerti Berg</a> som jobber i konsultenselskapet Miles som står bak. Og målet er at folk som ønsker å bli bedre programmerere skal få øve sammen med likesinnede gjennom kode kataer i en sosial setting.</p>
+<p>Det første møtet blir 22. november. Kommer du?</p>
+<p><strong>Relaterte innlegg:</strong> <a href="/2009/04/29/coding-dojo-pa-contiki/">Coding Dojo på Contiki</a>, <a href="/2009/12/19/ziptalks-p-jobben/">ZipTalks på jobben</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+---
+title: Kalenderluke 17 og 18
+link: http://blog.kjempekjekt.com/2013/12/19/kalenderluke-17-og-18/
+layout: post
+date: 2013-12-18 23:08:05Z
+tags:
+  - Julekalender
+---
+<p>Åhh, det er spennende nå! Magnar har mistet ledelsen, og Stian er nå utvikleren med flest poeng i årets julekalender.</p> <p><img title="luke18_utvikling" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin-left: auto; display: block; padding-right: 0px; border-top-width: 0px; margin-right: auto" border="0" alt="luke18_utvikling" src="/uploads/2013/12/luke18_utvikling.png" width="586" height="362"></p> <h2>Luke 17: Ut på tur</h2> <p>Luke 17 beskrev en klassisk oppgave som kalles <a href="http://en.wikipedia.org/wiki/Knapsack_problem">the knapsack problem</a><strong></strong>. Det finnes flere varianter, og dette var en variant hvor man har et begrenset antall av de ulike tingene som skal pakkes.</p> <p>Det er lett å finne løsninger på nettet om man kjenner til problemet. På rosetta code finner du <a href="http://rosettacode.org/wiki/Knapsack_problem/Bounded">løsningen implementert i et hav av ulike språk</a>. Likevel var det usedvanlig mange gale svar som ble forsøkt i løpet av dagen.</p> <p>Raskest ute med riktig svar var <strong>Sølve Heggem</strong>, som brukte 8 minutter og 27 sekunder. Magnar tok andreplassen, og Stian tredje.</p> <h2>Luke 18: Søk og erstatt</h2> <p>I denne luken presenterte jeg litt kode, om man skulle finne ut hva output ville bli. Jeg hadde også "scrablet" koden med seks søk/erstatt-operasjoner. Dette var et forsøk på å gjøre det vanskeligere å se hvilket språk det var snakk om, og unngå at man bare kunne lime koden inn i <a href="http://www.tryfsharp.org/Create">en online REPL</a> for å få svaret gratis.</p> <p>Koden slik den ble presentert var:</p><pre>
+def f max x : 
+    query {
+        for y in [for i in 1 .. max =&gt; i * x] do
+        where (y &lt;: max)
+        select y
+    }
+
+[&lt;Abbreviate&gt;]
+def main argv :
+    def f : f 999 
+    ( f 4 , f 7 )
+    ||&gt; int.append |&gt; int.sub
+    |&gt; (fun s =&gt; s = (f (4*7) |&gt; int.sub))
+    |&gt; printfn "%d" 
+    0</pre>
+<p>Dette er F# i forkledning. Ved å kjøre følgende replace-operasjoner:</p><pre>s/=/-/g         // 3 tilfeller
+s/:/=/g         // 4 tilfeller
+s/sub/sum/g     // 2 tilfeller
+s/int/Seq/g     // 3 tilfeller
+s/def/let/g     // 3 tilfeller
+s/Abbreviation/EntryPoint/g  // 1 tilfelle</pre>
+<p>får vi denne orginalkoden:</p><pre>let multiples max x = 
+    query {
+        for y in [for i in 1 .. max -&gt; i * x] do
+        where (y &lt;= max)
+        select y
+    }
+
+[&lt;EntryPoint&gt;]
+let main argv =
+    let multiples = multiples 999 
+    ( multiples 4 , multiples 7 )
+    ||&gt; Seq.append |&gt; Seq.sum
+    |&gt; (fun s -&gt; s - (multiples (4*7) |&gt; Seq.sum))
+    |&gt; printfn "%d"
+    0 </pre>
+<p>For dem som har fulgt med på bloggen min de siste årene så bør de dra kjensel på denne algoritmen. Jeg har nemlig en oppgave jeg sikkert har implementert hundre ganger i diverse artikler (med ulike språk og ulike teknikker): Hvordan finne summen av alle multipler av 3 eller 5 som er mindre enn 1000.</p>
+<p>Teknikken her var å se på oppgaven som et sett-problem, <a href="http://blog.kjempekjekt.com/2011/11/25/euler-1-som-et-sett-problem/">noe jeg har blogget om her</a>.</p>
+<p>Selv om jeg her brukte multipler av 4 og 7 tenkte jeg at det var mulig å gjenkjenne problemet, og dermed løse oppgaven, selv om man ikke klarte å få F#-koden helt riktig.</p>
+<h3>Flere løsninger</h3>
+<p><a href="https://twitter.com/kjerstibb">Kjersti BB</a> og <a href="https://twitter.com/stianeikeland">Stian</a> gjorde meg derimot oppmerksom på at det finnes flere løsninger på oppgaven. sub kunne også byttes ut med enten min eller max og fortsatt gi et korrekt program – men et annet output. Jeg gav derfor manuelt poeng for disse svarene etter når de ble levert inn for alle som ville ha fått mer enn 10 poeng.</p>
+<p>Den som var raskest ute med svaret var <strong>Stian Veum Møllersen</strong> (BEKK Consulting). Jonas Follesø, som <a href="http://blog.kjempekjekt.com/2012/12/08/folles-utforsker-med-f/">blogget om F# her for ett år siden</a>, kom på andre plass, og Stian inntok sammenlagtledelsen med tredjeplass. Magnar "snublet" (hans ord) og klarte ikke å finne løsningen på denne oppgaven.</p>
+<h2>Litt om de neste lukene</h2>
+<p>Det er nå 6 luker igjen å åpne i <a href="http://kodejul.herokuapp.com/">kalenderen</a>. Vi nærmer oss nå 200+ poeng for første riktige svar, så stillingen i toppen kan raskt endre seg igjen – ingen bør føle seg trygge.</p>
+<p>Luke 19 er en litt gøy luke som alle kan løse, og hvor man må bruke litt fantasi. Jeg er spent på å se hvor raskt folk klarer den.</p>
+<p>Luke 20 derimot mener jeg er ganske krevende – <em>det blir kanskje den vanskeligste luken av alle</em> – og kan derfor bli helt avgjørende.</p>
+<p>Takk til alle som fortsatt henger med og "koser seg" med kalenderen!</p>

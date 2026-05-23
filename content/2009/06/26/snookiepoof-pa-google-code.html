@@ -1,0 +1,19 @@
+---
+title: Snookiepoof på google code
+link: http://blog.kjempekjekt.com/2009/06/26/snookiepoof-pa-google-code/
+layout: post
+date: 2009-06-26 10:37:27Z
+tags:
+  - Diverse prosjekter
+---
+<img style="padding-left: 20px; padding-bottom: 10px" src="http://snookiepoof.googlecode.com/svn/trunk/misc/Snookiepoof_logo_200.png" align="right" /><strong>Snookiepoof</strong> er et lite C# prosjekt jeg har jobbet med de siste ukene, hvor jeg eksperimenterer med ting som OO-design patterns og clean code. Jeg planlegger å skrive endel blogposter fremover basert på erfaringer med dette prosjektet.
+
+Snookiepoof er en motor for <em>rollespill-aktige</em> spill, hvor man beveger seg rundt i en verden og oppdager ting man kan gjøre. Foreløpig inneholder løsningen et konsoll-basert interface, men designet skal også kunne støtte andre typer brukergrensesnitt.
+
+Jeg bruker TDD/BDD under utvikling, og legger fokus på gode abstraksjoner og å følge SOLID-prinsippene. Command-pattern er mye brukt, og spillmotoren inneholder bl.a. <a href="http://blog.kjempekjekt.com/2009/06/06/en-generisk-state-machine/">min implementasjon av en generisk state machine</a>.
+
+Av eksterne avhengigheter kan jeg nevne at jeg har brukt <a href="http://code.google.com/p/tinybdd/">TinyBDD</a> til å skrive de fleste testene, og bruker <a href="http://ninject.org/">Ninject</a> for dependency injection. Jeg planlegger også å bruke <a href="http://www.db4o.com/">db4o</a> for persistering.
+
+Jeg har lagt ut <a href="http://code.google.com/p/snookiepoof/">prosjektet på Google Code</a>, så hvis du er interessert i å ta en titt så har du muligheten til det.
+
+<strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=Snookiepoof" rel="tag">Snookiepoof</a>

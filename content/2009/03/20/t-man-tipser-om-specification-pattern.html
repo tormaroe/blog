@@ -1,0 +1,344 @@
+---
+title: T-Man tipser om Specification pattern
+link: http://blog.kjempekjekt.com/2009/03/20/t-man-tipser-om-specification-pattern/
+layout: post
+date: 2009-03-20 09:21:11Z
+tags:
+  - OO Patterns
+  - C#
+---
+Hver uke skriver jeg en artikkel for utviklerne i Contiki, hvor jeg forsøker å gi gode råd og tips først og fremst om ting som design og refakturering. Denne uken presenterte jeg <strong>Specification pattern</strong>, et mønster som isolerer business-regler og gjør kode som må ta mange avgjørelser enklere å lese og samtidig mere fleksibel.
+
+Specification er et relativt avansert mønster som er en del av det som populært kalles <em>Domenedrevet Design (DDD)</em>, som kan hjelpe oss (og da mener jeg spesielt oss i Contiki), til å eliminere duplisert kode. Jeg har alltid vært fasinert av konseptet om å lage en regelmotor, og dette mønsteret er én måte å implementere dette på.
+
+<strong>Vi starter med litt tilfeldig kode..</strong>
+
+For å fortelle deg om Specification vil jeg ta deg med på en liten reise, hvor vi starter med litt kode som har forbedringspotensiale, og som etterhvert vil endres til noe som er mer fleksibelt. Koden er <em>ikke</em> reell kode - bare noe jeg fant på i farten. <em>SendIfPossible</em>-metoden sender et dokument til en gitt bruker hvis noen kriterier tilfredstilles:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Step1</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISendStuff</span> <span style="color: #f8ffc6">_sender</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IConfiguration</span> <span style="color: #f8ffc6">_config</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">SendIfPossible</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>, <span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">externalUser</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">Draft</span></p>
+<p style="margin: 0px">            && <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">ReleaseCandidate</span></p>
+<p style="margin: 0px">            && (<span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">Final</span></p>
+<p style="margin: 0px">            || <span style="color: #f8ffc6">!_config</span>.<span style="color: #f8ffc6">ApprovalNeeded</span>))</p>
+<p style="margin: 0px">        {</p>
+<p style="margin: 0px">            <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">SecurityLevel</span> == <span style="color: #2b91af">DocumentSecurityLevel</span>.<span style="color: #f8ffc6">Public</span></p>
+<p style="margin: 0px">                || (<span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">SecurityLevel</span> == <span style="color: #2b91af">DocumentSecurityLevel</span>.<span style="color: #f8ffc6">Restricted</span></p>
+<p style="margin: 0px">                && (<span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">TrustLevel</span> >= <span style="color: #8acccf">3</span></p>
+<p style="margin: 0px">                || <span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">YearlyContribution</span> >= <span style="color: #8acccf">10000</span>)))</p>
+<p style="margin: 0px">            {</p>
+<p style="margin: 0px">                <span style="color: #f8ffc6">_sender</span>.<span style="color: #f8ffc6">AddObject</span>(<span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">                    .<span style="color: #f8ffc6">ToEmail</span>(<span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">EmailAddress</span>)</p>
+<p style="margin: 0px">                    .<span style="color: #f8ffc6">Send</span>();</p>
+<p style="margin: 0px">            }</p>
+<p style="margin: 0px">        }</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+Desverre skriver de fleste av oss kode som dette fra tid til annen. Testene som gjøres her er vanskelige å lese, og reglene er vanskelige å forstå. Ok, la oss forsøke å forbedre dette litt da....
+
+<strong>Trekk ut metoder</strong>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Step2</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISendStuff</span> <span style="color: #f8ffc6">_sender</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IConfiguration</span> <span style="color: #f8ffc6">_config</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">SendIfPossible</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>, <span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">externalUser</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">DocumentIsReadyToBeShown</span>(<span style="color: #f8ffc6">document</span>))</p>
+<p style="margin: 0px">        {</p>
+<p style="margin: 0px">            <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">SecurityLevelOkForUser</span>(<span style="color: #f8ffc6">document</span>, <span style="color: #f8ffc6">externalUser</span>))</p>
+<p style="margin: 0px">            {</p>
+<p style="margin: 0px">                <span style="color: #f8ffc6">_sender</span>.<span style="color: #f8ffc6">AddObject</span>(<span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">                    .<span style="color: #f8ffc6">ToEmail</span>(<span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">EmailAddress</span>)</p>
+<p style="margin: 0px">                    .<span style="color: #f8ffc6">Send</span>();</p>
+<p style="margin: 0px">            }</p>
+<p style="margin: 0px">        }</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">DocumentIsReadyToBeShown</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">Draft</span></p>
+<p style="margin: 0px">                        && <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">ReleaseCandidate</span></p>
+<p style="margin: 0px">                        && (<span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">Final</span></p>
+<p style="margin: 0px">                        || <span style="color: #f8ffc6">!_config</span>.<span style="color: #f8ffc6">ApprovalNeeded</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">SecurityLevelOkForUser</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>, <span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">externalUser</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">SecurityLevel</span> == <span style="color: #2b91af">DocumentSecurityLevel</span>.<span style="color: #f8ffc6">Public</span></p>
+<p style="margin: 0px">                        || (<span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">SecurityLevel</span> == <span style="color: #2b91af">DocumentSecurityLevel</span>.<span style="color: #f8ffc6">Restricted</span></p>
+<p style="margin: 0px">                        && (<span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">TrustLevel</span> >= <span style="color: #8acccf">3</span></p>
+<p style="margin: 0px">                        || <span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">YearlyContribution</span> >= <span style="color: #8acccf">10000</span>));</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+Vi har nå trukket ut inneholdet i de to <em>if</em>-uttrykkene til separate metoder. Dette er en vanlig refaktureringsteknikk som add-ins som ReSharper, Refactor! og til og med Visual Studio kan hjelpe deg med. Gjennom å gi metodene gode navn er det klarere hvilke kriterier som må møtes for at dokumentet skal sendes til brukeren:
+<p style="padding-left: 20px"><em>Dokumentet må være visningsklart, dvs. at statusen ikke må være DRAFT, ikke RELEASECANDIDATE, og hvis godkjenning av dokumenter er påkrevd så kan statusen heller ikke være FINAL. Og så må sikkerhetsnivået være ok for den gitte brukeren, dvs. at dokumentet enten må være PUBLIC, eller i tilfeller hvor det er RESTRICTED så må brukeren enten ha TRUST LEVEL 3 eller høyere, eller vi må tjene 10.000 eller mer på denne personen.</em></p>
+Ok, så kanskje det ikke var så lett å lese og forstå likevel. Dette bør vi kanskje splitte opp mere.
+
+Men før vi gjør det, la oss først tenke gjennom om noe av denne logikken skulle vært flyttet til dokumentet eller bruker-objektet. For eksempel kunne vi ha opprettet en metode på IDocument for å spørre dokumentet om det var visningsklart. Men da måtte vi ha gitt IDocument en dependency mot IConfiguration, som jo holder på ApprovalNeeded-informasjonen. Eller i alle fall sende inn denne informasjonene til dokumentet på en eller annen måte. Og dette er noe dokumentet ikke burde behøve å forholde seg til. Det samme gjelder for å sjekke sikkerhetsnivå basert på bruker, hvor man må kombinere informasjon fra dokument og bruker - i tillegg til noen hardkodede konstanter som absolutt burde vært isolert bedre.
+
+<strong>Trekk ut flere metoder</strong>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Step3</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISendStuff</span> <span style="color: #f8ffc6">_sender</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IConfiguration</span> <span style="color: #f8ffc6">_config</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">SendIfPossible</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>, <span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">externalUser</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">DocumentIsReadyToBeShown</span>(<span style="color: #f8ffc6">document</span>))</p>
+<p style="margin: 0px">        {</p>
+<p style="margin: 0px">            <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">SecurityLevelOkForUser</span>(<span style="color: #f8ffc6">document</span>, <span style="color: #f8ffc6">externalUser</span>))</p>
+<p style="margin: 0px">            {</p>
+<p style="margin: 0px">                <span style="color: #f8ffc6">_sender</span>.<span style="color: #f8ffc6">AddObject</span>(<span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">                    .<span style="color: #f8ffc6">ToEmail</span>(<span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">EmailAddress</span>)</p>
+<p style="margin: 0px">                    .<span style="color: #f8ffc6">Send</span>();</p>
+<p style="margin: 0px">            }</p>
+<p style="margin: 0px">        }</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">DocumentIsReadyToBeShown</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">DocumentIsDone</span>(<span style="color: #f8ffc6">document</span>) && <span style="color: #f8ffc6">AllowedIfFinal</span>(<span style="color: #f8ffc6">document</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">DocumentIsDone</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">Draft</span></p>
+<p style="margin: 0px">            && <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">ReleaseCandidate</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">AllowedIfFinal</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">Final</span></p>
+<p style="margin: 0px">            || <span style="color: #f8ffc6">!_config</span>.<span style="color: #f8ffc6">ApprovalNeeded</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">SecurityLevelOkForUser</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>, <span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">externalUser</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">SecurityLevel</span> == <span style="color: #2b91af">DocumentSecurityLevel</span>.<span style="color: #f8ffc6">Public</span></p>
+<p style="margin: 0px">            || (<span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">SecurityLevel</span> == <span style="color: #2b91af">DocumentSecurityLevel</span>.<span style="color: #f8ffc6">Restricted</span></p>
+<p style="margin: 0px">            && <span style="color: #f8ffc6">IsUserVeryImportant</span>(<span style="color: #f8ffc6">externalUser</span>));</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsUserVeryImportant</span>(<span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">externalUser</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">TrustLevel</span> >= <span style="color: #8acccf">3</span></p>
+<p style="margin: 0px">            || <span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">YearlyContribution</span> >= <span style="color: #8acccf">10000</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+Som du forhåpentlig vis ser blir koden mer lesevennlig jo mer vi splitter den opp, hovedsaklig fordi metodenavnene dokumenterer hva testene egentlig betyri domenemodellen vår. Men det gjenstår noen problemer. For det første begynner det å bli "trangt om plassen" i klassen vår - det blir rotete og uoversiktelig med mange, små metoder. For det andre er det svært sansynlig at testene som disse metodene våre utfører også vil være nyttige andre steder, sansynligvis i andre klasser. Jeg får derfor lyst til å trekke dem ut herfra...
+
+<strong>Specification pattern (enkel variant)</strong>
+
+Da er det endelig tid for å ta en titt på Specification mønsteret. Først trenger vi et enkelt interface:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">interface</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">T</span> <span style="color: #f8ffc6">candidate</span>);</p>
+<p style="margin: 0px">}</p>
+</div>
+Interfacet trenger bare én metode, og den kaller vi <strong>IsSatisfiedBy</strong>. Og nå kan vi implementere noen forretningsregler:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">DocumentIsDoneSpecification</span> : <span style="color: #2b91af">ISpecification</span><<span style="color: #2b91af">IDocument</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IConfiguration</span> <span style="color: #f8ffc6">_config</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">DocumentIsDoneSpecification</span>(<span style="color: #2b91af">IConfiguration</span> <span style="color: #f8ffc6">config</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">_config</span> = <span style="color: #f8ffc6">config</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">DocumentIsDone</span>(<span style="color: #f8ffc6">document</span>) && <span style="color: #f8ffc6">AllowedIfFinal</span>(<span style="color: #f8ffc6">document</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">static</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">DocumentIsDone</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">Draft</span></p>
+<p style="margin: 0px">            && <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">ReleaseCandidate</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">AllowedIfFinal</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">Status</span> != <span style="color: #2b91af">DocumentStatus</span>.<span style="color: #f8ffc6">Final</span></p>
+<p style="margin: 0px">            || <span style="color: #f8ffc6">!_config</span>.<span style="color: #f8ffc6">ApprovalNeeded</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">DocumentHasOkSecurityLevelForUserSpecification</span></p>
+<p style="margin: 0px">    : <span style="color: #2b91af">ISpecification</span><<span style="color: #2b91af">IDocument</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">_user</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">DocumentHasOkSecurityLevelForUserSpecification</span>(<span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">user</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">_user</span> = <span style="color: #f8ffc6">user</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">SecurityLevel</span> == <span style="color: #2b91af">DocumentSecurityLevel</span>.<span style="color: #f8ffc6">Public</span></p>
+<p style="margin: 0px">            || (<span style="color: #f8ffc6">document</span>.<span style="color: #f8ffc6">SecurityLevel</span> == <span style="color: #2b91af">DocumentSecurityLevel</span>.<span style="color: #f8ffc6">Restricted</span></p>
+<p style="margin: 0px">            && <span style="color: #f8ffc6">IsVeryImportantUser</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsVeryImportantUser</span></p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">get</span></p>
+<p style="margin: 0px">        {</p>
+<p style="margin: 0px">            <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">_user</span>.<span style="color: #f8ffc6">TrustLevel</span> >= <span style="color: #8acccf">3</span></p>
+<p style="margin: 0px">                || <span style="color: #f8ffc6">_user</span>.<span style="color: #f8ffc6">YearlyContribution</span> >= <span style="color: #8acccf">10000</span>;</p>
+<p style="margin: 0px">        }</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+I konstruktørene tar spesifikasjonene inn sine eksterne avhengigheter - all den informasjonen de måtte behøve for å avgjøre om et hvilket som helst dokument tilfredstiller forretningsregelen spesifikasjonen implementerer. Nå har vi et sentralt sted, en klasse, hvor regelen er definert, og som kan brukes hvor som helst i koden vår.
+
+Ok, la oss forsøke å bruke disse reglene da:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Step4</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISendStuff</span> <span style="color: #f8ffc6">_sender</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IConfiguration</span> <span style="color: #f8ffc6">_config</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">SendIfPossible</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>, <span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">externalUser</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #2b91af">IList</span><<span style="color: #2b91af">ISpecification</span><<span style="color: #2b91af">IDocument</span>>> <span style="color: #f8ffc6">criterions</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">List</span><<span style="color: #2b91af">ISpecification</span><<span style="color: #2b91af">IDocument</span>>>();</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">criterions</span>.<span style="color: #f8ffc6">Add</span>(<span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">DocumentIsDoneSpecification</span>(<span style="color: #f8ffc6">_config</span>));</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">criterions</span>.<span style="color: #f8ffc6">Add</span>(<span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">DocumentHasOkSecurityLevelForUserSpecification</span>(<span style="color: #f8ffc6">externalUser</span>));</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">foreach</span> (<span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">criterion</span> <span style="font-weight: bold; color: #eaeaac">in</span> <span style="color: #f8ffc6">criterions</span>)</p>
+<p style="margin: 0px">            <span style="font-weight: bold; color: #eaeaac">if</span> (!<span style="color: #f8ffc6">criterion</span>.<span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">document</span>))</p>
+<p style="margin: 0px">                <span style="font-weight: bold; color: #eaeaac">return</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">_sender</span>.<span style="color: #f8ffc6">AddObject</span>(<span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">            .<span style="color: #f8ffc6">ToEmail</span>(<span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">EmailAddress</span>)</p>
+<p style="margin: 0px">            .<span style="color: #f8ffc6">Send</span>();</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+I denne versjonen av SendIfPossible-metoden lager vi først en liste av spesifikasjoner, og kontrollerer så hver av dem før vi sender dokumentet til brukeren. Dette er bare <em>en</em> måte å bruke spesifikasjoner på. Den faktiske listen kunne ha blitt konfigurert et annet sted, og for eksempel inneholdt ulike criterier i ulike situasjoner.
+
+<strong>Komponerbare spesifikasjoner</strong>
+
+La oss utvide konseptet noe. Vi ønsker nå å kunne kombinere ulike spesifikasjoner, og dermed lage nye, komponerte spesifikasjoner på et høyere nivå. La oss utvide ISpecification og i tillegg lage en abstrakt klasse om arver fra dette:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">interface</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">T</span> <span style="color: #f8ffc6">candidate</span>);</p>
+<p style="margin: 0px">    <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">And</span>(<span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">other</span>);</p>
+<p style="margin: 0px">    <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">Or</span>(<span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">other</span>);</p>
+<p style="margin: 0px">    <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">Not</span>();</p>
+<p style="margin: 0px">}</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">abstract</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">CompositeSpecification</span><<span style="color: #f8ffc6">T</span>> : <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">abstract</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">T</span> <span style="color: #f8ffc6">candidate</span>);</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">And</span>(<span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">other</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">AndSpecification</span><<span style="color: #f8ffc6">T</span>>(<span style="font-weight: bold; color: #eaeaac">this</span>, <span style="color: #f8ffc6">other</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">Or</span>(<span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">other</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">OrSpecification</span><<span style="color: #f8ffc6">T</span>>(<span style="font-weight: bold; color: #eaeaac">this</span>, <span style="color: #f8ffc6">other</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">Not</span>()</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">NotSpecification</span><<span style="color: #f8ffc6">T</span>>(<span style="font-weight: bold; color: #eaeaac">this</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+Her har vi lagt til tre operasjoner på spesifikasjon: <strong>And</strong>, <strong>Or</strong> og <strong>Not</strong>. Den abstrakte klassen implementerer disse, en implementasjoner som vil være gjeldene for alle konkrete forretningsregler vi implementerer. Den abstrakte klassen benytter tre nye klasser som vi også må definere:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">AndSpecification</span><<span style="color: #f8ffc6">T</span>> : <span style="color: yellow">CompositeSpecification</span><<span style="color: #f8ffc6">T</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">One</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">Other</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">AndSpecification</span>(<span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">x</span>, <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">y</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">One</span> = <span style="color: #f8ffc6">x</span>;</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">Other</span> = <span style="color: #f8ffc6">y</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">override</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">T</span> <span style="color: #f8ffc6">candidate</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">One</span>.<span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">candidate</span>) && <span style="color: #f8ffc6">Other</span>.<span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">candidate</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">OrSpecification</span><<span style="color: #f8ffc6">T</span>> : <span style="color: yellow">CompositeSpecification</span><<span style="color: #f8ffc6">T</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">One</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">Other</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">OrSpecification</span>(<span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">x</span>, <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">y</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">One</span> = <span style="color: #f8ffc6">x</span>;</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">Other</span> = <span style="color: #f8ffc6">y</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">override</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">T</span> <span style="color: #f8ffc6">candidate</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> <span style="color: #f8ffc6">One</span>.<span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">candidate</span>) || <span style="color: #f8ffc6">Other</span>.<span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">candidate</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">NotSpecification</span><<span style="color: #f8ffc6">T</span>> : <span style="color: yellow">CompositeSpecification</span><<span style="color: #f8ffc6">T</span>></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">Wrapped</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="color: #f8ffc6">NotSpecification</span>(<span style="color: #2b91af">ISpecification</span><<span style="color: #f8ffc6">T</span>> <span style="color: #f8ffc6">x</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #f8ffc6">Wrapped</span> = <span style="color: #f8ffc6">x</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">override</span> <span style="font-weight: bold; color: #eaeaac">bool</span> <span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">T</span> <span style="color: #f8ffc6">candidate</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">return</span> !<span style="color: #f8ffc6">Wrapped</span>.<span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">candidate</span>);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+Vi kan nå implementere våre forretningsregler ved å arve fra <strong>CompositeSpecifications</strong>. Jeg overlater dette som en oppgave til leseren.., i stedet hopper vi direkte til slutten og ser hvordan dette kan brukes:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New">
+<p style="margin: 0px"><span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">class</span> <span style="color: yellow">Step5</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">ISendStuff</span> <span style="color: #f8ffc6">_sender</span>;</p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">private</span> <span style="color: #2b91af">IConfiguration</span> <span style="color: #f8ffc6">_config</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="font-weight: bold; color: #eaeaac">public</span> <span style="font-weight: bold; color: #eaeaac">void</span> <span style="color: #f8ffc6">SendIfPossible</span>(<span style="color: #2b91af">IDocument</span> <span style="color: #f8ffc6">document</span>, <span style="color: #2b91af">IUser</span> <span style="color: #f8ffc6">externalUser</span>)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">isDone</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">DocumentIsDoneSpecification</span>(<span style="color: #f8ffc6">_config</span>);</p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">var</span> <span style="color: #f8ffc6">okSecurity</span> = <span style="font-weight: bold; color: #eaeaac">new</span> <span style="color: yellow">DocumentHasOkSecurityLevelForUserSpecification</span>(<span style="color: #f8ffc6">externalUser</span>);</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">        <span style="color: #2b91af">ISpecification</span><<span style="color: #2b91af">IDocument</span>> <span style="color: #f8ffc6">sendCriterion</span> = <span style="color: #f8ffc6">isDone</span>.<span style="color: #f8ffc6">And</span>(<span style="color: #f8ffc6">okSecurity</span>);</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">        <span style="font-weight: bold; color: #eaeaac">if</span> (<span style="color: #f8ffc6">sendCriterion</span>.<span style="color: #f8ffc6">IsSatisfiedBy</span>(<span style="color: #f8ffc6">document</span>))</p>
+<p style="margin: 0px">        {</p>
+<p style="margin: 0px">            <span style="color: #f8ffc6">_sender</span>.<span style="color: #f8ffc6">AddObject</span>(<span style="color: #f8ffc6">document</span>)</p>
+<p style="margin: 0px">                .<span style="color: #f8ffc6">ToEmail</span>(<span style="color: #f8ffc6">externalUser</span>.<span style="color: #f8ffc6">EmailAddress</span>)</p>
+<p style="margin: 0px">                .<span style="color: #f8ffc6">Send</span>();</p>
+<p style="margin: 0px">        }</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+Nå har vi laget et slags <em>"fluent interface"</em> (eller mer presist brukt <em>method chaining</em>), og vi kan dermed kjede sammen forretningsregler slik som i dette banale eksempelet: <strong>isDone.And(okSecurity)</strong>. Fantasien din har nok allerede begynt å jobbe med eksempler som har mange flere forretningsregler. Og for å sjekke om kriteriene er oppfylt trenger vi bare kalle IsSatisfiedBy på den komponerte spesifikasjonen.
+
+Dette mønsteret åpner opp mange, spennende muligheter. Koden vår kan forholde seg til det enkle ISpecification interfacet for å sjekke kriterier, uten å vite noe om hvordan disse kriteriene har blitt konstruert. Spesifikasjoner kan bli sendt fra sted til sted, og nye spesifikasjoner kan kjedes til på ulike steg i prosessen - samtidig som koden holdes ren og ryddig.
+
+<strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=Contiki" rel="tag">Contiki</a>, <a href="http://blog.kjempekjekt.com/index.php?s=DDD" rel="tag">DDD</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Generics" rel="tag">Generics</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Pattern" rel="tag">Pattern</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Refakturering" rel="tag">Refakturering</a>
+
+<strong>Inspirasjonskilder:</strong> <a href="http://devlicio.us/blogs/casey/archive/2009/03/02/ddd-the-specification-pattern.aspx">DDD:Specification pattern blog post av Casey Charlton</a>, <a href="http://en.wikipedia.org/wiki/Specification_pattern">Specification pattern på Wikipedia</a>

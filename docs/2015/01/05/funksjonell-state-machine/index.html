@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="F#,Funksjonell programmering">
+
+    <title>En funksjonell state machine</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En funksjonell state machine</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 5. januar 2015</small> 
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          
+            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+          </p>
+          <p class="text-center"><img src="/uploads/2014/12/fsm_happyangrysad.png"></p>
+
+<p>Einar, Bjørn Einar og Jonas fra Computas holdt en underholdende forelesning på NDC London i år som de kalte <em>The State of State</em>. Her snakket de mye om hvor nyttige <strong>endelige tilstandsmaskiner</strong> - eller <em>Finite State Machines</em> (FSM) - kan være. Dette er noe jeg også har skrevet om (se for eksempel <em><a href="/2009/06/06/en-generisk-state-machine/">En generisk state mashine</a></em> fra 2009).</p>
+<p>Et annet sentralt tema på konferansen var funksjonell programmering. Dette fikk meg til å tenke: <em>Hvordan ser en funksjonell tilstandsmaskin ut?</em></p>
+<p>La oss eksperimentere litt og se om vi kan finne det ut. Disclamer: Jeg har <em>ikke</em> googlet dette, men ville i stedet se hva jeg selv kunne komme opp med.</p>
+<p>##Recap</p>
+<p>En FSM i den objektorienterte verden er en entitet som har en bestemt tilstand. Tilstanden kan for eksempel være <code>Happy</code>. Maskinen blir så påvirket av en hendelse. Dette kan endre tilstanden til for eksempel <code>Angry</code>. I tillegg kan overgangen fra en tilstand til en annen ha <em>sideeffects</em>.</p>
+<p class="text-center"><img src="/uploads/2014/12/fsm_oop.png"></p>
+
+<p>Så hvordan skal vi gjøre dette i den funksjonelle programmeringsparadigmen? I FP løses alt med funksjoner, så da bør vel tilstandsmaskinen også være en funksjon. Funksjoner har ikke tilstand; i stedet kan vi lage en FSM-funksjon som tar inn en tilstand og en hendelse, og som returnerer en ny (potensiell) tilstand.</p>
+<p>Hva med bieffekten av tilstandsendringen? Funksjonen kunne jo ha utført denne, men jeg har en mere spennende idé: Vi kan la funksjonen returnere bieffekten også!</p>
+<p class="text-center"><img src="/uploads/2014/12/fsm_fp.png"></p>
+
+<p>Å skyve bieffekter ut av funksjonene, og kun gjøre det i den &quot;ytterste&quot; delen av programmet, er en generell FP-teknikk. Resultatet blir kode som er enklere å teste og å forstå. </p>
+<p>##En FSM-funksjon</p>
+<p>Det er på tide å kode litt. La oss bruke F# til å implementere tilstandsdiagrammet i starten av denne artikkelen. Språkets algebraiske datatyper lar oss uttrykke tilstandene og hendelsene slik:</p>
+<pre><code class="hljs"><span class="hljs-keyword">type</span> <span class="hljs-type">EmoState </span>= Happy | Sad | Angry
+
+<span class="hljs-keyword">type</span> <span class="hljs-type">EmoEvent </span>= YellAt | Comfort | Mock
+
+<span class="hljs-keyword">type</span> <span class="hljs-type">EmoEffect </span>= string -&gt; unit</code></pre><p><code>EmoEffect</code> inkluderte jeg mest for dokumentasjonens skyld. Den sier at en effekt er en funksjon som tar inn en streng (navnet på personen) og ikke returnerer noe som helst.</p>
+<p>La oss så definere noen sånne effekt-funksjoner:</p>
+<pre><code class="hljs">let <span class="hljs-keyword">becomeAngry </span><span class="hljs-keyword">subject </span>= 
+    printfn <span class="hljs-string">&quot;%s goes bananas!!!&quot;</span> <span class="hljs-keyword">subject
+</span>
+let <span class="hljs-keyword">becomeSad </span><span class="hljs-keyword">subject </span>=
+    printfn <span class="hljs-string">&quot;%s has a long face :-(&quot;</span> <span class="hljs-keyword">subject
+</span>
+let <span class="hljs-keyword">becomeHappy </span><span class="hljs-keyword">subject </span>= 
+    printfn <span class="hljs-string">&quot;%s is happy again :)&quot;</span> <span class="hljs-keyword">subject</span></code></pre><p>Nå kan vi lage en FSM-funksjon som definerer alle tilstandsendringer og returnerer ny tilstand og muligens en effekt.</p>
+<pre><code class="hljs">let transition event <span class="hljs-keyword">state</span> =
+    <span class="hljs-built_in">match</span> <span class="hljs-keyword">state</span>, event with
+    | Happy, YellAt  -&gt; Angry, Some (becomeAngry)
+    | Happy, Mock    -&gt; Sad,   Some (becomeSad)
+    | Sad, Comfort   -&gt; Happy, Some (becomeHappy)
+    | Angry, Comfort -&gt; Sad,   Some (becomeSad)
+    | _, _           -&gt; <span class="hljs-keyword">state</span>, None</code></pre><p>Typesignaturen til denne funksjonen er <code>EmoEvent -&gt; EmoState -&gt; EmoState * (string -&gt; unit) option</code>. Vi kan teste den, og utføre bieffekten om der er noen med en hjelpemetode jeg kaller <code>doEffect</code>:</p>
+<pre><code class="hljs">let doEffect subject (<span class="hljs-keyword">state</span>, effect) =
+    <span class="hljs-built_in">match</span> effect with
+    | Some (effect) -&gt; effect subject
+    | None -&gt; printfn <span class="hljs-string">&quot;Transition had no effect.&quot;</span>
+    <span class="hljs-keyword">state</span>
+
+let newState = transition Mock Happy 
+               |&gt; doEffect <span class="hljs-string">&quot;Bob&quot;</span></code></pre><p>Koden skriver ut <code>&quot;Bob has a long face :-(&quot;</code> og <code>newState</code> får verdien <code>Sad</code>.</p>
+<p>##En generisk FSM med overgangstabell</p>
+<p>Fremgangsmåten jeg nettopp brukte fungerer greit nok; den kommuniserer godt og er enkel å forstå. Men den er ikke spesielt dynamisk - alle tilstandsendringene må hardkodes i <code>transition</code>. </p>
+<p>En alternativ strategi kunne vært å lage en liste med overganger, og gi denne til en funksjon som genererte en ny tilstandsmaskin basert på dem. Dette er omtrent det jeg gjorde i <a href="/2009/06/06/en-generisk-state-machine/">min generiske FSM i C#</a>.</p>
+<p>La oss ta i bruk F# generics og definere en overgang slik:</p>
+<pre><code class="hljs"><span class="hljs-keyword">type</span> <span class="hljs-type">Transition</span>&lt;<span class="hljs-symbol">&#x27;s</span>,<span class="hljs-symbol">&#x27;e</span>,<span class="hljs-symbol">&#x27;x</span>&gt; = {
+    <span class="hljs-type">GivenState</span> : <span class="hljs-symbol">&#x27;s</span>
+    <span class="hljs-type">Event</span> : <span class="hljs-symbol">&#x27;e</span>
+    <span class="hljs-type">ThenState</span> : <span class="hljs-symbol">&#x27;s</span>
+    <span class="hljs-type">Effect</span>: (<span class="hljs-symbol">&#x27;x</span> -&gt; <span class="hljs-built_in">unit</span>) <span class="hljs-built_in">option</span>
+    }</code></pre><p>Jeg kan nå lage en tilhørende funksjon <code>transition</code> som finner en overgang fra en sekvens med overganger:</p>
+<pre><code class="hljs">let transition transitions event <span class="hljs-keyword">state</span> =
+    let transitionLocator t =
+        t.GivenState = <span class="hljs-keyword">state</span> &amp;&amp; t.Event = event
+    <span class="hljs-built_in">match</span> Seq.tryFind transitionLocator transitions with
+    | Some (t) -&gt; t.ThenState, t.Effect
+    | None -&gt; <span class="hljs-keyword">state</span>, None</code></pre><p>Typesignaturen til denne versjonen av FSM-funksjone er litt mer komplisert:</p>
+<pre><code class="hljs">/// transitions:seq&lt;Transition&lt;<span class="hljs-symbol">&#x27;a</span>,<span class="hljs-symbol">&#x27;b</span>,<span class="hljs-symbol">&#x27;c</span>&gt;&gt; -&gt;
+///  event:<span class="hljs-symbol">&#x27;b</span> -&gt; state:<span class="hljs-symbol">&#x27;a</span> -&gt; <span class="hljs-symbol">&#x27;a</span> * (<span class="hljs-symbol">&#x27;c</span> -&gt; unit) option
+///  <span class="hljs-keyword">when</span> <span class="hljs-symbol">&#x27;a</span> : <span class="hljs-type">equality</span> <span class="hljs-keyword">and</span> <span class="hljs-symbol">&#x27;b</span> : <span class="hljs-type">equality</span></code></pre><p>Det er ikke tilfeldig at parameteret <code>transitions</code> kommer først. Jeg har nemlig tenkt å benytte <strong>partial application</strong>. Nedenfor definerer jeg alle overgangene og ender opp med en FSM-funksjon jeg kan bruke:</p>
+<pre><code class="hljs">let fsm <span class="hljs-operator">=</span> transition
+            [{ GivenState <span class="hljs-operator">=</span> Happy
+               Event <span class="hljs-operator">=</span> YellAt
+               ThenState <span class="hljs-operator">=</span> Angry
+               Effect <span class="hljs-operator">=</span> Some (becomeAngry) }
+             { GivenState <span class="hljs-operator">=</span> Happy
+               Event <span class="hljs-operator">=</span> Mock
+               ThenState <span class="hljs-operator">=</span> Sad
+               Effect <span class="hljs-operator">=</span> Some (becomeSad) }
+             { GivenState <span class="hljs-operator">=</span> Sad
+               Event <span class="hljs-operator">=</span> Comfort
+               ThenState <span class="hljs-operator">=</span> Happy
+               Effect <span class="hljs-operator">=</span> Some (becomeHappy) }
+             { GivenState <span class="hljs-operator">=</span> Angry
+               Event <span class="hljs-operator">=</span> Comfort
+               ThenState <span class="hljs-operator">=</span> Sad
+               Effect <span class="hljs-operator">=</span> Some (becomeSad) }]</code></pre><p>F# forteller meg at <code>fsm</code> har typen <code>EmoEvent -&gt; EmoState -&gt; EmoState * (string -&gt; unit) option</code>, som var det jeg håpte på. Jeg kan nå teste <code>fsm</code> på samme måte som tidligere, og får samme resultat:</p>
+<pre><code class="hljs"><span class="hljs-keyword">let</span> newState = transition Mock Happy 
+               |<span class="hljs-type">&gt; doEffect</span> <span class="hljs-string">&quot;Bob&quot;</span></code></pre><p>##Komponere en FSM</p>
+<p>Jeg liker teknikken med en overgangstabell - den er fleksibel og gjenbrukbar. Men siden poenget var å utforske tilstandsmaskiner i et funksjonelt språk så vil jeg forsøke en ting til: <em>Å komponere FSM ved hjelp av rene funksjoner.</em></p>
+<p>Tenk at du har en funksjon <code>makeTransition</code> som kan ta inn en funksjonell tilstandsmaskin og informasjon om en overgang, og som gir deg en ny tilstandsmaskin hvor overgangen er lagt til.</p>
+<p class="text-center"><img src="/uploads/2014/12/makeTransition.png"></p>
+
+<p>I F# kan man definere funksjoner som kan brukes <em>infix</em>, og på grunn av måten jeg skal bruke <code>makeTransition</code> på så ønsker jeg at denne funksjonen skal være det. Derfor gir jeg den i stedet det litt snåle navnet <code>-?-&gt;</code>, som i mitt hode illustrerer en potensiell overgang.</p>
+<pre><code class="hljs">let (-?-&gt;) fsm t =
+    fun event <span class="hljs-keyword">state</span> -&gt;
+        if t.GivenState=<span class="hljs-keyword">state</span> &amp;&amp; t.Event=event
+        then t.ThenState, t.Effect
+        else fsm event <span class="hljs-keyword">state</span></code></pre><p><code>-?-&gt;</code> returnerer en funksjon som danner en closure over funksjonen <code>fsm</code> og overgangs-variabelen <code>t</code>. Denne closuren tar inn et event og en state. Hvis eventet og tilstanden matcher overgangen definert i <code>t</code> så returneres resultatet (ny state og potensiell effekt). Hvis ikke antar funksjonen at det kan finnes flere overganger definert i <code>fsm</code>, og evaluerer denne med argumentene.</p>
+<p>Kode som dette gjør at jeg føler meg smart, men det er egentlig ganske grunnleggende rekursjon.</p>
+<p>Nå kan jeg definere tilstandsmaskinen min igjen ved å komponere de ulike overgangene sammen med en <em>default</em> overgang som brukes om ingen andre overganger matchet event og state.</p>
+<pre><code class="hljs">let defaultTransition <span class="hljs-type">_</span> <span class="hljs-variable">state</span> <span class="hljs-operator">=</span> state, None
+
+<span class="hljs-type">let</span> <span class="hljs-variable">fsm</span> <span class="hljs-operator">=</span>
+    defaultTransition
+    -?-&gt; { GivenState = <span class="hljs-type">Happy</span>
+           <span class="hljs-variable">Event</span> <span class="hljs-operator">=</span> <span class="hljs-type">YellAt</span>
+           <span class="hljs-variable">ThenState</span> <span class="hljs-operator">=</span> <span class="hljs-type">Angry</span>
+           <span class="hljs-variable">Effect</span> <span class="hljs-operator">=</span> Some (becomeAngry) }
+    -?-&gt; { GivenState = <span class="hljs-type">Happy</span>
+           <span class="hljs-variable">Event</span> <span class="hljs-operator">=</span> <span class="hljs-type">Mock</span>
+           <span class="hljs-variable">ThenState</span> <span class="hljs-operator">=</span> <span class="hljs-type">Sad</span>
+           <span class="hljs-variable">Effect</span> <span class="hljs-operator">=</span> Some (becomeSad) }
+    -?-&gt; { GivenState = <span class="hljs-type">Sad</span>
+           <span class="hljs-variable">Event</span> <span class="hljs-operator">=</span> <span class="hljs-type">Comfort</span>
+           <span class="hljs-variable">ThenState</span> <span class="hljs-operator">=</span> <span class="hljs-type">Happy</span>
+           <span class="hljs-variable">Effect</span> <span class="hljs-operator">=</span> Some (becomeHappy) }
+    -?-&gt; { GivenState = <span class="hljs-type">Angry</span>
+           <span class="hljs-variable">Event</span> <span class="hljs-operator">=</span> <span class="hljs-type">Comfort</span>
+           <span class="hljs-variable">ThenState</span> <span class="hljs-operator">=</span> <span class="hljs-type">Sad</span>
+           <span class="hljs-variable">Effect</span> <span class="hljs-operator">=</span> Some (becomeSad) }</code></pre><p>Resultatet er at <code>fsm</code> kan brukes akkurat som tidligere, men i stedet for å slå opp overgangen i en sekvens av overganger vil den nå søke seg gjennom overgangene i en sekvens med funksjonskall. Om dette er en fordel eller ikke kommer kanskje an på hvordan tilstandsmaskinen skal brukes.</p>
+<p>La meg avslutte med å vise hvordan man kan bruke <code>fold</code> til å kjøre gjennom en serie med hendelser.</p>
+<pre><code class="hljs">let subject = <span class="hljs-string">&quot;Sandra&quot;</span>
+let initialState = Happy
+let events = [YellAt; Mock; Comfort; Comfort]
+
+events 
+|&gt; Seq.fold 
+    (fun <span class="hljs-keyword">state</span> event -&gt;
+        fsm event <span class="hljs-keyword">state</span> 
+        |&gt; doEffect subject) 
+    initialState
+|&gt; printfn <span class="hljs-string">&quot;Final state is %A&quot;</span>
+
+(* Skriver ut:
+   Sandra goes bananas!!!
+   Transition had <span class="hljs-keyword">no</span> effect.
+   Sandra has a long face :-(
+   Sandra is happy again :)
+   Final <span class="hljs-keyword">state</span> is Happy
+*)</code></pre><p>##Wrap-up</p>
+<p>Jeg håper du har klart å henge med, og synes dette har vært interessant. Jeg synes i alle fall det er gøy å leke meg med ulike måter å modellere ting på i F#.</p>
+<p>Her er noen eksterne lenker du kanskje vil ta en titt på nå som du har sett min fremgangsmåte:</p>
+<ul>
+<li><a href="http://fsharpforfunandprofit.com/posts/designing-with-types-representing-states/">Designing with types: Making state explicit</a> (<a href="https://twitter.com/ScottWlaschin">Scott Wlaschin</a>)</li>
+<li><a href="http://relentlessdevelopment.wordpress.com/2013/07/30/making-a-simple-state-machine-with-f-actors/">Making a simple State Machine with F# Actors</a> (<a href="https://twitter.com/relentlessdev">Grant Crofton</a>)</li>
+<li><a href="http://trelford.com/blog/post/FSM.aspx">Finite State Machine Compiler</a> (<a href="https://twitter.com/ptrelford">Phillip Trelford</a>)</li>
+</ul>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

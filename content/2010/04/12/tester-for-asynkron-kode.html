@@ -1,0 +1,82 @@
+---
+title: Tester for asynkron kode
+link: http://blog.kjempekjekt.com/2010/04/12/tester-for-asynkron-kode/
+layout: post
+date: 2010-04-12 14:39:15Z
+tags:
+  - Testing
+  - Samtidighet
+  - C#
+---
+Lenge siden jeg har hatt noe C#-kode på bloggen nå.., la meg gjøre noe med det. På jobben i forrige uke lagde vi to små <strong><em>extension methods</em></strong> jeg har lyst til å dele med verden. Det er ikke noe <em>rocket science</em>, men kan være greit om du har samme behovet som oss, og du ikke har tenkt på det selv.
+
+Systemene vi jobber med inneholder MYE asynkronitet / samtidighet. Når vi skal lage automatiserte tester – spesielt integrasjonstester – må vi forholde oss til at vi ikke øyeblikkelig får det resultatet vi forventer (eventual consistency). En test kan f.eks. sende en melding som plukkes opp og behandles av en annen tråd. Dette fører til endel kompleksitet i testene; ofte legger vi inn en <em>sleep</em> før vi kontrollerer resultatet.
+
+Her er en tenkt test hvor vi har en <em>publisher</em> og en <em>subscriber</em>. Vi publiserer en melding, og kontrollerer at subscriberen har mottatt:
+<div style="margin-bottom: 18px"><font face="monospace"> 
+<div style="background-color: #262626; padding-left: 8px; color: #ffffff"><font color="#7f7f7f">2 </font>[TestFixture]
+<font color="#7f7f7f">3 </font><font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>class</strong></font> When_publishing_a_message
+<font color="#7f7f7f">4 </font>{
+<font color="#7f7f7f">5 </font>  [Test]
+<font color="#7f7f7f">6 </font>  <font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>void</strong></font> Subscriber_should_receive_within_reasonable_time()
+<font color="#7f7f7f">7 </font>  {
+<font color="#7f7f7f">8 </font>    When.publisher.distribute(a_message);
+<font color="#7f7f7f">9 </font>    Thread.Sleep(2_seconds); <font color="#666666">// 2 sec seems to be the worst case</font>
+<font color="#7f7f7f">10 </font>    Then.subscriber.ReceivedMessageCount.ShouldEqual(<font color="#ffa0a0">1</font>);
+<font color="#7f7f7f">11 </font>  }
+<font color="#7f7f7f">12 </font>
+<font color="#7f7f7f">13 </font>  <font color="#6495ed"><strong>private</strong></font> Publisher publisher;
+<font color="#7f7f7f">14 </font>  <font color="#6495ed"><strong>private</strong></font> Subscriber subscriber;
+<font color="#7f7f7f">15 </font>  <font color="#6495ed"><strong>private</strong></font> Message a_message;
+<font color="#7f7f7f">16 </font>  <font color="#6495ed"><strong>private</strong></font> <font color="#6495ed"><strong>const</strong></font> <font color="#6495ed"><strong>int</strong></font> 2_seconds = <font color="#ffa0a0">2000</font>;
+<font color="#7f7f7f">17 </font>
+<font color="#7f7f7f">18 </font>  <font color="#666666">/* Setup, Teardown and BDD snippet not shown */</font>
+<font color="#7f7f7f">19 </font>}</div>
+</font></div>
+Ett av problemene med dette er at faktorer utenfor vår kontroll kan føre til at tiden vi må vente av og til øker ganske mye. Vi bruker da endel tid på å finne den optimale ventetiden, for vi vil ikke at testene skal bruke for lang tid. Men fra tid til annen feiler likevel en og annen test pga. stor belastning på bygg-serveren. Dette er ikke bra – vi må kunne stole på stabiliteten på builden!
+
+For å bedre dette har vi kommet opp med en abstraksjon vi kan bruke i stedet for en hardkodet sleep. Disse extensionmetodene sjekker om et predikat er tilfredstilt helt til det er det, eller til vi har nådd en <em>timeout</em>-verdi:
+<div style="margin-bottom: 18px"><font face="monospace"> 
+<div style="background-color: #262626; padding-left: 8px; color: #ffffff"><font color="#7f7f7f">1 </font><font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>static</strong></font> <font color="#6495ed"><strong>class</strong></font> AsyncTestExtensions
+<font color="#7f7f7f">2 </font>{
+<font color="#7f7f7f">3 </font>  <font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>static</strong></font> <font color="#6495ed"><strong>void</strong></font> ShouldBeTrueWithin(
+<font color="#7f7f7f">4 </font>      <font color="#6495ed"><strong>this</strong></font> Func&lt;<font color="#6495ed"><strong>bool</strong></font>&gt; predicate, <font color="#6495ed"><strong>int</strong></font> milliseconds)
+<font color="#7f7f7f">5 </font>  {
+<font color="#7f7f7f">6 </font>    DateTime timeout = DateTime.Now.AddMilliseconds(milliseconds);
+<font color="#7f7f7f">7 </font>    <font color="#6495ed"><strong>while</strong></font> (DateTime.Now &lt; timeout)
+<font color="#7f7f7f">8 </font>    {
+<font color="#7f7f7f">9 </font>      <font color="#6495ed"><strong>if</strong></font> (predicate()) <font color="#6495ed"><strong>return</strong></font>;
+<font color="#7f7f7f">10 </font>      Thread.Sleep(<font color="#ffa0a0">10</font>);
+<font color="#7f7f7f">11 </font>    }
+<font color="#7f7f7f">12 </font>    Assert.Fail();
+<font color="#7f7f7f">13 </font>  }
+<font color="#7f7f7f">14 </font> 
+<font color="#7f7f7f">15 </font>  <font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>static</strong></font> <font color="#6495ed"><strong>void</strong></font> ShouldBeFalseWithin(
+<font color="#7f7f7f">16 </font>      <font color="#6495ed"><strong>this</strong></font> Func&lt;<font color="#6495ed"><strong>bool</strong></font>&gt; predicate, <font color="#6495ed"><strong>int</strong></font> milliseconds)
+<font color="#7f7f7f">17 </font>  {
+<font color="#7f7f7f">18 </font>    ShouldBeTrueWithin(() =&gt; !predicate(), milliseconds);
+<font color="#7f7f7f">19 </font>  }
+<font color="#7f7f7f">20 </font>}</div>
+</font></div>
+Med disse på plass kan vi skive om testen slik:
+<div style="margin-bottom: 18px"><font face="monospace"> 
+<div style="background-color: #262626; padding-left: 8px; color: #ffffff"><font color="#7f7f7f">22 </font>[TestFixture]
+<font color="#7f7f7f">23 </font><font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>class</strong></font> When_publishing_a_message
+<font color="#7f7f7f">24 </font>{
+<font color="#7f7f7f">25 </font>  [Test]
+<font color="#7f7f7f">26 </font>  <font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>void</strong></font> Subscriber_should_receive_within_reasonable_time()
+<font color="#7f7f7f">27 </font>  {
+<font color="#7f7f7f">28 </font>    When.publisher.distribute(a_message);
+<font color="#7f7f7f">29 </font>    Then.subscriber_have_received_a_message.ShouldBeTrueWithin(2_seconds);
+<font color="#7f7f7f">30 </font>  }
+<font color="#7f7f7f">31 </font>
+<font color="#7f7f7f">32 </font>  <font color="#6495ed"><strong>private</strong></font> Func&lt;<font color="#6495ed"><strong>bool</strong></font>&gt; subscriber_have_received_a_message = () =&gt;
+<font color="#7f7f7f">33 </font>    subscriber.ReceivedMessageCount.Equals(<font color="#ffa0a0">1</font>);
+<font color="#7f7f7f">34 </font>
+<font color="#7f7f7f">35 </font>  <font color="#666666">/* Fields, Setup, Teardown and BDD snippet not shown */</font>
+<font color="#7f7f7f">36 </font>  <font color="#666666">/* Note : subscriber now needs to be static          */</font>
+<font color="#7f7f7f">37 </font>}</div>
+</font></div>
+Testen er nå mye mere lesbar (i min mening). I tillegg kjører testene gjevnt over raskere, men uten å feile de gangene maskinen trenger litt mere tid på å gjøre seg ferdig.
+
+PS: <em>When</em> og <em>Then</em>-nøkkelordene i testene stammer fra min <a href="http://blog.kjempekjekt.com/2009/08/13/ultra-tiny-given-when-then-dsl-snippet/">Ultra-tiny given-when-then DSL-snippet</a>. <em>ShouldEqual</em>-metoden i den første versjonen av testen kommer fra <a href="http://code.google.com/p/coretdd/">coreTDD</a>, som vi bruker i alle tester i stedet for vanlige <a href="http://www.nunit.org/" target="_blank">nUnit</a> asserts.

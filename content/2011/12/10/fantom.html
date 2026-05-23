@@ -1,0 +1,103 @@
+---
+title: Fantom
+link: http://blog.kjempekjekt.com/2011/12/10/fantom/
+layout: post
+date: 2011-12-10 07:09:26Z
+tags:
+  - Julekalender
+  - Polyglot
+  - Actor model
+  - Fantom
+  - Samtidighet
+---
+<p>For cirka seks år siden dukket det opp et interessant språk som utviklerne kalte <em>Fan</em>. Det viste seg derimot å være vanskelig å google det navnet, og spåket endret derfor navn til <strong>Fantom</strong> i 2009. Fantom er en typisk smeltedigel av egenskaper man finner i andre språk, og er ment å være et praktisk verktøy. Det er <strong>objektorientert</strong>, støtter <strong>funksjonell programmering</strong>, og har <strong>actors</strong> – eller støtte for <em>samtidighetsbasert programmering</em> som <a href="http://blog.kjempekjekt.com/?s=Joe+Armstrong">Joe Armstrong</a> ville ha sagt.</p> <p>Fantom er fortsatt under aktiv utvikling og endring, men er likevel robust og er brukt i produksjon flere steder.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="fantom" border="0" alt="fantom" src="/uploads/2011/12/fantom.jpg" width="400" height="380"></p> <p>Fantom-kode har en Java/C#-lignende syntaks som bør være grei å forholde seg til for de aller fleste. Språket er statisk typet, men har også flere dynamiske features som type inference, implisitt casting, og en <em>dynamic invoke</em>-operator som lar deg kalle en hvilken som helst metode uten statisk kontroll.</p> <p>Det finnes to ulike <em>typer</em> i Fantom: klasser og mixins. Klasser danner grunnlaget for objekter, og all data i Fantom er objekter, inkludert value types som Int og Bool. Akkurat som Java og C# har Fantom <em>single inheritance</em>, men mixins gir deg mulighet til å utvide objektene på måter Java/C# ikke kan (for eksempel sånn som jeg presenterte i posten om <a href="http://blog.kjempekjekt.com/2010/03/18/dci-arkitekturen/">DCI arkitekturen</a> i mars 2010).</p> <h4>Kan kjøre på ulike plattformer</h4> <p>Fantom er laget for å være portabelt, og kan kjøres på Java VM, på .NET CLR, og med JavaScript i en browser. Fantom kompileres til Fantom bytecode, og denne kompileres igjen ned til valgt platform. Per i dag er det Java-runtimen som er mest stabil, og .NET-implementasjonen er mer et proof-of-concept.</p> <h4>Hvordan ser koden ut?</h4> <p>Du begynnes sikkert å bli litt lei av denne oppgaven nå, men jeg skal altså løse <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">Euler-problem nummer 1</a> i Fantom også. Koden nedenfor viser blant annet hvordan man definerer en klasse med en main-metode, og hvordan lambda-uttrykk ser ut i dette språket. Jeg har valgt en funksjonell, stream-basert løsning denne gangen med bruk av en range, filtrering og aggregering.</p><pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="Type">class</span> Euler1
+<span class="lnr">11 </span>{
+<span class="lnr">12 </span>  <span class="Type">static</span> <span class="Identifier">Bool</span> MultipleOf(<span class="Identifier">Int</span> n, <span class="Identifier">Int</span>[] dividents)
+<span class="lnr">13 </span>  {
+<span class="lnr">14 </span>    <span class="Statement">return</span> dividents.reduce(<span class="Constant">false</span>) |<span class="Identifier">Bool</span> result, d-&gt;<span class="Identifier">Bool</span>|
+<span class="lnr">15 </span>    {
+<span class="lnr">16 </span>      result.<span class="Operator">or</span>(n % d == <span class="Number">0</span>)
+<span class="lnr">17 </span>    }
+<span class="lnr">18 </span>  }
+<span class="lnr">19 </span>
+<span class="lnr">20 </span>  <span class="Type">static</span> <span class="Identifier">Void</span> main()
+<span class="lnr">21 </span>  {
+<span class="lnr">22 </span>    echo((<span class="Number">1..999</span>)
+<span class="lnr">23 </span>      .toList()
+<span class="lnr">24 </span>      .findAll |n-&gt;<span class="Identifier">Bool</span>| { MultipleOf(n, [<span class="Number">3</span>, <span class="Number">5</span>]) }
+<span class="lnr">25 </span>      .reduce(<span class="Number">0</span>) |<span class="Identifier">Int</span> memo, n-&gt;<span class="Identifier">Int</span>| { memo + n } )
+<span class="lnr">26 </span>  }
+<span class="lnr">27 </span>}
+</pre>
+<p>Måten jeg har implementert MultipleOf-metoden på er både overkill og lite lesbart. Men når du har løst den samme oppgaven <em>fjørti ganger</em> begynner du etterhvert å eksperimentere litt. :)</p>
+<p>I linje 16 utnytter jeg det faktum at alt, også boolske verdier, er objekter i Fantom. Jeg kaller derfor metoden "or" for å kombinere to boolske uttrykk. Men frykt ikke, alle de vanlige operatorene du er vandt til, som &amp;&amp; og ||, finnes også.</p>
+<h4>Samtidighet</h4>
+<p>Samtidighet er det området hvor Fantom skiller seg mest fra Java og C#. Mens Java og C# i bunn og grunn baserer seg på en modell med delt minne mellom tråder, hvor man må synkronisere tilgang til data med locks for å forsøke å unngå <em>deadlocks</em> og <em>race conditions</em>, så tillater ikke Fantom deling av data. Det vil si, Fantom tillater ikke deling av data som kan endres (mutable state).</p>
+<p>I stedet har Fantom to alternative teknikker for samtidighetsprogrammering.</p>
+<p>Det første er data som <em>ikke</em> kan endres – <strong><em>immutability</em></strong>. Det er dette som har gjort de funksjonelle språkene som f.eks. Clojure og Haskell populære. Ikke-muterende data er bygget inn i Fantom, og kan trygt og effektivt deles mellom tråder.</p>
+<p>Den andre teknikken er <strong><em>message passing</em></strong>. Dette er det som har gitt språket Erlang sin fremgang de siste årene. Fantom har et actor API som er bygget på ideen om å sende meldinger mellom asynkrone arbeidere.</p>
+<p>Jeg har implementert en løsning til på Euler-oppgaven for å illustrere hvordan man kan bruke actors. Jeg beklager at koden inneholder en del repetisjon, men jeg tror det får frem poenget mitt på en ok måte.</p>
+<p>I løsningen nedenfor oppretter jeg fire actors. Den første <em>(summer)</em> tar imot vilkårlige tall, legger dem til en sum som den holder rede på, og returnerer summen. De tre øvrige deler på å finne alle tallene som skal være med i løsningen, og sender disse til <em>summer</em>.</p>
+<p>Til slutt spinner jeg inntil de tre arbeiderne er ferdige, og så sender jeg en siste melding til <em>summer</em> for å få tilbake svaret. </p><pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span class="lnr">10 </span><span class="PreProc">using</span> concurrent
+<span class="lnr">11 </span>
+<span class="lnr">12 </span><span class="Type">class</span> Euler1
+<span class="lnr">13 </span>{
+<span class="lnr">14 </span>  <span class="Identifier">Void</span> main()
+<span class="lnr">15 </span>  {
+<span class="lnr">16 </span>    pool := ActorPool()
+<span class="lnr">17 </span>
+<span class="lnr">18 </span>    summer := Actor(pool) |<span class="Identifier">Int</span> change-&gt;<span class="Identifier">Int</span>|
+<span class="lnr">19 </span>    {
+<span class="lnr">20 </span>      sum := (<span class="Identifier">Int</span>)Actor.locals.<span class="Operator">get</span>(<span class="String">"sum"</span>, <span class="Number">0</span>) + change
+<span class="lnr">21 </span>      Actor.locals[<span class="String">"sum"</span>] = sum
+<span class="lnr">22 </span>      <span class="Statement">return</span> sum
+<span class="lnr">23 </span>    }
+<span class="lnr">24 </span>
+<span class="lnr">25 </span>    multiplesOf3Actor := Actor(pool) |msg|
+<span class="lnr">26 </span>    {
+<span class="lnr">27 </span>      <span class="Statement">for</span> (n:=<span class="Number">1</span>; n&lt;<span class="Number">1000</span>; ++n)
+<span class="lnr">28 </span>        <span class="Conditional">if</span> (n % <span class="Number">3</span> == <span class="Number">0</span>) summer.send(n)
+<span class="lnr">29 </span>      echo(msg); <span class="Statement">return</span> <span class="Constant">null</span>
+<span class="lnr">30 </span>    }
+<span class="lnr">31 </span>
+<span class="lnr">32 </span>    multiplesOf5Actor := Actor(pool) |msg|
+<span class="lnr">33 </span>    {
+<span class="lnr">34 </span>      <span class="Statement">for</span> (n:=<span class="Number">1</span>; n&lt;<span class="Number">1000</span>; ++n)
+<span class="lnr">35 </span>        <span class="Conditional">if</span> (n % <span class="Number">5</span> == <span class="Number">0</span>) summer.send(n)
+<span class="lnr">36 </span>      echo(msg); <span class="Statement">return</span> <span class="Constant">null</span>
+<span class="lnr">37 </span>    }
+<span class="lnr">38 </span>
+<span class="lnr">39 </span>    multiplesOf15Actor := Actor(pool) |msg|
+<span class="lnr">40 </span>    {
+<span class="lnr">41 </span>      <span class="Statement">for</span> (n:=<span class="Number">1</span>; n&lt;<span class="Number">1000</span>; ++n)
+<span class="lnr">42 </span>        <span class="Conditional">if</span> (n % <span class="Number">15</span> == <span class="Number">0</span>) summer.send(n * -<span class="Number">1</span>)
+<span class="lnr">43 </span>      echo(msg); <span class="Statement">return</span> <span class="Constant">null</span>
+<span class="lnr">44 </span>    }
+<span class="lnr">45 </span>
+<span class="lnr">46 </span>    f1 := multiplesOf3Actor.send(<span class="String">"All multiples of 3 added!"</span>)
+<span class="lnr">47 </span>    f2 := multiplesOf5Actor.send(<span class="String">"All multiples of 5 added!"</span>)
+<span class="lnr">48 </span>    f3 := multiplesOf15Actor.send(<span class="String">"All multiples of 15 removed!"</span>)
+<span class="lnr">49 </span>    echo(<span class="String">"Done sending startup messages"</span>)
+<span class="lnr">50 </span>
+<span class="lnr">51 </span>    <span class="Comment">// Spin-Wait for work to finish</span>
+<span class="lnr">52 </span>    <span class="Statement">while</span>(<span class="Constant">true</span>)
+<span class="lnr">53 </span>      <span class="Conditional">if</span>(f1.isDone.<span class="Operator">and</span>(f2.isDone.<span class="Operator">and</span>(f3.isDone)))
+<span class="lnr">54 </span>        <span class="Conditional">break</span>
+<span class="lnr">55 </span>
+<span class="lnr">56 </span>    echo(<span class="String">"The answer is </span><span class="Identifier">${summer.send(0).get}</span><span class="String">"</span>)
+<span class="lnr">57 </span>  }
+<span class="lnr">58 </span>}
+</pre>
+<p>Når jeg kjører koden ser det ut som dette:</p><pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 8px"><span style="color: green">C:\code&gt;</span>c:\fantom\bin\fan.exe euler1_with_actors.fan
+Done sending startup messages
+All multiples of 15 removed!
+All multiples of 3 added!
+All multiples of 5 added!
+The answer is 233168
+
+</pre>
+<p>Her ser du at i dette tilfettet ble <em>multiplesOf<strong><u>15</u></strong>Actor</em> ferdig før <em>multiplesOf<strong><u>3</u></strong>Actor</em>. Det er selvfølgelig overkill å bruke fire tråder til å beregne summen av alle tall som er multipler av 3 eller 5 under 1000, men <em>actor model</em> er en veldig spennende måte å kode på for mange andre problemområder.</p>
+<h4>Hvordan komme igang</h4>
+<p><a href="http://fantom.org/">Fantom.org</a> er språkets offisielle side, og her finner du alt du behøver for å komme igang. Under "Docs" finner du utførlige manualer, eksempelkode og full API-dokumentasjon.</p>
+<p>Merk at selv om Fantom er et relativt ungt språk så finnes det allerede ganske god editor/IDE-støtte for språket. FantomIDE er bygget på Netbeans, F4 er et annet som baserer seg på Eclipse, og du får støtte for Fantom i TextMate, TextPad, Emacs, Vim og flere andre steder.</p>
+<p>Fantom inkluderer også en interaktiv REPL <em>(Fansh)</em>, innebygget funksjonalitet for automatisert enhetstesting <em>(Fant)</em>, og en egen build-motor som baserer seg på buildscripts skrevet i Fantom. Det har blitt lagt ned mye bra arbeid i dette språket, og det blir spennende å se hvordan det utvikler seg videre.</p>

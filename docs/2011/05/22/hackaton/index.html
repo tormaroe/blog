@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Jobb,Webutvikling,Hackaton">
+
+    <title>Hackaton</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Hackaton</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 23. mai 2011</small> 
+            <a href="/tags/jobb"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Jobb</span></a>
+          
+            <a href="/tags/webutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Webutvikling</span></a>
+          
+            <a href="/tags/hackaton"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Hackaton</span></a>
+          </p>
+          <p style="text-align: center"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="CIMG0625" border="0" alt="CIMG0625" src="/uploads/2011/05/CIMG0625.jpg" width="520" height="395"></p>
+<p>Forrige uke hadde utviklerne i <a href="http://pswin.com" target="_blank">PSWinCom</a> noe vi kalte for et <em>Hackaton</em>. Vi skulle lage en ny versjon av vår kontoweb; ikke en av de viktigste løsningene våre, men viktig nok for kundene som bruker den. Vi satte av to dager hvor vi skulle fokusere 110% på denne oppgaven. Og så leide vi et egnet lokale med to prosjektører, slik at vi kunne sitte sammen alle fire og jobbe på to mega-skjermer, uforstyrret av kontorets daglige <em>“kjas og mas”</em>.</p>
+<p>Vi var forberedt på å kutte noen hjørner for å få til så mye som mulig, og vi var veldig spente på hvor mye funksjonalitet vi kunne få på plass på de ca 18 timene vi hadde til rådighet. </p>
+<h4>Noen tekniske valg</h4>
+<p>Vi er først og fremst .net-utviklere, og skulle lage en asp.net-løsninger. Vi har ingen erfaring med ASP.NET MVC, og gikk derfor for WebForms.</p>
+<p>For <a href="http://en.wikipedia.org/wiki/Create,_read,_update_and_delete" target="_blank">CRUD</a>-funksjonaliteten i kontowebben hadde vi snakket om å benytte <a href="http://www.asp.net/dynamicdata" target="_blank">DynamicData</a>, men vi så etterhvert at vi ville få behov for ganske mye spesialtilpasninger, og droppet derfor dette til fordel for å designe våre egne CRUD-grensesnitt fra scratch. For databaseaccess brukte vi Linq to SQL, som er veldig enkelt å forholde seg til, og er det vi er mest vandt til fra tidligere.</p>
+<p>På forhånd hadde vi snakket om å bruke <a href="http://msdn.microsoft.com/en-us/library/ms159106.aspx" target="_blank">SQL Server Reporting Services</a> (SSRS) til å lage rapporter i løsningen, men etter litt vurdering frem og tilbake avgjorde vi at det var enklere å bare bruke ASP.NET ReportViewer direkte og lage rapportene i Visual Studio. Vi hadde ikke full kontroll på dette, og det tok lengre tid å finne ut av hvordan det fungerte enn vi hadde håpet, men vi fikk etterhvert til å legge et greit grunnlag for rapporter i løsningen.</p>
+<h4>første dagen..</h4>
+<p>..gikk mye raskere enn vi trodde. Det er frustrerende hvor lang tid enkelte ting tar. Men vi fikk på plass en site med et bra design, vi fikk på plass en relativt avansert autentiseringsløsning, vi fikk på plass funksjonalitet for å teste SMS-utsendelse, og vi fikk startet på noen andre ting.</p>
+<p>På kvelden var vi ganske slitne, og det smakte godt med en felles middag på en bedre restaurant!</p>
+<h4>Andre dagen..</h4>
+<p>..gikk bedre, takket være grunnlaget vi hadde lagt dagen før. Vi fikk fullført mer av CRUD-funksjonaliteten, og fikk på plass grunnstrukturen for rapportering – men et par enkle rapporter.</p>
+<p>Alt i alt synes jeg vi skal være fornøyde – eksperimentet var vellykket i mine øyne. Lokalet med en felles pult for fire utviklere og to storskjermer på veggen førte til et godt sammarbeid og god parprogrammering.</p>
+<p>Noen uttrykte bekymring for at vi hadde “hacket” litt <em>for mye</em>, og skulle ønske at vi hadde tatt oss litt bedre tid på kodedesign. Det blir en avveining i forhold til hvor mye løsningen skal endres og vedlikeholdes fremover, men jeg tror det meste av det vi gjorde i løpet av disse dagene var godt nok. Det ligger mye verdi i å holde designet enkelt også, sålenge man klarer å unngå kodeduplisering.</p>
+<p>Nå ser vi frem til å vise folkene på kontoret hva vi har fått til, få tilbakemeldinger, og etterhvert fullføre oppgaven i normale omgivelser.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

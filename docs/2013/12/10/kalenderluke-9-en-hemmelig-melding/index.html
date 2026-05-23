@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender">
+
+    <title>Kalenderluke 9: En hemmelig melding</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kalenderluke 9: En hemmelig melding</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 10. desember 2013</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p>9. desember er over, og <a href="http://kodejul.herokuapp.com/">julekalenderens</a> mest spennende luke sålangt (i mine øyne) gir ikke lenger flere poeng. Denne gangen presenterte jeg en litt naiv krypteringsmodul skrevet i JavaScript (<a href="https://gist.github.com/tormaroe/7880043">gist her</a>), samt en kryptert melding, og ba folk om å forsøke å dekryptere den.</p>
+<h2>Løsningen</h2>
+<p>En strategi for å løse oppgaven er å forsøke alle mulige krypteringsnøkler – <a href="http://en.wikipedia.org/wiki/Brute-force_attack"><em>brute force attack</em></a>. Gjennom å studere koden ser man at nøkkelen skulle bestå av 20 tall fra 0 til 2. Da kan man jo i alle fall i teorien generere alle tenkelige nøkler, kjøre dekrypteringsmetoden, og så står man igjen med oppgaven å lokalisere den korrekte meldingen. Man kan bruke det en har blitt fortalt om svaret, og luke bort alle som ikke slutter på et komma – og så søke etter ord en kan forvente at finnes i svaret, som for eksempel "jul", "nisse", etc.</p>
+<p>Det er veldig mange krypteringsnøkler man må forsøke om man ikke tenker seg om. Men siden vi kjenner krypteringskoden kan vi gjøre noe som er mye enklere...</p>
+<p><img title="luke9_sveen" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 20px auto; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke9_sveen" src="/uploads/2013/12/luke9_sveen.jpg" width="578" height="233"></p>
+<p>Vi ser at krypteringsalgoritmen kun gjør tre ting: Den inkrementerer ascii-verdien til tegnene i teksten, forskyver tegnene mot høyre, og stapper inn noen nye tegn som egentlig ikke skal være der. Det som gjør setningen vanskeligst å lese er ascii-verdi-endringen. Hva om vi kun reverserer den?! Vi vet at verdien er inkrementert et sted mellom 0 og 20 ganger. Tar jeg den krypterte teksten og kaller <code>shiftLeft</code> (fra krypteringsmodulen) 20 ganger får jeg følgende output:</p>
+<pre>0: yFiWWox*xs}}ox6*tk*rkx*o|*ox*vs~ox*rs}}sqz|yzz6zW
+1: xEhVVnw)wr||nw5)sj)qjw)n{)nw)ur}nw)qr||rpy{xyy5yV
+2: wDgUUmv(vq{{mv4(ri(piv(mz(mv(tq|mv(pq{{qoxzwxx4xU
+3: vCfTTlu'upzzlu3'qh'ohu'ly'lu'sp{lu'opzzpnwyvww3wT
+4: uBeSSkt&amp;toyykt2&amp;pg&amp;ngt&amp;kx&amp;kt&amp;rozkt&amp;noyyomvxuvv2vS
+5: tAdRRjs%snxxjs1%of%mfs%jw%js%qnyjs%mnxxnluwtuu1uR
+6: s@cQQir$rmwwir0$ne$ler$iv$ir$pmxir$lmwwmktvstt0tQ
+7: r?bPPhq#qlvvhq/#md#kdq#hu#hq#olwhq#klvvljsurss/sP
+8: q&gt;aOOgp"pkuugp."lc"jcp"gt"gp"nkvgp"jkuukirtqrr.rO
+9: p=`NNfo!ojttfo-!kb!ibo!fs!fo!mjufo!ijttjhqspqq-qN
+10: o&lt;_MMen nissen, ja han er en liten hissigpropp,pM
+11: n;^LLdmømhrrdm+øi`øg`mødqødmøkhsdmøghrrhfoqnoo+oL
+12: m:]KKcl÷lgqqcl*÷h_÷f_l÷cp÷cl÷jgrcl÷fgqqgenpmnn*nK
+13: l9\JJbkökfppbk)ög^öe^köboöbköifqbköefppfdmolmm)mJ
+14: k8[IIajõjeooaj(õf]õd]jõanõajõhepajõdeooeclnkll(lI
+15: j7ZHH`iôidnn`i'ôe\ôc\iô`mô`iôgdo`iôcdnndbkmjkk'kH
+16: i6YGG_hóhcmm_h&amp;ód[ób[hó_ló_hófcn_hóbcmmcajlijj&amp;jG
+17: h5XFF^gògbll^g%òcZòaZgò^kò^gòebm^gòabllb`ikhii%iF
+18: g4WEE]fñfakk]f$ñbYñ`Yfñ]jñ]fñdal]fñ`akka_hjghh$hE
+19: f3VDD\eðe`jj\e#ðaXð_Xeð\ið\eðc`k\eð_`jj`^gifgg#gD
+20: e2UCC[dïd_ii[d"ï`Wï^Wdï[hï[dïb_j[dï^_ii_]fheff"fC
+</pre>
+<p>Du ser at linje 10 skiller seg litt ut, ikke sant? Nå er det bare å fjerne litt støy fra begynnelsen og slutten, og du har svaret. Vanskeligere var det faktisk ikke! Det viktigste her var å lese og forstå koden.</p>
+<h2>Resultater</h2>
+<p>Det var mange som var veldig nære i dag, men som hadde små feil i svaret de sendte inn; et manglende komma, <em>nissefar</em> i stedet for <em>nissen</em>, etc.</p>
+<p><img title="luke9_gorman" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 20px auto; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke9_gorman" src="/uploads/2013/12/luke9_gorman.jpg" width="563" height="70"></p>
+<p><img title="luke9_knut" style="border-top: 0px; border-right: 0px; background-image: none; border-bottom: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 0px auto 20px; border-left: 0px; display: block; padding-right: 0px" border="0" alt="luke9_knut" src="/uploads/2013/12/luke9_knut.jpg" width="572" height="75"></p>
+<p>Raskest ute med riktig svar var "nykommeren" <strong>Henrik Wingerei</strong> fra BEKK Consulting, som brukte litt over 7 minutter og stakk av med 90 poeng. Av de som lå og knivet om sammenlagtledelsen var <strong>Mikael Brevik</strong> (også fra BEKK) raskest, og han har nå overtatt ledertrøyen.</p>
+<p>Da jeg skriver dette (klokken 9 på kvelden) har 37 utviklere svart riktig på oppgaven. Det er det laveste antallet besvarelser sålangt. Jeg vet ikke om det er fordi mange syntes oppgaven var for vanskelig, fordi utviklerne i toppen begynner å få et stort forsprang, eller en helt annen grunn. Men jeg har nå i alle fall fått litt skryt for kalenderen i dag, og det er jo veldig gøy.</p>
+<p><img title="luke9_lefdal" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 20px auto 0px; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke9_lefdal" src="/uploads/2013/12/luke9_lefdal.jpg" width="566" height="72"></p>
+<p><img title="luke9_kenneth" style="border-left-width: 0px; border-right-width: 0px; background-image: none; border-bottom-width: 0px; float: none; padding-top: 0px; padding-left: 0px; margin: 20px auto; display: block; padding-right: 0px; border-top-width: 0px" border="0" alt="luke9_kenneth" src="/uploads/2013/12/luke9_kenneth.jpg" width="568" height="79"></p>
+<p>Tusen takk skal dere ha!!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

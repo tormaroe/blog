@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="kjempekjekt.com">
+
+    <title>Fokusskifte: Høy tilgjengelighet, devops, BIG data, og slike ting..</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Fokusskifte: Høy tilgjengelighet, devops, BIG data, og slike ting..</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 14. mai 2015</small> 
+            <a href="/tags/kjempekjektcom"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> kjempekjekt.com</span></a>
+          </p>
+          <img src="/uploads/2015/05/open-source-crew.png" alt="Mascots" />
+
+<p>Det kommer et lite fokusskifte på programmeringsbloggen nå. I alle fall for en periode. I årevis har jeg blogget mest om programmeringsspråk, ispedd litt designmønstre, smidige praksiser og generelle meninger om programmering. Nå er jeg inspirert til å gjøre noe litt annet...</p>
+<p>Det finnes noen tema som har blitt veldig populære de siste årene. Vi lager løsninger med krav til tilgjengelighet og ytelse. Vi behandler stadig større datamengder, og løsningene våre må kunne endres raskt ved behov. De relaterte <em>buzz-ordene</em> er blant annet <strong>DevOps</strong>, <strong>Big Data</strong> og <strong>Microservices</strong>.</p>
+<p>Større, vellykkede organisasjoner som Netflix, Twitter, LinkedIn og andre viser vei og deler villig sine verktøy som åpen kildekode. Disse verktøyene, disse byggeklossene for <em>moderne softwarearkitektur</em>, blir det stadig viktigere å ha kunnskap om.</p>
+<p>Så nå har jeg en laaaaaang liste med løsninger og ting jeg har lyst å teste ut i praksis. Jeg satser på bredde forran dybde; jeg trenger en bedre oversikt over hva som finnes, og hva det kan brukes til. Om man mangler denne kunnskapen rissikerer man å kaste bort mye tid på å selv lage løsninger som bare er halvparten så bra som de som allerede finnes. Så jeg vil altså ta noen av disse teknologiene på en &quot;prøvetur&quot;, samtidig som jeg forsøker å dokumentere det jeg lærer her på bloggen.</p>
+<h2>Hva vil jeg teste?</h2>
+<h3>Databaseteknologier</h3>
+<p>Som utvikler har jeg alltid brukt databaser. Relasjonsdatabasene jeg har hatt et nært forhold til inkluderer MS Access, Oracle og Microsoft SQL Server, men jeg har også brukt MySQL, PostgreSQL og SQLight. For noen år siden eksperimenterte jeg endel med <a href="/tags/db4o/">en objektdatabase som heter db4o</a>, de senere årene har jeg vært en flittig bruker av mongoDB, og for bare noen uker siden tok jeg for første gang i bruk Redis i et reelt prosjekt.</p>
+<p>Men det finnes så mye mer. Og de ulike teknologiene har ulike styrker, så man kan med fordel kjenne til mange av dem. Jeg ønsker å ta en nærmere titt på for eksempel 
+<a href="http://rethinkdb.com/">RethinkDB</a>,
+<a href="http://www.couchbase.com/">Couchbase</a>,
+<a href="https://www.arangodb.com/">ArangoDB</a>,
+<a href="https://foundationdb.com/">FoundationDB</a>,
+<a href="http://www.velocitydb.com/">VelocityDB</a>,
+<a href="http://orientdb.com/orientdb/">OrientDB</a>,
+<a href="https://geteventstore.com/">Event Store</a>,
+<a href="http://hyperdex.org/">HyperDex</a>,
+<a href="http://www.tarantool.org/">Tarantool</a> og
+<a href="http://senseidb.com/">SenseiDB</a>,</p>
+<p>Noen in-memory databaser som virker spennende:
+<a href="http://www.aerospike.com/">Aerospike</a>,
+<a href="http://hazelcast.com/products/hazelcast/">hazelcast</a>,
+<a href="http://inmemory.net/">InMemory.Net</a>,
+<a href="http://www.memsql.com/">memsql</a>,</p>
+<p>Et par in-process databaser: 
+<a href="http://ejdb.org/">EJDB</a>,
+<a href="http://leveldb.org/">LevelDB</a></p>
+<p>Databaser for <em>timeseries</em>: 
+<a href="http://druid.io/">druid</a>,
+<a href="http://graphite.readthedocs.org/">Graphite</a>,
+<a href="http://influxdb.com/">InfluxDB</a>,
+<a href="http://square.github.io/cube/">Cube</a>,</p>
+<p>Og så har vi jo <strong><a href="https://hadoop.apache.org/">hadoop</a></strong> da, og et hav av relaterte teknologier: <a href="http://hive.apache.org/">Hive</a>, <a href="http://pig.apache.org/">Pig</a>, <a href="http://spark.apache.org/">Spark</a>, <a href="http://storm.apache.org/">Storm</a>, <a href="http://falcon.apache.org/">Falcon</a>, <a href="http://sqoop.apache.org/">Sqoop</a>, <a href="http://flume.apache.org/">Flume</a>, <a href="http://cassandra.apache.org/">Cassandra</a>, <a href="http://hbase.apache.org/">HBase</a>, og søk med <a href="https://www.elastic.co/">Elasticsearch</a> eller <a href="http://lucene.apache.org/solr/">Solr</a>.</p>
+<h3>Meldingsformidling og arbeidsdistribusjon</h3>
+<p>Køsystemet jeg har erfaring med er MSMQ. RabbitMQ og beanstalkd har jeg bare lekt litt med. Nå ønsker jeg å ta en titt på 
+<a href="http://gearman.org/">Gearman</a>,
+<a href="http://restmq.com/">RestMQ</a> og
+<a href="http://kafka.apache.org/">Kafka</a>. Sistnevnte virker veldig solid, og har mange spennende bruksområder.</p>
+<h3>Andre tjenester</h3>
+<p>Det finnes også verktøy for testing av webtjenester, <em>service discovery</em> og koordinering, distribuert konfigurasjon, feiltoleranse, distribuert sikkerhet, monitorering og logging. Noen jeg har sett meg ut er
+<a href="http://keycloak.jboss.org/">keycloak</a>,
+<a href="http://www.gluu.org/">gluu</a>, 
+<a href="http://www.mbtest.org/">montebank</a>, 
+<a href="https://github.com/realestate-com-au/pact">pact</a>,
+<a href="https://github.com/Netflix/Hystrix">Hystrix</a>,
+<a href="https://www.serfdom.io/">Serf</a>,
+<a href="https://consul.io/">Consul</a>,
+<a href="http://zookeeper.apache.org/">ZooKeeper</a>,
+<a href="https://github.com/ha/doozerd">doozerd</a>,
+<a href="https://github.com/coreos/etcd">etcd</a>,
+<a href="http://bookkeeper.apache.org/">BookKeeper</a>,
+<a href="http://www.fabfile.org/">Fabric</a>,
+<a href="https://github.com/twitter/twemproxy">twemproxy</a>,
+<a href="http://www.haproxy.org/">HAProxy</a>,
+<a href="https://www.varnish-cache.org/">Varnish</a>,
+<a href="http://www.squid-cache.org/">squid</a>, 
+<a href="http://packetbeat.com/">Packetbeat</a>, 
+<a href="http://www.fluentd.org/">fluentd</a> og
+<a href="http://logstash.net/">logstash</a>.</p>
+<h2>Hva jeg ikke vil fokusere på</h2>
+<p>Det jeg ikke er så interessert i å bruke tid på (fordi det bare bør virke, men ikke inngår som endel av selve løsningene jeg ønsker å kunne lage) er ting som provisjonering, deployment, hosting og containerteknologi. Jeg planlegger ikke å studere docker, ikke studere chef, puppet, condep eller ansibel, og ikke bruke proprietære <em>Platform-as-a-Service</em> løsninger fra for eksempel Microsoft eller Google. Fokuset skal være på open source byggeklosser som er uavhengige av valgt skyleverandør, og som kan inngå i en softwareløsning som typisk leverer høy oppetid, høy kapasitet og høy ytelse. </p>
+<h2>Har du noen tips?</h2>
+<p>Har du erfaring med en tjeneste som du synes er verdifull, og som jeg ikke har på listen min? Eller kjenner du til noe som de <em>tøffeste i klassen</em> bruker, og som du skulle ønske du visste mer om? Legg igjen en kommentar da, så kan jeg vurdere å ta det med.  </p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

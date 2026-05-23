@@ -1,0 +1,438 @@
+---
+title: Cruickshanks presenterer Arquillian [Luke 18, 2012]
+link: http://blog.kjempekjekt.com/2012/12/18/cruickshanks-presenterer-arquillian-luke-xx-2012/
+layout: post
+date: 2012-12-18 09:31:19Z
+tags:
+  - Julekalender
+  - Java
+  - Testing
+---
+<p><strong>Kevin Cruickshanks</strong> (<a href="https://twitter.com/kevincruick">@kevincruick</a>) er en kompis fra studietiden ved Universitetet i Bergen. Det er ikke så ofte vi ser hverandre lengre, men fra tid til annen stiller han opp på NNUG-møter, og da er det alltid hyggelig. </p> <p>Arquillian er en spennende plattform for automatiserte integrasjonstester for Java-utviklere. I denne tutorialen git Kevin deg en grundig innføring.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="IMG_3472" border="0" alt="IMG_3472" src="/uploads/2012/12/IMG_3472.jpg" width="570" height="387"></p> <p><strong>Hvem er du?</strong><br>Utflytta stording som no er partner og systemutvikler i Machina AS i Bergen </p> <p><strong>Hva er jobben din?</strong><br>Systemutvikler på Java og .NET plattform  <p><strong>Hva kan du?</strong><br>Har mykje erfaring med utvikling av Java server og klienter  <p><strong>Hva liker du best med yrket ditt?</strong><br>Det er utfordringer kvar einaste dag!</p> <hr>  <h2>Integrasjonstesting med Arquillian</h2> <p>Noe jeg alltid har ønsket meg er et rammeverk for integrasjonstesting av Enterprise Java system (J2EE) i en kontainer. Arquillian er et slikt verktøy som gir deg mulighet for å teste applikasjonene dine rett i en kontainer, som for eksempel Jboss, uten bruk av mockups eller andre omveier for å få koden din testet. </p> <p>Enhetstester bør du også lage, men det trenger du ikke Arquillian til. Dersom du vil se hvordan applikasjonen din oppfører seg i forskjellige kontainere er Arquillian nettopp noe for deg. Denne artikkelen viser deg hvordan du kan bygge en liten webapplikasjon som kan testes med Arquillian. </p> <h3>Stikkord</h3> <p>Her et utvalg av teknologiene som er i bruk i artikkelen:  <ul> <li><a href="http://www.jboss.org/arquillian.html">Arquillian</a> - Dette er selve testrammeverket som utfører testene dine.  <li><a href="http://www.jboss.org/shrinkwrap">Shrinkwrap</a> - Blir benyttet til å opprette ferdig applikasjonspakker (EAR, WAR, JAR) som til slutt kjøres i applikasjonsserveren  <li><a href="http://www.jboss.org/">JBoss</a> - I eksempelapplikasjonen som er laget til denne artikkelen har jeg fokusert på Jboss versjon 7 som applikasjonsserver. Arquillian støtter en mengde andre kontainere, som Tomcat, Glassfish, Jetty, Weblogic og WebSphere i tillegg til flere eldre versjoner av Jboss. For full oversikt over hvilke kontainere som støttes kan du se <a href="https://docs.jboss.org/author/display/ARQ/Container+adapters">her</a>.  <li><a href="http://netbeans.org/">Netbeans</a> - Jeg benytter meg av Netbeans i mitt daglige virke og eksempelapplikasjonen er kodet ved hjelp av den. Prosjektet er satt opp ved hjelp av <a href="http://maven.apache.org/">Maven</a> og kan åpnes og kjøres i andre programmer som IntelliJ og Eclipse.  <li><a href="http://www.oracle.com/technetwork/java/javaee/javaserverfaces-139869.html">Java Server Faces (JSF)</a> v2.0 er benyttet som webrammeverk.  <li>Java - Applikasjonen er bygd på <a href="http://www.oracle.com/technetwork/java/javase/overview/index.html">Java versjon 7</a> og <a href="http://www.oracle.com/technetwork/java/javaee/overview/index.html">Java EE versjon 6</a> </li></ul> <h3>Oppsett av Arquillian</h3> <p>For å kunne kjøre Arquillian må vi første importere det. Min webapplikasjon er bygd opp rundt Maven og dermed kan jeg legge til alle eksterne bibliotekreferenser rett i <a href="http://maven.apache.org/guides/introduction/introduction-to-the-pom.html">POM</a>-filen min og la Maven laste ned alle nødvendige filer. Arquillian krever en god del tilleggsbiblioteker og kan ta litt tid å laste ned første gang. </p> <p>Under kan du se et utdrag av POM-filen som omhandler oppsettet for Arquillian. I <i>dependencyManagement</i> angir du hvilken versjon av Arquillian du vil benytte. Alle avhengigheter (dependencies) som ikke har angitt versjon benytter versjonen i <i>dependencyManagement</i>. </p> <p><a href="http://www.jboss.org/jsfunit">JSFUnit</a> biblioteket er et tilleggsbibliotek som kan integreres med Arquillian. JSFUnit er et testrammeverk for JSF webapplikasjoner. Jeg benytter dette rammeverket til testing av websidene i eksempelapplikasjonen. Eksempel på bruk av JSFUnit er omtalt lenger ned i artikkelen. </p> <p><strong>Profiler</strong><br>De to <a href="http://maven.apache.org/guides/introduction/introduction-to-profiles.html">profilene</a> som er angitt nederst i utsnittet under, viser hvilke kontainere som kan benyttes til testene. Profilen <i>jbossas-7-remote</i> blir brukt til testing mot eksterne instanser, mens <i>jbossas-7-managed</i> brukes til lokale instanser, dvs, at Arquillian starter og stopper instansen for deg for hver testklasse. Det er desverre ikke mulig å stare en instans av jboss i managed-modus og la den fungere på tvers av flere testklasser. Men dette vil nok bli støttet i senere versjoner av Arquillian. </p><pre>...
+    &lt;properties&gt;
+        ...
+        &lt;jboss-version&gt;7.1.1.Final&lt;/jboss-version&gt;
+        ...
+    &lt;/properties&gt;
+    &lt;dependencyManagement&gt;
+        &lt;dependencies&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;org.jboss.arquillian&lt;/groupId&gt;
+                &lt;artifactId&gt;arquillian-bom&lt;/artifactId&gt;
+                &lt;version&gt;1.0.1.Final&lt;/version&gt;
+                &lt;scope&gt;import&lt;/scope&gt;
+                &lt;type&gt;pom&lt;/type&gt;
+            &lt;/dependency&gt;
+        &lt;/dependencies&gt;
+    &lt;/dependencyManagement&gt;
+
+    &lt;dependencies&gt;       
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jboss.arquillian.junit&lt;/groupId&gt;
+            &lt;artifactId&gt;arquillian-junit-container&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jboss.shrinkwrap.resolver&lt;/groupId&gt;
+            &lt;artifactId&gt;shrinkwrap-resolver-impl-maven&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;       
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jboss.shrinkwrap.descriptors&lt;/groupId&gt;
+            &lt;artifactId&gt;shrinkwrap-descriptors-impl-javaee&lt;/artifactId&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jboss.arquillian.extension&lt;/groupId&gt;
+            &lt;artifactId&gt;arquillian-persistence-impl&lt;/artifactId&gt;
+            &lt;version&gt;1.0.0.Alpha5&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jboss.jsfunit&lt;/groupId&gt;
+            &lt;artifactId&gt;jsfunit-arquillian&lt;/artifactId&gt;
+            &lt;version&gt;2.0.0.Beta3-SNAPSHOT&lt;/version&gt;
+            &lt;scope&gt;test&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.jboss.spec&lt;/groupId&gt;
+            &lt;artifactId&gt;jboss-javaee-6.0&lt;/artifactId&gt;
+            &lt;version&gt;3.0.1.Final&lt;/version&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+        &lt;/dependency&gt;       
+    &lt;/dependencies&gt;
+    &lt;profiles&gt;
+        &lt;profile&gt;           
+            &lt;id&gt;jbossas-7-remote&lt;/id&gt;
+            &lt;dependencies&gt;
+                &lt;dependency&gt;
+                    &lt;groupId&gt;org.jboss.as&lt;/groupId&gt;
+                    &lt;artifactId&gt;jboss-as-arquillian-container-remote&lt;/artifactId&gt;
+                    &lt;version&gt;${jboss-version}&lt;/version&gt;
+                    &lt;scope&gt;provided&lt;/scope&gt;
+                &lt;/dependency&gt;
+            &lt;/dependencies&gt;
+        &lt;/profile&gt;
+        &lt;profile&gt;           
+            &lt;id&gt;jbossas-7-managed&lt;/id&gt;
+            &lt;dependencies&gt;
+                &lt;dependency&gt;
+                    &lt;groupId&gt;org.jboss.as&lt;/groupId&gt;
+                    &lt;artifactId&gt;jboss-as-arquillian-container-managed&lt;/artifactId&gt;
+                    &lt;version&gt;${jboss-version}&lt;/version&gt;
+                    &lt;scope&gt;provided&lt;/scope&gt;
+                &lt;/dependency&gt;
+            &lt;/dependencies&gt;
+        &lt;/profile&gt;
+    &lt;/profiles&gt;
+...</pre>
+<h3>En webapplikasjon</h3>
+<p>Før vi går i gang med testing må vi få laget til en testbar webapplikasjon. Applikasjonen er bygd på en standard <a href="http://en.wikipedia.org/wiki/Three-tier_architecture#Three-tier_architecture">tre-lagsarkitektur</a> med klient-, server- og databaselag. Til database kan du benytte en hvilken som helst SQLkompatibel database. Jeg har til testingen benyttet meg av den innebygde <a href="http://www.h2database.com/html/main.html">H2-databasen</a> som følger med Jboss7 installasjonen. </p>
+<p><a href="http://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html">JPA</a> er brukt som rammeverk for kommunikasjon med databasen. For å kunne benytte oss av JPA trenger vi en <a href="http://www.objectdb.com/java/jpa/entity/persistence-unit"><i>Persistence Unit</i></a>. Selve filen kan du legge i katalogen src/main/resources/META-INF/. Som tilbyder benytter jeg Hibernate som følger med Jboss. Du trenger ikke inkludere Hibernate i POM-filen din. </p>
+<p>Du kan konfigurere og bruke forskjellige i testene dine, men jeg har kun laget til en som er konfigurert til å koble seg opp mot H2-databasen i Jboss. </p><pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;persistence 
+    xmlns="http://java.sun.com/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0"&gt;
+    &lt;persistence-unit name="budgettest"&gt;
+        &lt;jta-data-source&gt;java:jboss/datasources/ExampleDS&lt;/jta-data-source&gt;
+        &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
+        &lt;class&gt;no.ksoft.budget.ds.BudgetPost&lt;/class&gt;
+        &lt;class&gt;no.ksoft.budget.ds.Budget&lt;/class&gt;
+        &lt;class&gt;no.ksoft.budget.ds.BudgetPostTag&lt;/class&gt;
+        &lt;properties&gt;
+            &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" /&gt;
+            &lt;property name="hibernate.hbm2ddl.auto" value="create-drop" /&gt;
+            &lt;property name="hibernate.show_sql" value="true" /&gt;
+        &lt;/properties&gt;
+    &lt;/persistence-unit&gt;
+&lt;/persistence&gt;</pre>
+<h4>Entitetsbønner (entity bean)</h4>
+<p>Jeg har laget til tre entiter (disse legges til i persistence.xml) til denne applikasjonen som er et forsøk på å lage et lite budsjettprogram: 
+<ul>
+<li><strong>Budget</strong> 
+<li><strong>BudgetPost</strong> 
+<li><strong>BudgetPostTag</strong> </li></ul>Under ser du hvordan entiteten Budget ser ut. Alle entitetene arver klassen Any som er en <a href="http://docs.oracle.com/javaee/6/api/javax/persistence/MappedSuperclass.html"><i>MappedSuperClass</i></a>. Alle entiteter som arver Any vil få tilordnet alle egenskapene til Any, uten at den er å betrakte som en egen entitet i systemet. 
+<p>Klassen Any: <pre>@MappedSuperclass
+@EqualsAndHashCode
+public class Any {
+    @SuppressWarnings("unused")
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    @GeneratedValue
+    @Getter
+    @Setter
+    protected int id;
+}</pre>Entiteten Budget: <pre>@Entity
+@Table(name = "budget", schema = "public")
+@NamedQueries(value = {@NamedQuery(name = "Budget.findAll", query = "SELECT object(b) FROM Budget as b")})
+public class Budget extends Any implements java.io.Serializable {
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "start_date", nullable = false, length = 29)
+    private Date startDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "end_date", nullable = false, length = 29)
+    private Date endDate;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "budget")
+    private Set<budgetpost> budgetPosts = new HashSet(0);
+
+    public Budget() {
+    }
+
+    public Budget(int id, Date startDate, Date endDate) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public Budget(int id, Date startDate, Date endDate, Set<budgetpost> budgetPosts) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.budgetPosts = budgetPosts;
+    }
+    ...
+}</pre>
+<p>For hver entitet er det opprettet en egen sesjonsbønne (session bean): 
+<ul>
+<li>BudgetServiceImpl 
+<li>BudgetPostServiceImpl 
+<li>BudgetPostTagServiceImpl </li></ul>
+<p>Hver bønne implementerer følgende standardmetoder for uthenting og lagring av data: </p><pre>@Remote
+public interface Service&lt;T&gt; {
+    T findById(int id);
+    T makePersistent(T entity);
+    List&lt;T&gt; findAll();
+}</pre>
+<p>En ferdigimplementert bønne ser slik ut: </p><pre>@Stateless
+public class BudgetServiceImpl implements BudgetService {
+    @PersistenceContext
+    private EntityManager em;
+
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
+    @Override
+    public Budget findById(int id) {
+        return em.find(Budget.class, id);
+    }
+
+    @Override
+    public List<budget> findAll() {
+        List l = em.createNamedQuery("Budget.findAll").getResultList();
+        if (l == null) {
+            return new ArrayList&lt;&gt;();
+        }
+        return (List<budget>) l;
+    }
+
+    @Override
+    public Budget makePersistent(Budget entity) {
+        em.persist(entity);
+        return entity;
+    }
+}</pre>
+<h3>Klientlaget</h3>
+<p>To enkle websider er lagt til. Sidene er kodet i xhtml og begge benytter seg av hver sin <i>Managed bean</i> for uthenting av relevant informasjon fra databasen. Index.xhtml viser et tall for antall budsjetter i databasen og inneholder en knapp som lenker til et vilkårlig budsjett. Den andre websiden, view-budget.xhtml, viser informasjon om et Budsjett som blir hentet ut ved hjelp av en ID paramater. </p>
+<p>index.xhtml</p><pre>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"&gt;
+    &lt;head&gt;&lt;title&gt;Budgets&lt;/title&gt;&lt;/head&gt;
+    &lt;body&gt;
+        &lt;f:view&gt;
+            &lt;h:form id="viewBudgetForm"&gt;
+                &lt;h1&gt;&lt;h:outputText value="Budgets"/&gt;&lt;/h1&gt;
+                &lt;h:outputText id="totaltAmountOfBudgets" value="#{indexBean.allBudgets.size()}"/&gt;
+                &lt;h:commandLink id="viewAbudget" value="View budget" action="view-budget.xhtml"&gt;
+                    &lt;f:param name="budgetId" value="#{indexBean.allBudgets.get(0).id}" /&gt;
+                &lt;/h:commandLink&gt;
+            &lt;/h:form&gt;
+        &lt;/f:view&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+                                                        </pre>
+<p>view-budget.xhtml</p><pre>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"&gt;
+    &lt;head&gt;
+        &lt;title&gt;Budgets&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;f:view&gt;
+            &lt;h:form id="viewSingleBudgetForm"&gt;
+                &lt;h:outputText value="Current budget ID: "/&gt;
+                &lt;h:outputText id="currentBudgetId" value="#{viewBudgetBean.currentBudget.id}"/&gt;&lt;br /&gt;
+                &lt;h:outputText value="Current budget start date"/&gt;
+                &lt;h:outputText id="currentBudgetStartDate" value="#{viewBudgetBean.currentBudget.startDate}"/&gt;&lt;br /&gt;
+                &lt;h:outputText value="Current budget end date"/&gt;
+                &lt;h:outputText id="currentBudgetEndDate" value="#{viewBudgetBean.currentBudget.startDate}"/&gt;&lt;br /&gt;
+            &lt;/h:form&gt;
+        &lt;/f:view&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+                                                        </pre>
+<p>Det bakomforliggende bønnene (managed beans) benytter <a href="http://docs.oracle.com/javaee/6/tutorial/doc/giwhl.html">CDI</a> for å legge inn referanser til sesjonsbønnene. Bønnen IndexBean benyttes i index.html, mens bønnen ViewBudgetBean benyttes i view-budget.xhtml. Ingen fantasifull navngivning av bønner dette, men navnet mer enn antyder hvor den aktuelle bønnen er i bruk. Du kan selvsagt bruke bønner på tvers av flere sider, men du kan fort ende opp i situasjoner som er vanskelig å håndtere etterhvert som applikasjonen vokser. </p>
+<p>Bønnen IndexBean</p><pre>@Named("indexBean")
+@RequestScoped
+public class IndexBean {
+    
+    @Inject
+    BudgetService budgetService;
+
+    public List<budget> getAllBudgets() {
+        return budgetService.findAll();
+    }
+}</pre>
+<p>Bønnen ViewBudgetBean</p><pre>@Named("viewBudgetBean")
+@RequestScoped
+public class ViewBudgetBean {
+
+    @Inject
+    BudgetService budgetService;
+    @Getter
+    @Setter
+    @Inject
+    @RequestParam("budgetId")
+    Instance&lt;Integer&gt; budgetId;
+
+    public Budget getCurrentBudget() {
+        return budgetService.findById(getBudgetId().get().intValue());
+    }
+}</pre>
+<h3>Testing av serverlaget med Arquillian</h3>
+<p>Til testing av serverlaget trenger vi først litt mer konfigurering av Arquillian. Konfigurasjonsfilen Arquillian.xml legges i &lt;sti til prosjektet ditt&gt;src/test/resources. Min fil ser slik ut: </p><pre>&lt;arquillian xmlns="http://jboss.org/schema/arquillian" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd"&gt;
+    &lt;engine&gt;
+        &lt;property name="deploymentExportPath"&gt;target/&lt;/property&gt;
+    &lt;/engine&gt;
+    &lt;defaultProtocol type="Servlet 3.0" /&gt;
+    &lt;container qualifier="jbossas-7-managed" default="false"&gt;
+        &lt;configuration&gt;
+            &lt;property name="jbossHome"&gt;X:\sti\til\jboss\jboss-as-7.1.1.Final&lt;/property&gt;
+        &lt;/configuration&gt;
+        &lt;protocol type="jmx-as7"&gt;           
+            &lt;property name="javaVmArguments"&gt;-Xmx512m -XX:MaxPermSize=128m -Xverify:none -XX:+UseFastAccessorMethods&lt;/property&gt;
+            &lt;property name="executionType"&gt;REMOTE&lt;/property&gt;
+        &lt;/protocol&gt;
+    &lt;/container&gt;
+    &lt;container qualifier="jbossas-7-remote" default="true"&gt;
+        &lt;configuration&gt;
+            &lt;property name="managementAddress"&gt;192.168.1.195&lt;/property&gt;
+            &lt;property name="managementPort"&gt;8080&lt;/property&gt;
+        &lt;/configuration&gt;
+        &lt;protocol type="jmx-as7"&gt;
+        &lt;/protocol&gt;
+    &lt;/container&gt;
+&lt;/arquillian&gt;</pre>
+<p>Filen inneholder konfigurasjonselementer for begge profilene jeg oppgav i POM-filen (jbossas-7-managed og jbossas-7-remote). For remote-profilen oppgir jeg ip-adressen og portnummeret til den kjørende jbossinstansen, mens for managed, oppgir jeg den fulle stien til jbossinstallasjonen. Feilinformasjonen fra Arquillian er ikke alltid like intuitiv, men den gir nøyakig informasjon dersom deler av konfigurasjonen din er feil. </p>
+<p>Du kan lage flere spektakulære tester med Arquillian, men jeg viser kun det grunnleggende her. Testen under viser det som trengs for å kjøre en enkelt testklasse med Arquillian. </p>
+<p>Du trenger følgende tre ting for å lage en testklasse: 
+<ul>
+<ol>1: En @RunWith(Arquillian.class) annotasjon for å angi at du vil la Arquillian behandle testklassen.</ol>
+<ol>2: En metode som er annotert med @Deployment som returnerer et ShrinkWrap arkiv.</ol>
+<ol>3: Minst en metode annotert med @Test som angir at det er en testmetode.</ol></ul>I testen under har jeg også lagt til klasseannotasjonen @Transactional med TransactionMode.ROLLBACK som parameter. Denne angir at databasen min blir rullet tilbake etter hver testmetode slik at jeg kan være sikker på at databasen er tom for hver test som kjøres. Denne annoteringen kan og ligge på metodenivå. Andre paramtetere som er tilgengelig for denne annotasjonen er COMMIT og DISABLE. 
+<p>@UsingDataSet("navn på dataset.xml fil") annotasjonen gir deg mulighet for å populere databasen din med verdier før du kjører testene. Bruken av denne annotasjonen er smør på flesk i midt eksempel da den i praksis gir samme resultat som TransactionMode.ROLLBACK siden jeg benytter meg av et tomt dataset før hver test kjøres. Du kan lese mer om bruk av dataset i testene <a href="https://docs.jboss.org/author/display/ARQ/Persistence">her</a>. </p>
+<p>@Deployment-metoden lager et ShrinkWrap arkiv som blir innstallert i kontainerinstansen under kjøring. I eksempelet er det en WAR-fil som blir opprettet. Alle klasser som er nødvendige for å kunne kjøre testen må legges inn i arkivet. Du trenger ikke ta med alle klassene i prosjektet ditt dersom de ikke er knyttet opp mot noen av klassene du trenger for å gjennomføre testene testene. </p>
+<p>Det er også mulig å knytte opp hele prosjekt (F.eks.: et Java bibliotekprosjekt) inn i arkivet. Det vil med andre ord kunne være lurt å lage et eget Arquillian testprosjekt som kobler inn det nødvendige web-, ejb- og javabibliotekene du trenger og deretter utfører testene. Eneste forskjellen vil være et mer håndterbart arkiv som du kan benytte i testene dine. </p><pre>@RunWith(Arquillian.class)
+@UsingDataSet("empty.xml")
+@Transactional(TransactionMode.ROLLBACK)
+public class BudgetServiceTest {
+
+    private static final Logger LOGGER = Logger.getLogger(BudgetServiceTest.class.getName());
+    @Inject
+    private BudgetService budgetService;
+
+    public BudgetServiceTest() {
+    }
+
+    @Deployment
+    public static Archive&lt;?&lt; createTestableDeployment() {
+        final WebArchive war = ShrinkWrap.create(WebArchive.class, "service.war");
+        war.addClass(Any.class);
+        war.addClass(Budget.class);
+        war.addClass(BudgetPost.class);
+        war.addClass(BudgetPostTag.class);
+        war.addClass(Service.class);
+        war.addClass(BudgetService.class);
+        war.addClass(BudgetServiceImpl.class);
+        war.addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml");
+        war.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"));
+        LOGGER.info(war.toString(Formatters.VERBOSE));
+        return war;
+    }
+
+    @Test
+    public void testFindAllBudgets() {
+        List&lt;Budget&lt; all = budgetService.findAll();
+        assertEquals(true, all.isEmpty());
+        insertABudget();
+        all = budgetService.findAll();
+        assertEquals(1, all.size());
+    }
+
+    @Test
+    public void testFindBudgetById() {
+        final Budget expected = insertABudget();
+        assertTrue(expected.getId() &lt; 0);
+
+        List&lt;Budget&lt; all = budgetService.findAll();
+        assertEquals(1, all.size());
+
+        Budget result = budgetService.findById(expected.getId());
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testMakePersistent() {
+        Budget expected = insertABudget();
+        Budget test = budgetService.findById(expected.getId());
+        assertEquals(expected, test);
+    }
+
+
+    private Budget insertABudget() {
+        final Budget b = new Budget();
+        b.setEndDate(new Date(System.currentTimeMillis()));
+        b.setStartDate(new Date(System.currentTimeMillis()));
+        return budgetService.makePersistent(b);
+    }
+}</pre>
+<h3>JSFUnit</h3>
+<p>Til slutt vil jeg vise hvordan du kan få testet ut alle dei tre lagene i applikasjonen. Under vises et eksempel på en testklasse for å teste ut manipulering og navigering mellom to websider. Denne testing er mulig ved hjelp av <a href="http://www.jboss.org/jsfunit.html">JSFUnit</a> som gir deg tilgang til en del nyttige metoder for å manipulere webapplikasjonen under kjøring i en kontainer. </p>
+<p>I metoden testIndexBean(<a href="http://docs.jboss.org/jsfunit/apidocs/org/jboss/jsfunit/jsfsession/JSFServerSession.html">JSFServerSession</a> server, <a href="http://docs.jboss.org/jsfunit/apidocs/org/jboss/jsfunit/jsfsession/JSFClientSession.html">JSFClientSession</a> client) blir server og client injisert inn i metoden. <a href="http://docs.jboss.org/jsfunit/apidocs/org/jboss/jsfunit/jsfsession/JSFServerSession.html">JSFServerSession</a> gir deg tilgang til deler av JSF API`et, mens <a href="http://docs.jboss.org/jsfunit/apidocs/org/jboss/jsfunit/jsfsession/JSFClientSession.html">JSFClientSession</a> er en wrapper-klasse for <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a> som imiterer nettleser interaksjon med en JSF-applikasjon. </p><pre>@RunWith(Arquillian.class)
+@InitialPage("/index.xhtml")
+public class WebTest {
+
+    private static final Logger LOGGER = Logger.getLogger(WebTest.class.getName());
+    @Inject
+    private BudgetService budgetService;
+
+    @Deployment(testable = true)
+    public static Archive&gt;?&lt; createTestableDeployment() {
+        MavenDependencyResolver resolver = DependencyResolvers.use(
+                MavenDependencyResolver.class).loadMetadataFromPom("pom.xml");
+
+        final WebArchive war = ShrinkWrap.create(WebArchive.class, "budget.war");
+        war.addClass(Any.class);
+        war.addClass(Budget.class);
+        war.addClass(BudgetPostTag.class);
+        war.addClass(BudgetPost.class);
+        war.addClass(Service.class);
+        war.addClass(BudgetService.class);
+        war.addClass(BudgetPostService.class);
+        war.addClass(BudgetPostTagService.class);
+        war.addClass(BudgetServiceImpl.class);
+        war.addClass(BudgetPostServiceImpl.class);
+        war.addClass(BudgetPostTagServiceImpl.class);
+        war.addClass(IndexBean.class);
+        war.addClass(ViewBudgetBean.class);
+        war.addClass(FieldParameterNames.class);
+        war.addAsWebResource(new File("src/main/webapp", "index.xhtml"));
+        war.addAsWebResource(new File("src/main/webapp", "view-budget.xhtml"));
+        war.setWebXML(new File("src/main/webapp/WEB-INF/web.xml"));
+        war.addAsWebInfResource(new File("src/main/webapp/WEB-INF/faces-config.xml"), "faces-config.xml");
+        war.addAsWebInfResource(new File("src/main/webapp/WEB-INF/jboss-web.xml"), "jboss-web.xml");
+        war.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+        war.addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml");
+        war.addAsLibraries(resolver.artifact("org.jboss.solder:solder-impl").resolveAsFiles());
+
+
+        LOGGER.info(war.toString(Formatters.VERBOSE));
+        return war;
+    }
+
+    @Before
+    public void addSomeValues() {
+        Budget b = new Budget();
+        b.setEndDate(new Date(System.currentTimeMillis()));
+        b.setStartDate(new Date(System.currentTimeMillis()));
+        budgetService.makePersistent(b);
+    }
+
+    @Test
+    @InitialPage("/index.xhtml")
+    public void testIndexBean(JSFServerSession server, JSFClientSession client) throws IOException {
+        //Sjekk at vi er på indexsiden
+        assertEquals("/index.xhtml", server.getCurrentViewID()); 
+        
+        //Sjekk at IndexBean får hentet ut det ene budsjettet vi har opprettet
+        assertEquals(1, server.getManagedBeanValue("#{indexBean.allBudgets.size()}")); 
+
+        UIComponent totalAmountOfBudgetsOutput = server.findComponent("totaltAmountOfBudgets");
+
+        //Sjekk at antall budsjett vises korrekt på indexsiden
+        assertEquals("1", totalAmountOfBudgetsOutput.getAttributes().get("value").toString()); 
+
+        //Klikk på vis budsjettknappen
+        client.click("viewBudgetForm:viewAbudget"); 
+
+        //Sjekk at vi har skiftet side til view-budget.xhtml
+        assertTrue(server.getCurrentViewID().contains("view-budget")); 
+    }
+}</pre>
+<h3>Kildekode</h3>
+<p>Kildekoden til denne artikkelen <a href="https://github.com/tormaroe/kevins_arquillian_demo">er tilgjengelig som en github repository</a>.</p>
+<h3>Mer informasjon</h3>
+<p>
+<ul>
+<li><a href="http://arquillian.org/">Offisiel hjemmside for Arquillian</a> 
+<li><a href="http://arquillian.org/guides/getting_started/?utm_source=cta">Oppstarts guider</a> 
+<li><a href="https://github.com/arquillian">Arquillian på Github</a> 
+<li><a href="http://www.jboss.org/jsfunit">JSFUnit</a> 
+<li><a href="http://www.jboss.org/shrinkwrap">ShrinkWrap</a> </li></ul>

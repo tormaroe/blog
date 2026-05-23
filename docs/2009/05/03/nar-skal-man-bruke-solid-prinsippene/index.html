@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Uncle Bob,OO Patterns,Meninger">
+
+    <title>Når skal man bruke SOLID prinsippene?</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Når skal man bruke SOLID prinsippene?</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 3. mai 2009</small> 
+            <a href="/tags/uncle-bob"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Uncle Bob</span></a>
+          
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          
+            <a href="/tags/meninger"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Meninger</span></a>
+          </p>
+          <p><a title="SOLID by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3497170299/"><img style="padding-left: 15px; padding-bottom: 8px" height="192" alt="SOLID" src="http://farm4.static.flickr.com/3345/3497170299_bd189469c2_m.jpg" width="240" align="right" border="0" /></a>SOLID er benevnelsen på fem prisnipper innenfor objektorientert softwaredesign som vi har hørt mye om i løpet av den siste tiden. Blant annet holdt Mark Nijhof et innlegg på NNUG Bergen om SOLID i januar i år. <a href="http://blog.fohjin.com/blog/2009/2/26/Software_Development_is_not_a_Jenga_game">Foredraget finnes også i blogpost-format her</a>.</p>
+<p>Siden det foredraget har jeg forsøkt å lære meg disse prinsippene, og brukt dem etter beste evne. Akkurat nå leser jeg Robert C. Martin's <strong><em>Agile Prinsiples, Patterns, and Practices in C#</em></strong>, og da går det plutselig opp for meg at selv om mange har forsøkt å lære meg prinsippene, så er det ingen som sålangt har fortalt meg hvordan man skal bruke dem.</p>
+<p>I boken sier Onkel Bob Martin at man skal bruke prinsippene når de trengs. Unødvendig bruk fører bare til unøvdendig kompleksitet. Jeg føler dette er et viktig poeng å få frem.</p>
+<p>Ta for eksempel <em>Single Responsibility Prinsiple</em> (SRP). Dette prinsippet sier at en klasse kun skal ha <em>ett</em> ansvar, og ansvar defineres som <em>én grunn til å endres</em>. Men en grunn til å endres er kun en grunn til å endres om den <strong>endringen faktisk inntreffer</strong>. Onkel Bob sier at det er ikke lurt å innføre SRP - eller noe annet OO-prinsipp for den saks skyld - uten at man har symtomer som kan løses med prinsippet.</p>
+<p>Dvs. at man ikke splitter opp en klasse i flere klasser basert på ansvarsområder før man får behov for å endre klassen. Når endringen kommer, og endringen kun gjelder for ett av ansvarsområdene, kan man bruke SRP og splitte ut det ansvarsområdet som endres til en ny klasse.</p>
+<p style="padding-left: 20px"><em>"Agile teams apply principles only to solve smells; they don't apply principles when there are no smells. It would be a mistake to unconditionally confirm to a principle just because it is a principle. The principles are there to help us eliminate bad smells. They are not a perfume to be liberally scattered all over the system. Over-confirmance to the principles leads to the design smell of needless complexity."</em></p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=Agile" rel="tag">Agile</a>, <a href="/index.php?s=SOLID" rel="tag">SOLID</a>, <a href="/index.php?s=Robert+C.+Martin" rel="tag">Robert C.+Martin</a>, <a href="/index.php?s=Pattern" rel="tag">Pattern</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

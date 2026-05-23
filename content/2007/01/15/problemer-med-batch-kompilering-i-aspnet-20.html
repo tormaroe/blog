@@ -1,0 +1,25 @@
+---
+title: Problemer med batch-kompilering i asp.net 2.0
+link: http://blog.kjempekjekt.com/2007/01/15/problemer-med-batch-kompilering-i-aspnet-20/
+layout: post
+date: 2007-01-15 08:39:53Z
+tags:
+  - Webutvikling
+---
+Jeg har hatt litt problemer med mine ASP.NET 2.0 prosjekter i det siste. Fra tid til annen dukker følgende melding opp i browseren:
+
+<span style="color: red">Could not load file or assembly 'App_Web_xxxxxxxx, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null' or one of its dependencies. The system cannot find the file specified.</span>
+
+Det viser seg at jeg ikke er alene. <a href="http://forums.asp.net/4/1271201/ShowThread.aspx" target="_blank">På asp.net forumet har man f.eks. diskutert problemet</a> siden april 2006, men man er ikke kommet noe nærmere en løsning. Microsoft har laget en patch som de sier kan fikse problemet (<a href="http://support.microsoft.com/?kbid=915782" target="_blank">les deres issue-beskrivelse her</a>), men vil ikke la deg laste den ned uten at du kontakter dem med en supportsak. De sier dessuten at du ikke må installere patchen hvis du ikke har opplevd problemet.., skummelt!
+
+Flere som har forsøkt patchen sier også at problemet ikke ble borte.
+
+Problemet er relatert til kompilering (<a href="http://west-wind.com/weblog/posts/2128.aspx" target="_blank">les om kompileringsmoduser i asp.net 2.0 her</a>), og dukker av og til opp når man har endret en eller annen user control - sansynligvis i kombinasjon med bruk av master pages, hvor sidene, user controllene og master pagen batch-kompileres inn i én assembly.
+
+Og når den først har oppstått er feilen vanskelig å bli kvitt - man må tvinge en rekompilering, og rådene for hvordan man skal gjøre det er mange, men etter min erfaring må man kombinere flere av dem for å få det til. <strong>Og det som virket i går fungerer ikke nødvendigvis i dag.</strong> Det som fungerte for meg på fredag var å editere master page'n, og samtidig starte en ny bruker session, så jeg kommer til å prøve det neste gang.
+
+Det som er mer skummelt er at det blir rapportert at dette også skjer på produksjonsservere.., med debug=false, og uten at det er foretatt endringer i kode. Det virker på meg som om Microsoft her har en bug de absolutt burde sette mere krutt inn på for å fikse.., dette har nå tatt veldig lang tid, og Microsofts representant på forumet har blitt veldig stille. Hans siste uttalelse kom i juni, og lød:
+
+<em>"Regarding a download of the fix, we don't ever provide fixes at this stage for public download. (..) Once we go through enough testing, it will be available for download, likely in a SP."</em>
+
+Det har enda ikke skjedd.

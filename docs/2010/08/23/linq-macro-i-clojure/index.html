@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Clojure,Macro">
+
+    <title>LINQ-macro i Clojure</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>LINQ-macro i Clojure</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 23. august 2010</small> 
+            <a href="/tags/clojure"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Clojure</span></a>
+          
+            <a href="/tags/macro"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Macro</span></a>
+          </p>
+          <p>En av de tingene som gjør Clojure og andre Lisper unike i forhold til andre språk er makroer. Det finnes andre språk som har makro-features, men ikke så geniale som de i Clojure/Lisp. Makroer gjør det blant annet ganske enkelt å lage interne DSL'er. Her er et eksempel hentet fra en <a href="http://www.slideshare.net/pcalcado/lisp-macros-in-20-minutes-featuring-clojure-presentation" target="_blank">introduksjon til lisp-makroer på slideshare</a>, hvor man legger tilrette for Linq-lignende spørringer med bare noen få linjer kode.</p>
+<p>La oss først se på hvordan det tar seg ut i bruk:</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><font color="#cda869">(</font>def names <font color="#cda869">'</font><font color="#cda869">(</font><font color="#8f9d6a">"Burke"</font>&nbsp;<font color="#8f9d6a">"Connor"</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"Frank"</font>&nbsp;<font color="#8f9d6a">"Everett"</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"Albert"</font>&nbsp;<font color="#8f9d6a">"George"</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#8f9d6a">"Harris"</font>&nbsp;<font color="#8f9d6a">"David"</font><font color="#cda869">)</font><font color="#cda869">)</font> <br><br><font color="#cda869">(</font>def query<br>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>from n in names<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where <font color="#cda869">(</font><font color="#cda869"><b>=</b></font>&nbsp;<font color="#cda869">(</font>. n <font color="#cda869"><b>length</b></font><font color="#cda869">)</font>&nbsp;<font color="#cf6a4c">5</font><font color="#cda869">)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; orderby n<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select <font color="#cda869">(</font>. n toUpperCase<font color="#cda869">)))</font> <br><br><font color="#cda869">(</font>doseq [n query]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>println n<font color="#cda869">))</font><br></font></div>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><u>Output:</u><br>BURKE<br>DAVID<br>FRANK<br></font></div>
+<p>Bortsett fra Clojure-koden for å spesifisere lengde på 5, og å gjøre navnene uppercase, er denne spørringen svært så leselig, og ikke ulik det man får i .net med Linq.</p>
+<p>Og her følger alt vi trengte å definere for å kunne skrive spørringen. From-makroen tar imot argumentene og gjør det om til list-prosesserende kall som <em>filter</em>, <em>sort-by</em> og <em>map</em>. Nøkkelordene <em>in</em>, <em>where</em>, <em>orderby</em> og <em>select</em> ser den faktisk bare bort fra – de er der kun for lesbarhet i selve spørringen. Når jeg kjører programmet vil spørringen min bli byttet ut med den templaten som makroen definerer.</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><font color="#cda869">(</font><font color="#cda869"><b>defmacro</b></font> from<br>&nbsp; [var _ coll _ <font color="#cda869"><b>condition</b></font> _ ordering _ desired_map]<br>&nbsp; <font color="#7587a6">`(</font><font color="#cda869"><b>map</b></font>&nbsp;<font color="#cda869">(</font>fn [~var] ~desired_map<font color="#cda869">)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>sort-by <font color="#cda869">(</font>fn [~var] ~ordering<font color="#cda869">)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>filter <font color="#cda869">(</font>fn [~var] ~condition<font color="#cda869">)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ~coll<font color="#cda869">))</font><font color="#7587a6">)</font><font color="#cda869">)</font><br></font></div>
+<p>Med makroer kan vi altså sømløst utvide språket med ting som i mange andre språk ville krevd en endring av selve kompilatoren. For en grei innføring i makroer kan du <a href="http://java.ociweb.com/mark/clojure/article.html#Macros">ta en titt her</a>.</p>
+<h4>Flere eksempler</h4>
+<p>Jeg eksperimenterte litt videre med makroen fra demonstrasjonen, og lagde noen spørringer på en liste med storbyer for å illustrere kraften i DSL'en bedre. Her er først byene, opprettet som en liste av hashes (disctionaries):</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><font color="#cda869">(</font>def cities <font color="#cda869">'</font><font color="#cda869">(</font>{:name <font color="#8f9d6a">"Beijing"</font> :country <font color="#8f9d6a">"China"</font> :population 19000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"Guangzhou"</font> :country <font color="#8f9d6a">"China"</font> :population 14000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"Shanghai"</font> :country <font color="#8f9d6a">"China"</font> :population 10000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"Bogota"</font> :country <font color="#8f9d6a">"Colombia"</font> :population 32000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"Delhi"</font> :country <font color="#8f9d6a">"India"</font> :population 4000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"Los Angeles"</font> :country <font color="#8f9d6a">"USA"</font> :population 9000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"London"</font> :country <font color="#8f9d6a">"United Kingdom"</font> :population 24000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"Tianjin"</font> :country <font color="#8f9d6a">"China"</font> :population 37000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"Wuhan"</font> :country <font color="#8f9d6a">"China"</font> :population 29000000}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {:name <font color="#8f9d6a">"Lagos"</font> :country <font color="#8f9d6a">"Nigeria"</font> :population 25000000}<font color="#cda869">)</font><font color="#cda869">)</font><br></font></div>
+<p>Så kan jeg for eksempel lage en spørring som henter ut alle byene i Kina med 15 millioner innbyggere eller mer. Jeg spesifiserer også synkende sortering på innbyggertall ved å gange det med –1. Til slutt selekterer jeg kun ut navnet på byen og innbyggertallet.</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><font color="#cda869">(</font>def chinese-cities-more-than-15-million<br>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>from c in cities<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where <font color="#cda869">(</font><font color="#cda869"><b>and</b></font>&nbsp;<font color="#cda869">(</font><font color="#cda869"><b>=</b></font>&nbsp;<font color="#cda869">(</font>:country c<font color="#cda869">)</font>&nbsp;<font color="#8f9d6a">"China"</font><font color="#cda869">)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font><font color="#cda869"><b>&gt;=</b></font>&nbsp;<font color="#cda869">(</font>:population c<font color="#cda869">)</font>&nbsp;<font color="#cf6a4c">15000000</font><font color="#cda869">))</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; orderby <font color="#cda869">(</font><font color="#cda869"><b>*</b></font>&nbsp;<font color="#cda869">(</font>:population c<font color="#cda869">)</font>&nbsp;<font color="#cf6a4c">-1</font><font color="#cda869">)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select [<font color="#cda869">(</font><font color="#9b859d"><b>:name</b></font> c<font color="#cda869">)</font>&nbsp;<font color="#cda869">(</font>:population c<font color="#cda869">)</font>]<font color="#cda869">))</font> <br><br><font color="#cda869">(</font>doseq [c chinese-cities-more-than-15-million]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>println c<font color="#cda869">))</font></font></div>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><u>Output:</u><br>[Tianjin 37000000]<br>[Wuhan 29000000]<br>[Beijing 19000000]<br></font></div>
+<p>I neste eksempel er jeg interessert i alle land som har byer med mer enn 25 millioner innbyggere. Jeg sorterer på land, og selekterer kun landet. I tillegg bruker jeg distinct, som er "innebygd" i clojure, for å unngå at Kina kommer med to ganger.</p>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><font color="#cda869">(</font>def countries-with-extreme-cities<br>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>distinct <font color="#cda869">(</font>from c in cities<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where <font color="#cda869">(</font><font color="#cda869"><b>&gt;=</b></font>&nbsp;<font color="#cda869">(</font>:population c<font color="#cda869">)</font>&nbsp;<font color="#cf6a4c">25000000</font><font color="#cda869">)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; orderby <font color="#cda869">(</font>:country c<font color="#cda869">)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select <font color="#cda869">(</font>:country c<font color="#cda869">))))</font> <br><br><font color="#cda869">(</font>doseq [c countries-with-extreme-cities]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#cda869">(</font>println c<font color="#cda869">))</font><br></font></div>
+<div style="padding-bottom: 6px; background-color: #141414; padding-left: 6px; padding-right: 6px; margin-bottom: 18px; color: #f8f8f8; padding-top: 6px"><font face="monospace"><u>Output:</u><br>China<br>Colombia<br>Nigeria<br></font></div>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

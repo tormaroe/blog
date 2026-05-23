@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,OO Patterns">
+
+    <title>Template Method del 4: Multippel arv</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Template Method del 4: Multippel arv</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 2. februar 2012</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          </p>
+          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 20px 0px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="tp_del4" border="0" alt="tp_del4" align="left" src="/uploads/2012/02/tp_del4.png" width="146" height="127">Du var kanskje ikke klar over det, men <strong>Common Lisp</strong> er et objektorientert språk. Det påstås faktisk at det har det kraftigste og mest fleksible objekt-systemet av alle språkene vi har, og gjennom å implementere <em>Template Method pattern</em> i Common Lisp håper jeg å gi deg en grei introduksjon til noen av språkets muligheter. Du vil også få se at multippel arv løser utfordringen jeg hadde med <a href="/2012/01/30/template-method-del-1-statisk-oop/">den klassiske implementasjonen i del 1</a>.</p>
+<p>Pass på at du har <a href="/2012/01/30/template-method-del-1-statisk-oop/">designet fra del 1</a> klart for deg når du ser på denne løsningen.. Og husk at parantesene ikke er farlige :D</p>
+<p><em>(PS: Jeg ser bort fra diskusjonen om det faktisk er gyldig å kalle det jeg presenterer i denne serien for Template Method pattern – <a href="/2012/02/01/template-method-intermesso/">delta i debatten her</a>.)</em></p>
+<p>Først trenger jeg å lage selve templaten – noe som definerer skjelettet til algoritmen, men overlater detaljene til en konkret rapport-implementasjon. Templaten opprettes ikke i en klasse som i <a href="/2012/01/30/template-method-del-1-statisk-oop/">del 1</a> og <a href="/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">del 2</a>, men heller ikke som en høyereordens funksjon som jeg brukte i del 3. <em>logReport</em> er en prosedyre som tar et rapport-objekt som parameter, og typen av dette rapport-objektet vil avgjøre detaljene i loggfil-prosesseringen.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 2 </span><span class="Delimiter">(</span><span class="Statement">defun</span> log-report <span class="Delimiter">(</span>report<span class="Delimiter">)</span>
+<span class="lnr"> 3 </span>  <span class="String">"A template for reporting from log files"</span>
+<span class="lnr"> 4 </span>  <span class="Delimiter">(</span>log-report-init report<span class="Delimiter">)</span>
+<span class="lnr"> 5 </span>  <span class="Delimiter">(</span><span class="Statement">loop</span> for line in <span class="Delimiter">(</span>log-report-read report<span class="Delimiter">)</span>
+<span class="lnr"> 6 </span>        <span class="Statement">do</span> <span class="Delimiter">(</span>log-report-process-line report line<span class="Delimiter">))</span>
+<span class="lnr"> 7 </span>  <span class="Delimiter">(</span>log-report-cleanup report<span class="Delimiter">))</span>
+</pre>
+<p>Når jeg i den tredje linjen sier <strong>(log-report-init report)</strong> så er det det samme som å kalle metoden <strong>log-report-init</strong> på objektet <strong>report</strong>. Det neste jeg skal gjøre er å opprette disse metodene. Jeg bruker en makro som heter DEFGENERIC – du kan gjerne se på det som om jeg bruker dem til å opprette abstrakte metoder, slik jeg gjorde i LogProcessor i <a href="/2012/01/30/template-method-del-1-statisk-oop/">del 1</a>. Metodene henger derimot ikke direkte på en klasse – klasser i Common Lisp har bare properties, mens metodene defineres for seg:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Delimiter">(</span><span class="Statement">defgeneric</span> log-report-init <span class="Delimiter">(</span>report<span class="Delimiter">))</span>
+<span class="lnr">11 </span><span class="Delimiter">(</span><span class="Statement">defgeneric</span> log-report-read <span class="Delimiter">(</span>report<span class="Delimiter">))</span>
+<span class="lnr">12 </span><span class="Delimiter">(</span><span class="Statement">defgeneric</span> log-report-process-line <span class="Delimiter">(</span>report line<span class="Delimiter">))</span>
+<span class="lnr">13 </span><span class="Delimiter">(</span><span class="Statement">defgeneric</span> log-report-cleanup <span class="Delimiter">(</span>report<span class="Delimiter">))</span>
+</pre>
+<p>Så bruker jeg DEFMETHOD til å lage noen fornuftige default-implementasjoner av de abstrakte metodene. For initialisering og cleanup lager jeg bare noen tomme metoder, mens metoden som prosesserer en linje bare skriver den ut. </p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">17 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> log-report-init <span class="Delimiter">(</span>report<span class="Delimiter">))</span>
+<span class="lnr">18 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> log-report-process-line <span class="Delimiter">(</span>report line<span class="Delimiter">)</span>
+<span class="lnr">19 </span>  <span class="Delimiter">(</span><span class="Statement">format</span> <span class="Statement">t</span> <span class="String">"~a~%"</span> line<span class="Delimiter">))</span>
+<span class="lnr">20 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> log-report-cleanup <span class="Delimiter">(</span>report<span class="Delimiter">))</span>
+</pre>
+<p>Jeg kan også lage en konkret variante av metoden som leser en fil, og jeg mocker fillesingen slik jeg har gjort i de andre delene i denne bloggserien:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">28 </span><span class="Comment">; Faking reading the file as usual..</span>
+<span class="lnr">29 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> log-report-read <span class="Delimiter">(</span>report<span class="Delimiter">)</span>
+<span class="lnr">30 </span>  <span class="Delimiter">(</span><span class="Statement">list</span> <span class="String">"20120125180000000 DEBUG Tick!"</span>
+<span class="lnr">31 </span>  <span class="String">"20120125180100000 DEBUG Tick!"</span>
+<span class="lnr">32 </span>  <span class="String">"20120125180132112 ERROR Some error occurred"</span>
+<span class="lnr">33 </span>  <span class="String">"20120125180133056 ERROR Some other error..."</span>
+<span class="lnr">34 </span>  <span class="String">"20120125180200000 DEBUG Tick!"</span><span class="Delimiter">))</span>
+</pre>
+<p>Nå kunne jeg ha kjørt koden ved å skrive for eksempel <strong>(log-report nil)</strong>. Nil er nemlig også et objekt i Common Lisp – alt er objekter – og jeg har laget default implementasjoner av metodene som vil fungere for alle typer objekter! Alle linjene fra filen vil bli skrevet ut.</p>
+<h4>Opprette en klasse</h4>
+<p>Det er på tide å se hvordan man definerer en ny klasse. Jeg vil nå opprette en klasse for å rapportere errors fra loggfiler, sånn <a href="/2012/01/30/template-method-del-1-statisk-oop/">som jeg gjorde i del 1</a>. Til det bruker jeg DEFCLASS:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">36 </span><span class="Delimiter">(</span><span class="Statement">defclass</span> error-report <span class="Delimiter">()</span> <span class="Delimiter">())</span>
+</pre>
+<p>Klassen arver ikke fra noe spesielt, og den har ingen properties, så den ble ganske minimal. Men som du vil se er den viktig likevel.</p>
+<p>Jeg kan nå opprette nye metoder for de stegene i algoritmen/templaten som er interessante for error-rapporten. Disse metodene vil bli brukt i tilfeller hvor <em>report</em>-objektet er en instans av <strong>error-report</strong>.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">42 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> log-report-init :before <span class="Delimiter">((</span>report error-report<span class="Delimiter">))</span>
+<span class="lnr">43 </span>  <span class="Delimiter">(</span><span class="Statement">format</span> <span class="Statement">t</span> <span class="String">"Errors:~%"</span><span class="Delimiter">))</span> <span class="Comment">; Printing a header..</span>
+<span class="lnr">44 </span>
+<span class="lnr">45 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> log-report-process-line <span class="Delimiter">((</span>report error-report<span class="Delimiter">)</span> line<span class="Delimiter">)</span>
+<span class="lnr">46 </span>  <span class="Delimiter">(</span><span class="Statement">let</span> <span class="Delimiter">((</span>log-type <span class="Delimiter">(</span><span class="Statement">subseq</span> line <span class="Number">18</span> <span class="Number">23</span><span class="Delimiter">)))</span>
+<span class="lnr">47 </span>    <span class="Delimiter">(</span><span class="Statement">if</span> <span class="Delimiter">(</span><span class="Statement">equal</span> log-type <span class="String">"ERROR"</span><span class="Delimiter">)</span>
+<span class="lnr">48 </span>      <span class="Delimiter">(</span><span class="Statement">format</span> <span class="Statement">t</span> <span class="String">"~a: ~a~%"</span>
+<span class="lnr">49 </span>        <span class="Delimiter">(</span><span class="Statement">subseq</span> line <span class="Number">0</span> <span class="Number">17</span><span class="Delimiter">)</span>
+<span class="lnr">50 </span>        <span class="Delimiter">(</span><span class="Statement">subseq</span> line <span class="Number">24</span><span class="Delimiter">)))))</span>
+</pre>
+<p>Metoden som prosesserer linjene vil erstatte default-implementasjonen, siden den ikke "kaller base/super" (i Common Lisp ville jeg gjort det ved å kalle en funksjon som heter CALL-NEXT-METHOD). Initialisering-metoden vil derimot bli lagt til i tillegg til eventuelt andre initialiseringsmetoder. I dette tilfellet skjer det fordi jeg har brukt <strong>:before-</strong>nøkkelordet. <em>Before</em>-metoder kaller i forkant av de virkelige metodene, og er bare en av mange måter man kan opprette metoder på.</p>
+<p>Hvis jeg nå kjører koden <strong>(LOG-REPORT (MAKE-INSTANCE 'ERROR-REPORT))</strong> så vil den skrive ut headeren og error-linjene fra filen jeg har mocket.</p>
+<h4>En klasse for FTP-stegene</h4>
+<p>Nå oppretter jeg en ny klasse for FTP-stegene jeg trenger. Denne klassen arver heller ikke fra noen spesiell klasse, men inneholder én slot (property) for å holde på URLen til loggfilen.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">58 </span><span class="Delimiter">(</span><span class="Statement">defclass</span> ftp-report <span class="Delimiter">()</span>
+<span class="lnr">59 </span>  <span class="Delimiter">((</span>url :initarg :url<span class="Delimiter">)))</span>
+<span class="lnr">60 </span>
+<span class="lnr">61 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> log-report-init :before <span class="Delimiter">((</span>report ftp-report<span class="Delimiter">))</span>
+<span class="lnr">62 </span>  <span class="Delimiter">(</span><span class="Statement">format</span> <span class="Statement">t</span> <span class="String">"Fetching ~a~%"</span> <span class="Delimiter">(</span><span class="Statement">slot-value</span> report <span class="Delimiter">'</span><span class="Identifier">url</span><span class="Delimiter">)))</span>
+<span class="lnr">63 </span>
+<span class="lnr">64 </span><span class="Delimiter">(</span><span class="Statement">defmethod</span> log-report-cleanup :after <span class="Delimiter">((</span>report ftp-report<span class="Delimiter">))</span>
+<span class="lnr">65 </span>  <span class="Delimiter">(</span><span class="Statement">format</span> <span class="Statement">t</span> <span class="String">"Deleting ~a~%"</span> <span class="Delimiter">(</span><span class="Statement">slot-value</span> report <span class="Delimiter">'</span><span class="Identifier">url</span><span class="Delimiter">))</span>
+<span class="lnr">66 </span>  <span class="Delimiter">(</span><span class="Statement">format</span> <span class="Statement">t</span> <span class="String">"Archiving local copy"</span><span class="Delimiter">))</span>
+</pre>
+<p>Om jeg nå hadde evaluert <strong>(LOG-REPORT (MAKE-INSTANCE 'FTP-REPORT :URL "some url.."))</strong> ville metodene for å hente og slette FTP-loggen bli brukt, og default metoder for lesing og prosessering hadde også blitt brukt, slik at hele innholdet av filen hadde blitt vist. Men det er ikke det jeg er ute etter...</p>
+<h4>Multippel arv</h4>
+<p>Jeg skal nemlig nå lage en ny klasse som arver fra både <strong>error-report</strong> og <strong>ftp-report</strong>:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">68 </span><span class="Delimiter">(</span><span class="Statement">defclass</span> ftp-error-report <span class="Delimiter">(</span>ftp-report error-report<span class="Delimiter">)</span> <span class="Delimiter">())</span>
+</pre>
+<p>Når jeg oppretter en instans av denne klassen, og så kjører log-report, vil metodene for klassene som arves bli kombinert:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">71 </span><span class="Delimiter">(</span>log-report <span class="Delimiter">(</span><span class="Statement">make-instance</span> <span class="Delimiter">'</span><span class="Identifier">ftp-error-report</span>
+<span class="lnr">72 </span>         :url <span class="String">"ftp://foobar.com/logs/my.log"</span><span class="Delimiter">))</span>
+</pre>
+<p>Dette gir altså følgende output:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px">Fetching ftp://foobar.com/logs/my.log
+Errors:
+20120125180132112: Some error occurred
+20120125180133056: Some other error...
+Deleting ftp://foobar.com/logs/my.log
+Deleting local copy as well
+</pre>
+<p>Et UML-diagram over denne modellen, om den hadde vært gjort i et mere klassisk OO-språk, ville sett ut som dette:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="multippelarv" border="0" alt="multippelarv" src="/uploads/2012/02/multippelarv.png" width="400" height="406"></p>
+<h4>Konklusjon</h4>
+<p>Jeg har altså brukt multippel arv til å gjøre Template Method mindre rigid enn løsningen jeg kom opp med i C# i <a href="/2012/01/30/template-method-del-1-statisk-oop/">del 1</a>; nå kan jeg kombinere de ulike klassene på ulike måter i stedet for å ha en fastlåst arverekkefølge. Dette gjør denne løsningen mer utvidbar.</p>
+<p>Jeg har ikke jobbet mye med objektorientering i Common Lisp, men synes systemet med de generiske funksjonene som ikke er knyttet direkte til klassene er ganske elegant. Det er kanskje ikke lett å se hvor fleksibelt dette er uten å forsøke litt selv, spesielt ikke om man er vandt til typisk klasse-basert objektoerientering fra språk som C#, Java eller C++, men det finnes nok av folk som skryter hemningsløst av Common Lisp's objektsystem. Dette er noe jeg må eksperimentere mer med.</p>
+<p>Ønsker du en innføring i Common Lisp + objekter kan du ta en titt på <em><a href="http://www.gigamonkeys.com/book/">Practical Common Lisp</a></em> (online bok), kapittel 16 og 17.</p>
+<p>I løpet av denne serien har du sett at et objektoerientert designpattern kan ha svært ulike implementasjoner. Et designpattern er ikke noe man kan pugge, og bare bruke igjen og igjen på samme måte. Man må tilpasse det omstendighetene, og hele tiden være klar over hvilke begrensninger det har. Jeg håper koden min har gitt deg noen ideer, og at du vil eksperimentere videre med hvordan du løser lignende problemer.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

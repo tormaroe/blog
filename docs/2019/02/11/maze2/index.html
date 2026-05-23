@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Go,Bøker">
+
+    <title>Labyrint-algoritmer</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Labyrint-algoritmer</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 11. februar 2019</small> 
+            <a href="/tags/go"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Go</span></a>
+          
+            <a href="/tags/books"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Bøker</span></a>
+          </p>
+          <p>Jeg fortsetter å lese <a href="https://pragprog.com/book/jbmaze/mazes-for-programmers"><em>Mazes for Programmers</em></a> og å leke meg med labyrinter. Om dette kommer som en stor overraskelse så vil du kanskje lese min forrige blogpost først: <a href="/2019/01/11/mazes/">Generere labyrinter (i Go)</a>.</p>
+<p>
+<img src="/uploads/2019/02/maze.png" alt="Colorized maze" />
+</p>
+
+<p>Siden forrige gang har jeg gjort en hel del; jeg har laget et prosjekt rundt koden min, og du finner det på <a href="https://github.com/tormaroe/maze">github.com/tormaroe/maze</a>. <em>Mazes for Programmers</em> har vært akkurat så gøy og så lærerikt som jeg hadde håpet, og har gitt meg en flott anledning til å praktisere Go-programmering.</p>
+<p>Og om <em>du</em> har Go på maskinen din kan du enkelt laste ned, bygge og installere programmet mitt med denne kommandoen:</p>
+<pre><code class="hljs">$ <span class="hljs-keyword">go</span> <span class="hljs-built_in">get</span> github.<span class="hljs-keyword">com</span>/tormaroe/maze</code></pre><p>Etter dette skal du kunne kjøre <em>maze</em>. Nå kan du for eksempel skrive ut en random labyrint i terminalen ved å kjøre følgende kommando:</p>
+<pre><code class="hljs">$ maze <span class="hljs-built_in">ascii</span> sidewinder --<span class="hljs-built_in">height</span> <span class="hljs-number">10</span> --<span class="hljs-built_in">width</span> <span class="hljs-number">20</span> --<span class="hljs-built_in">random</span></code></pre><p>For å genere en labyrint i PNG format med fine farger kan du gjøre noe sånt som dette:</p>
+<pre><code class="hljs">$ maze png huntandkill <span class="hljs-comment">--seed 42 -cv -o mymaze.png</span></code></pre><p>Kjør <code>maze --help</code> for mer info om valgmulighetene.</p>
+<p>I resten av denne blogposten presenterer jeg de ulike algoritmene som programmet mitt implementerer for å generere labyrinter. Fargeleggingen, og det å finne den lengste stien i labyrinten, er basert på <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstra&#39;s algoritme</a>, som vi bruker til å kalkulere distansen fra et punkt til alle andre punkt. Forskjellen i fargetone i de fargede labyrint-bildene viser hvor langt to punkt er fra hverandre, og det avslører strukturen i labyrintene på en interessant måte.</p>
+<h2>Binary Tree</h2>
+<p>
+<img src="/uploads/2019/02/binarytree.png" alt="Binary tree" />
+</p>
+
+<p>Boken beskriver <strong>binary tree</strong> som den enkleste algoritmen for å generere en labyrint. Som du kan se gir den labyrinter som tydelig tenderer mot korridorer i en bestemt retning, og i tillegg får man alltid en lang korridor på to av sidene. På den andre siden har algoritmen lineær kjøretid - man trenger bare loope over alle cellene én gang.</p>
+<p>Her er implementasjonen min i Go:</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(g *Grid)</span></span> BinaryTreeMaze() {
+  g.eachCell(<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(c *Cell)</span></span> {
+    neighbors := <span class="hljs-built_in">make</span>([]*Cell, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>)
+    <span class="hljs-keyword">if</span> c.north != <span class="hljs-literal">nil</span> {
+      neighbors = <span class="hljs-built_in">append</span>(neighbors, c.north)
+    }
+    <span class="hljs-keyword">if</span> c.east != <span class="hljs-literal">nil</span> {
+      neighbors = <span class="hljs-built_in">append</span>(neighbors, c.east)
+    }
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(neighbors) &gt; <span class="hljs-number">0</span> {
+      index := rand.Intn(<span class="hljs-built_in">len</span>(neighbors))
+      neighbor := neighbors[index]
+      c.link(neighbor)
+    }
+  })
+}</code></pre><h2>Sidewinder</h2>
+<p>
+<img src="/uploads/2019/02/sidewinder.png" alt="Sidewinder" />
+</p>
+
+<p><strong>Sidewinder</strong> er egentlig like enkel som <em>binary tree</em>, bare at den er <em>mer random</em> i én retning. Resultatet ser du er at vi står igjen med én lang korridor i stedet for to, og at tendensen til hvor korridorene går har endret seg.</p>
+<p>Her følger min implementasjon:</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(g *Grid)</span></span> SidewinderMaze() {
+  g.eachRow(<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(row []*Cell)</span></span> {
+    run := <span class="hljs-built_in">make</span>([]*Cell, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(row))
+
+    <span class="hljs-keyword">for</span> _, c := <span class="hljs-keyword">range</span> row {
+      run = <span class="hljs-built_in">append</span>(run, c)
+      atEastBound := c.east == <span class="hljs-literal">nil</span>
+      atNorthBound := c.north == <span class="hljs-literal">nil</span>
+      shouldClose := atEastBound || (!atNorthBound &amp;&amp; coinflip())
+
+      <span class="hljs-keyword">if</span> shouldClose {
+        member := sample(run)
+        <span class="hljs-keyword">if</span> member.north != <span class="hljs-literal">nil</span> {
+          member.link(member.north)
+        }
+        run = <span class="hljs-built_in">make</span>([]*Cell, <span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(row))
+      } <span class="hljs-keyword">else</span> {
+        c.link(c.east)
+      }
+    }
+  })
+}</code></pre><h2>Aldous-Broder</h2>
+<p>
+<img src="/uploads/2019/02/aldousbroder.png" alt="Aldous-Broder" />
+</p>
+
+<p><strong>Aldous-Broder</strong>, oppkalt etter <a href="https://en.wikipedia.org/wiki/David_Aldous">David Aldous</a> og <a href="https://en.wikipedia.org/wiki/Andrei_Broder">Andrei Broder</a> som kom opp med den hver for seg, gir en labyrint helt uten slike tendenser som vi har sett i de to firrige algoritmene. Algoritmen gir en gjevn fordeling av tilfeldighet.</p>
+<p>Aldous-Broder har derimot en helt annen kjøretid. Den &quot;beveger seg&quot; tilfeldig gjennom griddet og forsøker å finne passasjer å åpne. Etterhvert blir det vanskeligere og vanskeligere, og i teorien er det ikke sikkert den vil klare å gjøre seg ferdig i det hele tatt. I praksis derimot opplever jeg at jeg kan generere svære labyrinter med min Go-implementasjon på <em>null-komma-swish</em>.</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(g *Grid)</span></span> AldousBroderMaze() {
+  cell := g.randomCell()
+  unvisited := g.size() - <span class="hljs-number">1</span>
+
+  <span class="hljs-keyword">for</span> unvisited &gt; <span class="hljs-number">0</span> {
+    neighbor := sample(cell.neighbors())
+
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(neighbor.links) == <span class="hljs-number">0</span> {
+      cell.link(neighbor)
+      unvisited--
+    }
+
+    cell = neighbor
+  }
+}</code></pre><p>Jeg hopper over en algoritme fra boken som kalles <strong>Wilson&#39;s algoritme</strong>. Den gir det samme resultatet som Aldous-Broder, men der hvor sistnevnte bruker relativt sett lang tid å avslutte så bruker Wilson&#39;s lang tid på å komme i gang. En interessant ting man kan forsøke om man vil eksperimentere litt er å kombinere de to algoritmene; starte med Aldous-Broder og avslutte med Wilson&#39;s. </p>
+<h2>Hunt-and-kill</h2>
+<p>
+<img src="/uploads/2019/02/huntandkill.png" alt="Hunt-and-kill" />
+</p>
+
+<p>Til slutt har jeg implementert en algoritme labyrint-boken kaller <strong>Hunt-and-kill</strong>. Den gir ikke en så gjevn distribusjon av tilfeldighet som Aldous-Broder. Derimot tenderer den til å gi lengre korridorer og færre blindveier. Det betyr også at den lengste stien typisk er lengre i Hunt-and-kill-labyrinter.</p>
+<p>De lengste stiene i labyrintene over er i snitt <strong>110</strong> celler lange, mens for eksempel Aldous-Broder hadde et snitt på <strong>84</strong>.</p>
+<p>Her er min implementasjon av Hunt-and-kill:</p>
+<pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(g *Grid)</span></span> HuntAndKillMaze() {
+  current := g.randomCell()
+
+  <span class="hljs-keyword">for</span> current != <span class="hljs-literal">nil</span> {
+    unvisitedNeighbors := filter(current.neighbors(), <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(c *Cell)</span></span> <span class="hljs-type">bool</span> {
+      <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(c.links) == <span class="hljs-number">0</span>
+    })
+
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(unvisitedNeighbors) &gt; <span class="hljs-number">0</span> {
+      neighbor := sample(unvisitedNeighbors)
+      current.link(neighbor)
+      current = neighbor
+    } <span class="hljs-keyword">else</span> {
+      current = <span class="hljs-literal">nil</span>
+
+      g.eachCell(<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(c *Cell)</span></span> {
+        visitedNeighbors := filter(c.neighbors(), <span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(n *Cell)</span></span> <span class="hljs-type">bool</span> {
+          <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(n.links) &gt; <span class="hljs-number">0</span>
+        })
+        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(c.links) == <span class="hljs-number">0</span> &amp;&amp; <span class="hljs-built_in">len</span>(visitedNeighbors) &gt; <span class="hljs-number">0</span> {
+          current = c
+          neighbor := sample(visitedNeighbors)
+          current.link(neighbor)
+        }
+      })
+    }
+  }
+}</code></pre>
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

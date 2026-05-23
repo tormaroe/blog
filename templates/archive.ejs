@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title><%= data.title %></title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <% include navbar %>
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-12">
+          <h1><span class="glyphicon glyphicon-calendar"></span> <%- data.h1 %></h1>
+          <hr style="margin:5px;">
+
+          <% var years = Object.getOwnPropertyNames(data.pages).sort(function(a, b){ return b - a; });
+            for(var year in years) { %>
+            <h2><%= years[year] %> <small><%= data.pages[years[year]].length %> poster</small></h2>
+            <div class="table-responsive">
+            <table class="table table-condensed table-striped">
+            <% data.pages[years[year]].forEach(function(post) { %>
+              <tr>
+                <td><%= post.date_without_year %></td>
+                <td><a href="<%- post.data.link %>"><span class="glyphicon glyphicon-link"></span> <%= post.data.title %></a></td>
+                <td class="text-right"><% post.data.tags.forEach(function(tag) { %>
+            <a href="<%= functions.tagUrl(tag) %>"><span class="label label-success"><%= tag %></span></a>
+          <% }) %></td>
+              </tr>
+            <% }); %>
+            </table>
+            </div>
+          <% }; %>
+
+        </div>
+      </div>
+
+      <% include footer %>
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

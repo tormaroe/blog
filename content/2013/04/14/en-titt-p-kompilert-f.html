@@ -1,0 +1,85 @@
+---
+title: En titt på kompilert F#
+link: http://blog.kjempekjekt.com/2013/04/14/en-titt-p-kompilert-f/
+layout: post
+date: 2013-04-14 19:34:22Z
+tags:
+  - F#
+  - Rekursjon
+  - CIL
+---
+<p>Etter at jeg hadde målt ytelsen på litt F#-kode, og blitt overrasket over resultatene, oppfordret Einar W. Høst meg til å ta en titt på IL-koden. Jeg har nå sjekket den genererte koden ved hjelp av <a href="http://www.telerik.com/products/decompiler.aspx">JustDecompile</a>, og her viser jeg frem et par av de tingene jeg fant ut.</p> <p>Har du ikke fått med deg disse ytelsesmålingene jeg gjorde så kan du først lese postene <a href="http://blog.kjempekjekt.com/2013/04/09/litt-f-kode-for-mle-kjretid/">Litt F#-kode for å måle kjøretid</a> og <a href="http://blog.kjempekjekt.com/2013/04/11/sammenligne-kjretider-mellom-f-og-c/">Sammenligne kjøretider mellom F# og C#</a>.</p> <h2>Rekursjon</h2> <p>En av oppdagelsene jeg gjorde da jeg målte kjøretid var at den raskeste måten å løse Euler1-oppgaven i F# på var å bruke en rekursiv algoritme. Dette var like raskt som en enkel for-løkke i C# (men bare når jeg bygget i RELEASE-modus). </p> <p>Den rekursive funksjonen jeg testet var:</p><pre>let rec inner acc n =
+    match n with
+    | 1000001L -&gt; acc
+    | n when n % 3L = 0L -&gt; inner (acc + n) (n + 1L)
+    | n when n % 5L = 0L -&gt; inner (acc + n) (n + 1L)
+    | _                  -&gt; inner  acc      (n + 1L)</pre>
+<p>I RELEASE-modus ble dette kompilert ned til en statisk metode. Dissassemblet til C# ser den slik ut:</p><pre>internal static long inner@82(long acc, long n)
+{
+    while (n != 1000001L)
+    {
+        if (n % 3L != 0)
+        {
+            if (n % 5L != 0)
+            {
+                n = n + 1L;
+                acc = acc;
+            }
+            else
+            {
+                n = n + 1L;
+                acc = acc + n;
+            }
+        }
+        else
+        {
+            n = n + 1L;
+            acc = acc + n;
+        }
+    }
+    return acc;
+}</pre>
+<p>Den rekursive funksjonen er altså redusert/optimalisert til en enkel while-løkke. Da er det ikke spesielt overraskende at den var så rask.</p>
+<p>Når den samme koden var kompilert i DEBUG-modus ble det laget en egen klasse for den rekursive funksjonen. Og funksjonskallet ble utført via en eller annen hjelpefunksjon. Algoritmen <em>var</em> blitt redusert til en while-løkke, men den opprettet en rekke temporære verdier som er optimalisert bort i RELEASE-versjonen.</p>
+<h2>Mutasjoner</h2>
+<p>Jeg målte en annen løsning på oppgaven som bruke en for-løkke og en muterbar variabel (en variabel som kan endre verdi). Dette så slik ut:</p><pre>let mutable result = 0L
+for i in 1L..1000000L do
+    if i % 3L = 0L || i % 5L = 0L
+    then result &lt;- result + i</pre>
+<p>Denne algoritmen brukte mye lengre tid enn den rekursive løsningen. Men hvorfor? Er mutasjoner veldig tidkrevende i F#?</p>
+<p>Igjen tok jeg en titt på koden som ble produsert, og oversatt til C# så den slik ut:</p><pre>long i;
+bool flag;
+long result = 0L;
+IEnumerable&lt;long&gt; nums = Operators.OperatorIntrinsics
+                                .RangeInt64(1L, 1L, 1000000L);
+IEnumerator&lt;long&gt; enumerator = nums.GetEnumerator();
+try
+{
+    while (enumerator.MoveNext())
+    {
+        i = enumerator.Current;
+        if (i % 3L != 0)
+        {
+            flag = i % 5L == 0L;
+        }
+        else
+        {
+            flag = true;
+        }
+        if (flag)
+        {
+            result = result + i;
+        }
+    }
+}
+finally
+{
+    IDisposable disposable = enumerator as IDisposable;
+    if (disposable != null)
+    {
+        disposable.Dispose();
+    }
+}
+</pre>
+<p>Her ser vi at varibelen som muteres – <code>result</code> – er en helt vanlig long, og det er ingen spesiell kode knyttet til mutasjoner. Forskjellen mellom immutable og mutable er altså noe som finnes i F#, men som forsvinner når koden kompileres ned til IL-kode.</p>
+<p>Det som tar det meste av tiden her må være <code>RangeInt64</code> – sansynligvis det at vi må gjøre ett funksjonskall og en property-aksessering mot enumeratoren til rangen for hver iterasjon.</p>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="F#,Rekursjon,CIL">
+
+    <title>En titt på kompilert F#</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En titt på kompilert F#</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 14. april 2013</small> 
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          
+            <a href="/tags/rekursjon"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rekursjon</span></a>
+          
+            <a href="/tags/cil"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> CIL</span></a>
+          </p>
+          <p>Etter at jeg hadde målt ytelsen på litt F#-kode, og blitt overrasket over resultatene, oppfordret Einar W. Høst meg til å ta en titt på IL-koden. Jeg har nå sjekket den genererte koden ved hjelp av <a href="http://www.telerik.com/products/decompiler.aspx">JustDecompile</a>, og her viser jeg frem et par av de tingene jeg fant ut.</p>
+<p>Har du ikke fått med deg disse ytelsesmålingene jeg gjorde så kan du først lese postene <a href="/2013/04/09/litt-f-kode-for-mle-kjretid/">Litt F#-kode for å måle kjøretid</a> og <a href="/2013/04/11/sammenligne-kjretider-mellom-f-og-c/">Sammenligne kjøretider mellom F# og C#</a>.</p>
+<h2>Rekursjon</h2>
+<p>En av oppdagelsene jeg gjorde da jeg målte kjøretid var at den raskeste måten å løse Euler1-oppgaven i F# på var å bruke en rekursiv algoritme. Dette var like raskt som en enkel for-løkke i C# (men bare når jeg bygget i RELEASE-modus). </p>
+<p>Den rekursive funksjonen jeg testet var:</p>
+<pre>let rec inner acc n =
+    match n with
+    | 1000001L -&gt; acc
+    | n when n % 3L = 0L -&gt; inner (acc + n) (n + 1L)
+    | n when n % 5L = 0L -&gt; inner (acc + n) (n + 1L)
+    | _                  -&gt; inner  acc      (n + 1L)</pre>
+<p>I RELEASE-modus ble dette kompilert ned til en statisk metode. Dissassemblet til C# ser den slik ut:</p>
+<pre>internal static long inner@82(long acc, long n)
+{
+    while (n != 1000001L)
+    {
+        if (n % 3L != 0)
+        {
+            if (n % 5L != 0)
+            {
+                n = n + 1L;
+                acc = acc;
+            }
+            else
+            {
+                n = n + 1L;
+                acc = acc + n;
+            }
+        }
+        else
+        {
+            n = n + 1L;
+            acc = acc + n;
+        }
+    }
+    return acc;
+}</pre>
+<p>Den rekursive funksjonen er altså redusert/optimalisert til en enkel while-løkke. Da er det ikke spesielt overraskende at den var så rask.</p>
+<p>Når den samme koden var kompilert i DEBUG-modus ble det laget en egen klasse for den rekursive funksjonen. Og funksjonskallet ble utført via en eller annen hjelpefunksjon. Algoritmen <em>var</em> blitt redusert til en while-løkke, men den opprettet en rekke temporære verdier som er optimalisert bort i RELEASE-versjonen.</p>
+<h2>Mutasjoner</h2>
+<p>Jeg målte en annen løsning på oppgaven som bruke en for-løkke og en muterbar variabel (en variabel som kan endre verdi). Dette så slik ut:</p>
+<pre>let mutable result = 0L
+for i in 1L..1000000L do
+    if i % 3L = 0L || i % 5L = 0L
+    then result &lt;- result + i</pre>
+<p>Denne algoritmen brukte mye lengre tid enn den rekursive løsningen. Men hvorfor? Er mutasjoner veldig tidkrevende i F#?</p>
+<p>Igjen tok jeg en titt på koden som ble produsert, og oversatt til C# så den slik ut:</p>
+<pre>long i;
+bool flag;
+long result = 0L;
+IEnumerable&lt;long&gt; nums = Operators.OperatorIntrinsics
+                                .RangeInt64(1L, 1L, 1000000L);
+IEnumerator&lt;long&gt; enumerator = nums.GetEnumerator();
+try
+{
+    while (enumerator.MoveNext())
+    {
+        i = enumerator.Current;
+        if (i % 3L != 0)
+        {
+            flag = i % 5L == 0L;
+        }
+        else
+        {
+            flag = true;
+        }
+        if (flag)
+        {
+            result = result + i;
+        }
+    }
+}
+finally
+{
+    IDisposable disposable = enumerator as IDisposable;
+    if (disposable != null)
+    {
+        disposable.Dispose();
+    }
+}
+</pre>
+<p>Her ser vi at varibelen som muteres – <code>result</code> – er en helt vanlig long, og det er ingen spesiell kode knyttet til mutasjoner. Forskjellen mellom immutable og mutable er altså noe som finnes i F#, men som forsvinner når koden kompileres ned til IL-kode.</p>
+<p>Det som tar det meste av tiden her må være <code>RangeInt64</code> – sansynligvis det at vi må gjøre ett funksjonskall og en property-aksessering mot enumeratoren til rangen for hver iterasjon.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

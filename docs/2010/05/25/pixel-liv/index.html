@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Diverse prosjekter,Ruby,Spill">
+
+    <title>Pixel-liv</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Pixel-liv</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 25. mai 2010</small> 
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          
+            <a href="/tags/spill"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Spill</span></a>
+          </p>
+          <p>I <a href="http://www.exampler.com/blog/2010/05/10/old-programmers/">denne blogposten om hvordan det er å være en gammer programmerer</a> refererte <a href="http://www.objectmentor.com/omTeam/martin_r.html">Uncle Bob Martin</a> i kommentarfeltet til noe han kalte <strong><em>Langton's Ant</em></strong>. <a href="http://en.wikipedia.org/wiki/Langton's_ant">Wikipedia kunne fortelle meg</a> at dette er en todimensjonal Turingmaskin oppfunnet av Chris Langton i 1986. Den består av et par enkle regler, men utviser kompleks, <em>emergent</em> adferd. Reglene er: Står mauren på en hvit celle, snu 90 grader til høyre - står mauren på en svart celle, snu 90 grader til venstre. Endre deretter fargen på cellen, og gå én celle frem.</p>
+<p>Langton's Ant virket som en interessant, liten programmeringsoppgave i samme bane som <a href="http://en.wikipedia.org/wiki/Conway's_life">Conway's Game of Life</a>. Jeg fikk selvsagt lyst til å prøve meg på en implementasjon, så jeg satte igang i mitt favoritt-fritids-språk <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a>. For den grafiske representasjonen fant jeg frem <strong><a href="http://code.google.com/p/gosu/">Gosu</a></strong>, et genialt og enkelt rammeverkt jeg har sett litt på tidligere for å lage grafiske spill i Ruby. Gosu gir meg et vindu med en <em>update-draw</em>-syklus (for dem som er vandt til spill-utvikling), og enkle metoder for å plassere og manipulere grafikk.</p>
+<p>Og her er resultatet – etter noen få hundre steg har mauren laget en liten krussedull:</p>
+<p><img style="display: block; float: none; margin-left: auto; margin-right: auto" src="http://github.com/tormaroe/marosoft_misc/raw/master/pixel_life/screenshots/langtons_ant_1.jpg"></p>
+<p>Ser du den lille, rød mauren? Etter noen tusen steg virker det som om alt bare er kaos:</p>
+<p><img style="display: block; float: none; margin-left: auto; margin-right: auto" src="http://github.com/tormaroe/marosoft_misc/raw/master/pixel_life/screenshots/langtons_ant_2.jpg"> </p>
+</p>
+<p>Men etter rundt 10.000 steg begynner det å skje noe. Mauren begynner å lage en <em>"motorvei"</em>. Det er ikke bevist at dette alltid vil skje, men alle forsøk som er gjort – uansett start-forhold – har før eller senere produsert et slikt mønster.</p>
+<p><img style="display: block; float: none; margin-left: auto; margin-right: auto" src="http://github.com/tormaroe/marosoft_misc/raw/master/pixel_life/screenshots/langtons_ant_3.jpg"> </p>
+<p>Det var ganske kult å for en gangs skyld ikke kunne skrive enhetstester for adferden jeg var ute etter. I stedet måtte jeg vente over ti tusen sykler (ca 2,8 minutter – 0,01685 sekund pr steg – en framerate på nesten 60 pr sekund) for å se at mauren min fungerte som den skulle. Jeg kunne selvsagt skrevet tester for andre ting, men valgte å kjøre uten sikkerhetsnett denne gangen.</p>
+<p>Hvis noen er interessert i å se koden så ligger den <a href="http://github.com/tormaroe/marosoft_misc/tree/master/pixel_life/">på min github-konto</a>. Selve logikken for å vise et todimensjonalt sort/hvitt grid i et Gosu-vindu gjorde jeg generell. Jeg implementerte også en versjon av Conway's Life med den – den ble noe tregere enn jeg hadde håpet, skylder det på Gosu-rammeverket inntil jeg finner en bedre optimalisering i min egen kode :P</p>
+<p><img style="display: block; float: none; margin-left: auto; margin-right: auto" src="http://github.com/tormaroe/marosoft_misc/raw/master/pixel_life/screenshots/conways_life.jpg"></p>
+<p><em>Hva har du gjort i dag for å bli en bedre utvikler enn du var i går?</em> Her er to forslag til hva du kan gjøre. 1) <a href="http://github.com/tormaroe/marosoft_misc/tree/master/pixel_life/">Les koden min</a>, last den ned, og forsøk enkelte modifikasjoner for å forsikre deg om at du forstår den. Kom gjerne med spørsmål til koden, eller forbedringsforslag. Eller 2) Implementer din egen Langton's Ant. Hva med en .NET-implementasjon vha. <a href="http://www.xna.com/">XNA</a>?</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

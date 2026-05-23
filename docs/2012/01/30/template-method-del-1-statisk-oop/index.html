@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="NNUG,OO Patterns,C#">
+
+    <title>Template Method del 1: Statisk OOP</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Template Method del 1: Statisk OOP</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 30. januar 2012</small> 
+            <a href="/tags/nnug"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> NNUG</span></a>
+          
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 20px 0px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="tp_del1" border="0" alt="tp_del1" align="left" src="/uploads/2012/01/tp_del1.png" width="146" height="127">I <a href="/2012/01/26/oop-vs-fp-p-nnug-bergens-januarmte/">foredraget mitt på NNUG Bergen i januar</a> tok jeg for meg noen utvalgte design patterns, viste noen objektorienterte eksempelimplementasjoner i C#, for så å sammenligne dette med tilsvarende løsninger i F# hvor jeg kun brukte funksjoner. Dette er første blogpost i en serie på fire hvor jeg vil gå gjennom ett av mønstrene jeg brukte – nemlig <em><a href="http://en.wikipedia.org/wiki/Template_method_pattern">Template Method design pattern</a></em>.</p>
+<p><em>(Koden er noe endret i forhold til det som ble vist i foredraget.)</em></p>
+<p>I denne første blogposten vil jeg vise en typisk løsning implementert i C# – designet er slik du ofte finner det i statisk typede språk. I <strong>del 2</strong> vil jeg gjøre visse endringer i C#-løsningen for å vise hvordan jeg kan gjøre designet mere fleksibelt ved å bevege meg mot en funksjonell tankegang.</p>
+<p>I <strong>del 3</strong> vil du få se min F#-løsning. Da vil du forhåpentligvis se hvor mye enklere og mere fleksibel koden blir når man dropper de tyngste abstraksjonene og bare bruker funksjoner. I <strong>den siste delen</strong> vil jeg vise en implementasjon i Common Lisps fleksible objektsystem, hvor jeg blant annet vil utnytte multippel arv.</p>
+<p>Poenget her er altså å studere ulike måter å løse et problem rent designmessig – og hvordan ulike programmeringsspråk tilbyr ulike hjelpemidler.</p>
+<h4>En "klassisk" løsning</h4>
+<p>Problemet jeg skal modellere ved hjelp av Template Method pattern dreier seg om prosessering av loggfiler. <strong>Template Method er en mønster hvor man definerer skjelettet til en algoritme, men gir andre (sub-klasser) mulighet til å definere eller endre enkelte av stegene i algoritmen.</strong> Jeg har identifisert at jeg alltid prosesserer loggfiler omtrent på samme måte, men at enkelte av stegene endrer seg fra gang til gang. Template Method er altså en god kandidat å bruke her.</p>
+<p>Nedenfor ser du koden som definerer selve templaten. Det er en abstrakt klasse, hvor definisjonen av detaljene i hvert steg av algoritmen er overlatt til en fremtidig, konkret implementasjon:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 10 </span><span class="Type">public</span> <span class="Type">abstract</span> <span class="Type">class</span> LogProcessor
+<span class="lnr"> 11 </span>{
+<span class="lnr"> 12 </span>    <span class="Type">public</span> <span class="Type">void</span> Execute()
+<span class="lnr"> 13 </span>    {
+<span class="lnr"> 14 </span>        Initialize();
+<span class="lnr"> 15 </span>        IEnumerable&lt;<span class="Type">string</span>&gt; log = ReadLog();
+<span class="lnr"> 16 </span>        <span class="Statement">foreach</span> (var line <span class="Statement">in</span> log)
+<span class="lnr"> 17 </span>            ProcessLine(line);
+<span class="lnr"> 18 </span>        Cleanup();
+<span class="lnr"> 19 </span>    }
+<span class="lnr"> 20 </span>
+<span class="lnr"> 21 </span>    <span class="Type">protected</span> <span class="Type">abstract</span> <span class="Type">void</span> Initialize();
+<span class="lnr"> 22 </span>    <span class="Type">protected</span> <span class="Type">abstract</span> IEnumerable&lt;<span class="Type">string</span>&gt; ReadLog();
+<span class="lnr"> 23 </span>    <span class="Type">protected</span> <span class="Type">abstract</span> <span class="Type">void</span> ProcessLine(<span class="Type">string</span> line);
+<span class="lnr"> 24 </span>    <span class="Type">protected</span> <span class="Type">abstract</span> <span class="Type">void</span> Cleanup();
+<span class="lnr"> 25 </span>}
+</pre>
+<p>Hvis jeg så har behov for å f.eks. skrive ut alle linjene i en loggfil som inneholder feilmeldinger så kan jeg lage en ErrorReporter som arver fra LogProcessor-templaten min:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 30 </span><span class="Type">public</span> <span class="Type">class</span> ErrorReporter : LogProcessor
+<span class="lnr"> 31 </span>{
+<span class="lnr"> 32 </span>    <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> Initialize()
+<span class="lnr"> 33 </span>    {
+<span class="lnr"> 34 </span>        Console.WriteLine(<span class="String">"Errors:"</span>); <span class="Comment">// just a header for the report</span>
+<span class="lnr"> 35 </span>    }
+<span class="lnr"> 36 </span>
+<span class="lnr"> 37 </span>    <span class="Type">protected</span> <span class="Type">override</span> IEnumerable&lt;<span class="Type">string</span>&gt; ReadLog()
+<span class="lnr"> 38 </span>    {
+<span class="lnr"> 39 </span>        <span class="Comment">// Simulating reading a file:</span>
+<span class="lnr"> 40 </span>        <span class="Statement">yield</span> <span class="Statement">return</span> <span class="String">"20120125180000000 DEBUG Tick!"</span>;
+<span class="lnr"> 41 </span>        <span class="Statement">yield</span> <span class="Statement">return</span> <span class="String">"20120125180100000 DEBUG Tick!"</span>;
+<span class="lnr"> 42 </span>        <span class="Statement">yield</span> <span class="Statement">return</span> <span class="String">"20120125180132112 ERROR Some error occurred"</span>;
+<span class="lnr"> 43 </span>        <span class="Statement">yield</span> <span class="Statement">return</span> <span class="String">"20120125180133056 ERROR Some other error..."</span>;
+<span class="lnr"> 44 </span>        <span class="Statement">yield</span> <span class="Statement">return</span> <span class="String">"20120125180200000 DEBUG Tick!"</span>;
+<span class="lnr"> 45 </span>    }
+<span class="lnr"> 46 </span>
+<span class="lnr"> 47 </span>    <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> ProcessLine(<span class="Type">string</span> line)
+<span class="lnr"> 48 </span>    {
+<span class="lnr"> 49 </span>        var regex = <span class="Statement">new</span> Regex(<span class="String">"^(</span><span class="Special">&#92;&#92;</span><span class="String">d{17})</span><span class="Special">&#92;&#92;</span><span class="String">s(</span><span class="Special">&#92;&#92;</span><span class="String">w+)</span><span class="Special">&#92;&#92;</span><span class="String">s(.+)$"</span>);
+<span class="lnr"> 50 </span>        var match = regex.Match(line);
+<span class="lnr"> 51 </span>        <span class="Conditional">if</span> (match.Success &amp;&amp; match.Groups[<span class="Number">2</span>].Value == <span class="String">"ERROR"</span>)
+<span class="lnr"> 52 </span>        {
+<span class="lnr"> 53 </span>            Console.WriteLine(<span class="String">"{0}: {1}"</span>,
+<span class="lnr"> 54 </span>                match.Groups[<span class="Number">1</span>].Value,
+<span class="lnr"> 55 </span>                match.Groups[<span class="Number">3</span>].Value);
+<span class="lnr"> 56 </span>        }
+<span class="lnr"> 57 </span>    }
+<span class="lnr"> 58 </span>
+<span class="lnr"> 59 </span>    <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> Cleanup() <span class="Comment">// No cleanup needed</span>
+<span class="lnr"> 60 </span>    {
+<span class="lnr"> 61 </span>    }
+<span class="lnr"> 62 </span>}
+</pre>
+<p>Som du ser gjør jeg eksempelet litt enklere ved å lure meg unna selve lesingen av loggfilen.</p>
+<p>ErrorReport-klassen kan brukes direkte, men i tillegg ønsker jeg at programmet mitt skal hente loggfilen fra en FTP-server når rapporten skal kjøres. Når jeg er ferdig skal filen arkiveres, og filen på FTP-serveren skal slettes. Derfor lager jeg et nytt nivå – en klasse som arver fra ErrorReport, som re-definerer <em>Initialize-</em> og <em>Cleanup</em>-stegene:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 66 </span><span class="Type">public</span> <span class="Type">class</span> FtpErrorReporter : ErrorReporter
+<span class="lnr"> 67 </span>{
+<span class="lnr"> 68 </span>    <span class="Type">private</span> <span class="Type">readonly</span> <span class="Type">string</span> _url;
+<span class="lnr"> 69 </span>    <span class="Type">public</span> FtpErrorReporter(<span class="Type">string</span> url)
+<span class="lnr"> 70 </span>    {
+<span class="lnr"> 71 </span>        _url = url;
+<span class="lnr"> 72 </span>    }
+<span class="lnr"> 73 </span>
+<span class="lnr"> 74 </span>    <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> Initialize()
+<span class="lnr"> 75 </span>    {
+<span class="lnr"> 76 </span>        Console.WriteLine(<span class="String">"Fetching log file from {0}"</span>, _url);
+<span class="lnr"> 77 </span>        <span class="Statement">base</span>.Initialize();
+<span class="lnr"> 78 </span>    }
+<span class="lnr"> 79 </span>
+<span class="lnr"> 80 </span>    <span class="Type">protected</span> <span class="Type">override</span> <span class="Type">void</span> Cleanup()
+<span class="lnr"> 81 </span>    {
+<span class="lnr"> 82 </span>        <span class="Statement">base</span>.Cleanup();
+<span class="lnr"> 83 </span>        Console.WriteLine(<span class="String">"Archiving local log copy..."</span>);
+<span class="lnr"> 84 </span>        Console.WriteLine(<span class="String">"Deleting log file on {0}"</span>, _url);
+<span class="lnr"> 85 </span>    }
+<span class="lnr"> 86 </span>}
+</pre>
+<p>Designet jeg har laget ser altså ut som dette:</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="template_design1" border="0" alt="template_design1" src="/uploads/2012/01/template_design1.png" width="497" height="212"></p>
+<p>Med følgende program kan jeg teste ut koden min:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 90 </span><span class="Type">public</span> <span class="Type">class</span> Program
+<span class="lnr"> 91 </span>{
+<span class="lnr"> 92 </span>    <span class="Type">public</span> <span class="Type">static</span> <span class="Type">void</span> Main()
+<span class="lnr"> 93 </span>    {
+<span class="lnr"> 94 </span>        LogProcessor errorReporter =
+<span class="lnr"> 95 </span>            <span class="Statement">new</span> FtpErrorReporter(<span class="String">"ftp://foobar.com/logs/my.log"</span>);
+<span class="lnr"> 96 </span>
+<span class="lnr"> 97 </span>        errorReporter.Execute();
+<span class="lnr"> 98 </span>    }
+<span class="lnr"> 99 </span>}
+</pre>
+<p>Og output ser slik ut:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px">Fetching log file from ftp://foobar.com/logs/my.log
+Errors:
+20120125180132112: Some error occurred
+20120125180133056: Some other error...
+Archiving local log copy...
+Deleting log file on ftp://foobar.com/logs/my.log
+</pre>
+<h4>En foreløpig konklusjon</h4>
+<p>Designet jeg har valgt løser oppgaven på en tilsynelatende grei måte. De tre klassene har fått hvert sitt tydelig definerte ansvarsområde: LogProcessor definerer en generell algoritme som kan gjenbrukes. ErrorReporter definerer hvordan jeg finner feilene i loggfilen og skriver dem ut. FtpErrorReporter håndterer henting og sletting av loggfiler over FTP.</p>
+<p>Dette er altså del 1 i min behandling av Template Method, og er som en introduksjon å regne. Men det er allerede nå verdt å legge merke til at at template method har gjort designet mitt ganske så <em>regid</em>. Hva må jeg f.eks. gjøre om jeg vil rapportere på andre ting enn errors, men fortsatt hente filene over FTP? Skal jeg følge designet må jeg opprette to nye klasser, hvor den ene stort sett vil være en kopi av FtpErrorReporter. Det er ikke bra! Jeg står heller ikke fritt til å gjenbruke bare deler av enten ErrorReporter eller FtpErrorReporter.</p>
+<p>I <a href="/2012/01/30/template-method-del-2-p-vei-mot-funksjonell-programmering/">del 2</a> vil du få se hva jeg kan gjøre med dette.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

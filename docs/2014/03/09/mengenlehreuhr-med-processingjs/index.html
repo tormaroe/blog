@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="JavaScript">
+
+    <title>Mengenlehreuhr med Processing.js</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Mengenlehreuhr med Processing.js</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 9. mars 2014</small> 
+            <a href="/tags/javascript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> JavaScript</span></a>
+          </p>
+          <p>På <a href="/2014/01/09/codingdojo-mengenlehreuhr/">Bergen CodingDojo i januar i år</a> implementerte jeg en litt spesiell klokke - <a href="http://en.wikipedia.org/wiki/Mengenlehreuhr">en Mengenlehreuhr</a> - sammen med Stian. Vi brukte <strong><a href="https://github.com/quil/quil">Quil</a></strong>, som er et processing-biblotek for Clojure.</p>
+<p>Nå har jeg forsøkt meg litt på processing i JavaScript også - med <a href="http://processingjs.org/">Processing.js</a>. Og hvis alt fungerer som tiltenkt skal du kunne se den samme klokken <em>live</em> nedenfor (...hvis du leser dette i RSS-feeden må du nok klikke deg inn på bloggen).</p>
+<p class="text-center"><canvas id="canvas1" width="100" height="100"></canvas></p>
+
+<p>Jeg har plassert viserne til en vanlig klokke oppå Mengenlehre-klokken, slik at det går an å resonere seg frem til hvordan den virker.</p>
+<p>Å programmere dette i JavaScript var ikke noe problem, og Processing.js er nok dermed noe jeg kommer til å eksperimentere mer med. Er du interessert i å se hva som skulle til for å lage klokken er det bare å velge <em>&quot;view source&quot;</em> på bloggposten.</p>
+<p>Kanskje jeg skal forsøke meg på et spill neste gang?! Noen som har en ide til hva jeg kan lage kanskje?</p>
+<script src="/assets/js/processing-1.4.1.min.js"></script>
+<script id="script1" type="text/javascript">
+
+var bulbs = {
+  redOn: [255, 5, 5],
+  redOff: [97, 29, 29],
+  yellowOn: [252, 252, 3],
+  yellowOff: [97, 90, 13]
+};
+
+function getLampSeconds(now) {
+  return now.getSeconds() % 2 == 0
+    ? bulbs.yellowOff
+    : bulbs.yellowOn;
+}
+
+function quot(a, b) {
+  return Math.floor(a / b);
+}
+
+function rem(a, b) {
+  return a % b;
+}
+
+function fRed() { return 'red'; }
+function fYellow() { return 'yellow'; }
+function fYellowRed(i) { return i % 3 == 0 ? 'red' : 'yellow'; }
+
+function getLampHours(now, timeFunc, part, lampCount, color) {
+  var onCount = part(now[timeFunc](), 5),
+      result = [];
+  for(var i=0; i<lampCount; i++) {
+    result.push(bulbs[color(i+1) + (i < onCount ? 'On' : 'Off')]);
+  }
+  return result;
+}
+
+// Simple way to attach js code to the canvas is by using a function
+function sketchProc(processing) {
+
+  var setColor = function (f, color) {
+    f(color[0], color[1], color[2]);
+  };
+
+  processing.size(430, 480);
+  processing.frameRate(10);
+
+  processing.draw = function() {
+    var centerX = processing.width / 2, centerY = processing.height / 2;
+    var maxArmLength = Math.min(centerX, centerY);
+
+    function drawLampSeconds(color){
+      setColor(processing.fill, color);
+      processing.ellipse(213, 70, 100, 100);
+    }
+
+    function drawSquareLamp(color, x, y, width) {
+      setColor(processing.fill, color);
+      processing.rect(x, y, width, 60); 
+    }
+
+    function drawLampSequence(colors, yOffset, lampOffset, width, margin) {
+      for(var i in colors) {
+        drawSquareLamp(colors[i], lampOffset + ((width+margin)*(i)), yOffset, width);
+      }
+    }
+
+    function drawArm(position, lengthScale, weight) {      
+      processing.stroke(0);
+      processing.strokeWeight(weight);
+      processing.line(centerX, centerY, 
+        centerX + Math.sin(position * 2 * Math.PI) * lengthScale * maxArmLength,
+        centerY - Math.cos(position * 2 * Math.PI) * lengthScale * maxArmLength);
+    }
+
+    processing.background(255);
+    processing.strokeWeight(1);
+    processing.stroke(0);
+
+    var now = new Date();
+    drawLampSeconds(getLampSeconds(now));
+    drawLampSequence(getLampHours(now, "getHours", quot, 4, fRed), 135, 5, 100, 5);
+    drawLampSequence(getLampHours(now, "getHours", rem, 4, fRed), 210, 5, 100, 5);
+    drawLampSequence(getLampHours(now, "getMinutes", quot, 11, fYellowRed), 285, 6, 33, 5);
+    drawLampSequence(getLampHours(now, "getMinutes", rem, 4, fYellow), 360, 5, 100, 5);
+
+    // Moving hours arm by small increments
+    var hoursPosition = (now.getHours() % 12 + now.getMinutes() / 60) / 12;
+    drawArm(hoursPosition, 0.5, 5);
+
+    // Moving minutes arm by small increments
+    var minutesPosition = (now.getMinutes() + now.getSeconds() / 60) / 60;
+    drawArm(minutesPosition, 0.80, 3);
+
+    // Moving hour arm by second increments
+    var secondsPosition = now.getSeconds() / 60;
+    drawArm(secondsPosition, 0.90, 1);
+  };
+  
+}
+
+var canvas = document.getElementById("canvas1");
+// attaching the sketchProc function to the canvas
+var p = new Processing(canvas, sketchProc);
+// p.exit(); to detach it
+</script>
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

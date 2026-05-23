@@ -1,0 +1,44 @@
+---
+title: kjedsommelighetskode
+link: http://blog.kjempekjekt.com/2011/04/06/kjedsommelighetskode/
+layout: post
+date: 2011-04-06 18:51:46Z
+tags:
+  - Clojure
+---
+<p>Åååå, som jeg <em>hater</em> influensa!!! Nå ha jeg ligget i sofaen i fem dager og kjedet meg. Men jeg må innrømme jeg har fått til å kode <em>litt</em>. Ikke så mye nyttig nødvendigvis, men jeg har nå fått løst noen <a href="http://projecteuler.net/" target="_blank">Euler-problemer</a>, og knotet litt med ett og annet hobby-prosjekt.</p> <p>Noe av det aller minst nyttige en kan lage er <em>hello-world</em>-programmer. Og da tenker jeg ikke på den enkle sorten. I et orntlig hello-world-program skal det ikke være så enkelt å se hvordan det faktisk virker. Alt er lov, det eneste kriteriet er at programmets nøyaktige output er teksten <em>“Hello, World!”</em>.</p> <p>Her er et jeg konstruerte i dag..</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span>            <span class="Comment">;==-----\\</span>
+<span class="lnr">11 </span>            <span class="Comment">;        \\\</span>
+<span class="lnr">12 </span>            <span class="Comment">;         \\\\</span>
+<span class="lnr">13 </span><span class="Delimiter">(</span>ns ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+<span class="lnr">14 </span> ,  hello                                ,,,
+<span class="lnr">15 </span>  ,     <span class="Delimiter">(</span><span class="Type">:use</span> clojure.repl<span class="Delimiter">)</span>                 ,,,
+<span class="lnr">16 </span>   ,        <span class="Delimiter">(</span>:require clojure.string<span class="Delimiter">))</span>         ,,,
+<span class="lnr">17 </span>    ,           <span class="Delimiter">((</span>defn                            ,,,
+<span class="lnr">18 </span>     ,              Hello-World!  [ by Tormaroe ]    ,,,
+<span class="lnr">19 </span>    ,           <span class="Delimiter">(</span>println                          ,,,
+<span class="lnr">20 </span>   ,        <span class="Delimiter">(</span>clojure.string/replace            ,,,
+<span class="lnr">21 </span>  ,     <span class="Delimiter">(</span><span class="Statement">first</span>                              ,,,
+<span class="lnr">22 </span> ,  <span class="Delimiter">(</span>dir-fn <span class="Delimiter">'</span><span class="Identifier">hello</span><span class="Delimiter">))</span>                     ,,,
+<span class="lnr">23 </span>#<span class="String">"-"</span> <span class="String">", "</span><span class="Delimiter">)))</span> <span class="Number">00</span> <span class="Number">00</span><span class="Delimiter">)</span> ,,,,,,,,,,,,,,,,,,,,
+<span class="lnr">24 </span>            <span class="Comment">;         ////</span>
+<span class="lnr">25 </span>            <span class="Comment">;        ///</span>
+<span class="lnr">26 </span>            <span class="Comment">;==-----//</span>
+</pre>
+<p>Ja, det er et gyldig clojure-program. Og selv om det ser tullete ut så går det faktisk an å lære noe av dette også - hvis du klarer å tyde hvordan det virker så vil jeg si du har kommet et godt stykke på vei til å bli en god clojure-utvikler.</p>
+<p>Her er en litt annen variant..</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Comment">;; a program saying hello to the world</span>
+<span class="lnr"> 2 </span><span class="Delimiter">(</span>use <span class="Delimiter">'</span><span class="Identifier">[clojure.string</span> :only <span class="Delimiter">(</span>join<span class="Delimiter">)</span>]<span class="Delimiter">)</span>
+<span class="lnr"> 3 </span><span class="Delimiter">(</span><span class="Statement">let</span> [a <span class="Delimiter">(</span>partial subs <span class="Delimiter">(</span>slurp <span class="Type">*file*</span><span class="Delimiter">))</span>]
+<span class="lnr"> 4 </span>  <span class="Delimiter">(</span><span class="Statement">print</span> <span class="Delimiter">(</span>join <span class="String">", "</span> <span class="Delimiter">(</span><span class="Statement">map</span> #<span class="Delimiter">(</span>a % <span class="Delimiter">(</span><span class="Statement">+</span> % <span class="Number">5</span><span class="Delimiter">))</span> [20 <span class="Number">33</span>]<span class="Delimiter">))))</span>
+</pre>
+<p>Klarer du å gjette deg til hva den gjør? Eller hva med den neste..?</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Delimiter">(</span>-&gt;&gt;
+<span class="lnr"> 2 </span>  <span class="Delimiter">(</span><span class="Statement">map</span> #<span class="Delimiter">(</span><span class="Statement">nth</span> <span class="Delimiter">(</span>str %<span class="Delimiter">)</span> %2<span class="Delimiter">)</span>
+<span class="lnr"> 3 </span>       <span class="Delimiter">'</span><span class="Special">(</span>hash dec nil? <span class="Statement">apply</span> symbol?
+<span class="lnr"> 4 </span>              <span class="String">" , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , "</span>
+<span class="lnr"> 5 </span>              <span class="String">" , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , "</span>
+<span class="lnr"> 6 </span>              remove-watch comporator print-ctor bit-shift-left chunk-append<span class="Special">)</span>
+<span class="lnr"> 7 </span>       <span class="Delimiter">(</span>range<span class="Delimiter">))</span>
+<span class="lnr"> 8 </span>  <span class="Delimiter">(</span><span class="Statement">apply</span> str<span class="Delimiter">)</span>
+<span class="lnr"> 9 </span>  <span class="Statement">print</span><span class="Delimiter">)</span>
+</pre>
+<p>Litt fornøyd med den faktisk. Og i tre små programsnutter har jeg faktisk klart å vise ganske masse, grunnleggende Clojure.</p>
+<p>Disse programmene finner du også på <a href="http://freak.no/forum/showthread.php?t=125531" target="_blank">hello-world-tråden på norsk freakforum</a>, sammen med en rekke andre, interessange bidrag i ulike språk.</p>

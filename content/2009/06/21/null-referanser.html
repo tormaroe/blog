@@ -1,0 +1,93 @@
+---
+title: null-referanser
+link: http://blog.kjempekjekt.com/2009/06/21/null-referanser/
+layout: post
+date: 2009-06-21 00:08:15Z
+tags:
+  - OO Patterns
+  - C#
+---
+<a title="NullReferenceException by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3644404937/"><img style="padding-left: 20px; padding-bottom: 10px" height="126" alt="NullReferenceException" src="http://farm4.static.flickr.com/3574/3644404937_573c8fc7b4_m.jpg" width="240" align="right" border="0" /></a>På flytoget etter NDC 2009 hadde mine kollegaer og jeg en nokså heftig diskusjon om bruk av <strong><em>null</em></strong>. Det var et nokså uskyldig spørsmål som startet det hele:
+<p style="padding-left: 20px"><em>"Sjekker du alltid om parametrene som sendes inn til en metode er </em>null<em>, og kaster </em>ArgumentNullException<em> om så er tilfelle?"</em></p>
+Mitt svar var ganske bestemt: <em>Nei, det gjør jeg stort sett aldri!</em> For meg er det å sjekke for null noe man gjør i frykt, noe man gjør for å kompansere for dårlig kode. I de fleste tilfeller er det en bug å sende inn null, og jeg ønsker ikke å legge til rette for <em>sloppy kode</em> ved å sette på støttehjulene og teste for dette.
+
+Kode som forventer en instans men får null vil kaste en NullReferenceException, som er mer enn godt nok for kode som er godt skrevet - den energien en eventuelt putter inn i å lage mer detaljerte feilmeldinger er ikke verdt det i dette tilfellet.
+
+Videre hevdet jeg at <em>null</em> i seg selv er en uting. Kode som er skrevet slik at man gjentatte ganger må teste for null er ikke god kode. Å teste for null er en <em>code smell</em>. Bruk av null hører ikke hjemme i kode som befinner seg andre steder enn på det laveste abstraksjonsnivået - null er ikke noe forretningsfolk kan snakke om, og bør derfor etter min mening heller ikke eksistere i kode som beskriver forretningskonsepter.
+
+<strong>Null Object pattern</strong>
+
+Problemet jeg snakker om kan illustreres med følgende kodesnutt:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: yellow">Employee</span> e = <span style="color: yellow">DB</span>.GetEmployee(<span style="color: lime">"T-Man"</span>);</p>
+<p style="margin: 0px"><span style="color: #ff8000">if</span> (e != <span style="color: #ff8000">null</span> && e.IsTimeToPay(<span style="color: #2b91af">DateTime</span>.Today))</p>
+<p style="margin: 0px">    e.Pay();</p>
+</div>
+Siden databasen kan returnere <em>null</em> om "T-Man" ikke eksisterer benytter vi oss av det faktum at det første uttrykket i if-testen evalueres først, og det andre uttrykket kun om det første er sant. Vi har alle skrevet kode som dette her. Vi har også alle glemt å teste for null fra tid til annen - selv om dette er et vanlig mønster så er det både uelegant og noe som fører til mange feil.
+
+I stedet for å returnere en <em>null</em>-referanse kunne vi la databasen kaste en exception, men da måtte vi ha brukt <em>try/catch</em> ved alle kall, noe som er enda mindre elegang.
+
+Et alternativ til å bruke null-referanser er å implementere et objekt som har det forventede grensesnittet, men som ikke gjør noen ting. Dette kaller vi for <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Null Object</a>. Min kollega hevdet at dette er veldig tungvindt å implementere, men etter å ha tenkt meg litt om så finner jeg mange steder hvor jeg har brukt det selv, og hvor det er langt fra vanskelig å implementere, samtidig som det gjør koden som bruker objektene langt enklere.
+
+Her er et eksempel fra prosjektet jeg holder på med akkurat nå. Brukeren skriver inn noe tekst som blir gjort om til en <strong><em>UserCommand</em></strong>. Poenget er å unngå å returnere <em>null</em>, så hvis teksten som sendes inn er <em>gibberish</em> så returnerer jeg en <strong><em>UnknownCommand</em></strong>:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #ff8000">public</span> <span style="color: #2b91af">UserCommand</span> GetCommand(<span style="color: yellow">FirstPerson</span> person, <span style="color: #ff8000">string</span>[] commandArguments)</p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">if</span> (ValidCommandArguments(commandArguments))</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #ff8000">return</span> _commandDictionary </p>
+<p style="margin: 0px">            .GetParser(commandArguments[0])</p>
+<p style="margin: 0px">            .GetCommand(person, commandArguments);</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">    <span style="color: #ff8000">return</span> <span style="color: #ff8000">new</span> <span style="color: yellow">UnknownCommand</span>();</p>
+<p style="margin: 0px">}</p>
+</div>
+UnknownCommand er et null-objekt: Det implementerer UserCommand-interfacet, men gjør ingen ting. Klienter av UserCommand kan bruke dette objektet på samme måte som alle andre commands - jeg trenger ikke kaste noen exceptions, og aldri teste for null.
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #ff8000">public</span> <span style="color: #ff8000">class</span> <span style="color: yellow">UnknownCommand</span> : <span style="color: #2b91af">UserCommand</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">public</span> <span style="color: yellow">UserCommandResult</span> Execute()</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #ff8000">return</span> <span style="color: #ff8000">new</span> <span style="color: yellow">UserCommandResult</span></p>
+<p style="margin: 0px">        {</p>
+<p style="margin: 0px">            Success = <span style="color: #ff8000">false</span>,</p>
+<p style="margin: 0px">            Text = <span style="color: lime">"Did not compute!"</span>,</p>
+<p style="margin: 0px">        };</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+Jeg har flere eksempler som ligner på dette. Der hvor jeg bruker <a href="http://en.wikipedia.org/wiki/Strategy_pattern">strategy pattern</a> i kombinasjon med en eller annen form for en <a href="http://en.wikipedia.org/wiki/Factory_method_pattern">factory</a>, implementerer jeg nesten alltid også et null-objekt, en dummy-klasse som kan brukes i stedet for en virkelig strategi.
+
+Dette beviser ikke at null objects kan brukes over alt, ei heller at det er trivielt, men jeg er ganske sikker på at bruk av dette mønsteret vil føre til kode som er enklere å lese og vedlikeholde, og som er mer feilfri.
+
+<strong>Kan vi erstatte != null testen?</strong>
+
+Men det er ikke til å komme bort ifra at man av og til må bruke <em>null</em>-referanser. Det er også et faktum at jeg hater å skrive != og == <em>null</em>. Jeg ønsker derfor en mer deskriptiv måte å teste på - en som ikke bryter abstraksjonsnivået. Dette er hva jeg har kommet frem til:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px">[<span style="color: yellow">Test</span>]</p>
+<p style="margin: 0px"><span style="color: #ff8000">public</span> <span style="color: #ff8000">void</span> Test()</p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">object</span> o = <span style="color: #ff8000">null</span>;</p>
+<p style="margin: 0px"> </p>
+<p style="margin: 0px">    <span style="color: #ff8000">if</span> (o.IsNotSetYet())</p>
+<p style="margin: 0px">        <span style="color: yellow">Assert</span>.That(o == <span style="color: #ff8000">null</span>);</p>
+<p style="margin: 0px">        <span style="color: lime">//Cool, I called a method on a null reference</span></p>
+<p style="margin: 0px">    <span style="color: #ff8000">else</span></p>
+<p style="margin: 0px">        <span style="color: yellow">Assert</span>.Fail(<span style="color: lime">"o was not null"</span>);          </p>
+<p style="margin: 0px">}</p>
+</div>
+Denne testen feiler ikke! Men hvordan er det mulig å kalle en metode på en null-referanse? Jo, det er mulig takket være extension methods:
+<div style="padding-left: 5px; font-size: 9pt; background: black; margin-bottom: 16px; color: white; font-family: Courier New">
+<p style="margin: 0px"><span style="color: #ff8000">public</span> <span style="color: #ff8000">static</span> <span style="color: #ff8000">class</span> <span style="color: yellow">ObjectExtensions</span></p>
+<p style="margin: 0px">{</p>
+<p style="margin: 0px">    <span style="color: #ff8000">public</span> <span style="color: #ff8000">static</span> <span style="color: #ff8000">bool</span> IsNotSetYet(<span style="color: #ff8000">this</span> <span style="color: #ff8000">object</span> o)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #ff8000">return</span> o == <span style="color: #ff8000">null</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">    <span style="color: #ff8000">public</span> <span style="color: #ff8000">static</span> <span style="color: #ff8000">bool</span> IsSet(<span style="color: #ff8000">this</span> <span style="color: #ff8000">object</span> o)</p>
+<p style="margin: 0px">    {</p>
+<p style="margin: 0px">        <span style="color: #ff8000">return</span> o != <span style="color: #ff8000">null</span>;</p>
+<p style="margin: 0px">    }</p>
+<p style="margin: 0px">}</p>
+</div>
+Er det ikke vakkert?

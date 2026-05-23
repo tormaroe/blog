@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Erlang,Pattern matching">
+
+    <title>Mønstergjenkjenning i Erlang</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Mønstergjenkjenning i Erlang</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> fredag 23. april 2010</small> 
+            <a href="/tags/erlang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Erlang</span></a>
+          
+            <a href="/tags/pattern-matching"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Pattern matching</span></a>
+          </p>
+          <p><strong>Pattern matching</strong>, eller mønstergjenkjenning, er en svært sentral teknikk i Erlang. I de fleste programmeringsspråk betyr for eksempel "=" tilordning av en verdi til en variabel. Ikke i Erlang. Her er nemlig "=" en <em>pattern matching</em>-operasjon. X = Y betyr: Evaluer høyresiden (Y), og match det så mot venstresiden (X). Om X allerede har en verdi, og den ikke er lik verdien av Y, vil X = Y kaste en exception.</p>
+<p>For å illustrere hvordan mønstergjenkjenning kan brukes til å gjøre kode svært lesbar og deklerativ vil jeg vise litt kode jeg skrev da jeg løste <a href="http://projecteuler.net/index.php?section=problems&amp;id=54">oppgave nummer 54</a> på <strong>Project Euler</strong>. Her ble jeg bedt om å analysere en rekke poker-hender. Dette er en oppgave hvor jeg vet akkurat hvordan jeg ville løst det i et objektorientert språk, men å løse det i et funksjonsbasert språk var en ny og spennende utfordring.</p>
+<p style="border-bottom: black 1px solid; border-left: black 1px solid; padding-bottom: 6px; background-color: #ddddff; padding-left: 20px; padding-right: 20px; border-top: black 1px solid; border-right: black 1px solid; padding-top: 6px"><strong>Sidebar:</strong> <a href="http://projecteuler.net/"><em>Project Euler</em></a> er en webside som inneholder hundrevis av programmeringsoppgaver, med vekt på matematisk forståelse. Man kan registrere seg for å holde track på hvor mange oppgaver man har løst. Jeg synes disse oppgavene er perfekte når man skal trene seg opp i et nytt prorgammeringsspråk, og jeg anbefaler utviklere på alle erfaringsnivå å prøve seg.</p>
+<p>Her er funksjonen min for å sjekke om en poker-hånd er et <em>fullt hus</em>:</p>
+<div style="background-color: #000000; padding-left: 8px; margin-bottom: 20px; color: #f6f3e8"><font face="monospace"><span style="background-color: #000000"><font color="#3d3d3d">60 </font></span><span style="background-color: #000000"><font color="#f6f3e8">is_full_house</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">Hand</font></span>) <font color="#ffffff">-&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">61 </font></span>&nbsp; <font color="#96cbfe">case</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">order</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">hand_to_values</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">Hand</font></span>)) <font color="#96cbfe">of</font><br><span style="background-color: #000000"><font color="#3d3d3d">62 </font></span>&nbsp;&nbsp;&nbsp; [<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">Y</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">Y</font></span>] <font color="#ffffff">-&gt;</font> {<span style="background-color: #000000"><font color="#f6f3e8">yes</font></span>, [<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">Y</font></span>]};<br><span style="background-color: #000000"><font color="#3d3d3d">63 </font></span>&nbsp;&nbsp;&nbsp; [<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">Y</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">Y</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">Y</font></span>] <font color="#ffffff">-&gt;</font> {<span style="background-color: #000000"><font color="#f6f3e8">yes</font></span>, [<span style="background-color: #000000"><font color="#f6f3e8">Y</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">X</font></span>]};<br><span style="background-color: #000000"><font color="#3d3d3d">64 </font></span>&nbsp;&nbsp;&nbsp; <span style="background-color: #000000"><font color="#f6f3e8">_Other</font></span>&nbsp;<font color="#ffffff">-&gt;</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">no</font></span><br><span style="background-color: #000000"><font color="#3d3d3d">65 </font></span>&nbsp; <font color="#96cbfe">end</font><font color="#e18964">.</font><br></font></div>
+<p>Funksjonen inneholder en case-statement, og i linje 62 ser du det første forsøke på å matche et mønster. Jeg sjekker om hånden er lik mønsteret X,X,X,Y,Y – dvs. først tre like verdier og så to andre, like verdier. Det er jo nettopp dette som er et hus i poker. I linje 63 forsøker jeg å matche den andre muligheten, som er X,X,Y,Y,Y (det finnes ikke flere permutasjoner fordi jeg har sortert kortene i linje 61).</p>
+<div style="text-align: center; margin-bottom: 18px"><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Playing_card_diamond_10.svg/40px-Playing_card_diamond_10.svg.png"> <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Playing_card_heart_10.svg/40px-Playing_card_heart_10.svg.png"> <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Playing_card_spade_10.svg/40px-Playing_card_spade_10.svg.png"> <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Playing_card_diamond_3.svg/40px-Playing_card_diamond_3.svg.png"> <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Playing_card_club_3.svg/40px-Playing_card_club_3.svg.png"><br><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Playing_card_diamond_A.svg/40px-Playing_card_diamond_A.svg.png"> <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/2/25/Playing_card_spade_A.svg/40px-Playing_card_spade_A.svg.png"> <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Playing_card_club_Q.svg/40px-Playing_card_club_Q.svg.png"> <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Playing_card_diamond_Q.svg/40px-Playing_card_diamond_Q.svg.png"> <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Playing_card_heart_Q.svg/40px-Playing_card_heart_Q.svg.png"> </div>
+<p>Hvis et av de to mønstrene matcher hånden, returnerer jeg et positivt svar. Hvis ingen matcher (mønsteret _Other matcher hva som helst) returnerer jeg et negativt svar (no). </p>
+<p>Jeg skriver altså ingen imperativ kode for å søke/loope gjennom hånden og sjekke hva den inneholder. Jeg deklarerer bare mønsteret for hvordan hånden må "se ut", og erlang finner ut resten. Her er et eksempel til, hvor jeg sjekker om hånden inneholder tre like:</p>
+<div style="background-color: #000000; padding-left: 8px; margin-bottom: 20px; color: #f6f3e8"><font face="monospace"><span style="background-color: #000000"><font color="#3d3d3d">67 </font></span><span style="background-color: #000000"><font color="#f6f3e8">is_three_of_a_kind</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">Hand</font></span>) <font color="#ffffff">-&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">68 </font></span>&nbsp; <font color="#96cbfe">case</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">order</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">hand_to_values</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">Hand</font></span>)) <font color="#96cbfe">of</font><br><span style="background-color: #000000"><font color="#3d3d3d">69 </font></span>&nbsp;&nbsp;&nbsp; [<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">_</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">_</font></span>] <font color="#ffffff">-&gt;</font> {<span style="background-color: #000000"><font color="#f6f3e8">yes</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">X</font></span>};<br><span style="background-color: #000000"><font color="#3d3d3d">70 </font></span>&nbsp;&nbsp;&nbsp; [<span style="background-color: #000000"><font color="#f6f3e8">_</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">_</font></span>] <font color="#ffffff">-&gt;</font> {<span style="background-color: #000000"><font color="#f6f3e8">yes</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">X</font></span>};<br><span style="background-color: #000000"><font color="#3d3d3d">71 </font></span>&nbsp;&nbsp;&nbsp; [<span style="background-color: #000000"><font color="#f6f3e8">_</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">_</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>,<span style="background-color: #000000"><font color="#f6f3e8">X</font></span>] <font color="#ffffff">-&gt;</font> {<span style="background-color: #000000"><font color="#f6f3e8">yes</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">X</font></span>};<br><span style="background-color: #000000"><font color="#3d3d3d">72 </font></span>&nbsp;&nbsp;&nbsp; <span style="background-color: #000000"><font color="#f6f3e8">_Other</font></span>&nbsp;<font color="#ffffff">-&gt;</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">no</font></span><br><span style="background-color: #000000"><font color="#3d3d3d">73 </font></span>&nbsp; <font color="#96cbfe">end</font><font color="#e18964">.</font><br></font></div>
+<h4>Mønstergjenkjenning i funksjonskall</h4>
+<p>Vi bruker også mønstergjenkjenning til å definere ulike "entrypoints" til funksjoner. Et typisk eksempel er <em>fibonacci</em>-funksjonen. Jeg kan definere fibonacci-følgen ved å si at de to første tallene er begge lik 1, og alle etterfølgende tall er lik summen av de to foregående tallene. I deklerative språk er det lett å lage funksjoner som genererer slike matematiske formler:</p>
+<div style="background-color: #000000; padding-left: 8px; margin-bottom: 20px; color: #f6f3e8"><font face="monospace"><span style="background-color: #000000"><font color="#3d3d3d">24 </font></span><span style="background-color: #000000"><font color="#f6f3e8">fib</font></span>(<font color="#ff73fd">1</font>) <font color="#ffffff">-&gt;</font>&nbsp;<font color="#ff73fd">1</font>;<br><span style="background-color: #000000"><font color="#3d3d3d">25 </font></span><span style="background-color: #000000"><font color="#f6f3e8">fib</font></span>(<font color="#ff73fd">2</font>) <font color="#ffffff">-&gt;</font>&nbsp;<font color="#ff73fd">1</font>;<br><span style="background-color: #000000"><font color="#3d3d3d">26 </font></span><span style="background-color: #000000"><font color="#f6f3e8">fib</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">N</font></span>) <font color="#ffffff">-&gt;</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">fib</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">N</font></span><font color="#ffffff">-</font><font color="#ff73fd">1</font>) <font color="#ffffff">+</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">fib</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">N</font></span><font color="#ffffff">-</font><font color="#ff73fd">2</font>)<font color="#e18964">.</font><br></font></div>
+<p>Funksjonen <strong><em>fib</em></strong> tar ett argument. Når metoden kalles vil Erlang bruke pattern matching til å avgjøre hvilken av de tre "versjonene" av fib som skal kalles. Er argumentet for eksempel tallet 2, vil den kalle fib(2) i linje 25, som rett og slett returnerer tallet 1. </p>
+<p>Er argumentet i stedet tallet 3, vil linje 26 aktiveres (24 og 25 matcher ikke, men N matcher alle øvrige tall). Resultatet av fib(3) er fib(2) + fib(1). For å løse dette vil Erlang igjen kalle funksjonene i linje 24 og 25. Er utgangspunktet et større tall vil vi få en rekursjon i linje 26 – inntil vi kommer ned til fib(2) og fib(1).</p>
+<h4>Mønstergjenkjenning i enhetstester</h4>
+<p>Vi kan også bruke mønstergjenkjenning til å skrive elegante enhetstester i Erlang. Bruk av testdrevet utvikling er absolutt å anbefale når man programmerer i et nytt språk, fordi man lett gjør småfeil som det ellers kan være vanskelig å oppdage. Og sålangt har jeg bare positive erfaringer med å skrive funksjonsbaserte tester. </p>
+<p>En enkel enhetstest av Erlangs innebygde metode for å reversere en liste kan for eksempel se slik ut:</p>
+<div style="background-color: #000000; padding-left: 8px; margin-bottom: 20px; color: #f6f3e8"><font face="monospace"><span style="background-color: #000000"><font color="#3d3d3d">4 </font></span><span style="background-color: #000000"><font color="#f6f3e8">reverse_test</font></span>()&nbsp; <font color="#ffffff">-&gt;</font>&nbsp;<br><span style="background-color: #000000"><font color="#3d3d3d">5 </font></span>&nbsp; [<font color="#ff73fd">4</font>,<font color="#ff73fd">3</font>,<font color="#ff73fd">2</font>,<font color="#ff73fd">1</font>] <font color="#ffffff">=</font>&nbsp;<font color="#ffd2a7">lists:reverse</font>([<font color="#ff73fd">1</font>,<font color="#ff73fd">2</font>,<font color="#ff73fd">3</font>,<font color="#ff73fd">4</font>])<font color="#e18964">.</font><br></font></div>
+<p>Her bruker jeg funksjonen <strong><em>lists:reverse()</em></strong> på en liste som består av tallene 1, 2, 3 og 4. Det forventede resultatet er en liste som består av tallene 4, 3, 2 og 1. Likhetstegnet er som jeg nevnte i innledningen ingen tilordning – det er et forsøk på å matche resultatet av høyresiden mot det som står på venstresiden. Hvis høyresiden resulterer i noe annet enn listen 4, 3, 2, 1, vil likhetstegnet kaste en exception, og testen vil dermed feile.</p>
+<p>Dette er elegant fordi det ligner mer en spesifikasjon enn en test. Funksjonen beskriver fakta, og hvis den faktiske implementasjoner fraviker denne definisjonen vil spesifikasjonen feile.</p>
+<p>Samme teknikk brukte jeg på en funksjon for å vurdere om en poker-hånd er en <em>straight</em> (lagde ganske mange varianter av akkurat den funksjonen). Her plukker jeg først ut kortenes verdi i synkende rekkefølge i variablene A, B, C, D og E. Deretter forsøker jeg å påstå at A=B+1, at B=C+1 osv. Hvis dette går bra for alle kortene så vet jeg at jeg har en straight - fem kort i rekkefølge. Om så ikke er tilfelle vil det kastes en exception, som jeg catcher og returnerer i stedet "no" (<i>"nei, det er ingen straight"</i>).</p>
+<div style="background-color: #000000; padding-left: 8px; margin-bottom: 20px; color: #f6f3e8"><font face="monospace"><span style="background-color: #000000"><font color="#3d3d3d">100 </font></span><span style="background-color: #000000"><font color="#f6f3e8">is_straight</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">Hand</font></span>) <font color="#ffffff">-&gt;</font><br><span style="background-color: #000000"><font color="#3d3d3d">101 </font></span>&nbsp; [<span style="background-color: #000000"><font color="#f6f3e8">A</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">B</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">C</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">D</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">E</font></span>] <font color="#ffffff">=</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">order</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">hand_to_values</font></span>(<span style="background-color: #000000"><font color="#f6f3e8">Hand</font></span>)),<br><span style="background-color: #000000"><font color="#3d3d3d">102 </font></span>&nbsp; <font color="#96cbfe">try</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">A</font></span>&nbsp;<font color="#ffffff">=</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">B</font></span><font color="#ffffff">+</font><font color="#ff73fd">1</font>, <span style="background-color: #000000"><font color="#f6f3e8">B</font></span>&nbsp;<font color="#ffffff">=</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">C</font></span><font color="#ffffff">+</font><font color="#ff73fd">1</font>, <span style="background-color: #000000"><font color="#f6f3e8">C</font></span>&nbsp;<font color="#ffffff">=</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">D</font></span><font color="#ffffff">+</font><font color="#ff73fd">1</font>, <span style="background-color: #000000"><font color="#f6f3e8">D</font></span>&nbsp;<font color="#ffffff">=</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">E</font></span><font color="#ffffff">+</font><font color="#ff73fd">1</font>, <br><span style="background-color: #000000"><font color="#3d3d3d">103 </font></span>&nbsp;&nbsp;&nbsp; {<span style="background-color: #000000"><font color="#f6f3e8">yes</font></span>, <span style="background-color: #000000"><font color="#f6f3e8">A</font></span>}<br><span style="background-color: #000000"><font color="#3d3d3d">104 </font></span>&nbsp; <font color="#96cbfe">catch</font><br><span style="background-color: #000000"><font color="#3d3d3d">105 </font></span>&nbsp;&nbsp;&nbsp; <font color="#ffd2a7">_:_</font>&nbsp;<font color="#ffffff">-&gt;</font>&nbsp;<span style="background-color: #000000"><font color="#f6f3e8">no</font></span><br><span style="background-color: #000000"><font color="#3d3d3d">106 </font></span>&nbsp; <font color="#96cbfe">end</font><font color="#e18964">.</font><br></font></div>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

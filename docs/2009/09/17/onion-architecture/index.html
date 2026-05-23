@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Design,OO Patterns">
+
+    <title>Onion architecture</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Onion architecture</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 17. september 2009</small> 
+            <a href="/tags/design"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Design</span></a>
+          
+            <a href="/tags/oo-patterns"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> OO Patterns</span></a>
+          </p>
+          <p><strong><em><img style="border-right-width: 0px; margin: 0px 15px 10px 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="en l&oslash;k" border="0" alt="en l&oslash;k" align="left" src="/uploads/2009/09/vidaliaonion070108lg57895205.jpg" width="140" height="140"> Onion Architecture</em></strong> er navnet Jeffrey Palermo har foreslått for å beskrive et software design pattern som er mye brukt spesielt i Alt.Net-miljøet. Palermo presanterte arkitekturen i <a href="http://jeffreypalermo.com/blog/the-onion-architecture-part-1/" target="_blank">en blogpost-serie i juli/august 2008</a>.</p>
+<p>Arkitekturen fokuserer på hvordan vi håndterer avhengigheter i programvaren vår, og er et steg bort fra den tradisjonelle lagdelingen vi alle har vært vandt til. Den beskrives som en "løk" med flere lag, hvor kjernen inneholder domenet vi modellerer og forretningslogikken, mens infrastruktur og brukergrensesnitt befinner seg helt ytterst. Alle avhengigheter går innover i løken - ingen ting får lov til å avhenge av noe i et lag lengre ute enn seg selv. Gjennom mye bruk av <a href="http://en.wikipedia.org/wiki/Dependency_inversion_principle" target="_blank">Dependency Inversion Principle</a> designer man slik en løsning hvor forretningsverdien er skjermet, og ting som endres oftere og som har flere eksterne avhengigheter (UI teknologi, databaser etc) ligger på utsiden og kan lettere byttes ut.</p>
+<p>La oss som et konkret eksempel ta en titt på hvordan løsningen jeg utviklet i <a href="/2009/08/30/tdd-og-mocking-i-praksis/">TDD i praksis</a> og <a href="/2009/09/03/validering-kan-vre-et-domene-ansvar/">Validering kan være et domene-ansvar</a> ser ut i denne typen løk-modell (klikk på løken for full størrelse om du ikke er langsynt):</p>
+<p><a href="/uploads/2009/09/onion.png"><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="onion" border="0" alt="onion" src="/uploads/2009/09/onion_thumb.png" width="500" height="508"></a></p>
+<p>Helt innerst i arkitekturen ligger domenemodellen, som i mitt tilfelle er <em>User</em>-klassen. Den får ikke lov til å referere noe annet som ikke også ligger i domenemodellen.</p>
+<p>Laget utenfor kaller vi for <strong>Domain Services</strong> – domenetjenester. Her finner man de tjenestene som har mest med forretningslogikken å gjøre. I mitt eksempel er dette blant annet spesifikasjonen for hva som er en gyldig brukerregistrering – d.v.s. <em>ValidRegistrationSpecification</em>, og alle de andre klassene som inngår i den. Som du ser på tegningen avhenger denne spesifikasjonen først og fremst av User-klassen, men én av spesifikasjonene avhenger også av en annen domenetjeneste, nemlig den abstrakte UserRepositor'en. Jeg vet ikke om alle er helt enige i at en repository er en domenetjeneste – jeg har bl.a. sett noen definere et eget lag mellom domenemodellen og domenetjenestene for repositoriene.</p>
+<p>Ett nivå lengre ute finner vi Application Services – tjenester som har mest å gjøre med operasjonene man skal kunne gjøre med programvaren. Jeg definerer f.eks. både controller'en og det abstrakte view'et i <a href="http://en.wikipedia.org/wiki/Model-view-presenter" target="_blank">Model View Presenter</a><em></em> til å være en del av dette laget. Disse klassene er mer eller mindre uavhengig av hvilken presentasjonsteknologi som er brukt, og skal derfor ikke ha noen avhengigheter til laget utenfor, slik som reglene i Onion Architecture dikterer. De bruker derimot domenetjenestene og domenemodellen til å utføre handlinger initiert av brukeren.</p>
+<p>I det ytterste laget finner vi de konkrete implementasjonene som er avhengig av spesifik teknologi knyttet til brukergrensesnitt og infrastruktur. I mitt tilfelle er det de konkrete view'ene (ASP.NET brukerkontrollene) og den konkrete repositori'en (som bruker en <a href="http://www.db4o.com/" target="_blank">db4objects</a>-database). Vi kan også plassere testene våre her, for å illustrere hvordan de anhenger av hele arkitekturen og bruker et bestemt testrammeverk. Mens klassene i lagene nedenfor kan betraktes som POCO's <em>(Plain Old CLR Objects)</em>, er klassene i dette ytterste laget som du forstår tettere knyttet bestemte teknlogier. Gjennom å følge prinsippene i Onion Architecture har vi gjort oss mindre sårbare for endringer i disse teknologiene.</p>
+<p>Det er vedt å merke seg at Onion Architecture har mye til felles med Evans' <a href="http://domaindrivendesign.org/" target="_blank">Domain-Driven Design</a>, men at det ikke følger "boka" punkt for punkt. Faktisk mener jeg at "reglene" i denne arkitekturen er mere rigide på noen punkter, men også mere universelt anvendelige.</p>
+<h4>Inversion of Control</h4>
+<p>UserRepository og Db4oUserRepository er kanskje den aller tydeligste bruken av <em>Dependency Inversion</em> i dette eksempelet. Som du ser avhenger tjenestene i løsningen av den abstrakte UserRepository, mens <em>"ingenting"</em> avhenger av Db4o-varianten. <em>Ingenting</em> er i hermetegn, fordi den jo må instantieres ett eller annet sted. </p>
+<p>Når man følger disse prinsippene, og ikke minst driver frem designet gjennom testdreven utvikling, får man MANGE slike "løse" avhengigheter, og det er her <strong><em>Inversion of Control-rammeverk (IoC)</em></strong>kommer inn i bildet. Dependency Inversion Principle gir oss et design som er lettere å endre, men som er vanskeligere å initialisere. IoC er enkelt fortalt en slags startmotor for programvaren din. Arkitekturen er veldig løs, men IoC-containeren syr alt sammen igjen. Bruk av IoC-rammeverk er derfor ikke livsviktig, men veldig praktisk, når man følger Onion Architecture.</p>
+<p>Det finnes en bra sampling med IoC-rammeverk for .NET-utviklere, og er dette ukjent materie for deg bør du absolutt ta en titt. Ikke forvent øyeblikkelige resultater, men ta deg god tid, og forsøk å introdusere bruken gradvis. Noen av de mest kjente rammeverkene er: <a href="http://www.castleproject.org/container/index.html" target="_blank">Castle Windsor</a>, <a href="http://structuremap.sourceforge.net/Default.htm" target="_blank">StructureMap</a>, <a href="http://www.springframework.net/" target="_blank">Spring.NET</a>, og min personlige favoritt <a href="http://ninject.org/" target="_blank">Ninject</a>. Anbefaler dessuten å ta en titt på <a href="http://dimecasts.net/Casts/ByTag/IoC" target="_blank">relevante DimeCasts</a> for å få en god start på dependency injection. </p>
+<p>Så det var min introduksjon til Onion Architecture, pluss en liten <em>rant</em> om IoC – jeg håper det gav mening. Det ryktes forresten at <a href="http://twitter.com/fkalseth" target="_blank">Fredrik Kalseth</a> snakker om Onion Architecture på <a href="http://www.microsoft.com/norge/msdn_technet_live/msdnLive.aspx" target="_blank"><strong>MSDN Live</strong></a> som pågår i disse dager. Det er fortsatt ikke for sent å melde seg på til showene i Bergen (22. sep), Trondheim (24. sep) og Oslo (29. sep).</p>
+<p><strong>Noen knagger:</strong> <a href="/index.php?s=Alt.Net" rel="tag">Alt.Net</a>, <a href="/index.php?s=db4objects" rel="tag">db4objects</a>, <a href="/index.php?s=Dependency+Inversion+Principle" rel="tag">Dependency Inversion Principle</a>, <a href="/index.php?s=DimeCasts" rel="tag">DimeCasts</a>, <a href="/index.php?s=IoC" rel="tag">IoC</a>, <a href="/index.php?s=Model+View+Presenter" rel="tag">Model View Presenter</a>, <a href="/index.php?s=MSDN+Live" rel="tag">MSDN Live</a>, <a href="/index.php?s=Ninject" rel="tag">Ninject</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

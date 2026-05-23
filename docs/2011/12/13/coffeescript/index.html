@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Polyglot,CoffeeScript">
+
+    <title>CoffeeScript</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>CoffeeScript</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 13. desember 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/coffeescript"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> CoffeeScript</span></a>
+          </p>
+          <p><strong><em>CoffeeScript</em></strong> er et rykende ferskt språk som rett og slett forsøker å fikse alle problemene med JavaScript. Koden kompileres ned til JavaScript, og har en syntaks inspirert av Ruby, Python og Haskell. CoffeeScript gir deg som webutvikler også noen nye muligheter som list comprehensions, pattern matching, og klasse-basert objektorientering.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="coffeescript_legacy" border="0" alt="coffeescript_legacy" src="/uploads/2011/12/coffeescript_legacy.png" width="370" height="160"></p>
+<p>CoffeeScript er <u>mye mer kompakt og elegant enn JavaScript</u>, og har blitt godt mottatt av mange utviklere. Språket er blant annet inkludert i <em>Ruby on Rails</em>, og er også mye brukt på serversiden i Node.js. For noen måneder siden gikk også utviklingsteamet mitt over fra JavaScript til å skrive CoffeeScript, uten nevneverdige problemer.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="coffeescript" border="0" alt="coffeescript" src="/uploads/2011/12/coffeescript.jpg" width="500" height="449"></p>
+<p>CoffeeScript-compilatoren er skrevet i JavaScript, og selve kompileringen av scriptene kan derfor skje i browseren. Men dette er selvsagt ikke optimalt – det normale er at man som en del av build-prosessen genererer JavaScript-filer fra CoffeeScript'ene.</p>
+<p>For .NET, som er vår plattform, finnes det også HTTP-handlers som kompilerer CoffeeScript <em>on the fly</em>, og server ut JavaScript. Dette er veldig praktisk under selve utviklingen.</p>
+<h4>La oss se på litt kode</h4>
+<p>Da er det på tide å løse <a href="/2011/11/24/hello-world-euler-style/">Euler1-oppgaven</a> igjen. Jeg skriver her CoffeeScript-kode som jeg tenker vil bli konvertert til JavaScript og plassert i en webside. Svaret vises ved hjelp av en alert-box.</p>
+<p>Her er en enkel, imperativ kodesnutt som finner summen av alle multipler av 3 eller 5 under 1000:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 2 </span>answer <span class="Operator">=</span> <span class="Number">0</span>
+<span class="lnr"> 3 </span><span class="Statement">for</span> n <span class="Keyword">in</span> <span class="Special">[</span><span class="Number">1</span><span class="Operator">...</span><span class="Number">1000</span><span class="Special">]</span>
+<span class="lnr"> 4 </span>  <span class="Conditional">if</span> n <span class="Operator">%</span> <span class="Number">3</span> <span class="Keyword">is</span> <span class="Number">0</span> <span class="Keyword">or</span> n <span class="Operator">%</span> <span class="Number">5</span> <span class="Keyword">is</span> <span class="Number">0</span>
+<span class="lnr"> 5 </span>    answer <span class="Operator">+=</span> n
+<span class="lnr"> 6 </span>alert answer
+</pre>
+<p>Koden kompileres til JavaScript'et nedenfor. Her ser du at CoffeeScript blant annet har <em>"ranges"</em> man kan iterere over, og&nbsp; at koden bruker ord som <strong><em>is</em></strong> og <strong><em>or</em></strong> for å bli mere leservennlig. Du kan også se at den kompilerte koden følger <em>best practises</em>, og er wrappet inn i et funksjonskall, slik at det ikke opprettes noen variabler i det globale navnerommet.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span>(<span class="Function">function</span>() <span class="Function">{</span>
+<span class="lnr">11 </span>  <span class="Identifier">var</span> answer, n;
+<span class="lnr">12 </span>  answer = <span class="Number">0</span>;
+<span class="lnr">13 </span>  <span class="Statement">for</span> (n = <span class="Number">1</span>; n &lt; <span class="Number">1000</span>; n++) <span class="Function">{</span>
+<span class="lnr">14 </span>    <span class="Conditional">if</span> (n % <span class="Number">3</span> === <span class="Number">0</span> || n % <span class="Number">5</span> === <span class="Number">0</span>) <span class="Function">{</span>
+<span class="lnr">15 </span>      answer += n;
+<span class="lnr">16 </span>    <span class="Function">}</span>
+<span class="lnr">17 </span>  <span class="Function">}</span>
+<span class="lnr">18 </span>  <span class="Keyword">alert</span>(answer);
+<span class="lnr">19 </span><span class="Function">}</span>).call(<span class="Identifier">this</span>);
+</pre>
+<p>Nedenfor har jeg laget en løsning til, som viser hvordan man oppretter funksjoner i CoffeeScript. Den bruker også en if bak et uttrykk, en teknikk arvet fra Ruby. Og numbers-variabelen settes ved hjelp av en list comprehension som utfører selve filtreringen.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span>multipleOf <span class="Operator">=</span> <span class="Special">(</span>n<span class="Special">,</span> d<span class="Special">)</span> <span class="Operator">-&gt;</span> n <span class="Operator">%</span> d <span class="Keyword">is</span> <span class="Number">0</span>
+<span class="lnr">11 </span>
+<span class="lnr">12 </span>multipleOf3or5 <span class="Operator">=</span> <span class="Special">(</span>n<span class="Special">)</span> <span class="Operator">-&gt;</span>
+<span class="lnr">13 </span>  <span class="Statement">for</span> divisor <span class="Keyword">in</span> <span class="Special">[</span><span class="Number">3</span><span class="Special">,</span><span class="Number">5</span><span class="Special">]</span>
+<span class="lnr">14 </span>    <span class="Statement">return</span> <span class="Constant">yes</span> <span class="Conditional">if</span> multipleOf<span class="Special">(</span>n<span class="Special">,</span> divisor<span class="Special">)</span>
+<span class="lnr">15 </span>
+<span class="lnr">16 </span>numbers <span class="Operator">=</span> <span class="Special">(</span>n <span class="Statement">for</span> n <span class="Keyword">in</span> <span class="Special">[</span><span class="Number">1</span><span class="Operator">...</span><span class="Number">1000</span><span class="Special">]</span> <span class="Conditional">when</span> multipleOf3or5 n<span class="Special">)</span>
+<span class="lnr">17 </span>
+<span class="lnr">18 </span>answer <span class="Operator">=</span> <span class="Number">0</span>
+<span class="lnr">19 </span>answer <span class="Operator">+=</span> n <span class="Statement">for</span> n <span class="Keyword">in</span> numbers
+<span class="lnr">20 </span>alert <span class="String">"The answer is </span><span class="PreProc">#{</span>answer<span class="PreProc">}</span><span class="String">!"</span>
+</pre>
+<p>Den nest siste linjen som summerer opp tallene er også litt snedig, og den aller siste linjen viser at CoffeeScript støtter string interpolation. Og å kunne returnere <em>"yes"</em> i stedet for <em>true</em> fra multipleOf3or5 er jo også litt søtt da :)</p>
+<h4>Prototyping og monkey patching</h4>
+<p>JavaScript er jo et språk som støtter prototype-basert objektorientering. Her viser jeg hvordan jeg kan bruke dette i CoffeScript for å løse Euler1-oppgaven. Først oppretter jeg en isMultipleOf-metode på alle tall. Deretter kan jeg lage en fin multipleOf3or5-funksjon som bruker dette.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">24 </span><span class="Type">Number</span><span class="Operator">::</span>isMultipleOf <span class="Operator">=</span> <span class="Special">(</span>d<span class="Special">)</span> <span class="Operator">-&gt;</span> <span class="Special">this</span> <span class="Operator">%</span> d <span class="Keyword">is</span> <span class="Number">0</span>
+<span class="lnr">25 </span>
+<span class="lnr">26 </span>multipleOf3or5 <span class="Operator">=</span> <span class="Special">(</span>n<span class="Special">)</span> <span class="Operator">-&gt;</span>
+<span class="lnr">27 </span>  n<span class="Operator">.</span>isMultipleOf<span class="Special">(</span><span class="Number">3</span><span class="Special">)</span> <span class="Keyword">or</span> n<span class="Operator">.</span>isMultipleOf<span class="Special">(</span><span class="Number">5</span><span class="Special">)</span>
+<span class="lnr">28 </span>
+<span class="lnr">29 </span><span class="Type">Array</span><span class="Operator">::</span>sum <span class="Operator">=</span> <span class="Operator">-&gt;</span>
+<span class="lnr">30 </span>  answer <span class="Operator">=</span> <span class="Number">0</span>
+<span class="lnr">31 </span>  answer <span class="Operator">+=</span> n <span class="Statement">for</span> n <span class="Keyword">in</span> <span class="Special">this</span>
+<span class="lnr">32 </span>  <span class="Statement">return</span> answer
+<span class="lnr">33 </span>
+<span class="lnr">34 </span>alert <span class="Keyword">do</span> <span class="Special">(</span>n <span class="Statement">for</span> n <span class="Keyword">in</span> <span class="Special">[</span><span class="Number">1</span><span class="Operator">...</span><span class="Number">1000</span><span class="Special">]</span> <span class="Conditional">when</span> multipleOf3or5 n<span class="Special">)</span><span class="Operator">.</span>sum
+</pre>
+<p>Den tredje funksjonen opprettes som en metode på Array – den summerer opp alle tallene i arrayet. Til slutt bruker jeg list comprehension til å filtrere en range, og så kalle sum-metoden jeg lagde på resultatet.</p>
+<h4>Klasse-basert abstraksjon</h4>
+<p>CoffeeScript introduserer også en abstraksjon for klasse-basert objektorientering. Dette lar deg implementere klasser tilnærmet slik man gjør det i språk som f.eks. Ruby, og kompilatoren gjør dette om til prototype-basert JavaScript-kode.</p>
+<p>Her følger klassen EulerProblem1 som har en kontruktør og to metoder. @limit og @sum er instansvariabler – den siste brukes til a cache resultatet av kalkuleringen. Selv om jeg sier calculate flere ganger vil selve kalkuleringen bare skje én gang slik jeg har valgt å gjøre det.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">38 </span><span class="Keyword">class</span> <span class="Type">EulerProblem1</span>
+<span class="lnr">39 </span>  <span class="Identifier">constructor</span><span class="Operator">:</span> <span class="Special">(</span><span class="Special">@limit</span><span class="Special">)</span> <span class="Operator">-&gt;</span> <span class="Special">@sum</span> <span class="Operator">=</span> <span class="Type">null</span>
+<span class="lnr">40 </span>
+<span class="lnr">41 </span>  <span class="Identifier">include</span><span class="Operator">:</span> <span class="Special">(</span>n<span class="Special">)</span> <span class="Operator">-&gt;</span> n <span class="Operator">%</span> <span class="Number">3</span> <span class="Keyword">is</span> <span class="Number">0</span> <span class="Keyword">or</span> n <span class="Operator">%</span> <span class="Number">5</span> <span class="Keyword">is</span> <span class="Number">0</span>
+<span class="lnr">42 </span>
+<span class="lnr">43 </span>  <span class="Identifier">calculate</span><span class="Operator">:</span> <span class="Operator">-&gt;</span>
+<span class="lnr">44 </span>    <span class="Conditional">if</span> <span class="Keyword">not</span> <span class="Special">@sum</span><span class="Operator">?</span>
+<span class="lnr">45 </span>      <span class="Special">@sum</span> <span class="Operator">+=</span> n <span class="Statement">for</span> n <span class="Keyword">in</span> <span class="Special">[</span><span class="Number">1</span><span class="Operator">...</span><span class="Special">@limit</span><span class="Special">]</span> <span class="Conditional">when</span> <span class="Special">@include</span><span class="Special">(</span>n<span class="Special">)</span>
+<span class="lnr">46 </span>
+<span class="lnr">47 </span>ep1 <span class="Operator">=</span> <span class="Keyword">new</span> <span class="Type">EulerProblem1</span> <span class="Number">1000</span>
+<span class="lnr">48 </span><span class="Keyword">do</span> ep1<span class="Operator">.</span>calculate
+<span class="lnr">49 </span>alert ep1<span class="Operator">.</span>sum
+</pre>
+<p>I de tre siste linjene ser du hvordan jeg oppretter en instans av klassen, hvordan jeg kaller metoden calculate, og hvordan jeg henter ut summen.</p>
+<h4>Hvorfor bruke tid på CoffeeScript</h4>
+<p>De fleste av oss har et forhold til JavaScript. Dette forholdet er gjerne litt ambivalent. JavaScript blir viktigere og viktigere for å kunne tilfredstille de økte forventningene til dagens webløsninger, men JavaScript er et språk med mange svakheter. Da er det interessant at man ikke <em>må</em> kode i JavaScript direkte, men kan velge et renere og rikere språk som "kompileres" til JavaScript.</p>
+<p>Det er viktig å poengtere at du kan benytte alle JavaScript-biblotekene du er vandt med også i CoffeeScript.</p>
+<p>Er du Python- eller Ruby-utvikler er det nesten garantert at du kommer til å like CoffeeScript bedre enn JavaScript. Du bør uansett forsøke det, og så vurdere om det er verdt å legge denne ekstra abstraksjonen over JavaScript i akkurat ditt tilfelle.</p>
+<h4>Kan man bruke Coffee uten å kunne JavaScript?</h4>
+<p>Svaret på dette spørsmålet er desverre nei. Det finnes ikke enda (så vidt jeg vet) noen måte å debugge CoffeeScript på. Får man problemer vil man derfor få behov for å se på og debugge den genererte javaScript-koden. Koden er derimot helt grei, så dette er ikke et stort problem. Men man må kunne JavaScript!</p>
+<h4>Hvordan komme igang</h4>
+<p><a href="http://jashkenas.github.com/coffee-script/">Den offisielle CoffeeScript-siden finner du her</a>. Den har en god primer som side-ved-side sammenligner CoffeeScript og JavaScript. Der kan du også teste språket direkte i browseren din.</p>
+<p>Mye av det som finnes for å ta i bruk CoffeeScript er tilrettelagt for Linux og node.js-brukere. Hvis du er en Windows-bruker bør du ta en titt på <a href="http://tomlokhorst.github.com/CoffeeSharp/">CoffeeSharp</a>, som gir deg det meste av hva du trenger.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

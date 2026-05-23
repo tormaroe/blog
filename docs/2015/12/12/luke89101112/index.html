@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Common Lisp">
+
+    <title>Luke 8, 9, 10, 11 og 12</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Luke 8, 9, 10, 11 og 12</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> lørdag 12. desember 2015</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          </p>
+          <img src="/uploads/2015/12/vlad.jpg" alt="Vlad" />
+
+<p>Julekalenderen har ikke gått helt som planlagt. Virkeligheten innhentet meg, og jeg har ikke funnet tid til å kode opp og poste så mye av det jeg hadde håpet. Ikke veeeeldig overraskende, men det var jo lov å være optimistisk.</p>
+<p>Jeg støtte også på et problem med SMS-løsningen jeg jobber med som jeg sålangt ikke har klart å løse. Jeg hadde noe som fungerte, men så noen dager senere så fungerte det ikke. Oppdaterte tredjepartsbibloteker? En av de mange Windows-oppgraderingene som skaper problemer? Jeg vet ikke, men avlusing tar tid. Og sist men ikke minst så er det ikke <em>så</em> motiverende å skrive så mye om et tema - Common Lisp - som svært få (forståelig nok) viser noen interesse for.</p>
+<p>Derimot har jeg hatt det veldig gøy i desember med å løse oppgavene i Knowit sin julekalender, og det har det jo også blitt noen blogposter av: <a href="/2015/12/02/knowit-split-secuence-cl-ppcre/">1</a>, <a href="/2015/12/03/cl-arrow/">2</a>, <a href="/2015/12/04/sirkulaere-lister/">3</a>, <a href="/2015/12/05/dna-analyse/">4</a> og <a href="/2015/12/06/compose/">5</a>.</p>
+<p>Her følger løsningene mine på resten av lukene som har blitt åpnet...</p>
+<h2>Luke 6</h2>
+<p>Oppgaveteksten lød:</p>
+<blockquote>
+<p>Gitt at vi har n par parenteser, hvor mange kombinasjoner av balanserte parenteser (dvs alle åpne parenteser er lukket) kan en lage?
+Eksempel:
+Gitt n=3, har vi følgende kombinasjoner som gir balanserte parenteser:
+&quot;((()))&quot;, &quot;(()())&quot;, &quot;(())()&quot;, &quot;()(())&quot;, &quot;()()()&quot;
+Altså fem ulike måter.</p>
+<p>Hvor mange velformede kombinasjoner finnes det for n = 13?</p>
+</blockquote>
+<p>Her valgte jeg å gjøre litt research før jeg gikk i gang, og fant raskt ut at det jeg var ute etter var å kalkulere et <strong><a href="https://en.wikipedia.org/wiki/Catalan_number">Catalan-nummer</a></strong>. Og Wikipedia var så snill å liste ut de første numrene, inkludert for n=13, så da kunne jeg besvare luken først, og så kode etterpå...</p>
+<p>Jeg valgte å være litt <em>fancy</em>, og laget en funksjon som brukte <em>continuation passing style</em> og som faktisk genererte streng-representasjoner av alle kombinasjonene. Den er litt lang, og egner seg ikke å vise her uten en del forklaring. I stedet vil jeg vise et par andre løsninger på oppgaven, som er Common Lisp-adapsjoiner av andre sine bidrag.</p>
+<p>Her er en oversettelse av en løsning laget av Tomas i F#. Jeg brukter en pakke som heter <strong>optima</strong> til å gi meg patter matching, som blir ganske elegant her: </p>
+<pre><code class="hljs">(<span class="hljs-name">ql:quickload</span> <span class="hljs-symbol">:optima</span>)
+(<span class="hljs-name">use-package</span> <span class="hljs-symbol">:optima</span>)
+
+(<span class="hljs-name">defun</span> gen-parens (<span class="hljs-name">n</span> &amp;optional (<span class="hljs-name">opened</span> <span class="hljs-number">0</span>))
+  (<span class="hljs-name">match</span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> n opened)
+    ((<span class="hljs-name"><span class="hljs-built_in">cons</span></span> <span class="hljs-number">0</span> <span class="hljs-number">0</span>) <span class="hljs-number">0</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">cons</span></span> <span class="hljs-number">0</span> _) <span class="hljs-number">1</span>)
+    ((<span class="hljs-name"><span class="hljs-built_in">cons</span></span> n <span class="hljs-number">0</span>) (<span class="hljs-name">gen-parens</span> (<span class="hljs-number">1</span>- n) <span class="hljs-number">1</span>))
+    ((<span class="hljs-name"><span class="hljs-built_in">cons</span></span> n x) (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">gen-parens</span> n (<span class="hljs-number">1</span>- x))
+                   (<span class="hljs-name">gen-parens</span> (<span class="hljs-number">1</span>- n) (<span class="hljs-number">1</span>+ x))))))
+
+(<span class="hljs-name"><span class="hljs-built_in">print</span></span> (<span class="hljs-name">time</span> (<span class="hljs-name">gen-parens</span> <span class="hljs-number">13</span>)))</code></pre><p>På min maskin finner denne funksjonen løsningen på 0,031 sekunder (og 84 millioner prosessorsykler).</p>
+<p>Jeg oversatte også en kort Java-løsning, laget av Narve:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> calc (<span class="hljs-name">l</span> r)
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">zerop</span> l) <span class="hljs-number">1</span> 
+    (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name">calc</span> (<span class="hljs-number">1</span>- l) r) 
+       (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">&lt;=</span></span> r l) <span class="hljs-number">0</span> 
+         (<span class="hljs-name">calc</span> l (<span class="hljs-number">1</span>- r))))))
+
+(<span class="hljs-name"><span class="hljs-built_in">print</span></span> (<span class="hljs-name">time</span> (<span class="hljs-name">calc</span> <span class="hljs-number">13</span> <span class="hljs-number">13</span>)))</code></pre><p>Denne var raskere: 0,015 sekunder (og 52 millioner sykler).</p>
+<h2>Luke 7</h2>
+<p>Den syvende luken lød:</p>
+<blockquote>
+<p>Finn summen av alle positive heltall mellom 0 og 1000 som er har 7 som en primtallsfaktor, der det reverserte tallet også har 7 som en primtallsfaktor. For eksempel teller 259 da en får 952 om en reverserer sifrene og begge disse tallene har 7 som en primtallsfaktor.</p>
+</blockquote>
+<p>Oppgaveteksten kan forvirre litt, men om man skjønner at <em>&quot;har 7 som en primtallsfaktor&quot;</em> rett og slett bare betyr at tallet må være delelig på 7 så er oppgaven lett. Her er min komplette løsning, som blant annet viser frem hvor fleksibel <code>loop</code>-makroen i Common Lisp kan være:</p>
+<pre><code class="hljs">(<span class="hljs-name">ql:quickload</span> <span class="hljs-symbol">:cl-arrows</span>)
+(<span class="hljs-name">use-package</span> <span class="hljs-symbol">:cl-arrows</span>)
+
+(<span class="hljs-name">defun</span> parse-any-value (<span class="hljs-name">x</span>)
+  (<span class="hljs-name">with-input-from-string</span> (<span class="hljs-name">in</span> x)
+    (<span class="hljs-name"><span class="hljs-built_in">read</span></span> in)))
+
+(<span class="hljs-name">defun</span> any-value-to-string (<span class="hljs-name">x</span>)
+    (<span class="hljs-name"><span class="hljs-built_in">format</span></span> <span class="hljs-literal">nil</span> <span class="hljs-string">&quot;~A&quot;</span> x))
+
+(<span class="hljs-name">defun</span> reverse-number (<span class="hljs-name">x</span>)
+    (<span class="hljs-name"><span class="hljs-built_in">-&gt;&gt;</span></span> x
+        any-value-to-string
+        reverse
+        parse-any-value))
+
+(<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for x from <span class="hljs-number">1</span> to <span class="hljs-number">1000</span>
+      for x-reversed = (<span class="hljs-name">reverse-number</span> x)
+      with sum = <span class="hljs-number">0</span>
+      when (<span class="hljs-name"><span class="hljs-built_in">and</span></span> (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> x <span class="hljs-number">7</span>))
+                (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> x-reversed <span class="hljs-number">7</span>)))
+      do (<span class="hljs-name">incf</span> sum x)
+      finally (<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;~&amp;Summen er: ~A~%&quot;</span> sum))</code></pre><h2>Luke 8</h2>
+<blockquote>
+<p>Vi definerer et primtall som et MIRPTALL dersom vi fortsatt har er primtall når sifrene reverseres. Regelen gjelder imidlertid ikke dersom tallet samtidig er et palindrom (dvs likt samme hvilken ende det leses fra, som 969). Hvor mange positive heltall under 1000 er MIRPTALL?</p>
+</blockquote>
+<p>Her kunne jeg gjenbruke <code>reverse-number</code> fra luke 7, og utfordringen var å lage en funksjon som testet om et tall var et primtall. Her må jeg innrømme at jeg jukset litt - jeg har tenkt grundig gjennom dette før da jeg løste lignende oppgaver i <a href="https://projecteuler.net/">Project Euler</a>, men denne gangen fant jeg noe på nettet som jeg pyntet litt på, og som endte opp slik:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> forall (<span class="hljs-name">L</span> P)
+  (<span class="hljs-name"><span class="hljs-built_in">or</span></span> (<span class="hljs-name">null</span> L) 
+      (<span class="hljs-name"><span class="hljs-built_in">and</span></span> (<span class="hljs-name">funcall</span> P (<span class="hljs-name"><span class="hljs-built_in">car</span></span> L))
+           (<span class="hljs-name">forall</span> (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> L) P))))
+
+(<span class="hljs-name">defun</span> nums (<span class="hljs-name">start</span> stop)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> (<span class="hljs-name">L</span>)
+    (<span class="hljs-name">loop</span> (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> start stop) 
+                (<span class="hljs-name">return</span> (<span class="hljs-name"><span class="hljs-built_in">reverse</span></span> L)))
+          (<span class="hljs-name">setf</span> L (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> start L))
+          (<span class="hljs-name">incf</span> start))))
+
+(<span class="hljs-name">defun</span> prime (<span class="hljs-name">N</span>)
+  (<span class="hljs-name">forall</span> (<span class="hljs-name">nums</span> <span class="hljs-number">2</span> (<span class="hljs-name"><span class="hljs-built_in">floor</span></span> (<span class="hljs-name"><span class="hljs-built_in">sqrt</span></span> N)))
+          #&#x27;(lambda (d) (not (= (MOD N d) <span class="hljs-number">0</span>)))))</code></pre><p>Da ble løsningen så enkel som dette:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for x from <span class="hljs-number">10</span> to <span class="hljs-number">999</span>
+      for x-reversed = (<span class="hljs-name">reverse-number</span> x)
+      when (<span class="hljs-name"><span class="hljs-built_in">and</span></span> (<span class="hljs-name">prime</span> x)
+                (<span class="hljs-name">prime</span> x-reversed)
+                (<span class="hljs-name"><span class="hljs-built_in">not</span></span> (<span class="hljs-name"><span class="hljs-built_in">=</span></span> x x-reversed)))
+      counting x)</code></pre><h2>Luke 9</h2>
+<blockquote>
+<p>Gitt et positivt heltall, finn den tilsvarende kolonnetittelen som vises fram i et Excel ark. Finn kolonnetittelen til 142453146368</p>
+</blockquote>
+<p>Her rotet jeg mye! Jeg trodde først jeg skulle klare å løse oppgaven med noe kode jeg hadde skrevet før, og blogget om i posten <a href="/2015/01/18/komprimere-tall/">Komprimere tall</a>. Men nummereringen av kolonner er en litt spesiell måte å telle på, og jeg fikk det ikke til. Med litt Google-hjelp kom jeg opp med denne løsningen:</p>
+<pre><code class="hljs">(<span class="hljs-name">defvar</span> *BASE* <span class="hljs-number">26</span>)
+
+(<span class="hljs-name">defun</span> excelify (<span class="hljs-name">col</span>)
+  (<span class="hljs-name">if</span> (<span class="hljs-name">&lt;=</span> col *BASE*)
+    (<span class="hljs-name">string</span> (<span class="hljs-name">code-char</span> (<span class="hljs-name">+</span> col <span class="hljs-number">64</span>)))
+    (<span class="hljs-name">concatenate</span> &#x27;string 
+                 (<span class="hljs-name">excelify</span> (<span class="hljs-name">quot</span> (<span class="hljs-number">1</span>- col) *BASE*))
+                 (<span class="hljs-name">excelify</span> (<span class="hljs-number">1</span>+ (<span class="hljs-name">mod</span> (<span class="hljs-number">1</span>- col) *BASE*))))))</code></pre><p>Basert på det jeg så i kommentartråden i julekalenderen implementerte jeg også et par andre varianter. Denne første er en oversettelse fra en løsning i Python:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> excelify2 (<span class="hljs-name">n</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name"><span class="hljs-built_in">&gt;</span></span> n <span class="hljs-number">0</span>)
+    (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">x</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> (<span class="hljs-number">1</span>- n) *BASE*)))
+      (<span class="hljs-name">excelify2</span> (<span class="hljs-name"><span class="hljs-built_in">quot</span></span> (<span class="hljs-name"><span class="hljs-built_in">-</span></span> n x) *BASE*))
+      (<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;~A&quot;</span> (<span class="hljs-name">code-char</span> (<span class="hljs-name"><span class="hljs-built_in">+</span></span> x <span class="hljs-number">65</span>))))))</code></pre><p>Den er litt anderledes blant annet fordi den skriver ut én og én bokstav om gangen.</p>
+<p>Og her er en direkte oversettelse av en løsning som ble presentert i Clojure:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> excelify3 (<span class="hljs-name">n</span> &amp;optional s) 
+  (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">zerop</span> n) 
+    s 
+    (<span class="hljs-name">excelify3</span> 
+      (<span class="hljs-name">quot</span> (<span class="hljs-name">1-</span> n) <span class="hljs-number">26</span>) 
+      (<span class="hljs-name">concatenate</span> <span class="hljs-symbol">&#x27;string</span> 
+                   (<span class="hljs-name"><span class="hljs-built_in">string</span></span> (<span class="hljs-name">code-char</span> 
+                             (<span class="hljs-name"><span class="hljs-built_in">+</span></span> <span class="hljs-number">65</span> (<span class="hljs-name">mod</span> (<span class="hljs-name">1-</span> n) <span class="hljs-number">26</span>)))) 
+                   s))))</code></pre><p>I alle disse løsningene bruker jeg funksjonen <code>quot</code> for å dele, fordi deling i Common Lisp ellers ville gitt meg brøker:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> quot (<span class="hljs-name">m</span> n)
+  (<span class="hljs-name"><span class="hljs-built_in">floor</span></span> (<span class="hljs-name"><span class="hljs-built_in">/</span></span> m n)))</code></pre><p>Om jeg deler for eksempel 5 på 2 i Common Lisp, får jeg <code>5/2</code> i retur. <code>(quot 5 2)</code> derimot gir meg to verdier tilbake, først tallet 2, og så resten <code>1/2</code> om jeg ønsker den. At brøk er en så basal datatype i Lisp er litt kult, men man må ofte passe på å unngå dem når man skal jobbe med heltall :)</p>
+<h2>Luke 10</h2>
+<p>Luke 10 prøvde jeg meg på, men jeg tenkte for komplisert, og endte opp med en løsning som ble for krevende. Til slutt var det Lisp som gav opp, og sa:</p>
+<pre><code class="hljs">Heap exhausted. Game <span class="hljs-keyword">over</span>.</code></pre><p>Jeg hadde ikke mer tid, så jeg tok Lisp på ordet. Da jeg neste da fikk se løsningene folk hadde brukt ble jeg litt irritert, fordi jeg mente de løsningene ikke nødvendigvis hadde trengt å gi det riktige resultatet.., gitt et potensielt annet datasett. Dårlig taper?</p>
+<h2>Luke 11</h2>
+<blockquote>
+<p>På <a href="http://pastebin.com/raw.php?i=p1eVAM5H">http://pastebin.com/raw.php?i=p1eVAM5H</a> finner du en usortert liste med odde antall elementer.
+Elementene kan være romertall, binærtall eller heltall. Hva er mediantallet i denne lista?</p>
+</blockquote>
+<p>Igjen fikk jeg bruk for flere ting jeg har laget før, som <code>get-pastebin</code>, <code>split-lines</code>, <code>parse-any-value</code> og <code>quot</code>. Hovedutfordringen var å konvertere binærtall og romertall til desimaltall. For binærtall gjorde jeg det sånn:</p>
+<pre><code class="hljs"><span class="hljs-comment">;; Binary input like &quot;0b01010101&quot;</span>
+
+(<span class="hljs-name">defun</span> tokenize-binary (<span class="hljs-name">x</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for bit across (<span class="hljs-name">subseq</span> x <span class="hljs-number">2</span>)
+        collect (<span class="hljs-name">parse-any-value</span> (<span class="hljs-name"><span class="hljs-built_in">string</span></span> bit))))
+
+(<span class="hljs-name">defun</span> parse-binary (<span class="hljs-name">b</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">tokens</span> (<span class="hljs-name">tokenize-binary</span> b)))
+    (<span class="hljs-name"><span class="hljs-built_in">reduce</span></span> (<span class="hljs-name"><span class="hljs-built_in">lambda</span></span> (<span class="hljs-name">x</span> y) (<span class="hljs-name"><span class="hljs-built_in">+</span></span> (<span class="hljs-name"><span class="hljs-built_in">*</span></span> x <span class="hljs-number">2</span>) y)) tokens)))</code></pre><p>Og romertall konverterte jeg (igjen med litt Google-hjelp) slik:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> mapcn (<span class="hljs-name">chars</span> nums string)
+  (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> as char across string 
+        as i = (<span class="hljs-name">position</span> char chars) 
+        collect (<span class="hljs-name"><span class="hljs-built_in">and</span></span> i (<span class="hljs-name"><span class="hljs-built_in">nth</span></span> i nums))))
+ 
+(<span class="hljs-name">defun</span> parse-roman (<span class="hljs-name">R</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> with nums = (<span class="hljs-name">mapcn</span> <span class="hljs-string">&quot;IVXLCDM&quot;</span> &#x27;(<span class="hljs-number">1</span> <span class="hljs-number">5</span> <span class="hljs-number">10</span> <span class="hljs-number">50</span> <span class="hljs-number">100</span> <span class="hljs-number">500</span> <span class="hljs-number">1000</span>) R)
+        as (<span class="hljs-name">A</span> B) on nums if A sum (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name"><span class="hljs-built_in">and</span></span> B (<span class="hljs-name"><span class="hljs-built_in">&lt;</span></span> A B)) (<span class="hljs-name">-</span> A) A)))</code></pre><p>Jeg brukte regex til å sjekke hvilket type tall det var snakk om...</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> binaryp (<span class="hljs-name">x</span>)
+  (<span class="hljs-name">cl-ppcre</span><span class="hljs-symbol">:scan</span> <span class="hljs-string">&quot;^0b[01]+$&quot;</span> x))
+
+(<span class="hljs-name">defun</span> romanp (<span class="hljs-name">x</span>)
+  (<span class="hljs-name">cl-ppcre</span><span class="hljs-symbol">:scan</span> <span class="hljs-string">&quot;^[IVXDCML]+$&quot;</span> x))</code></pre><p>Og denne funksjonen gir desimalverdien, uavhengig av hvilket type tall vi får som input:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> get-relative-value (<span class="hljs-name">x</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">cond</span></span> ((<span class="hljs-name">binaryp</span> x) (<span class="hljs-name">parse-binary</span> x))
+        ((<span class="hljs-name">romanp</span> x) (<span class="hljs-name">parse-roman</span> x))
+        (<span class="hljs-name">t</span> (<span class="hljs-name">parse-any-value</span> x))))</code></pre><p>For å finne median i en sortert liste:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> find-middle (<span class="hljs-name">xs</span>)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">middle-index</span> (<span class="hljs-name"><span class="hljs-built_in">quot</span></span> (<span class="hljs-name">length</span> xs) <span class="hljs-number">2</span>)))
+    (<span class="hljs-name"><span class="hljs-built_in">nth</span></span> middle-index xs)))</code></pre><p>Og endelig lar problemet seg løse slik:</p>
+<pre><code class="hljs">(-&gt; <span class="hljs-string">&quot;p1eVAM5H&quot;</span>
+    <span class="hljs-built_in">get-pastebin</span>
+    <span class="hljs-string">split-lines</span>
+    (<span class="hljs-string">sort</span> <span class="hljs-comment">#&#x27;&lt; :key #&#x27;get-relative-value)</span>
+    <span class="hljs-string">find-middle</span>)</code></pre><p><strong>En kuriositet:</strong> Teknikken for å konvertere et binærtall til desimaltall i Common Lisp hentet jeg <a href="https://burubaxair.wordpress.com/2012/12/22/converting-a-list-containing-a-binary-number-to-decimal-in-lisp/">fra en blogpost</a> på bloggen <a href="https://burubaxair.wordpress.com/">VLADNAMA - Memoirs of Vlad from Kabul</a>. Vlad liker formler, teoremer, bevis, eksperimenter (spesielt når de eksploderer), Lisp, Fortran, Perl, skrujern, og han <a href="https://burubaxair.wordpress.com/about/">har åpenbart mye humor</a>. </p>
+<p>Så nå vet du hvem som var på bildet i starten av denne bloggposten ;)</p>
+<h2>Luke 12</h2>
+<p>...har jeg løst, men den løsningen kan jeg ikke legge ut helt enda, siden fristen ikke har gått ut. Kom tilbake i morgen om du vil se hva jeg kodet i senga på et hotellrom morgenen etter et bra julebord.</p>
+<p>Og så var det bare 12 dager igjen til Julaften!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

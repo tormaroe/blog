@@ -1,0 +1,281 @@
+---
+title: En enkel SOA komponent
+link: http://blog.kjempekjekt.com/2009/04/12/en-enkel-soa-komponent/
+layout: post
+date: 2009-04-12 23:23:28Z
+tags:
+  - Diverse prosjekter
+---
+SOA, <em>tjenesteorientert arkitektur</em>, er et utvannet og mye missbrukt begrep. For meg dreier det seg først og fremst om å lage små, mer eller mindre uavhengige tjenester, som kan kombineres og sammarbeide for å lage større løsninger. Den siste tiden har jeg laget en rekke slike små tjenestekomponenter. Jeg bruker omtrent den samme fremgangsmåten hver gang, og fikk derfor lyst til å dele dette mønsteret her.
+<p style="text-align: center;"><a title="SOA Component by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3435170862/"><img src="http://farm4.static.flickr.com/3620/3435170862_5368b5c003_o.png" alt="SOA Component" width="457" height="226" border="0" /></a></p>
+<a title="BrainSpill.Core by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3433531017/"><img style="padding-left: 20px; padding-bottom: 8px;" src="http://farm4.static.flickr.com/3349/3433531017_2c714e0a90_o.png" alt="BrainSpill.Core" width="209" height="146" align="right" border="0" /></a>Det viktigste prinsippet mitt når jeg lager slike komponenter er enkelhet. Jeg lager en liten, <em>no fuss</em> komponent, som ikke vet noe om verden bortsett fra akkurat det tjenesten skal tilby. Den eier sine egne data, og er så generisk at den i prinsippet kan brukes til mange ting.
+
+Du vil se eksempler på bruk av <strong>db4o, LINQ, Ninject og WCF</strong> i denne artikkelen. Eksempelet jeg skal vise er en komponent jeg har kalt <em>BrainSpill</em> - en tjeneste hvor man kan lagre og hente ut meldinger. Jeg har planer om å bruke BrainSpill til å lage en twitter-lignende tjeneste til bruk internt på jobben. Hvis du ser for deg en hjerne som flyter over av tanker og ideer som bare må deles med andre så skjønner du sikkert hvordan navnet på tjenesten oppstod.
+
+<strong>Jeg begynner med å lage et interface</strong> hvor jeg definerer hva tjenesten skal tilby. Jeg velger å gjøre dette i et eget class library prosjekt jeg kaller for BrainSpill.Core. IMessageRepository skal ta imot nye meldinger, gi tilgang til å slette meldinger, hente ut de siste <em>n</em> meldingene, og fortelle hvor mange meldinger som totalt er lagret i jenesten. (Dette er første versjon, og interfacet vil nok vokse noe etterhvert.)
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">    7</span> [<span style="color: yellow;">ServiceContract</span>]</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">    8</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">interface</span> <span style="color: #2b91af;">IMessageRepository</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">    9</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   10</span>     [<span style="color: yellow;">OperationContract</span>]</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   11</span>     <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">AddMessage</span>(<span style="color: yellow;">AddMessageRequest</span> <span style="color: #f8ffc6;">messageData</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   12</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   13</span>     [<span style="color: yellow;">OperationContract</span>]</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   14</span>     <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">DeleteMessage</span>(<span style="color: yellow;">MessageId</span> <span style="color: #f8ffc6;">id</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   15</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   16</span>     [<span style="color: yellow;">OperationContract</span>]</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   17</span>     <span style="color: #2b91af;">IEnumerable</span>&lt;<span style="color: yellow;">Message</span>&gt; <span style="color: #f8ffc6;">GetLatestMessages</span>(<span style="font-weight: bold; color: #eaeaac;">int</span> <span style="color: #f8ffc6;">numberOfMessages</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   18</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   19</span>     [<span style="color: yellow;">OperationContract</span>]</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   20</span>     <span style="font-weight: bold; color: #eaeaac;">int</span> <span style="color: #f8ffc6;">GetTotalNumberOfMessages</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   21</span> }</p>
+
+</div>
+Jeg dekorerer interfacet med <em>ServiceContract</em> og metodene med <em>OperationContract</em>, slik at det kan publiseres vha. <em>Windows Comunication Framework (WCF)</em>.
+
+Legg merke til at jeg bruker tre andre klasser her: <strong>Message</strong> er en komplett melding lagret i tjenesten. <strong>AddMessageRequest</strong> holder dataene som brukes til å opprette en ny melding; en klient av tjenesten har ikke lov til å opprette fullverdige meldinger selv - det er f.eks. tjenesten som gir meldingen en id, lagringstidspunkt m.m. Jeg har også valgt å lage en egen klasse for meldingens id: <strong>MessageId</strong>. Denne er i prinsippet kun en wrapper for en <em>Guid</em>. Alle disse klassene dekoreres med <em>DataContract</em>-atributtet, og properties som skal være tilgjengelig på klientsiden dekoreres med <em>DataMember</em>.
+
+Når alt dette er på plass koder jeg en konkret implementasjon av IMessageRepository. For tiden bruker jeg objektdatabasen <strong>db4o</strong> for lagring - det er absolutt det enkleste. Jeg gir derfor <strong>OdbMessageRepository</strong> en konstruktør som tar inn en <em>IObjectContainer</em> (en db4o database).
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">   15</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">class</span> <span style="color: yellow;">OdbMessageRepository</span> : <span style="color: #2b91af;">IMessageRepository</span>, <span style="color: #2b91af;">IDisposable</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   16</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   17</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="color: #2b91af;">IObjectContainer</span> <span style="color: #f8ffc6;">_database</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   18</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   19</span>     <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="color: #f8ffc6;">OdbMessageRepository</span>(<span style="color: #2b91af;">IObjectContainer</span> <span style="color: #f8ffc6;">database</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   20</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   21</span>         <span style="color: #f8ffc6;">_database</span> = <span style="color: #f8ffc6;">database</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   22</span>     }</p>
+
+</div>
+Deretter implementerer jeg metodene definert i <em>IMessageRepository</em>. Takket være db4o er dette ganske enkelt. Jeg benytter en del LINQ, og jeg vet ikke om koden jeg har skrevet her er optimal (sansynligvis ikke), men eksperimentering har vist at det er godt nok for meg i denne omgang.
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">   24</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">AddMessage</span>(<span style="color: yellow;">AddMessageRequest</span> <span style="color: #f8ffc6;">messageData</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   25</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   26</span>     <span style="color: yellow;">Message</span> <span style="color: #f8ffc6;">messageToAdd</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">Message</span>(<span style="color: #f8ffc6;">messageData</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   27</span>     <span style="color: #f8ffc6;">_database</span>.<span style="color: #f8ffc6;">Store</span>(<span style="color: #f8ffc6;">messageToAdd</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   28</span> }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   29</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   30</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">DeleteMessage</span>(<span style="color: yellow;">MessageId</span> <span style="color: #f8ffc6;">id</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   31</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   32</span>     <span style="color: #f8ffc6;">_database</span>.<span style="color: #f8ffc6;">Delete</span>(<span style="color: #f8ffc6;">GetById</span>(<span style="color: #f8ffc6;">id</span>));</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   33</span> }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   34</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   35</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="color: #2b91af;">IEnumerable</span>&lt;<span style="color: yellow;">Message</span>&gt; <span style="color: #f8ffc6;">GetLatestMessages</span>(<span style="font-weight: bold; color: #eaeaac;">int</span> <span style="color: #f8ffc6;">numberOfMessages</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   36</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   37</span>     <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">query</span> = <span style="font-weight: bold; color: #eaeaac;">from</span> <span style="color: yellow;">Message</span> <span style="color: #f8ffc6;">m</span> <span style="font-weight: bold; color: #eaeaac;">in</span> <span style="color: #f8ffc6;">_database</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   38</span>                 <span style="font-weight: bold; color: #eaeaac;">orderby</span> <span style="color: #f8ffc6;">m</span>.<span style="color: #f8ffc6;">Created</span> <span style="font-weight: bold; color: #eaeaac;">descending</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   39</span>                 <span style="font-weight: bold; color: #eaeaac;">select</span> <span style="color: #f8ffc6;">m</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   40</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   41</span>     <span style="font-weight: bold; color: #eaeaac;">return</span> <span style="color: #f8ffc6;">query</span>.<span style="color: #f8ffc6;">Take</span>(<span style="color: #f8ffc6;">numberOfMessages</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   42</span> }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   43</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   44</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">int</span> <span style="color: #f8ffc6;">GetTotalNumberOfMessages</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   45</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   46</span>     <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">query</span> = <span style="font-weight: bold; color: #eaeaac;">from</span> <span style="color: yellow;">Message</span> <span style="color: #f8ffc6;">m</span> <span style="font-weight: bold; color: #eaeaac;">in</span> <span style="color: #f8ffc6;">_database</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   47</span>                 <span style="font-weight: bold; color: #eaeaac;">select</span> <span style="color: #f8ffc6;">m</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   48</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   49</span>     <span style="font-weight: bold; color: #eaeaac;">return</span> <span style="color: #f8ffc6;">query</span>.<span style="color: #f8ffc6;">Count</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   50</span> }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   51</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   52</span> <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="color: yellow;">Message</span> <span style="color: #f8ffc6;">GetById</span>(<span style="color: yellow;">MessageId</span> <span style="color: #f8ffc6;">id</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   53</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   54</span>     <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">query</span> = <span style="font-weight: bold; color: #eaeaac;">from</span> <span style="color: yellow;">Message</span> <span style="color: #f8ffc6;">m</span> <span style="font-weight: bold; color: #eaeaac;">in</span> <span style="color: #f8ffc6;">_database</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   55</span>                 <span style="font-weight: bold; color: #eaeaac;">where</span> <span style="color: #f8ffc6;">m</span>.<span style="color: #f8ffc6;">Id</span> == <span style="color: #f8ffc6;">id</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   56</span>                 <span style="font-weight: bold; color: #eaeaac;">select</span> <span style="color: #f8ffc6;">m</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   57</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   58</span>     <span style="font-weight: bold; color: #eaeaac;">return</span> <span style="color: #f8ffc6;">query</span>.<span style="color: #f8ffc6;">First</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   59</span> }</p>
+
+</div>
+Du la kanskje merke til at jeg lot <strong>OdbMessageRepository</strong> arver fra <em>IDisposable</em>? Objektdatabasen er nemlig en ressurs som må frigjøres på riktig måte. Derfor implementerer jeg <em>Dispose()</em>.
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">   61</span> <span style="color: #dfaf8f;">#region</span> IDisposable Members</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   62</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   63</span> <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="font-weight: bold; color: #eaeaac;">bool</span> <span style="color: #f8ffc6;">_isDisposed</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   64</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   65</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Dispose</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   66</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   67</span>     <span style="color: #f8ffc6;">Dispose</span>(<span style="font-weight: bold; color: #eaeaac;">true</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   68</span>     <span style="color: yellow;">GC</span>.<span style="color: #f8ffc6;">SuppressFinalize</span>(<span style="font-weight: bold; color: #eaeaac;">this</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   69</span> }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   70</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   71</span> <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Dispose</span>(<span style="font-weight: bold; color: #eaeaac;">bool</span> <span style="color: #f8ffc6;">disposing</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   72</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   73</span>     <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">_isDisposed</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   74</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   75</span>         <span style="font-weight: bold; color: #eaeaac;">return</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   76</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   77</span>     <span style="color: #f8ffc6;">_isDisposed</span> = <span style="font-weight: bold; color: #eaeaac;">true</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   78</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   79</span>     <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">disposing</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   80</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   81</span>         <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">_database</span> != <span style="font-weight: bold; color: #eaeaac;">null</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   82</span>         {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   83</span>             <span style="color: #f8ffc6;">_database</span>.<span style="color: #f8ffc6;">Dispose</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   84</span>             <span style="color: #f8ffc6;">_database</span> = <span style="font-weight: bold; color: #eaeaac;">null</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   85</span>         }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   86</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   87</span> }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   88</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   89</span> <span style="color: #dfaf8f;">#endregion</span></p>
+
+</div>
+<a title="BrainSpill.Service by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3433531041/"><img style="padding-left: 20px; padding-bottom: 8px;" src="http://farm4.static.flickr.com/3539/3433531041_15c411a335_o.png" alt="BrainSpill.Service" width="257" height="131" align="right" border="0" /></a>Nå er kjernefunksjonaliteten i BrainSpill ferdig implementert. Jeg legger så til et nytt prosjekt for selve windows tjenesten: <em>BrainSpill.Service</em>. Jeg oppretter <strong>BrainSpillService</strong> som arver fra <em>System.ServiceProcess.ServiceBase</em>.
+
+Selv om det kanskje er <em>overkill</em> i et så lite prosjekt som dette har jeg lagt meg til vanen å alltid bruke <em>dependency injection</em>, og tjenesten oppretter derfor en IoC container i konstruktøren. Jeg bruker som regel <strong>Ninject</strong>, som tar inn en <em>DependencyModule</em> - mer om den om litt..
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">    9</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">partial</span> <span style="font-weight: bold; color: #eaeaac;">class</span> <span style="color: yellow;">BrainSpillService</span> : <span style="color: yellow;">ServiceBase</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   10</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   11</span>     <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">const</span> <span style="font-weight: bold; color: #eaeaac;">string</span> <span style="color: #f8ffc6;">SERVICE_NAME</span> = <span style="color: #c89191;">"BrainSpillService"</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   12</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   13</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="color: #2b91af;">IKernel</span> <span style="color: #f8ffc6;">_IocContainer</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   14</span>     <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="color: yellow;">ServiceHost</span> <span style="color: #f8ffc6;">_serviceHost</span> = <span style="font-weight: bold; color: #eaeaac;">null</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   15</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   16</span>     <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="color: #f8ffc6;">BrainSpillService</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   17</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   18</span>         <span style="color: #f8ffc6;">_IocContainer</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">StandardKernel</span>(</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   19</span>             <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">BrainSpillServiceDependencyModule</span>());</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   20</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   21</span>         <span style="color: #f8ffc6;">ServiceName</span> = <span style="color: #f8ffc6;">SERVICE_NAME</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   22</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   23</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   24</span>     <span style="font-weight: bold; color: #eaeaac;">protected</span> <span style="font-weight: bold; color: #eaeaac;">override</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">OnStart</span>(<span style="font-weight: bold; color: #eaeaac;">string</span>[] <span style="color: #f8ffc6;">args</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   25</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   26</span>         <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">_serviceHost</span> != <span style="font-weight: bold; color: #eaeaac;">null</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   27</span>         {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   28</span>             <span style="color: #f8ffc6;">_serviceHost</span>.<span style="color: #f8ffc6;">Close</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   29</span>         }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   30</span>         <span style="color: #f8ffc6;">_serviceHost</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">ServiceHost</span>(</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   31</span>             <span style="color: #f8ffc6;">_IocContainer</span>.<span style="color: #f8ffc6;">Get</span>&lt;<span style="color: #2b91af;">IMessageRepository</span>&gt;());</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   32</span>         <span style="color: #f8ffc6;">_serviceHost</span>.<span style="color: #f8ffc6;">Open</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   33</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   34</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   35</span>     <span style="font-weight: bold; color: #eaeaac;">protected</span> <span style="font-weight: bold; color: #eaeaac;">override</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">OnStop</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   36</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   37</span>         <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">_serviceHost</span> != <span style="font-weight: bold; color: #eaeaac;">null</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   38</span>         {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   39</span>             <span style="color: #f8ffc6;">_serviceHost</span>.<span style="color: #f8ffc6;">Close</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   40</span>             <span style="color: #f8ffc6;">_serviceHost</span> = <span style="font-weight: bold; color: #eaeaac;">null</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   41</span>         }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   42</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   43</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   44</span>     <span style="font-weight: bold; color: #eaeaac;">protected</span> <span style="font-weight: bold; color: #eaeaac;">override</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Dispose</span>(<span style="font-weight: bold; color: #eaeaac;">bool</span> <span style="color: #f8ffc6;">disposing</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   45</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   46</span>         <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">disposing</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   47</span>         {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   48</span>             <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">_IocContainer</span> != <span style="font-weight: bold; color: #eaeaac;">null</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   49</span>             {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   50</span>                 <span style="color: lime;">// note: disposing the kernal also </span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   51</span>                 <span style="color: lime;">// disposes the repository if needed</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   52</span>                 <span style="color: #f8ffc6;">_IocContainer</span>.<span style="color: #f8ffc6;">Dispose</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   53</span>                 <span style="color: #f8ffc6;">_IocContainer</span> = <span style="font-weight: bold; color: #eaeaac;">null</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   54</span>             }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   55</span>         }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   56</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   57</span>         <span style="font-weight: bold; color: #eaeaac;">base</span>.<span style="color: #f8ffc6;">Dispose</span>(<span style="color: #f8ffc6;">disposing</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   58</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   59</span> }</p>
+
+</div>
+Koden er nokså standard for en windows service. Jeg overstyrer <em>OnStart</em>, hvor jeg oppretter en ny WCF <em>ServiceHost</em>. Jeg bruker Ninject til å opprette denne for meg, og spesifiserer kun navnet på interfacet, nemlig <em>IMessageRepository</em>. I <em>OnStop</em> stenger jeg ned den samme hosten.
+
+Jeg overstyrer også tjenestens Dispose-metode, hvor jeg passer på å frigjøre IoC containeren. Den vil da ta seg av å kalle Dispose på alle objekter den har opprettet, som i dette tilfellet er OdbMessageRepository (som igjen kaller Dispose på db4o databasen).
+
+Som sagt brukte jeg en Dependency-modul da jeg opprettet IoC containeren - koden for den ser du nedenfor. Jeg arver fra Ninject's <em>StandardModule</em>, og overstyrer <em>Load</em>, hvor jeg definerer avhengighetene jeg trenger. I dette tilfellet er jeg kun interessert i å få opprette en <em>IMessageRepository</em>. Ved å bruke Ninject's <em>fluent interface</em> sier jeg at når jeg ber om en <em>IMessageRepository</em> så vil jeg ha en instans av <em>OdbMessageRepository</em>. Jeg spesifiserer også at Ninject skal bruke Sinleton-oppførsel, hvilket vil si at den alltid bruker én og samme instans av klassen.
+
+Til slutt forteller jeg hvilken parameter Ninject skal sende inn i konstruktøren til <em>OdbMessageRepository</em>. Jeg sier at argumentet som heter "database", av type IObjectContainer, skal hentes fra metoden <em>OpenDatabase()</em>. Og OpenDatabase bruker db4o's factory til å åpne basen fra en fil (eller opprette den om den ikke finnes fra før) basert på en filsti definert i configfilen.
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">   10</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">class</span> <span style="color: yellow;">BrainSpillServiceDependencyModule</span> : <span style="color: yellow;">StandardModule</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   11</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   12</span>     <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">override</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Load</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   13</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   14</span>         <span style="color: #f8ffc6;">Bind</span>&lt;<span style="color: #2b91af;">IMessageRepository</span>&gt;()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   15</span>             .<span style="color: #f8ffc6;">To</span>&lt;<span style="color: yellow;">OdbMessageRepository</span>&gt;()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   16</span>             .<span style="color: #f8ffc6;">Using</span>&lt;<span style="color: yellow;">SingletonBehavior</span>&gt;()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   17</span>             .<span style="color: #f8ffc6;">WithArgument</span>&lt;<span style="color: #2b91af;">IObjectContainer</span>&gt;(<span style="color: #c89191;">"database"</span>, <span style="color: #f8ffc6;">OpenDatabase</span>());</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   18</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   19</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   20</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="font-weight: bold; color: #eaeaac;">static</span> <span style="color: #2b91af;">IObjectContainer</span> <span style="color: #f8ffc6;">OpenDatabase</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   21</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   22</span>         <span style="font-weight: bold; color: #eaeaac;">return</span> <span style="color: yellow;">Db4oFactory</span>.<span style="color: #f8ffc6;">OpenFile</span>(<span style="color: yellow;">ConfigurationManager</span>.<span style="color: #f8ffc6;">AppSettings</span>[<span style="color: #c89191;">"database"</span>]);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   23</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   24</span> }</p>
+
+</div>
+Det gjenstår noen steg for å få WCF til å fungere orntlig; jeg må definere adressen og bindingen - dette gjør jeg i configfilen.
+
+<a title="CropperCapture[31] by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3435933564/"><img src="http://farm4.static.flickr.com/3405/3435933564_ccfabc5051_o.png" alt="CropperCapture[31]" width="583" height="424" border="0" /></a>
+
+Det irriterer meg at jeg må spesifisere den konkrete implementasjonen av interfacet her - <em>OdbMessageRepository</em> - men foreløpig vet jeg ikke om jeg kan unngå dette.
+
+Når servicen er ferdig kompilert og installert BrainSpill, kan jeg nå legge til en service-referanse i klientprosjekter ved å referere til http://localhost:8000/BrainSpill/service/mex.
+
+En liten detalj jeg oppdaget første gang jeg lagde en service som dette er at jeg også er nødt til å spesifisere <em>InstanceContextMode</em> for WCF tjenesten. Dette er pga. måten jeg oppretter ServiceHosten på - ved å gi inn en instans (fra IoC containeren) i stedet for en type (ref. <em>BrainSpillService</em>, linje 30 og 31). Dette er kanskje ikke ideelt, men inntil videre gjør jeg det slik, ved å spesifisere <em>InstanceContextMode</em> på <em>OdbMessageRepository</em>:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">   10</span> <span style="color: gray;">///</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   11</span> <span style="color: gray;">///</span><span style="color: #7a987a;"> InstanceContextMode = InstanceContextMode.Single is needed because of the way</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   12</span> <span style="color: gray;">///</span><span style="color: #7a987a;"> the service is created (with an IoC container).</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   13</span> <span style="color: gray;">///</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   14</span> [<span style="color: yellow;">ServiceBehavior</span>(<span style="color: #f8ffc6;">InstanceContextMode</span> = <span style="color: #2b91af;">InstanceContextMode</span>.<span style="color: #f8ffc6;">Single</span>)]</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   15</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">class</span> <span style="color: yellow;">OdbMessageRepository</span> : <span style="color: #2b91af;">IMessageRepository</span>, <span style="color: #2b91af;">IDisposable</span></p>
+
+</div>
+Nå er det ikke så mye igjen.., men for at alt skal fungere må jeg implementere en enkel Installer-komponent for windows servicen. Den ser slik ut:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">    8</span> [<span style="color: yellow;">RunInstaller</span>(<span style="font-weight: bold; color: #eaeaac;">true</span>)]</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">    9</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">partial</span> <span style="font-weight: bold; color: #eaeaac;">class</span> <span style="color: yellow;">BrainSpillInstaller</span> : <span style="color: yellow;">Installer</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   10</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   11</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   12</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="color: yellow;">ServiceProcessInstaller</span> <span style="color: #f8ffc6;">_process</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   13</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="color: yellow;">ServiceInstaller</span> <span style="color: #f8ffc6;">_service</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   14</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   15</span>     <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="color: #f8ffc6;">BrainSpillInstaller</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   16</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   17</span>         <span style="color: #f8ffc6;">_process</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">ServiceProcessInstaller</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   18</span>         <span style="color: #f8ffc6;">_process</span>.<span style="color: #f8ffc6;">Account</span> = <span style="color: #2b91af;">ServiceAccount</span>.<span style="color: #f8ffc6;">LocalSystem</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   19</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   20</span>         <span style="color: #f8ffc6;">_service</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">ServiceInstaller</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   21</span>         <span style="color: #f8ffc6;">_service</span>.<span style="color: #f8ffc6;">ServiceName</span> = <span style="color: yellow;">BrainSpillService</span>.<span style="color: #f8ffc6;">SERVICE_NAME</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   22</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   23</span>         <span style="color: #f8ffc6;">Installers</span>.<span style="color: #f8ffc6;">Add</span>(<span style="color: #f8ffc6;">_process</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   24</span>         <span style="color: #f8ffc6;">Installers</span>.<span style="color: #f8ffc6;">Add</span>(<span style="color: #f8ffc6;">_service</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   25</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   26</span> }</p>
+
+</div>
+Og så må jeg ha en <em>static void Main()</em> som fyrer igang hele "sulamitten". Jeg plasserer den for seg selv i Program.cs.
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">   11</span> <span style="font-weight: bold; color: #eaeaac;">static</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">Main</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   12</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   13</span>     <span style="color: yellow;">ServiceBase</span>.<span style="color: #f8ffc6;">Run</span>(<span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">BrainSpillService</span>());</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   14</span> }</p>
+
+</div>
+Nå er jeg klar til å kompilere, og servicen er ferdig. For å ta den i bruk må den installeres og startes, og jeg lager vanligvis batch-filer for dette, sånn at jeg enkelt kan både installere og starte, og stoppe og avinstallere. Merk at du kan få problemer med servicen om du ikke alltid gjør dette i riktig rekkefølge. Om du forsøker å oppdatere servicen uten å stoppe og avinstallere først, kan det hende du må restarte maskinen for å få fjernet servicen.
+<div>Install.bat:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 5px;">C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\InstallUtil BrainSpill.Service.exe</p>
+
+</div>
+</div>
+<div>Start.bat:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 5px;">net start BrainSpillService</p>
+
+</div>
+</div>
+<div>Stop.bat:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 5px;">net stop BrainSpillService</p>
+
+</div>
+</div>
+<div>Uninstall.bat:
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 5px;">C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\InstallUtil /u BrainSpill.Service.exe</p>
+
+</div>
+</div>
+Så slik lager jeg tjenester for tiden. Beskrivelsen ble kanskje litt lang, men prinsippet er veldig enkelt. Spesielt fører bruken av objektdatabase (db4o) til at det blir lite kode. Har du synspunkter på denne fremgangsmåten, eller spørsmål, er du velkommen til å legge igjen en kommentar.
+
+<strong>Knagger:</strong> <a href="http://blog.kjempekjekt.com/index.php?s=SOA" rel="tag">SOA</a>, <a href="http://blog.kjempekjekt.com/index.php?s=WCF" rel="tag">WCF</a>, <a href="http://blog.kjempekjekt.com/index.php?s=DB4O" rel="tag">DB4O</a>, <a href="http://blog.kjempekjekt.com/index.php?s=Ninject" rel="tag">Ninject</a>, <a href="http://blog.kjempekjekt.com/index.php?s=dependency+injection" rel="tag">dependency injection</a>, <a href="http://blog.kjempekjekt.com/index.php?s=LINQ" rel="tag">LINQ</a>

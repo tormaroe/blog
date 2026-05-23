@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Lisp,Julekalender,SMS">
+
+    <title>Send SMS med Common Lisp</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Send SMS med Common Lisp</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 7. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Lisp</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/sms"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> SMS</span></a>
+          </p>
+          <p>Løsningen for parkeringsreservasjon, som jeg har planer om å implementere i Common Lisp denne julen, trenger å kunne sende SMS. I denne posten beskriver jeg hvordan jeg lager en enkel pakke for å sende meldinger ved å bruke XML-basert API.</p>
+<p>Jeg har vist omtrent det samme tidligere i språk som <a href="/2013/02/16/sende-sms-med-f/">F#</a>, <a href="/2010/01/22/dagens-sitat-via-sms/">Ruby</a>, <a href="/2014/03/20/hello-scheme/">Scheme</a> og <a href="/2014/03/04/sende-sms-med-nimrod/">Nim</a>. Dagens Common Lisp-versjon er kort og grei - ikke mer enn 38 linjer, inkludert whitespace. Men blogposten blir nok endel lengre enn det :) </p>
+<p>Den ferdige løsningen er tilgjengelig som <a href="https://gist.github.com/tormaroe/188306ca71c941ee0739">en gist</a>.</p>
+<h2>Eksterne pakker</h2>
+<p>Jeg vil bruke to eksterne pakker i denne løsningen. Den første heter <strong><a href="http://weitz.de/drakma/">drakma</a></strong> og er et populært http-biblotek. Den andre  - <strong><a href="http://weitz.de/cl-who/">cl-who</a></strong> - er en enkel template engine for å konvertere Lisp-kode til HTML (eller i dette tilfellet XML).</p>
+<p>Begge pakkene er laget av tyskeren Edi Weitz, som er en av de mest velkjente open source-utviklerne i Common Lisp sfæren, og som har publisert en hel rekke web-relaterte prosjekter; som webserveren <a href="http://weitz.de/hunchentoot/">Hunchentoot</a> og regex-biblioteket <a href="http://weitz.de/cl-ppcre/">CL-PPCRE</a> (Portable Perl-compatible regular expressions). Edi er professor i matematikk og computer science ved universitetet i Hamburg, og før det var han freelance hacker i 13 år. Han jobbet typisk for kunder som ikke brydde seg om hvilken teknologi han brukte for å løse problemene deres. Derfor jobbet han i 6-7 av de årene utelukkende med Common Lisp.</p>
+<p><img src="/uploads/2015/12/edi.jpg" alt="Edi Weitz" /> Edi Weitz</p>
+<p>I tillegg til disse to pakkene har jeg en ekstern avhengighet til en SMS gateway hos <a href="http://www.linkmobility.com/">LINK Mobility</a> <em>(DISCLAMER: Min arbeidsgiver)</em>.</p>
+<h2>Definere pakken &#39;sms&#39;</h2>
+<p>La oss opprette en fil vi kaller <code>sms.lisp</code>. I den starter vi med en pakkedefinisjon:</p>
+<pre><code class="hljs">(<span class="hljs-keyword">in</span>-package <span class="hljs-symbol">:cl-user</span>)
+(defpackage <span class="hljs-symbol">:sms</span>
+  (<span class="hljs-symbol">:documentation</span>
+    <span class="hljs-string">&quot;A simple package to send SMS using LINK Mobility&quot;</span>)
+  (<span class="hljs-symbol">:use</span> <span class="hljs-symbol">:cl</span>)
+  (<span class="hljs-symbol">:import-from</span> <span class="hljs-symbol">:drakma</span> <span class="hljs-symbol">:http-request</span>)
+  (<span class="hljs-symbol">:import-from</span> <span class="hljs-symbol">:cl-who</span> <span class="hljs-symbol">:with-html-output-to-string</span> <span class="hljs-symbol">:str</span> <span class="hljs-symbol">:esc</span>)
+  (<span class="hljs-symbol">:export</span> <span class="hljs-symbol">:&lt;gateway&gt;</span>
+           <span class="hljs-symbol">:send-sms</span>))
+(<span class="hljs-keyword">in</span>-package <span class="hljs-symbol">:sms</span>)</code></pre><p>Her kan du blant annet se at jeg importerer de symbolene jeg har tenkt å bruke fra drakma og cl-who. Jeg eksporterer også to symboler: <code>&lt;gateway&gt;</code> og <code>send-sms</code>.</p>
+<p><code>&lt;gateway&gt;</code> følger konvensjonen for navngiving av klasser i Common Lisp. Denne vil la brukerne av sms-pakken opprette et objekt som konfigurerer oppkoblingen til SMS-serveren: http-adressen, brukernavn, passord og i tillegg hvilken avsender som skal brukes på SMS&#39;ene.</p>
+<p><code>send-sms</code> er funskjonen som vil bli brukt til å sende SMS.</p>
+<h2>CLOS</h2>
+<p>Den objektorienterte delen av Common Lisp kalles <strong>CLOS</strong> (som står for <em>Common Lisp Object System</em>). Jeg har blogget litt om dette før i <a href="/2012/02/02/template-method-del-4-multippel-arv/">Template Method del 4: Multippel arv</a>.</p>
+<p>Her kommer definisjonen av <code>&lt;gateway&gt;</code>, som altså er en CLOS-klasse:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">defclass</span></span> &lt;gateway&gt; ()
+  ((<span class="hljs-name">url</span> <span class="hljs-symbol">:accessor</span> gateway-url <span class="hljs-symbol">:initarg</span> <span class="hljs-symbol">:url</span> 
+        <span class="hljs-symbol">:initform</span> <span class="hljs-string">&quot;https://xml.pswin.com/&quot;</span>)
+   (<span class="hljs-name">user</span> <span class="hljs-symbol">:accessor</span> gateway-user <span class="hljs-symbol">:initarg</span> <span class="hljs-symbol">:user</span>)
+   (<span class="hljs-name">pw</span> <span class="hljs-symbol">:accessor</span> gateway-password <span class="hljs-symbol">:initarg</span> <span class="hljs-symbol">:password</span>)
+   (<span class="hljs-name">sender</span> <span class="hljs-symbol">:accessor</span> gateway-sender <span class="hljs-symbol">:initarg</span> <span class="hljs-symbol">:sender</span>)))</code></pre><p>Det du ser her er altså en enkel klasse med fire <em>slots</em> (variabler). For hver slot definierer jeg en <em>accessor</em>, som betyr at det genereres funksjoner for å lese og skrive til slotten. Jeg spesifiserer også <em>initarg</em>, som bestemmer navnet man må oppgi når man setter variablene under opprettelse en instansen.</p>
+<p>For slotten <code>url</code> spesifiserer jeg også en default verdi <em>(initform)</em> med adressen til SMS-serveren jeg sansynligvis ønsker å bruke.</p>
+<p>La oss nå lagre filen og teste den i REPL. Jeg starter <a href="http://www.sbcl.org/">SBCL</a> fra kommandolinja i folderen hvor sms.lisp befinner seg, og det første jeg så må gjøre er å laste avhengighetene mine:</p>
+<pre><code class="hljs">(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-string">&quot;drakma&quot;</span>)
+(<span class="hljs-name">ql</span><span class="hljs-symbol">:quickload</span> <span class="hljs-string">&quot;cl-who&quot;</span>)</code></pre><p>Deretter kan jeg laste sms.lisp:</p>
+<pre><code class="hljs">(<span class="hljs-name"><span class="hljs-built_in">load</span></span> <span class="hljs-string">&quot;sms&quot;</span>)</code></pre><p>Om det gikk greit kan vi undersøke om vi har tilgang til <code>&lt;gateway&gt;</code> og hvordan den ser ut. Til det kan du bruke funksjonen <code>describe</code>. Evaluerer du <code>(describe &#39;sms:&lt;gateway&gt;)</code> får du ut en komplett beskrivelse av klassen.</p>
+<p>Vi kan også opprette en instans av klassen og teste å sette for eksempel én av slot-verdiene:</p>
+<pre><code class="hljs">(<span class="hljs-name">defvar</span> x (<span class="hljs-name">make-instance</span> &#x27;sms<span class="hljs-symbol">:&lt;gateway&gt;</span> <span class="hljs-symbol">:user</span> <span class="hljs-string">&quot;tormar&quot;</span>))</code></pre><p><code>(describe x)</code> vil da gi oss info om instansen:</p>
+<pre><code class="hljs"><span class="hljs-comment">#&lt;SMS:&lt;GATEWAY&gt; {24EC7889}&gt;</span>
+  [standard-object]
+
+Slots <span class="hljs-keyword">with</span> :INSTANCE <span class="hljs-params">allocation:</span>
+  <span class="hljs-attr">URL</span>     <span class="hljs-operator">=</span> <span class="hljs-string">&quot;https://xml.pswin.com/&quot;</span>
+  <span class="hljs-attr">USER</span>    <span class="hljs-operator">=</span> <span class="hljs-string">&quot;tormar&quot;</span>
+  <span class="hljs-attr">PW</span>      <span class="hljs-operator">=</span> <span class="hljs-comment">#&lt;unbound slot&gt;</span>
+  <span class="hljs-attr">SENDER</span>  <span class="hljs-operator">=</span> <span class="hljs-comment">#&lt;unbound slot&gt;</span></code></pre><h2>Generere XML</h2>
+<p>Ok, vi er nå tilbake i filen sms.lisp. Vi skal bruke cl-who til generere litt XML som skal sendes til SMS gatewayen. Og det er ganske enkelt egentlig, for lisp-strukturer ligner ganske mye på XML. Men først en liten detalj:</p>
+<p>XML API&#39;et jeg skal bruke er case sensitivt - elementene må være uppercase. Det overrasket meg egentlig litt, men da jeg brukte lowercase så virket det i alle fall ikke. Og ut av boksen produserer cl-who lowercase elementer. Derfor må jeg overstyre en innstilling, sånn:</p>
+<pre><code class="hljs">(<span class="hljs-name">setf</span> cl-who<span class="hljs-symbol">:*downcase-tokens-p*</span> <span class="hljs-literal">nil</span>)</code></pre><p>Her setter jeg variabelen <code>*downcase-tokens-p*</code> til <code>nil</code>, som i Common Lisp har samme funksjon som <code>false</code> i de fleste andre språk. Og btw., boolske variabler og funksjoner som returnerer en bolsk verdi har som regel et navn som slutter på &quot;-p&quot;. P står for predikat.</p>
+<p>Det neste jeg skal gjøre er å definere en funksjon som genererer en XML-streng. Jeg kaller den <code>make-XML</code>, og den har tre parametre: et <code>&lt;gateway&gt;</code>-object, et mottakernummer og teksten som skal sendes:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> make-XML (<span class="hljs-name">gateway</span> rcv text)
+  (<span class="hljs-name">with-html-output-to-string</span> (<span class="hljs-name">s</span>)
+    (<span class="hljs-name"><span class="hljs-built_in">format</span></span> s <span class="hljs-string">&quot;&lt;?xml version=\&quot;1.0\&quot;?&gt;&quot;</span>)
+    (<span class="hljs-symbol">:SESSION</span>
+      (<span class="hljs-symbol">:CLIENT</span> (<span class="hljs-name"><span class="hljs-built_in">str</span></span> (<span class="hljs-name">gateway-user</span> gateway)))
+      (<span class="hljs-symbol">:PW</span> (<span class="hljs-name"><span class="hljs-built_in">str</span></span> (<span class="hljs-name">gateway-password</span> gateway)))
+      (<span class="hljs-symbol">:MSGLST</span>
+        (<span class="hljs-symbol">:MSG</span>
+          (<span class="hljs-symbol">:ID</span> (<span class="hljs-name"><span class="hljs-built_in">str</span></span> <span class="hljs-number">1</span>))
+          (<span class="hljs-symbol">:SND</span> (<span class="hljs-name"><span class="hljs-built_in">str</span></span> (<span class="hljs-name">gateway-sender</span> gateway)))
+          (<span class="hljs-symbol">:RCV</span> (<span class="hljs-name"><span class="hljs-built_in">str</span></span> rcv))
+          (<span class="hljs-symbol">:TEXT</span> (<span class="hljs-name">esc</span> text))))</code></pre><p>Om du begynner å bli vandt til å se Lisp nå så er det ikke så vanskelig å se hva jeg gjør her. <code>with-html-output-to-string</code>, <code>str</code> og <code>esc</code> kommer fra cl-who. Sistnevnte brukes til å <em>escape</em> problematiske tegn i meldingsteksten.</p>
+<p>Hvis vi går tilbake til REPL så kan vi nå teste denne funksjonen og se hva vi får ut. Vi kan for eksempel gjøre dette:</p>
+<pre><code class="hljs">(<span class="hljs-keyword">let</span> ((conn (make-instance &#x27;<span class="hljs-symbol">&lt;gateway&gt;</span> 
+                           <span class="hljs-meta">:user</span> <span class="hljs-string">&quot;tormar&quot;</span>
+                           <span class="hljs-meta">:password</span> <span class="hljs-string">&quot;secret&quot;</span>
+                           <span class="hljs-meta">:sender</span> <span class="hljs-string">&quot;tman&quot;</span>)))
+  (format t <span class="hljs-string">&quot;~A&quot;</span> 
+          (sms::make-XML conn
+                           <span class="hljs-string">&quot;4790696698&quot;</span> 
+                           <span class="hljs-string">&quot;test æøå &lt;&gt;&amp;&quot;</span>))))</code></pre><p><code>make-XML</code> er ikke eksportert fra sms-pakken, og det er derfor jeg her aksesserer den med dobbelt-kolon: <code>sms::make-XML</code>.</p>
+<p>Her er output (jeg har lagt til linjeskift og indentering):</p>
+<pre><code class="hljs"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">SESSION</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">CLIENT</span>&gt;</span>tormar<span class="hljs-tag">&lt;/<span class="hljs-name">CLIENT</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">PW</span>&gt;</span>secret<span class="hljs-tag">&lt;/<span class="hljs-name">PW</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">MSGLST</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MSG</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">ID</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">ID</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">SND</span>&gt;</span>tman<span class="hljs-tag">&lt;/<span class="hljs-name">SND</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">RCV</span>&gt;</span>4790696698<span class="hljs-tag">&lt;/<span class="hljs-name">RCV</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">TEXT</span>&gt;</span>test <span class="hljs-symbol">&amp;#xE6;</span><span class="hljs-symbol">&amp;#xF8;</span><span class="hljs-symbol">&amp;#xE5;</span> <span class="hljs-symbol">&amp;lt;</span><span class="hljs-symbol">&amp;gt;</span><span class="hljs-symbol">&amp;amp;</span><span class="hljs-tag">&lt;/<span class="hljs-name">TEXT</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">MSG</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">MSGLST</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">SESSION</span>&gt;</span></code></pre><p>En liten detalj her er at jeg har lagret sms.lisp med ISO-8859-1 tegnkoding. Det blir mest riktig fordi det er det tegnsettet SMS-tjenesten forventer, og resultatet av <code>(enc text)</code> er avhengig av dette. Det er sikkert mange andre måter å gjøre det på, men det fungerte i alle fall for meg.</p>
+<h2>HTTP Post</h2>
+<p>Da gjenstår det bare å lage en funksjon som genererer XML&#39;en og sender den til serveren. Det er her Drakma og funksjonen <code>http-request</code> kommer inn i bildet.</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> send-sms (<span class="hljs-name">gateway</span> rcv text)
+  (<span class="hljs-name">http-request</span> (<span class="hljs-name">gateway-url</span> gateway)
+                <span class="hljs-symbol">:method</span> <span class="hljs-symbol">:post</span>
+                <span class="hljs-symbol">:content</span> (<span class="hljs-name">make-XML</span> gateway rcv text)
+                <span class="hljs-symbol">:content-type</span> <span class="hljs-string">&quot;text/xml charset=ISO-8859-1&quot;</span>))</code></pre><p>Og da er vi egentlig ferdige, og vi kan sende den første SMSen fra REPL. I tillegg setter jeg en variabel som gjør at vi får se alle headerne som sendes og returneres.</p>
+<pre><code class="hljs">(setf drakma:<span class="hljs-operator">*</span>header-stream<span class="hljs-operator">*</span> <span class="hljs-operator">*</span>standard-output<span class="hljs-operator">*</span>)
+
+(<span class="hljs-keyword">let</span> ((conn (make-instance &#x27;<span class="hljs-symbol">&lt;gateway&gt;</span> 
+                           <span class="hljs-meta">:user</span> <span class="hljs-string">&quot;tormar&quot;</span>
+                           <span class="hljs-meta">:password</span> <span class="hljs-string">&quot;secret&quot;</span>
+                           <span class="hljs-meta">:sender</span> <span class="hljs-string">&quot;tman&quot;</span>)))
+  (format t <span class="hljs-string">&quot;~A&quot;</span> 
+          (sms:send-sms conn
+                          <span class="hljs-string">&quot;4790696698&quot;</span> 
+                          <span class="hljs-string">&quot;test æøå &lt;&gt;&amp;&quot;</span>))))</code></pre><p>Output:</p>
+<pre><code class="hljs"><span class="hljs-keyword">POST</span> <span class="hljs-string">/</span> <span class="hljs-meta">HTTP/1.1</span>
+<span class="hljs-attribute">Host</span><span class="hljs-punctuation">: </span>xml.pswin.com
+<span class="hljs-attribute">User-Agent</span><span class="hljs-punctuation">: </span>Drakma/2.0.2 (SBCL 1.3.0; Win32; 6.2.9200; http://weitz.de/drakma/)
+<span class="hljs-attribute">Accept</span><span class="hljs-punctuation">: </span>*/*
+<span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>text/xml charset=ISO-8859-1
+<span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>216
+
+<span class="language-http"><span class="hljs-meta">HTTP/1.1</span> <span class="hljs-number">200</span> OK
+<span class="hljs-attribute">Server</span><span class="hljs-punctuation">: </span>nginx
+<span class="hljs-attribute">Date</span><span class="hljs-punctuation">: </span>Tue, 17 Nov 2015 20:43:09 GMT
+<span class="hljs-attribute">Content-Type</span><span class="hljs-punctuation">: </span>text/xml
+<span class="hljs-attribute">Content-Length</span><span class="hljs-punctuation">: </span>185
+<span class="hljs-attribute">Connection</span><span class="hljs-punctuation">: </span>close
+
+<span class="language-xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span>?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">SESSION</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">LOGON</span>&gt;</span>OK<span class="hljs-tag">&lt;/<span class="hljs-name">LOGON</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">REASON</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">MSGLST</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">MSG</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">ID</span>&gt;</span>1<span class="hljs-tag">&lt;/<span class="hljs-name">ID</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">STATUS</span>&gt;</span>OK<span class="hljs-tag">&lt;/<span class="hljs-name">STATUS</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">INFO</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">INFO</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">REF</span>&gt;</span>bb2b4b5f-5cb6-4897-b49a-8f0e470e9faa<span class="hljs-tag">&lt;/<span class="hljs-name">REF</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">MSG</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">MSGLST</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">SESSION</span>&gt;</span></span></span></code></pre><h2>Et tips til slutt</h2>
+<p>Da jeg implementerte denne SMS-pakken eksperimenterte jeg fortsatt endel med hvordan jeg utviklet og hvordan jeg underveis testet det jeg gjorde. Det jeg endte opp med var å lage to filer i tillegg til sms.lisp. Den ene kalte jeg sms-test.lisp, og den inneholdt en egen pakke med to funksjoner jeg kunne bruke til å teste sms.</p>
+<p>Den filen så slik ut:</p>
+<pre><code class="hljs">(<span class="hljs-name">in-package</span> <span class="hljs-symbol">:cl-user</span>)
+(<span class="hljs-name">defpackage</span> <span class="hljs-symbol">:sms-test</span>
+  (<span class="hljs-symbol">:use</span> <span class="hljs-symbol">:cl</span> <span class="hljs-symbol">:sms</span>))
+(<span class="hljs-name">in-package</span> <span class="hljs-symbol">:sms-test</span>)
+
+(<span class="hljs-name">defun</span> test-base (<span class="hljs-name">subject-f</span>)
+     (<span class="hljs-name">let</span> ((<span class="hljs-name">conn</span> (<span class="hljs-name">make-instance</span> &#x27;&lt;gateway&gt; 
+                             <span class="hljs-symbol">:user</span> <span class="hljs-string">&quot;tormar&quot;</span>
+                             <span class="hljs-symbol">:password</span> <span class="hljs-string">&quot;secret&quot;</span>
+                             <span class="hljs-symbol">:sender</span> <span class="hljs-string">&quot;test&quot;</span>)))
+    (<span class="hljs-name">format</span> <span class="hljs-literal">t</span> <span class="hljs-string">&quot;~A&quot;</span> 
+            (<span class="hljs-name">funcall</span> subject-f conn 
+                               <span class="hljs-string">&quot;4790696698&quot;</span> 
+                               <span class="hljs-string">&quot;test æøå &lt;&gt;&amp;&quot;</span>))))
+
+(<span class="hljs-name">defun</span> test-xml ()
+    (<span class="hljs-name">test-base</span> #&#x27;sms::make-XML))
+
+(<span class="hljs-name">defun</span> test ()
+    (<span class="hljs-name">setf</span> drakma<span class="hljs-symbol">:*header-stream*</span> *standard-output*)
+    (<span class="hljs-name">test-base</span> #&#x27;send-sms))</code></pre><p>Den andre filen kalte jeg load.lisp, og den inneholdt dette:</p>
+<pre><code class="hljs">(<span class="hljs-name">ql:quickload</span> <span class="hljs-symbol">:drakma</span>)
+(<span class="hljs-name">ql:quickload</span> <span class="hljs-symbol">:cl-who</span>)
+
+(<span class="hljs-name"><span class="hljs-built_in">load</span></span> <span class="hljs-string">&quot;sms&quot;</span>)
+(<span class="hljs-name"><span class="hljs-built_in">load</span></span> <span class="hljs-string">&quot;sms-test&quot;</span>)
+
+(<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;Test XML: Eval (sms-test::test-xml)~%&quot;</span>)
+(<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;Send SMS: Eval (sms-test::test)~%~%&quot;</span>)</code></pre><p>Hvis jeg så startet Common Lisp med argument som sa at load.lisp skulle lastes, på denne måten...</p>
+<pre><code class="hljs">$ sbcl --<span class="hljs-keyword">load</span> <span class="hljs-keyword">load</span>.lisp</code></pre><p>... så endte jeg enkelt opp i en REPL hvor alt var lastet og klart, og jeg kunne manuelt teste det jeg ville ved behov. </p>
+<p>Og sånn ble det 17 dager igjen til Jul!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Common Lisp,Julekalender,Perl,Rekursjon">
+
+    <title>Rekursiv skattejakt</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Rekursiv skattejakt</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 16. desember 2015</small> 
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/perl"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Perl</span></a>
+          
+            <a href="/tags/rekursjon"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rekursjon</span></a>
+          </p>
+          <img src="/uploads/2015/12/skattejakt.jpg" alt="Skattejakt" />
+
+<p>Luke 15 i <a href="https://julekalender.knowit.no">Knowit sin julekalender</a> skulle ha oss med ut på skattejakt. Oppgaven var ikke vanskeligere enn at den kunne løses &quot;for hånd&quot; på et minutt eller to, men det er jo ikke gøy - her skulle det kodes!</p>
+<p>Oppgaven lød:</p>
+<blockquote>
+<p>[Tabellen] skal tolkes som et skattekart. Verdiene i cellene er hint til hvor skatten ligger gjemt. Hver celle inneholder en verdi mellom 11 og 55. For hver verdi representerer det mest signifikante sifferet radnummeret og det minst signifikante sifferet kolonnenummeret til cellen som inneholder neste hint. Start i cellen øverst til venstre (1,1), bruk hintene til å søke deg gjennom tabellen. Skatten er gjemt i den cellen hvor verdien er lik sine egne koordinater. Svaret skal gis som en kommaseparert liste med veien til skatten der det første elementet er startcellen og det siste elementet er målcellen.</p>
+</blockquote>
+<h2>Første iterasjon: Todimensjonal liste</h2>
+<p>Det første jeg tenkte var at når jeg har en matrise som dette skattekartet jo er, så trenger jeg en todimensjonal liste. Jeg ville representere kartet som dette her:</p>
+<pre><code class="hljs"> ((<span class="hljs-string">&quot;34&quot;</span> <span class="hljs-string">&quot;21&quot;</span> <span class="hljs-string">&quot;32&quot;</span> <span class="hljs-string">&quot;41&quot;</span> <span class="hljs-string">&quot;25&quot;</span>)
+  (<span class="hljs-string">&quot;14&quot;</span> <span class="hljs-string">&quot;42&quot;</span> <span class="hljs-string">&quot;43&quot;</span> <span class="hljs-string">&quot;14&quot;</span> <span class="hljs-string">&quot;31&quot;</span>)
+  (<span class="hljs-string">&quot;54&quot;</span> <span class="hljs-string">&quot;45&quot;</span> <span class="hljs-string">&quot;52&quot;</span> <span class="hljs-string">&quot;42&quot;</span> <span class="hljs-string">&quot;23&quot;</span>)
+  (<span class="hljs-string">&quot;33&quot;</span> <span class="hljs-string">&quot;15&quot;</span> <span class="hljs-string">&quot;51&quot;</span> <span class="hljs-string">&quot;31&quot;</span> <span class="hljs-string">&quot;35&quot;</span>)
+  (<span class="hljs-string">&quot;21&quot;</span> <span class="hljs-string">&quot;52&quot;</span> <span class="hljs-string">&quot;33&quot;</span> <span class="hljs-string">&quot;13&quot;</span> <span class="hljs-string">&quot;23&quot;</span>))</code></pre><p>Men for å gjøre det litt spennende ville jeg forsøke å <em>parse</em> ASCII-tabellen slik den var oppgitt i oppgaven. Deklarasjonen av kartet skulle bli som dette:</p>
+<pre><code class="hljs">(defvar *board* 
+  (parse-board 5
+    &quot;+------------------------+
+     ¦<span class="hljs-number"> 34 </span>¦<span class="hljs-number"> 21 </span>¦<span class="hljs-number"> 32 </span>¦<span class="hljs-number"> 41 </span>¦<span class="hljs-number"> 25 </span>¦
+     +----+----+----+----+----¦
+     ¦<span class="hljs-number"> 14 </span>¦<span class="hljs-number"> 42 </span>¦<span class="hljs-number"> 43 </span>¦<span class="hljs-number"> 14 </span>¦<span class="hljs-number"> 31 </span>¦
+     +----+----+----+----+----¦
+     ¦<span class="hljs-number"> 54 </span>¦<span class="hljs-number"> 45 </span>¦<span class="hljs-number"> 52 </span>¦<span class="hljs-number"> 42 </span>¦<span class="hljs-number"> 23 </span>¦
+     +----+----+----+----+----¦
+     ¦<span class="hljs-number"> 33 </span>¦<span class="hljs-number"> 15 </span>¦<span class="hljs-number"> 51 </span>¦<span class="hljs-number"> 31 </span>¦<span class="hljs-number"> 35 </span>¦
+     +----+----+----+----+----¦
+     ¦<span class="hljs-number"> 21 </span>¦<span class="hljs-number"> 52 </span>¦<span class="hljs-number"> 33 </span>¦<span class="hljs-number"> 13 </span>¦<span class="hljs-number"> 23 </span>¦
+     +------------------------+&quot;))</code></pre><p>Jeg ville altså lage en fuksjon <code>parse-board</code>. Første argument er lengden på en rad (eller antall kolonner om du vil), som gjør det litt enklere å parse.</p>
+<p>Jeg tenkte videre at det kunne være greit å bruke regulære uttrykk for å parse kartet, så jeg tok en titt på <a href="http://weitz.de/cl-ppcre/">dokumentasjonen til cl-ppcre</a> (regex-pakken jeg har brukt tidligere). Der fant jeg en spennende makro som ville la meg iterere over alle tallene i tabellen: <code>do-matches-as-strings</code>.</p>
+<p>Ved å holde rede på hvor mange tall jeg hadde funnet til enhver tid, kunne jeg vite når jeg måtte legge til en ny rad. Og så måtte jeg til slutt passe på å reversese alle listene mine helt til slutt, ettersom alt blir baklengs når man &quot;conser&quot; verdier til en liste (det er alltid mye raskere å putte verdier på starten av en liste). Jeg ednte opp med dette:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> parse-board (<span class="hljs-name">row-length</span> raw)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">board</span> ())
+        (<span class="hljs-name">i</span> <span class="hljs-number">0</span>)
+        (<span class="hljs-name">pattern</span> (<span class="hljs-name"><span class="hljs-built_in">format</span></span> <span class="hljs-literal">nil</span> <span class="hljs-string">&quot;[1-~A]+&quot;</span> row-length)))
+    (<span class="hljs-name">cl-ppcre:do-matches-as-strings</span> (<span class="hljs-name">m</span> pattern raw)
+      (<span class="hljs-name"><span class="hljs-built_in">when</span></span> (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> i row-length))
+        (<span class="hljs-name">push</span> () board))
+      (<span class="hljs-name">setf</span> (<span class="hljs-name">car</span> board) (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> m (<span class="hljs-name">car</span> board)))
+      (<span class="hljs-name">incf</span> i))
+    (<span class="hljs-name"><span class="hljs-built_in">reverse</span></span> (<span class="hljs-name">mapcar</span> #&#x27;reverse board))))</code></pre><p>Nå kunne jeg lage en funksjon for å hente ut verdien av en celle, gitt rad- og kolonneindeks:</p>
+<pre><code class="hljs">(<span class="hljs-string">defun</span> <span class="hljs-built_in">get-cell</span> (<span class="hljs-string">row</span> <span class="hljs-string">col</span>)
+  <span class="hljs-string">&quot;Note: Zero-based indexes&quot;</span>
+  (<span class="hljs-string">nth</span> <span class="hljs-string">col</span> (<span class="hljs-string">nth</span> <span class="hljs-string">row</span> *<span class="hljs-string">board</span>*)))</code></pre><p>Men for å vite hva neste rad- og kolonneindeks var, basert på verdien i en celle, trengte jeg også denne funksjonen:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> get-row-and-column (<span class="hljs-name">v</span>)
+  <span class="hljs-string">&quot;Returns a pair of zero-based indexes&quot;</span>
+  (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> (<span class="hljs-number">1</span>- (<span class="hljs-name">parse-any-value</span> (<span class="hljs-name">subseq</span> v <span class="hljs-number">0</span> <span class="hljs-number">1</span>)))
+        (<span class="hljs-number">1</span>- (<span class="hljs-name">parse-any-value</span> (<span class="hljs-name">subseq</span> v <span class="hljs-number">1</span> <span class="hljs-number">2</span>)))))</code></pre><p>(<code>parse-any-value</code> som benyttes her har jeg definert i tidligere blogposter.)</p>
+<p>Nå gjenstod det bare å lage en rekursiv funksjon som startet i den første cellen og fortsatte til den fant en celle som pekte til seg selv. Underveis måtte den ta vare på stien den fulgte (<code>path</code>). Jeg valgte å implementere den slik:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> find-path (<span class="hljs-name">v</span> &amp;key (<span class="hljs-name">path</span> ()))
+  (<span class="hljs-name"><span class="hljs-built_in">let*</span></span> ((<span class="hljs-name">next-point</span> (<span class="hljs-name">get-row-and-column</span> v))
+         (<span class="hljs-name">next-v</span> (<span class="hljs-name">get-cell</span> (<span class="hljs-name"><span class="hljs-built_in">car</span></span> next-point)
+                           (<span class="hljs-name"><span class="hljs-built_in">cdr</span></span> next-point))))
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">equal</span> v next-v)
+      (<span class="hljs-name"><span class="hljs-built_in">reverse</span></span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> next-v path))
+      (<span class="hljs-name">find-path</span> next-v
+                 :path (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> v path)))))</code></pre><p>Dermed kunne jeg finne løsningen - formatert sånn som Knowit ville - slik som dette:</p>
+<pre><code class="hljs">  (<span class="hljs-name"><span class="hljs-built_in">format</span></span> t <span class="hljs-string">&quot;~{~A~^,~}&quot;</span>
+          (<span class="hljs-name">find-path</span> <span class="hljs-string">&quot;11&quot;</span>))</code></pre><p>Merk at format-strengen jeg bruker faktisk itererer over alle verdiene i listen, og putter et komma mellom hvert element. Kryptisk men kraftig!</p>
+<p>Denne løsningen fungerer, men det er noe som ikke er så veldig tilfredstillende med den. Det er litt <em>knotete</em> å holde rede på forskjellen mellom koordinatverdiene i cellene og indeksene i den todimensjonale listen. La oss se om vi kan komme opp med noe bedre. </p>
+<h2>Andre iterasjon: Association list</h2>
+<p>I forrige blogpost, <a href="/2015/12/15/opp-ned-tall/">Opp-ned-tall</a>, fortalte jeg om <em>plist</em> (property list). En annen, listebasert datastruktur ofte brukt i Common Lisp kalles <strong>alist</strong>, eller <em>association list</em>. Også denne brukes til å mappe en nøkkel til en verdi, men hvert par av nøkkel og verdi ligger i listen som en cons-celle. <em>Alisten</em> er mere anvendelig enn <em>plisten</em>.</p>
+<p>Hva om jeg bruker en slik liste til å representere kartet? Hver celle inneholder koordinatene til en annen celle, så da kan jo den første være nøkkelen og den andre være verdien...</p>
+<p>Jeg vil altså representere kartet på denne måten:</p>
+<pre><code class="hljs">((<span class="hljs-string">&quot;55&quot;</span> . <span class="hljs-string">&quot;23&quot;</span>) (<span class="hljs-string">&quot;54&quot;</span> . <span class="hljs-string">&quot;13&quot;</span>) (<span class="hljs-string">&quot;53&quot;</span> . <span class="hljs-string">&quot;33&quot;</span>)
+ (<span class="hljs-string">&quot;52&quot;</span> . <span class="hljs-string">&quot;52&quot;</span>) (<span class="hljs-string">&quot;51&quot;</span> . <span class="hljs-string">&quot;21&quot;</span>) (<span class="hljs-string">&quot;45&quot;</span> . <span class="hljs-string">&quot;35&quot;</span>) 
+ (<span class="hljs-string">&quot;44&quot;</span> . <span class="hljs-string">&quot;31&quot;</span>) (<span class="hljs-string">&quot;43&quot;</span> . <span class="hljs-string">&quot;51&quot;</span>) (<span class="hljs-string">&quot;42&quot;</span> . <span class="hljs-string">&quot;15&quot;</span>)
+ (<span class="hljs-string">&quot;41&quot;</span> . <span class="hljs-string">&quot;33&quot;</span>) (<span class="hljs-string">&quot;35&quot;</span> . <span class="hljs-string">&quot;23&quot;</span>) (<span class="hljs-string">&quot;34&quot;</span> . <span class="hljs-string">&quot;42&quot;</span>) 
+ (<span class="hljs-string">&quot;33&quot;</span> . <span class="hljs-string">&quot;52&quot;</span>) (<span class="hljs-string">&quot;32&quot;</span> . <span class="hljs-string">&quot;45&quot;</span>) (<span class="hljs-string">&quot;31&quot;</span> . <span class="hljs-string">&quot;54&quot;</span>)
+ (<span class="hljs-string">&quot;25&quot;</span> . <span class="hljs-string">&quot;31&quot;</span>) (<span class="hljs-string">&quot;24&quot;</span> . <span class="hljs-string">&quot;14&quot;</span>) (<span class="hljs-string">&quot;23&quot;</span> . <span class="hljs-string">&quot;43&quot;</span>) 
+ (<span class="hljs-string">&quot;22&quot;</span> . <span class="hljs-string">&quot;42&quot;</span>) (<span class="hljs-string">&quot;21&quot;</span> . <span class="hljs-string">&quot;14&quot;</span>) (<span class="hljs-string">&quot;15&quot;</span> . <span class="hljs-string">&quot;25&quot;</span>) 
+ (<span class="hljs-string">&quot;14&quot;</span> . <span class="hljs-string">&quot;41&quot;</span>) (<span class="hljs-string">&quot;13&quot;</span> . <span class="hljs-string">&quot;32&quot;</span>) (<span class="hljs-string">&quot;12&quot;</span> . <span class="hljs-string">&quot;21&quot;</span>) 
+ (<span class="hljs-string">&quot;11&quot;</span> . <span class="hljs-string">&quot;34&quot;</span>))</code></pre><p>Da slipper jeg å forholde meg til at dette er et koordinatsystem - <em>i alle fall når jeg skal finne løsningen</em> - det er bare en rekke verdier som peker til andre verdier.</p>
+<p>For å få til dette må vi endre <code>parse-board</code>. Her må jeg derimot holde track på radnummer og kolonnenummer, sånn at jeg kan sette inn riktig nøkkel. Sammenlign gjerne denne med versjonen presentert i første iterasjon:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> parse-board (<span class="hljs-name">row-length</span> raw)
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">board</span> ())
+        (<span class="hljs-name">row</span> <span class="hljs-number">1</span>) (<span class="hljs-name">col</span> <span class="hljs-number">1</span>)
+        (<span class="hljs-name">pattern</span> (<span class="hljs-name"><span class="hljs-built_in">format</span></span> <span class="hljs-literal">nil</span> <span class="hljs-string">&quot;[1-~A]+&quot;</span> row-length)))
+    (<span class="hljs-name">cl-ppcre:do-matches-as-strings</span> (<span class="hljs-name">m</span> pattern raw)
+      (<span class="hljs-name">push</span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> (<span class="hljs-name"><span class="hljs-built_in">format</span></span> <span class="hljs-literal">nil</span> <span class="hljs-string">&quot;~A~A&quot;</span> row col) m) 
+            board)
+      (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">zerop</span> (<span class="hljs-name"><span class="hljs-built_in">mod</span></span> col row-length))
+        (<span class="hljs-name">setf</span> row (<span class="hljs-number">1</span>+ row) col <span class="hljs-number">1</span>)
+        (<span class="hljs-name">incf</span> col)))
+    board))</code></pre><p>Nå kan jeg droppe <code>get-cell</code> og <code>get-row-and-column</code>, de behøver vi ikke lengre. Derimot lager jeg en ny liten hjelpefunksjon som gir meg verdien til en celle:</p>
+<pre><code class="hljs">(<span class="hljs-string">defun</span> <span class="hljs-built_in">get-cell-value</span> (<span class="hljs-string">cell</span>)
+  (<span class="hljs-string">cdr</span> (<span class="hljs-string">assoc</span> <span class="hljs-string">cell</span> *<span class="hljs-string">board</span>* 
+              :<span class="hljs-string">test</span> <span class="hljs-comment">#&#x27;equal)))</span></code></pre><p><code>assoc</code> er en fuksjon som brukes på alister. Den returnerer både nøkkel og verdi, så jeg må bruke <code>cdr</code> til å plukke verdien. Om jeg nå evaluerer for eksempel <code>(get-cell-value &quot;11&quot;)</code> så får jeg ut verdien <code>&quot;34&quot;</code>.</p>
+<p>Dermed kan jeg modifisere <code>find-path</code>; den beholder samme struktur som tidligere, men blir samtidig noe enklere:</p>
+<pre><code class="hljs">(<span class="hljs-name">defun</span> find-path (<span class="hljs-name">cell</span> &amp;key (<span class="hljs-name">path</span> ()))
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name"><span class="hljs-built_in">next</span></span> (<span class="hljs-name">get-cell-value</span> cell)))
+    (<span class="hljs-name"><span class="hljs-built_in">if</span></span> (<span class="hljs-name">equal</span> cell next)
+      (<span class="hljs-name"><span class="hljs-built_in">reverse</span></span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> next path))
+      (<span class="hljs-name">find-path</span> next
+                 <span class="hljs-symbol">:path</span> (<span class="hljs-name"><span class="hljs-built_in">cons</span></span> cell path)))))</code></pre><h2>Likhet</h2>
+<p>La du merke til at jeg i kallet til <code>assoc</code> sa <code>:test #&#39;equal</code>? Hva var det for noe?</p>
+<p>Common Lisp har mange måter å sammenligne verdier på. Du trodde kanskje det var litt <em>overkill</em> og i alle fall forvirrende å ha for eksempel både dobbelerlik (<code>==</code>) og trippelerlik (<code>===</code>) i JavaScript? I Common Lisp er det &quot;mye værre&quot;...</p>
+<p><code>=</code> brukes til å sammenligne tall. Tallene behøver ikke være av samme type:</p>
+<pre><code class="hljs">(<span class="hljs-operator">=</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span>) <span class="hljs-operator">=</span>&gt; NIL
+(<span class="hljs-operator">=</span> <span class="hljs-number">2</span> <span class="hljs-number">2.0</span>) <span class="hljs-operator">=</span>&gt; T</code></pre><p><code>eq</code> brukes til å sammenligne identitet. Like symboler er identiske, og to referanser til samme objekt er identiske:</p>
+<pre><code class="hljs">(<span class="hljs-name">eq</span> &#x27;foo &#x27;foo) =&gt; T
+(<span class="hljs-name">eq</span> <span class="hljs-number">1.0</span> <span class="hljs-number">1.0</span>) =&gt; NIL
+(<span class="hljs-name">let</span> ((<span class="hljs-name">x</span> (<span class="hljs-name">cons</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span>))) (<span class="hljs-name">eq</span> x x)) =&gt; T</code></pre><p><code>eql</code> sammenligner identitet, men også tall og tegn. Typen må være lik:</p>
+<pre><code class="hljs">(eql <span class="hljs-number">1.0</span> <span class="hljs-number">1</span>) <span class="hljs-operator">=</span>&gt; NIL
+(eql <span class="hljs-number">1.0</span> <span class="hljs-number">1.0</span>) <span class="hljs-operator">=</span>&gt; T</code></pre><p><code>equal</code> fungerer som <code>eql</code>, men sammenligner også lister (rekursivt), strenger og bit-vektorer:</p>
+<pre><code class="hljs">(<span class="hljs-name">equal</span> <span class="hljs-string">&quot;moo&quot;</span> <span class="hljs-string">&quot;moo&quot;</span>) =&gt; T
+(<span class="hljs-name">equal</span> <span class="hljs-string">&quot;moo&quot;</span> <span class="hljs-string">&quot;MoO&quot;</span>) =&gt; NIL
+(<span class="hljs-name">equal</span> (<span class="hljs-name">cons</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span>) (<span class="hljs-name">cons</span> <span class="hljs-number">1</span> <span class="hljs-number">2</span>)) =&gt; T
+(<span class="hljs-name">equal</span> <span class="hljs-number">1.0</span> <span class="hljs-number">1</span>) =&gt; NIL
+(<span class="hljs-name">equal</span> <span class="hljs-number">1.0</span> <span class="hljs-number">1.0</span>) =&gt; T</code></pre><p><code>equalp</code> fungerer som <code>equal</code>, men sammenligner også andre sekvenser enn lister, og strenger sammenlignes <em>case insensitively</em>. Tall behøver ikke ha samme type:</p>
+<pre><code class="hljs">(<span class="hljs-name">equalp</span> <span class="hljs-string">&quot;moo&quot;</span> <span class="hljs-string">&quot;MoO&quot;</span>) =&gt; T
+(<span class="hljs-name">equalp</span> (<span class="hljs-name">vector</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span>) (<span class="hljs-name">vector</span> <span class="hljs-number">2</span> <span class="hljs-number">3</span> <span class="hljs-number">4</span>)) = T
+(<span class="hljs-name">equalp</span> <span class="hljs-number">1.0</span> <span class="hljs-number">1</span>) =&gt; T
+(<span class="hljs-name">equalp</span> <span class="hljs-number">1.0</span> <span class="hljs-number">1.0</span>) =&gt; T</code></pre><p>Er det mulig? Hvem klarer å huske alt dette da? Ikke vet jeg, men det er faktisk ganske stilig. Mange funksjoner som sammenligner elementer (som for eksempel <code>assoc</code>) bruker én av disse likhets-funksjonene som default, men lar deg samtidig spesifisere en alternativ test - sånn at du kan overstyre. Og det var det jeg gjorde da jeg brukte <code>assoc</code>, fordi jeg skulle sammenligne strenger og derfor trengte <code>equal</code>.</p>
+<p>Dette var kanskje et sidespor, men det var et viktig ett.</p>
+<h2>Tredje iterasjon: Ikke så imperativ..</h2>
+<p>Løsningen er ganske fin nå, men <code>parse-board</code> er fortsatt litt vanskelig å forstå: Den muterer tre variabler i en loop, og selv om det var gøy å finne ut hvordan det skulle gjøres så tror jeg at den kan bli bedre.</p>
+<p>Hva om jeg henter ut alle nøklene og alle verdiene hver for seg, og så slår dem sammen? cl-ppcre har faktisk en funksjon <code>all-matches-as-strings</code> som returnerer alle treffene i stedet for å iterere over dem, så den kan jeg bruke. Nøklene kan jeg generere med to for-løkker, og jeg kan <em>zippe</em> de to sekvensene sammen ved å <em>mappe</em> funksjonen <code>cons</code> over dem.</p>
+<p>Da kan <code>parse-board</code> bli slik som dette:</p>
+<pre><code class="hljs">(defun parse-board (row-<span class="hljs-built_in">length</span> raw)
+  (mapcar <span class="hljs-comment">#&#x27;cons</span>
+          ;; KEYS... 
+          (loop <span class="hljs-keyword">for</span> x <span class="hljs-built_in">from</span> <span class="hljs-number">1</span> <span class="hljs-built_in">to</span> row-<span class="hljs-built_in">length</span>
+            append (loop <span class="hljs-keyword">for</span> y <span class="hljs-built_in">from</span> <span class="hljs-number">1</span> <span class="hljs-built_in">to</span> row-<span class="hljs-built_in">length</span>
+              collect (<span class="hljs-built_in">format</span> nil <span class="hljs-string">&quot;~A~A&quot;</span> x y)))
+          ;; VALUES...
+          (cl-ppcre:all-matches-<span class="hljs-keyword">as</span>-strings
+            (<span class="hljs-built_in">format</span> nil <span class="hljs-string">&quot;[1-~A]+&quot;</span> row-<span class="hljs-built_in">length</span>)
+            raw))))</code></pre><p>Dette er i alle fall enklere å forstå for <em>meg</em>, og nå er jeg endelig fornøyd!</p>
+<h2>Trace</h2>
+<p>Når man jobber interaktivt i REPL, og kanskje særlig når man jobber med rekursive funksjoner, så får man av og til behov for å debugge litt; ofte skriver jeg ut tilstanden på ulike variabler for å se hva programmet gjør.</p>
+<p>En snedig ting du kan gjøre er å aktivere <strong>tracing</strong> for enkelte, utvalgte funksjoner. Om jeg for eksempel skrur på tracing i dette tilfellet, med <code>(trace find-path)</code>, og så kjører koden, så vil jeg få output lignende skjermdumpen nedenfor (hvor jeg har brent bort endel av det som skjer i midten).</p>
+<img src="/uploads/2015/12/trace.jpg" alt="Trace output" />
+
+<p>For å skru av tracing evaluerer du <code>(untrace find-path)</code>.</p>
+<h2>Parsing i Perl</h2>
+<p>Nå er det på tide å være ærlig: Jeg kom ikke på trikset jeg brukte i andre iterasjon på egenhånd! Det trikset kom jeg på ved å lese en annen utviklers løsning på denne juleluken. Brukeren kaller seg <strong>argggh</strong>, og har løst oppgaven i Perl 6.</p>
+<p>Og løsningen er faktsk veldig interessant, for den viser hvordan man kan implementere en parser basert på en <em>grammar</em> i ren Perl-kode - ikke helt ulikt hva man kan gjøre i Rebol (jeg nevner det fordi jeg <a href="/2011/12/24/en-euler-dsl/">blogget om det på julaften i 2011</a>).</p>
+<p>Jeg håper <em>argggh</em> synes det er greit at jeg gjengir koden hans/hennes i sin helhet her:</p>
+<pre><code class="hljs"><span class="hljs-comment">#!/usr/local/bin/perl6</span>
+
+<span class="hljs-keyword">my</span> <span class="hljs-variable">$map</span>-text = <span class="hljs-keyword">q</span>:to/EOI/;
++------------------------+
+¦ <span class="hljs-number">34</span> ¦ <span class="hljs-number">21</span> ¦ <span class="hljs-number">32</span> ¦ <span class="hljs-number">41</span> ¦ <span class="hljs-number">25</span> ¦
++----+----+----+----+----¦
+¦ <span class="hljs-number">14</span> ¦ <span class="hljs-number">42</span> ¦ <span class="hljs-number">43</span> ¦ <span class="hljs-number">14</span> ¦ <span class="hljs-number">31</span> ¦
++----+----+----+----+----¦
+¦ <span class="hljs-number">54</span> ¦ <span class="hljs-number">45</span> ¦ <span class="hljs-number">52</span> ¦ <span class="hljs-number">42</span> ¦ <span class="hljs-number">23</span> ¦
++----+----+----+----+----¦
+¦ <span class="hljs-number">33</span> ¦ <span class="hljs-number">15</span> ¦ <span class="hljs-number">51</span> ¦ <span class="hljs-number">31</span> ¦ <span class="hljs-number">35</span> ¦
++----+----+----+----+----¦
+¦ <span class="hljs-number">21</span> ¦ <span class="hljs-number">52</span> ¦ <span class="hljs-number">33</span> ¦ <span class="hljs-number">13</span> ¦ <span class="hljs-number">23</span> ¦
++------------------------+
+EOI
+
+grammar TreasureMapGrammar {
+    token TOP {
+        [ &lt;hsep&gt; \n [ &lt;vsep&gt; \h* &lt;hint&gt; \h* ]+ &lt;vsep&gt; \n ]+ &lt;hsep&gt;
+    }
+    token hsep { \+ &lt;[-+]&gt;+ \¦? }
+    token vsep { \¦ }
+    token hint { \d+ }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TreasureMap</span> </span>{
+    has <span class="hljs-variable">$.</span>i = <span class="hljs-number">0</span>;
+    has <span class="hljs-variable">$.</span>j = <span class="hljs-number">0</span>;
+    has <span class="hljs-variable">%.</span>hints;
+    <span class="hljs-function"><span class="hljs-keyword">method</span> <span class="hljs-title">hsep</span>($/) </span>{ <span class="hljs-variable">$!</span>i++; <span class="hljs-variable">$!</span>j = <span class="hljs-number">0</span> }
+    <span class="hljs-function"><span class="hljs-keyword">method</span> <span class="hljs-title">vsep</span>($/) </span>{ <span class="hljs-variable">$!</span>j++ }
+    <span class="hljs-function"><span class="hljs-keyword">method</span> <span class="hljs-title">hint</span>($/) </span>{ <span class="hljs-variable">%!</span>hints{<span class="hljs-variable">$!</span>i ~ <span class="hljs-variable">$!</span>j} = ~<span class="hljs-variable">$/</span> }
+    <span class="hljs-function"><span class="hljs-keyword">method</span> <span class="hljs-title">find</span>-<span class="hljs-title">treasure</span>($<span class="hljs-title">pos</span>) </span>{
+        <span class="hljs-keyword">return</span> (<span class="hljs-variable">$pos</span>) <span class="hljs-keyword">if</span> <span class="hljs-variable">$pos</span> eq <span class="hljs-variable">%.</span>hints{<span class="hljs-variable">$pos</span>};
+        <span class="hljs-keyword">return</span> (<span class="hljs-variable">$pos</span>, |self.find-treasure(<span class="hljs-variable">%.</span>hints{<span class="hljs-variable">$pos</span>}));
+    }
+}
+
+<span class="hljs-keyword">my</span> <span class="hljs-variable">$map</span> = TreasureMap.new;
+TreasureMapGrammar.parse(<span class="hljs-variable">$map</span>-text, :actions(<span class="hljs-variable">$map</span>));
+<span class="hljs-keyword">say</span> <span class="hljs-variable">$map</span>.find-treasure(<span class="hljs-string">&#x27;11&#x27;</span>).join(<span class="hljs-string">&#x27;,&#x27;</span>);
+</code></pre><p>Jeg fikk nesten lyst til å lære meg Perl nå!!</p>
+<p>.. og det er bare 8 dager igjen til Jul ..</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

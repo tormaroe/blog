@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Erlang,Actor model">
+
+    <title>En introduksjon til Erlang</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>En introduksjon til Erlang</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 21. april 2010</small> 
+            <a href="/tags/erlang"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Erlang</span></a>
+          
+            <a href="/tags/actor-model"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Actor model</span></a>
+          </p>
+          <p style="border-bottom: black 1px solid; border-left: black 1px solid; padding-bottom: 6px; background-color: #ddddff; padding-left: 6px; padding-right: 6px; border-top: black 1px solid; border-right: black 1px solid; padding-top: 6px">Dette er min første artikkel om Erlang, men det blir ikke den siste. Jeg har nettopp lært meg dette språket, og dermed begynt min reise innen funksjonsbasert programmering. Mine blogposter om Erlang er ikke skrevet for dem som kan dette fra før, men retter seg i stedet mot utviklere som meg selv – som fra tidligere bare har erfaring med <a href="/category/oo-designclean-code/">objektorientering</a>, men som er nysjerrige på teknikker og teknologier som kan gjøre dem til bedre utviklere.</p>
+<p><a href="http://www.erlang.org/index.html"><em><strong><img style="border-right-width: 0px; margin: 0px 0px 5px 20px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="erlang-logo" border="0" alt="erlang-logo" align="right" src="/uploads/2010/04/erlanglogo.png" width="156" height="135"></strong></em></a></p>
+<p>For litt over en måned siden opplevde jeg noe jeg nesten må kalle en religiøs opplevelse. Jeg hadde nok sovet litt for lite, og pub-turen kvelden før hadde vært veldig bra. Den totale mengden mentalt stimuli de siste dagene hadde også vært enorm. Men da jeg fikk oppleve Joe Armstrong på scenen på QCon London ble jeg uansett totalt overveldet.</p>
+<p>Det jeg fikk se var et vakkert programmeringsspråk. Det var overraksende elegant i form av hvor enkelt det var, og sjokkerte meg gjennom å påvirket mitt syn på både programmering og verden forøvrig. Erlang fikk meg til å se sammenhenger jeg ikke var klar over eksisterte. </p>
+<p>Jeg vet ikke hvordan jeg skal formidle min opplevelse, eller om det i det hele tatt er mulig. Gjennom denne og kommende blogposter vil jeg beskrive Erlang slik jeg opplever det, og så håper jeg bare at noe av min åpnebaring skinner gjennom.</p>
+<h4>En parallell verden</h4>
+<p>Erlang kategoriseres som et funksjonsbasert språk (på lik linje med f.eks. Haskell, OCaml og Scheme). Utviklerne av språket hentet derimot mye av inspirasjonen fra <a href="http://en.wikipedia.org/wiki/Prolog">Prolog</a>, et logisk programmeringsspråk, og det bærer det preg av. Første versjon av Erlang var faktisk implementert i Prolog.</p>
+<p>Joe Armstrong, en av utviklerne av Erlang, kaller det for <em>samtidsorientert programmering</em> (Concurrency-oriented programming, COP). Erlang er nemlig basert på <strong><a href="http://en.wikipedia.org/wiki/Actor_model">Actor model</a></strong>, et prinsipp for samtidighet/parallellitet. Et typisk program består av en hel rekke – kanskje flere tusen – lettvekts-prosesser. Prosessene kommuniserer ved å sende meldinger til hverandre, eller mer presist til hverandres mailbox. Joe forklarer nærmere:</p>
+<p style="padding-left: 20px"><em><strong>"The world is parallel. If we want to write programs that behave as other objects behave in the real world, then these programs will have a concurrent structure. Use a language that was designed for writing concurrent applications, and development becomes a lot easier. Erlang programs model how we think and interact."</strong></em></p>
+<p>Dette synes jeg er så viktig at jeg skal våge meg på en aldri så liten, visuell illustrasjon..</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="its_an_erlang_world" border="0" alt="its_an_erlang_world" src="/uploads/2010/04/its_an_erlang_world.png" width="483" height="406"> </p>
+<p>Samtidighet og parallellitet er veldig populære tema for tiden, og de fleste har fått med seg at dette bare kommer til å bli viktigere fremover (<a href="http://en.wikipedia.org/wiki/The_Free_Lunch_Is_Over">The Free Lunch Is Over</a>). Erlang kan være én vei å gå for å møte denne utfordringen:</p>
+<p style="padding-left: 20px"><em>"In Erlang, there is no mutable state, there is no shared memory, and there are no locks. This makes it easy to parallelize our programs." – Joe Armstrong</em></p>
+<h4>En smakebit</h4>
+<p>Det er på høy tid med en liten smakebit. Her er en Erlang-funksjon for å kalkulere arealet av et rektangel, et kvadrat, eller en sirkel.</p>
+<div style="margin-bottom: 18px"><font face="monospace"><br />
+<div style="background-color: #333333; padding-left: 6px; color: #ffffff"><font color="#ffff00">1 </font><span style="background-color: #333333"><font color="#ffffff">area</font></span>({<span style="background-color: #333333"><font color="#ffffff">rectangle</font></span>, <span style="background-color: #333333"><font color="#ffffff">Width</font></span>, <span style="background-color: #333333"><font color="#ffffff">Height</font></span>}) <font color="#f0e68c"><b>-&gt;</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Width</font></span>&nbsp;<font color="#f0e68c"><b>*</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Height</font></span>;<br><font color="#ffff00">2 </font><span style="background-color: #333333"><font color="#ffffff">area</font></span>({<span style="background-color: #333333"><font color="#ffffff">square</font></span>, <span style="background-color: #333333"><font color="#ffffff">Side</font></span>})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#f0e68c"><b>-&gt;</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Side</font></span>&nbsp;<font color="#f0e68c"><b>*</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Side</font></span>;<br><font color="#ffff00">3 </font><span style="background-color: #333333"><font color="#ffffff">area</font></span>({<span style="background-color: #333333"><font color="#ffffff">circle</font></span>, <span style="background-color: #333333"><font color="#ffffff">Radius</font></span>})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#f0e68c"><b>-&gt;</b></font>&nbsp;<font color="#ffa0a0">3.14159</font>&nbsp;<font color="#f0e68c"><b>*</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Radius</font></span>&nbsp;<font color="#f0e68c"><b>*</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Radius</font></span><font color="#ffdead">.</font><br></div>
+<p></font></div>
+<p>Funksjonen har tre ulike "innganger", og Erlang bruker mønstergjenkjenning til å avgjøre hvilken den skal bruke. Input til funksjonen er i dette tilfellet tupler (<em><a href="http://en.wikipedia.org/wiki/Tuple">touple</a></em>), en vanlig datatype i funksjonsbaserte språk. Hvis det første elementet er atomet "rectangle", etterfulgt av to vilkårlige variabler, så vil den første inngangen til funksjonen matche, og derfor benyttes (<em>atom</em> er en annen datatype i erlang, og minner mye om <em>symbol</em> i Ruby, og brukes mye på samme måte som enums i C#).</p>
+<p>Sammenligner vi de tre linjene Erlang-kode med en typisk objektorientert implementasjon av det samme så kan vi begynne å få et inntrykk av hvor elegang det er.</p>
+<div style="margin-bottom: 18px"><font face="monospace">En objektorientert tilnærming i Java:<br />
+<div style="background-color: #333333; padding-left: 6px; color: #ffffff"><font color="#ffff00">1 </font><font color="#98fb98">abstract</font>&nbsp;<font color="#bdb76b"><b>class</b></font> Chape {<br><font color="#ffff00">2 </font>&nbsp; <font color="#98fb98">abstract</font>&nbsp;<font color="#bdb76b"><b>double</b></font> area();<br><font color="#ffff00">3 </font>}<br><font color="#ffff00">4 </font><br><font color="#ffff00">5 </font><font color="#bdb76b"><b>class</b></font> Circle <font color="#bdb76b"><b>extends</b></font> Shape {<br><font color="#ffff00">6 </font>&nbsp; <font color="#bdb76b"><b>final</b></font>&nbsp;<font color="#bdb76b"><b>double</b></font> radius;<br><font color="#ffff00">7 </font>&nbsp; Circle(<font color="#bdb76b"><b>double</b></font> radius) { <font color="#bdb76b"><b>this</b></font>.radius = radius; }<br><font color="#ffff00">8 </font>&nbsp; <font color="#bdb76b"><b>double</b></font> area() { <font color="#f0e68c"><b>return</b></font> Math.PI * radius * radius; }<br><font color="#ffff00">9 </font>}<br><font color="#ffff00">10 </font><br><font color="#ffff00">11 </font><font color="#bdb76b"><b>class</b></font> Rectangle <font color="#bdb76b"><b>extends</b></font> Shape {<br><font color="#ffff00">12 </font>&nbsp; <font color="#bdb76b"><b>final</b></font>&nbsp;<font color="#bdb76b"><b>double</b></font> height;<br><font color="#ffff00">13 </font>&nbsp; <font color="#bdb76b"><b>final</b></font>&nbsp;<font color="#bdb76b"><b>double</b></font> width;<br><font color="#ffff00">14 </font>&nbsp; Rectangle(<font color="#bdb76b"><b>double</b></font> width, <font color="#bdb76b"><b>double</b></font> height) {<br><font color="#ffff00">15 </font>&nbsp;&nbsp;&nbsp; <font color="#bdb76b"><b>this</b></font>.height = height;<br><font color="#ffff00">16 </font>&nbsp;&nbsp;&nbsp; <font color="#bdb76b"><b>this</b></font>.width = width;<br><font color="#ffff00">17 </font>&nbsp; }<br><font color="#ffff00">18 </font>&nbsp; <font color="#bdb76b"><b>double</b></font> area() { <font color="#f0e68c"><b>return</b></font> width * height; }<br><font color="#ffff00">19 </font>}<br><font color="#ffff00">20 </font><br><font color="#ffff00">21 </font><font color="#bdb76b"><b>class</b></font> Square <font color="#bdb76b"><b>extends</b></font> Shape {<br><font color="#ffff00">22 </font>&nbsp; <font color="#bdb76b"><b>final</b></font>&nbsp;<font color="#bdb76b"><b>double</b></font> side;<br><font color="#ffff00">23 </font>&nbsp; Square(<font color="#bdb76b"><b>double</b></font> side) {<br><font color="#ffff00">24 </font>&nbsp;&nbsp;&nbsp; <font color="#bdb76b"><b>this</b></font>.side = side;<br><font color="#ffff00">25 </font>&nbsp; }<br><font color="#ffff00">26 </font>&nbsp; <font color="#bdb76b"><b>double</b></font> area() { <font color="#f0e68c"><b>return</b></font> side * side; }<br><font color="#ffff00">27 </font>}<br></div>
+<p></font></div>
+<p>Legg merke til hvordan Erlang samler definisjonen av areal – uansett type – i én funskjon, mens vi i en typisk OO-løsning splitter dette opp i ulike objekter. Og hvis noen har lyst å påstå at jeg sammenligner epler og poteter (igjen), så er jeg villig til å ta den diskusjonen..</p>
+<h4>Et mer reelt eksempel</h4>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="erlang_actor" border="0" alt="erlang_actor" src="/uploads/2010/04/erlang_actor.png" width="427" height="204"></p>
+<p>Her følger en helt grunnleggende "actor" modul. Modulen eksponerer to funksjoner: <strong><em>start</em></strong> og <strong><em>area.</em></strong> Merk at koden for både klientsiden og serversiden befinner seg i den samme filen.</p>
+<p>Start (linje 4) "spawner" en ny prosess som vil kjøre funksjonen <strong><em>loop </em></strong>(linje 15). Loop står og lytter etter innkommende meldinger den kan håndtere. Kaller man så area-funksjonen så sender man en melding til loop-prosessen (via rpc-funksjonen). Loop-prosessen mottar meldingen, bruker mønstergjenkjenning til å beregne riktig areal, og sender en ny melding tilbake til den prosessen forespørselen kom fra. Til slutt ankommer den nye meldingen i receive-blokken i rpc-metoden, og svaret kan returneres i area-funksjonen.</p>
+<div style="margin-bottom: 18px"><font face="monospace"><br />
+<div style="background-color: #333333; padding-left: 6px; color: #ffffff"><font color="#ffff00">1 </font><font color="#bdb76b"><b>-module</b></font>(<span style="background-color: #333333"><font color="#ffffff">area_server</font></span>)<font color="#ffdead">.</font><br><font color="#ffff00">2 </font><font color="#bdb76b"><b>-export</b></font>([<span style="background-color: #333333"><font color="#ffffff">start</font></span><font color="#f0e68c"><b>/</b></font><font color="#ffa0a0">0</font>, <span style="background-color: #333333"><font color="#ffffff">area</font></span><font color="#f0e68c"><b>/</b></font><font color="#ffa0a0">2</font>])<font color="#ffdead">.</font><br><font color="#ffff00">3 </font><br><font color="#ffff00">4 </font><span style="background-color: #333333"><font color="#ffffff">start</font></span>() <font color="#f0e68c"><b>-&gt;</b></font>&nbsp;<font color="#98fb98">spawn</font>(<font color="#f0e68c"><b>fun</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">loop</font></span><font color="#f0e68c"><b>/</b></font><font color="#ffa0a0">0</font>)<font color="#ffdead">.</font><br><font color="#ffff00">5 </font><br><font color="#ffff00">6 </font><span style="background-color: #333333"><font color="#ffffff">area</font></span>(<span style="background-color: #333333"><font color="#ffffff">Pid</font></span>, <span style="background-color: #333333"><font color="#ffffff">What</font></span>) <font color="#f0e68c"><b>-&gt;</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">rpc</font></span>(<span style="background-color: #333333"><font color="#ffffff">Pid</font></span>, <span style="background-color: #333333"><font color="#ffffff">What</font></span>)<font color="#ffdead">.</font><br><font color="#ffff00">7 </font><br><font color="#ffff00">8 </font><span style="background-color: #333333"><font color="#ffffff">rpc</font></span>(<span style="background-color: #333333"><font color="#ffffff">Pid</font></span>, <span style="background-color: #333333"><font color="#ffffff">Request</font></span>) <font color="#f0e68c"><b>-&gt;</b></font><br><font color="#ffff00">9 </font>&nbsp; <span style="background-color: #333333"><font color="#ffffff">Pid</font></span>&nbsp;<font color="#f0e68c"><b>!</b></font> {<font color="#98fb98">self</font>(), <span style="background-color: #333333"><font color="#ffffff">Request</font></span>},<br><font color="#ffff00">10 </font>&nbsp; <font color="#f0e68c"><b>receive</b></font><br><font color="#ffff00">11 </font>&nbsp;&nbsp;&nbsp; {<span style="background-color: #333333"><font color="#ffffff">Pid</font></span>, <span style="background-color: #333333"><font color="#ffffff">Response</font></span>} <font color="#f0e68c"><b>-&gt;</b></font><br><font color="#ffff00">12 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #333333"><font color="#ffffff">Response</font></span><br><font color="#ffff00">13 </font>&nbsp; <font color="#f0e68c"><b>end</b></font><font color="#ffdead">.</font><br><font color="#ffff00">14 </font><br><font color="#ffff00">15 </font><span style="background-color: #333333"><font color="#ffffff">loop</font></span>() <font color="#f0e68c"><b>-&gt;</b></font><br><font color="#ffff00">16 </font>&nbsp; <font color="#f0e68c"><b>receive</b></font><br><font color="#ffff00">17 </font>&nbsp;&nbsp;&nbsp; {<span style="background-color: #333333"><font color="#ffffff">From</font></span>, {<span style="background-color: #333333"><font color="#ffffff">rectangle</font></span>, <span style="background-color: #333333"><font color="#ffffff">Width</font></span>, <span style="background-color: #333333"><font color="#ffffff">Height</font></span>}} <font color="#f0e68c"><b>-&gt;</b></font><br><font color="#ffff00">18 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #333333"><font color="#ffffff">From</font></span>&nbsp;<font color="#f0e68c"><b>!</b></font> {<font color="#98fb98">self</font>(), <span style="background-color: #333333"><font color="#ffffff">Width</font></span>&nbsp;<font color="#f0e68c"><b>*</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Height</font></span>},<br><font color="#ffff00">19 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #333333"><font color="#ffffff">loop</font></span>();<br><font color="#ffff00">20 </font>&nbsp;&nbsp;&nbsp; {<span style="background-color: #333333"><font color="#ffffff">From</font></span>, {<span style="background-color: #333333"><font color="#ffffff">circle</font></span>, <span style="background-color: #333333"><font color="#ffffff">Radius</font></span>}} <font color="#f0e68c"><b>-&gt;</b></font><br><font color="#ffff00">21 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #333333"><font color="#ffffff">From</font></span>&nbsp;<font color="#f0e68c"><b>!</b></font> {<font color="#98fb98">self</font>(), <font color="#ffa0a0">3.14159</font>&nbsp;<font color="#f0e68c"><b>*</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Radius</font></span>&nbsp;<font color="#f0e68c"><b>*</b></font>&nbsp;<span style="background-color: #333333"><font color="#ffffff">Radius</font></span>},<br><font color="#ffff00">22 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #333333"><font color="#ffffff">loop</font></span>();<br><font color="#ffff00">23 </font>&nbsp;&nbsp;&nbsp; {<span style="background-color: #333333"><font color="#ffffff">From</font></span>, <span style="background-color: #333333"><font color="#ffffff">Other</font></span>} <font color="#f0e68c"><b>-&gt;</b></font><br><font color="#ffff00">24 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #333333"><font color="#ffffff">From</font></span>&nbsp;<font color="#f0e68c"><b>!</b></font> {<font color="#98fb98">self</font>(), {<span style="background-color: #333333"><font color="#ffffff">error</font></span>, <span style="background-color: #333333"><font color="#ffffff">Other</font></span>}},<br><font color="#ffff00">25 </font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="background-color: #333333"><font color="#ffffff">loop</font></span>()<br><font color="#ffff00">26 </font>&nbsp; <font color="#f0e68c"><b>end</b></font><font color="#ffdead">.</font><br></div>
+<p></font></div>
+</p>
+<p>Det er ikke så rart om du ikke skjønner det med en gang (forklaringen min var helt overfladisk). Men studer koden litt likevel, for her ser du selve fundamentet for hvordan Erlang fungerer.</p>
+<h4>What else..?</h4>
+<p>Jeg kunne ha fortalt mye mer om hvordan språket er bygget opp – for eksempel om hvordan det ikke har løkker, normale if-else-blokker, eller at det ikke engang har en egen datatype for strenger, men klarer seg helt fint uten – men jeg tror det rekker nå. Det kommer som sagt flere blogposter med mere detaljer etterhvert. La meg bare få avslutte med å si at jeg absolutt vil anbefale utviklere å lære seg Erlang for det unike perspektivet språket vil kunne gi deg.</p>
+<p>Og i forhold til utvikling av løsninger med høy grad av samtidighet og store krav til stabilitet kan Erlang være et uvurderlig verktøy.</p>
+<h4>Bonus: Møt utviklerne</h4>
+<p><a href="http://www.archive.org/details/ErlangTheMovie"><img style="border-right-width: 0px; margin: 0px auto 10px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="CropperCapture[2]" border="0" alt="CropperCapture[2]" src="/uploads/2010/04/CropperCapture2.jpg" width="500" height="250"></a> Utviklings-teamet bak Erlang lagde på 80-tallet en video for å demonstrere og reklamere for det fantastiske språket de hadde laget. Den er utrolig morsom – og det er helt ufrivillig. Jeg anbefaler alle å ta en titt, men må advare om at man kan miste <em>all respekt</em> for de involverte i løpet av de drøye 10 minuttene filmen varer. <a href="http://www.archive.org/details/ErlangTheMovie">Erlang: The Movie</a>.</p>
+<p><strong>Linker:</strong> <a href="http://www.erlang.org/">Offisiell webside</a> | <a href="http://en.wikipedia.org/wiki/Erlang_(programming_language)">wikipedia</a> | <a href="http://www.trapexit.org">www.trapexit.org</a> (community site)</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

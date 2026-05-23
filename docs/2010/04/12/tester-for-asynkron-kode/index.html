@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Testing,Samtidighet,C#">
+
+    <title>Tester for asynkron kode</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Tester for asynkron kode</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 12. april 2010</small> 
+            <a href="/tags/testing"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing</span></a>
+          
+            <a href="/tags/samtidighet"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Samtidighet</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p>Lenge siden jeg har hatt noe C#-kode på bloggen nå.., la meg gjøre noe med det. På jobben i forrige uke lagde vi to små <strong><em>extension methods</em></strong> jeg har lyst til å dele med verden. Det er ikke noe <em>rocket science</em>, men kan være greit om du har samme behovet som oss, og du ikke har tenkt på det selv.</p>
+<p>Systemene vi jobber med inneholder MYE asynkronitet / samtidighet. Når vi skal lage automatiserte tester – spesielt integrasjonstester – må vi forholde oss til at vi ikke øyeblikkelig får det resultatet vi forventer (eventual consistency). En test kan f.eks. sende en melding som plukkes opp og behandles av en annen tråd. Dette fører til endel kompleksitet i testene; ofte legger vi inn en <em>sleep</em> før vi kontrollerer resultatet.</p>
+<p>Her er en tenkt test hvor vi har en <em>publisher</em> og en <em>subscriber</em>. Vi publiserer en melding, og kontrollerer at subscriberen har mottatt:</p>
+<div style="margin-bottom: 18px"><p><font face="monospace"> </p>
+<div style="background-color: #262626; padding-left: 8px; color: #ffffff"><font color="#7f7f7f">2 </font>[TestFixture]<br />
+<font color="#7f7f7f">3 </font><font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>class</strong></font> When_publishing_a_message<br />
+<font color="#7f7f7f">4 </font>{<br />
+<font color="#7f7f7f">5 </font>  [Test]<br />
+<font color="#7f7f7f">6 </font>  <font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>void</strong></font> Subscriber_should_receive_within_reasonable_time()<br />
+<font color="#7f7f7f">7 </font>  {<br />
+<font color="#7f7f7f">8 </font>    When.publisher.distribute(a_message);<br />
+<font color="#7f7f7f">9 </font>    Thread.Sleep(2_seconds); <font color="#666666">// 2 sec seems to be the worst case</font><br />
+<font color="#7f7f7f">10 </font>    Then.subscriber.ReceivedMessageCount.ShouldEqual(<font color="#ffa0a0">1</font>);<br />
+<font color="#7f7f7f">11 </font>  }<br />
+<font color="#7f7f7f">12 </font><br />
+<font color="#7f7f7f">13 </font>  <font color="#6495ed"><strong>private</strong></font> Publisher publisher;<br />
+<font color="#7f7f7f">14 </font>  <font color="#6495ed"><strong>private</strong></font> Subscriber subscriber;<br />
+<font color="#7f7f7f">15 </font>  <font color="#6495ed"><strong>private</strong></font> Message a_message;<br />
+<font color="#7f7f7f">16 </font>  <font color="#6495ed"><strong>private</strong></font> <font color="#6495ed"><strong>const</strong></font> <font color="#6495ed"><strong>int</strong></font> 2_seconds = <font color="#ffa0a0">2000</font>;<br />
+<font color="#7f7f7f">17 </font><br />
+<font color="#7f7f7f">18 </font>  <font color="#666666">/* Setup, Teardown and BDD snippet not shown */</font><br />
+<font color="#7f7f7f">19 </font>}</div>
+<p></font></div>
+<p>Ett av problemene med dette er at faktorer utenfor vår kontroll kan føre til at tiden vi må vente av og til øker ganske mye. Vi bruker da endel tid på å finne den optimale ventetiden, for vi vil ikke at testene skal bruke for lang tid. Men fra tid til annen feiler likevel en og annen test pga. stor belastning på bygg-serveren. Dette er ikke bra – vi må kunne stole på stabiliteten på builden!</p>
+<p>For å bedre dette har vi kommet opp med en abstraksjon vi kan bruke i stedet for en hardkodet sleep. Disse extensionmetodene sjekker om et predikat er tilfredstilt helt til det er det, eller til vi har nådd en <em>timeout</em>-verdi:</p>
+<div style="margin-bottom: 18px"><p><font face="monospace"> </p>
+<div style="background-color: #262626; padding-left: 8px; color: #ffffff"><font color="#7f7f7f">1 </font><font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>static</strong></font> <font color="#6495ed"><strong>class</strong></font> AsyncTestExtensions<br />
+<font color="#7f7f7f">2 </font>{<br />
+<font color="#7f7f7f">3 </font>  <font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>static</strong></font> <font color="#6495ed"><strong>void</strong></font> ShouldBeTrueWithin(<br />
+<font color="#7f7f7f">4 </font>      <font color="#6495ed"><strong>this</strong></font> Func&lt;<font color="#6495ed"><strong>bool</strong></font>&gt; predicate, <font color="#6495ed"><strong>int</strong></font> milliseconds)<br />
+<font color="#7f7f7f">5 </font>  {<br />
+<font color="#7f7f7f">6 </font>    DateTime timeout = DateTime.Now.AddMilliseconds(milliseconds);<br />
+<font color="#7f7f7f">7 </font>    <font color="#6495ed"><strong>while</strong></font> (DateTime.Now &lt; timeout)<br />
+<font color="#7f7f7f">8 </font>    {<br />
+<font color="#7f7f7f">9 </font>      <font color="#6495ed"><strong>if</strong></font> (predicate()) <font color="#6495ed"><strong>return</strong></font>;<br />
+<font color="#7f7f7f">10 </font>      Thread.Sleep(<font color="#ffa0a0">10</font>);<br />
+<font color="#7f7f7f">11 </font>    }<br />
+<font color="#7f7f7f">12 </font>    Assert.Fail();<br />
+<font color="#7f7f7f">13 </font>  }<br />
+<font color="#7f7f7f">14 </font><br />
+<font color="#7f7f7f">15 </font>  <font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>static</strong></font> <font color="#6495ed"><strong>void</strong></font> ShouldBeFalseWithin(<br />
+<font color="#7f7f7f">16 </font>      <font color="#6495ed"><strong>this</strong></font> Func&lt;<font color="#6495ed"><strong>bool</strong></font>&gt; predicate, <font color="#6495ed"><strong>int</strong></font> milliseconds)<br />
+<font color="#7f7f7f">17 </font>  {<br />
+<font color="#7f7f7f">18 </font>    ShouldBeTrueWithin(() =&gt; !predicate(), milliseconds);<br />
+<font color="#7f7f7f">19 </font>  }<br />
+<font color="#7f7f7f">20 </font>}</div>
+<p></font></div>
+<p>Med disse på plass kan vi skive om testen slik:</p>
+<div style="margin-bottom: 18px"><p><font face="monospace"> </p>
+<div style="background-color: #262626; padding-left: 8px; color: #ffffff"><font color="#7f7f7f">22 </font>[TestFixture]<br />
+<font color="#7f7f7f">23 </font><font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>class</strong></font> When_publishing_a_message<br />
+<font color="#7f7f7f">24 </font>{<br />
+<font color="#7f7f7f">25 </font>  [Test]<br />
+<font color="#7f7f7f">26 </font>  <font color="#6495ed"><strong>public</strong></font> <font color="#6495ed"><strong>void</strong></font> Subscriber_should_receive_within_reasonable_time()<br />
+<font color="#7f7f7f">27 </font>  {<br />
+<font color="#7f7f7f">28 </font>    When.publisher.distribute(a_message);<br />
+<font color="#7f7f7f">29 </font>    Then.subscriber_have_received_a_message.ShouldBeTrueWithin(2_seconds);<br />
+<font color="#7f7f7f">30 </font>  }<br />
+<font color="#7f7f7f">31 </font><br />
+<font color="#7f7f7f">32 </font>  <font color="#6495ed"><strong>private</strong></font> Func&lt;<font color="#6495ed"><strong>bool</strong></font>&gt; subscriber_have_received_a_message = () =&gt;<br />
+<font color="#7f7f7f">33 </font>    subscriber.ReceivedMessageCount.Equals(<font color="#ffa0a0">1</font>);<br />
+<font color="#7f7f7f">34 </font><br />
+<font color="#7f7f7f">35 </font>  <font color="#666666">/* Fields, Setup, Teardown and BDD snippet not shown */</font><br />
+<font color="#7f7f7f">36 </font>  <font color="#666666">/* Note : subscriber now needs to be static          */</font><br />
+<font color="#7f7f7f">37 </font>}</div>
+<p></font></div>
+<p>Testen er nå mye mere lesbar (i min mening). I tillegg kjører testene gjevnt over raskere, men uten å feile de gangene maskinen trenger litt mere tid på å gjøre seg ferdig.</p>
+<p>PS: <em>When</em> og <em>Then</em>-nøkkelordene i testene stammer fra min <a href="/2009/08/13/ultra-tiny-given-when-then-dsl-snippet/">Ultra-tiny given-when-then DSL-snippet</a>. <em>ShouldEqual</em>-metoden i den første versjonen av testen kommer fra <a href="http://code.google.com/p/coretdd/">coreTDD</a>, som vi bruker i alle tester i stedet for vanlige <a href="http://www.nunit.org/" target="_blank">nUnit</a> asserts.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

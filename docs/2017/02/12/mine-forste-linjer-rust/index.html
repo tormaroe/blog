@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Rust,Common Lisp">
+
+    <title>Mine første linjer Rust</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Mine første linjer Rust</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 12. februar 2017</small> 
+            <a href="/tags/rust"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Rust</span></a>
+          
+            <a href="/tags/common-lisp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Common Lisp</span></a>
+          </p>
+          <p>Denne uken fikk jeg behov for vaske en fil med 3,6 millioner mobilnumre (fil A) mot en fil med noen hundre tusen numre som skulle ekskluderes (fil B). I mengdelære ville man sagt <em>differansen</em> mellom B og A, eller A&#8726;B.</p>
+<p>Det finnes nok mange måter og verktøy man kan bruke for å løse dette, men for meg er dette en typisk mulighet til å kode litt - og muligheter til å kode lar jeg skjelden gå fra meg.</p>
+<p>Jeg tenkte det var på tide å prøve et nytt programmeringsspråk igjen; at det var på tide å prøve <strong><a href="https://www.rust-lang.org/">Rust</a></strong>. Men først måtte jeg løse oppgaven i et språk jeg allerede behersker, sånn at jeg ikke hadde press på meg når jeg skulle lære noe helt nytt, og da implementerte jeg løsningen nedenfor i Common Lisp. Den leser inn fil A som en liste, fil B som en hashtabell, itererer over liste A og skriver nummeret til en fil C om det ikke befinner seg i B.</p>
+<pre><code class="hljs">(<span class="hljs-name">defparameter</span> *a* <span class="hljs-string">&quot;C:\\dev\\some_folder\\a.txt&quot;</span>)
+(<span class="hljs-name">defparameter</span> *b* <span class="hljs-string">&quot;C:\\dev\\some_folder\\b.txt&quot;</span>)
+(<span class="hljs-name">defparameter</span> *c* <span class="hljs-string">&quot;C:\\dev\\some_folder\\c.txt&quot;</span>)
+
+(<span class="hljs-name">defun</span> clean-line (<span class="hljs-name">line</span>)
+  (<span class="hljs-name">string-trim</span> &#x27;(#<span class="hljs-character">\R</span>eturn) line))
+
+(<span class="hljs-name">defun</span> file-&gt;hash (<span class="hljs-name">filename</span>)
+  (<span class="hljs-name">with-open-file</span> (<span class="hljs-name">stream</span> filename)
+    (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for line = (<span class="hljs-name"><span class="hljs-built_in">read-line</span></span> stream <span class="hljs-literal">nil</span> )
+          with hash = (<span class="hljs-name">make-hash-table</span> <span class="hljs-symbol">:test</span> &#x27;equal)
+          while line
+            do (<span class="hljs-name">setf</span> (<span class="hljs-name">gethash</span> (<span class="hljs-name">clean-line</span> line) hash) t)
+          finally (<span class="hljs-name">return</span> hash))))
+
+(<span class="hljs-name">defun</span> file-&gt;list (<span class="hljs-name">filename</span>)
+  (<span class="hljs-name">with-open-file</span> (<span class="hljs-name">stream</span> filename)
+    (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for line = (<span class="hljs-name"><span class="hljs-built_in">read-line</span></span> stream <span class="hljs-literal">nil</span>)
+          while line
+            collect (<span class="hljs-name">clean-line</span> line))))
+
+(<span class="hljs-keyword">defmacro</span> <span class="hljs-title">with-new-file</span> ((<span class="hljs-name">stream</span> filename) &amp;body body)
+  `(<span class="hljs-name">with-open-file</span> (<span class="hljs-punctuation">,</span>stream <span class="hljs-punctuation">,</span>filename <span class="hljs-symbol">:direction</span> <span class="hljs-symbol">:output</span>
+                                      <span class="hljs-symbol">:if-exists</span> <span class="hljs-symbol">:supersede</span>
+                                      <span class="hljs-symbol">:if-does-not-exist</span> <span class="hljs-symbol">:create</span>)
+     <span class="hljs-punctuation">,</span>@body))
+
+(<span class="hljs-name"><span class="hljs-built_in">time</span></span> 
+  (<span class="hljs-name"><span class="hljs-built_in">let</span></span> ((<span class="hljs-name">list-A</span> (<span class="hljs-name">file-&gt;list</span> *a*)) 
+        (<span class="hljs-name">hash-B</span> (<span class="hljs-name">file-&gt;hash</span> *b*)))
+    (<span class="hljs-name">with-new-file</span> (<span class="hljs-name">stream</span> *c*)
+      (<span class="hljs-name">flet</span> ((<span class="hljs-name">include</span> (<span class="hljs-name">x</span>) (<span class="hljs-name"><span class="hljs-built_in">not</span></span> (<span class="hljs-name">gethash</span> x hash-B))))
+        (<span class="hljs-name"><span class="hljs-built_in">loop</span></span> for line in list-A
+              when (<span class="hljs-name">include</span> line)
+                do (<span class="hljs-name"><span class="hljs-built_in">format</span></span> stream <span class="hljs-string">&quot;~a~%&quot;</span> line))))))</code></pre><p>Jeg fikk litt trøbbel med denne løsningen før jeg skjønte at <code>read-line</code> ikke fjernet <em>carriage return</em>, og derfor måtte jeg lage funksjonen <code>clean-line</code>. Makroen <code>with-new-file</code> eksisterer derimot bare for gøy :P</p>
+<h2>Men dette skulle jo dreie seg om Rust?!</h2>
+<p>Ja, nettopp ja. Etter at jeg hadde en fungerende løsning kunne jeg i ro og mak forsøke å kode det samme i Rust. Her er resultatet - mine aller første linjer Rust-kode:</p>
+<pre><code class="hljs"><span class="hljs-keyword">use</span> std::collections::HashMap;
+<span class="hljs-keyword">use</span> std::io::BufReader;
+<span class="hljs-keyword">use</span> std::io::BufRead;
+<span class="hljs-keyword">use</span> std::io::Write;
+<span class="hljs-keyword">use</span> std::fs::File;
+<span class="hljs-keyword">use</span> std::error::Error;
+
+<span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() {
+
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">a</span> = <span class="hljs-string">&quot;C:\\dev\\some_folder\\a.txt&quot;</span>;
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">b</span> = <span class="hljs-string">&quot;C:\\dev\\some_folder\\b.txt&quot;</span>;
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">c</span> = <span class="hljs-string">&quot;C:\\dev\\some_folder\\c.txt&quot;</span>;
+
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">b_file</span> = File::<span class="hljs-title function_ invoke__">open</span>(b).<span class="hljs-title function_ invoke__">unwrap</span>();
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">b_reader</span> = BufReader::<span class="hljs-title function_ invoke__">new</span>(&amp;b_file);
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">b_hash</span> = HashMap::<span class="hljs-title function_ invoke__">new</span>();
+    <span class="hljs-keyword">for</span> <span class="hljs-variable">line</span> <span class="hljs-keyword">in</span> b_reader.<span class="hljs-title function_ invoke__">lines</span>() {
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">l</span> = line.<span class="hljs-title function_ invoke__">unwrap</span>();
+        b_hash.<span class="hljs-title function_ invoke__">insert</span>(l, <span class="hljs-literal">true</span>);
+    }
+
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">a_file</span> = File::<span class="hljs-title function_ invoke__">open</span>(a).<span class="hljs-title function_ invoke__">unwrap</span>();
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">a_reader</span> = BufReader::<span class="hljs-title function_ invoke__">new</span>(&amp;a_file);
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">a_list</span>: <span class="hljs-type">Vec</span>&lt;<span class="hljs-type">String</span>&gt; = <span class="hljs-type">Vec</span>::<span class="hljs-title function_ invoke__">new</span>();
+    <span class="hljs-keyword">for</span> <span class="hljs-variable">line</span> <span class="hljs-keyword">in</span> a_reader.<span class="hljs-title function_ invoke__">lines</span>() {
+        <span class="hljs-keyword">let</span> <span class="hljs-variable">l</span> = line.<span class="hljs-title function_ invoke__">unwrap</span>();
+        <span class="hljs-keyword">match</span> b_hash.<span class="hljs-title function_ invoke__">get</span>(&amp;l) {
+            <span class="hljs-title function_ invoke__">Some</span>(_) =&gt; (),
+            _ =&gt; a_list.<span class="hljs-title function_ invoke__">push</span>(l),
+        }
+    }    
+
+    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">c_file</span> = <span class="hljs-keyword">match</span> File::<span class="hljs-title function_ invoke__">create</span>(&amp;c) {
+        <span class="hljs-title function_ invoke__">Err</span>(why) =&gt; <span class="hljs-built_in">panic!</span>(<span class="hljs-string">&quot;couldn&#x27;t create {}: {}&quot;</span>, c, why.<span class="hljs-title function_ invoke__">description</span>()),
+        <span class="hljs-title function_ invoke__">Ok</span>(file) =&gt; file,
+    };
+
+    <span class="hljs-keyword">for</span> <span class="hljs-variable">msisdn</span> <span class="hljs-keyword">in</span> a_list {
+        <span class="hljs-built_in">writeln!</span>(c_file, <span class="hljs-string">&quot;{}&quot;</span>, msisdn).<span class="hljs-title function_ invoke__">unwrap</span>();
+    }
+}
+</code></pre><h2>Noen betraktninger..</h2>
+<p>Her er noen betraktninger jeg gjorde meg underveis. For det første: Dokumentasjonen på rust-lang.org er brukbar. Derimot er det et problem at Rust har utviklet og endret seg så mye siden den første pre-1.0 versjonen - for nå er internett nemlig fullt av eksempler som rett og slett ikke er gyldige lengre. Det gjør det litt vanskelig å google etter kjappe løsninger.</p>
+<p>Rust-kompilatore er derimot <em>veldig</em> hjelpsom. Rust er jo et sterkt, statist typet språk, og kompilatore fanger opp alt man gjør galt mens man lærer. Men ikke nok med det, den gjør også gjetninger i forhold til hva den antar du mente å gjøre, og foreslår konkrete endringer for å løse kompileringsproblemet. Dette likte jeg godt.</p>
+<p>Ellers er det verdt å merke at koden min er ganske <em>lett</em> på feilhåndtering. Det legges opp til at man i større grad skal kontrollere for feil, slik jeg har gjort når jeg oppretter <code>c_file</code>. Jeg ser for meg at &quot;ekte&quot; Rust-kode inneholder mange slike match-uttrykk for å kontrollere om man har en OK tilstand eller en error.</p>
+<p>Jeg konkluderer med at Rust ikke var så skummelt å prøve - jeg løste oppgaven raskt nok. Rust er et spennende verktøy, og å kunne utvikle sikker og effektiv kode som kompileres ned til maskinkode, og som kjører uten en garbage collector, kan sikkert komme godt med på en eller annen fremtidig utviklingsoppgave. Dette vil jeg se mer på.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

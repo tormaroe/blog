@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content=".net ninja,Databaser">
+
+    <title>Fem vekttall NHibernate</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Fem vekttall NHibernate</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 11. januar 2009</small> 
+            <a href="/tags/net-ninja"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> .net ninja</span></a>
+          
+            <a href="/tags/databaser"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Databaser</span></a>
+          </p>
+          <p><img id="image408" alt="nhibernate.jpg" src="/uploads/2009/01/nhibernate.jpg" align="right" />En av de tingene jeg prioriterte høyt på <a href="/2009/01/02/ninja-backlog-q1-2009/">min .net ninja backlog</a> var å lære meg <a href="http://www.hibernate.org/343.html">NHibernate</a>. Det er mange måter å lære seg nye ting på, men her er min plan. Jeg går frem på det jeg kaller <em>universitetsmåten</em>, som består av en god del leksjoner, en del lesestoff, og noen praktiske oppgaver. Alt i alt forsøker jeg å sette sammen det som en gang var et typisk kurs på 5 vekttall.</p>
+<p>Jeg har funnet en meget bra video-serie som heter <strong><a href="http://summerofnhibernate.com/">Summer of NHibernate</a></strong>, hvor <em>Steve</em> forteller og viser deg alt du trenger å vite for å komme igang. Hver sesjon er på rundt en og en halv time, så her er det mye stoff. Jeg innbiller meg at dette er en bra læreform. Det vil kanskje kreve mye tid, men jeg blir på denne måten ikke fristet til å skumme over ting jeg oppfatter som enkle eller uviktige, og får dermed en veldig god basisforståelse.</p>
+<p><strong>Video-leksjoner:</strong></p>
+<ul>
+<li>Session 01: Setup and Basic Usage Pattern</li>
+<li>Session 02: Exploring Query Methods and Syntaxes</li>
+<li>Session 02a: Exploring Query Methods and Syntaxes (con't)</li>
+<li>Session 03: Exploring INSERT, UPDATE, and DELETE Semantics</li>
+<li>Session 04: Exploring Transactions and Concurrency</li>
+<li>Session 05: Modeling Foreign-Key Relationships in NHibernate</li>
+<li>Session 06: Advanced Querying of Child Collections</li>
+<li>Session 07: Exploring m:n Relationships, Views, and Components</li>
+<li>Session 08: Effective Techniques for Database-Driven Modeling</li>
+<li>Session 09: Effective Model-Driven Schemas</li>
+<li>Session 10: Stored Procedures, Interceptors and NHibernate Query Analyzer --oh my!</li>
+<li>Session 11: Techniques for Modeling Inheritance in the Database</li>
+<li>Session 12: Detached Objects, Detached Criteria, and Working Without a Session</li>
+<li>Session 13: Managing Session Lifecycle in a Stateless Web Application</li>
+<li>Session 14: Migrating to NHibernate 2.0 and Further Exploration</li>
+</ul>
+<p>I tillegg har vi én gjesteforelesning:</p>
+<ul>
+<li><a href="http://codebetter.com/blogs/david_laribee/archive/2008/11/13/ayende-on-advanced-nhibernate.aspx">Ayende on Advanced NHibernate<br /><br />
+</a></li>
+</ul>
+<p><strong>Lesestoff for selvstudie:</strong><br /><br />
+Jeg har samlet sammen endel linker til artikler jeg kunne tenke meg å lese etterhvert som jeg kommer inn i NHibernate. Spesielt er det et par områder som <em>Summer of NHibernate</em> ikke dekker, nemlig Fluent NHibernate og Linq to NHibernate, så dette må jeg lese selv.</p>
+<p>Her er artiklene - i tilfeldig rekkefølge. Gjennom å lese disse vil jeg sikkert også finne andre artikler av interesse.</p>
+<ul>
+<li><a href="http://ayende.com/Blog/archive/2008/11/12/how-nhibernate-forced-me-to-oo-design.aspx">How NHibernate forces me to do OO design</a></li>
+<li><a href="http://ayende.com/Blog/archive/2008/10/16/making-the-complex-trivial-rich-domain-querying.aspx">Making the complex trivial: Rich Domain Querying</a></li>
+<li><a href="http://mhinze.com/linq-to-nhibernate-in-10-minutes/">Linq to NHibernate in 10 minutes</a></li>
+<li><a href="http://ayende.com/Blog/archive/2008/09/11/NHibernate-2.0-and-Linq.aspx">NHibernate 2.0 and Linq</a></li>
+<li><a href="http://ayende.com/Blog/archive/2008/11/01/developing-linq-to-nhibernate.aspx">Developing Linq to NHibernate</a></li>
+<li><a href="http://codeclimber.net.nz/archive/2007/06/18/How-to-mock-a-NHibernate-Repository.aspx">How to Mock a NHibernate Repository</a></li>
+<li><a href="http://vanryswyckjan.blogspot.com/2008/07/integrating-castle-windsor-and.html">Integrating Castle Windsor and NHibernate with WCF</a></li>
+<li><a href="http://ayende.com/Blog/archive/2008/07/24/How-to-review-NHibernate-application.aspx">How to review a NHibernate application</a></li>
+<li><a href="http://ayende.com/Blog/archive/2008/12/11/fluent-nhibernate.aspx">Fluent NHibernate</a></li>
+<li><a href="http://blog.jagregory.com/2009/01/10/fluent-nhibernate-auto-mapping-introduction/">Fluent NHibernate: Auto Mapping Introduction</a></li>
+</ul>
+<p><strong>Praktiske oppgaver:</strong></p>
+<p>Jeg har flere prosjekter på gang hvor jeg har tenkt å benytte NHibernate, bl.a. <a href="/2008/12/31/internt-overvakingssenter-i-wpf/">Contiki Center</a> og <a href="/2009/01/06/vil-du-bli-en-net-ninja-spillet/"><em>Vil Du Bli En .NET Ninja</em>-spillet</a>. Det er også snakk om å bytte ut data access laget til <a href="/2008/03/26/har-startet-open-source-prosjekt/">The Forecast Exchange</a> med NHibernate - jeg vet ikke hvor mye jeg kommer til å bidra der, men jeg kan jo hjelpe til litt om det trengs.</p>
+<p><strong>Referansemateriale og community:</strong></p>
+<p>Til sist er det alltid greit å ha tilgang til documentasjon samt et levende community med entusiaster når man skal lære seg noe nytt. Her er noen sentrale linker.</p>
+<ul>
+<li><a href="http://www.hibernate.org/hib_docs/nhibernate/1.2/reference/en/html/">NHibernate Reference Documentation (HTML)<br /><br />
+</a></li>
+<li><a href="http://www.hibernate.org/hib_docs/nhibernate/1.2/reference/en/pdf/nhibernate_reference.pdf">NHibernate Reference Documentation (PDF)</a></li>
+<li><a href="http://knol.google.com/k/fabio-maulo/-/1nr4enxv3dpeq/21#view">NHibernate Wiki</a></li>
+<li><a href="http://nhforge.org/">NHibernate Forge (community site)</a></li>
+<li><a href="http://forum.hibernate.org/">Hibernate Forum</a></li>
+<li><a href="http://blogs.hibernatingrhinos.com/nhibernate/Default.aspx">The NHibernate FAQ (blog)</a></li>
+</ul>
+<p>Så dette er altså min studieplan relatert til NHibernate. Jeg er allerede godt igang med videoene, og satser på å være gjennom dem om en tre ukers tid. I februar bør jeg for alvor sette igang med prosjektene mine.
+</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

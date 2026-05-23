@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Bøker,Testing / TDD">
+
+    <title>Å jobbe effektivt med drittkode</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Å jobbe effektivt med drittkode</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 6. desember 2009</small> 
+            <a href="/tags/books"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Bøker</span></a>
+          
+            <a href="/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
+          </p>
+          <p><a href="/uploads/2009/12/CropperCapture44.png"><img style="border-right-width: 0px; margin: 0px 0px 8px 18px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px" title="CropperCapture[44]" border="0" alt="CropperCapture[44]" align="right" src="/uploads/2009/12/CropperCapture44_thumb.png" width="178" height="227"></a>Michael C. Feathers' <em>Working Effectively with Legacy Code</em> er en ikke direkte ukjent bok. Jeg leste den i sommer, som en slags forberedelse til å begynne i ny jobb. Den hjalp meg til å hoppe uredd og med stor iver inn en voksende kodebase med varierende kvalitet. For dem som ikke kjenner Michaels mesterverket fra før, her er en kort beskrivelse:</p>
+<p>Uttrykket "<strong>Legacy Code"</strong> brukes i utgangspunktet om gammel kode, kode som man arver fra andre. Benevnelsen innebærer at det er vanskelig å forså hvordan koden fungerer, og det er vanskelig å gjøre endringer. Michael Fethers definisjon på Legacy Code er <strong><em>kode uten automatiserte tester</em></strong>, fordi slik kode nettopp er vanskelig å forstå og å endre. Kode <em>med</em> tester derimot vil gi deg øyeblikkelig tilbakemelding på om du har ødelagt noe, og om endringene du har gjor fungerer som forventet.</p>
+<p><em>Working Effectively with Legacy Code</em> handler i bunn og grunn kun om én ting; nemlig hvordan man får på plass automatiserte tester rundt kode som i utgangspunktet ikke er designet for det, slik at man kan jobbe videre med koden uten å være redd. Gjennom kapitler som <em>I Don't Have Much Time and I Have to Change It </em>og<em> I Don't Understand the Code Well Enough to Change It</em> lærer Michael oss pragmatiske og presise teknikker som gjør oss mere komfortable med å ta i "drittkode".</p>
+<p>Kapitler som <em>I Can't Get This Class into a Test Harness</em>, med avsnitt som <em>The Case of the Irritating Parameter</em> og <em>The Case of the Hidden Dependency</em> er gull verdt, og åpner øynene dine for hvordan det som ser helt håpløst ut faktisk kan løses. Dette er en oppskriftsbok, med en lang liste teknikker Feathers har funnet effektive i sin praksis. Mange av teknikkene er fokusert rundt det å bryte avhengigheter, som for eksempel <em>Break Out Method Object, Expose Static Method, Extract and Override Call, Extract Implementer, Pull Up Feature og Push Down Dependency.</em></p>
+<h4>Hvem som bør lese denne boken, og hvorfor..</h4>
+<p>Denne boken har gitt meg en helt ny holdning til "dårlig kode". Kode som er vanskelig å endre og som ikke har enhetstester er ikke lenger noe jeg gruer meg til å ta i – jeg ser nå på det som en spennende utfordring. Jeg gleder meg til å sette tenna i metoder på over tusen linjer og ekstremt høy kompleksitet. Helt seriøst, <strong style="background-color: goldenrod; color: yellow">denne boken har tatt noe av det jeg likte <em>minst</em> ved yrket mitt, og gjort det om til noe av det jeg liker <em>mest</em>!</strong></p>
+<p>Hvis du kun jobber i perfekte softwareprosjekter, med elegant kode og høy test coverage, så har du ikke bruk for Michaels bok.</p>
+<p>Ikke særlig mange sliker jobber, er det vel?</p>
+<p>Hvis du derimot er på et team som sliter med en stor og uregjerlig kodebase.., hvis dere har problemer med å få laget gode enhetstester – eller å komme i gang med automatisert testing i det hele tatt.., hvis dere ikke er fornøyd med kvaliteten på koden dere jobber med, og den er vanskelig å forstå.., ja, da er <em>Working Effectively with Legacy Code</em> et uvurderlig hjepemiddel som dere bare må lese med en eneste gang. Legg ned utviklingen et par-tre dager, det er det faktisk verdt om utviklerne lærer seg disse teknikkene og lar seg inspirere til å bruke dem.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

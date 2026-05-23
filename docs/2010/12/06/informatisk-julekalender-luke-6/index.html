@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender">
+
+    <title>Informatisk julekalender: Luke 6</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Informatisk julekalender: Luke 6</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 6. desember 2010</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          </p>
+          <p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="zuse" border="0" alt="zuse" src="/uploads/2010/12/zuse.png" width="248" height="271"> </p>
+<p><strong>I Tyskland fantes det en bygningsingeniør som fikk til de utroligste ting. På grunn av den politiske situasjonen og ikke minst Andre Verdenskrig var det ingen i Storbritania eller USA som visste om han, og <em>Konrad Zuse</em> jobbet med sine maskiner i en nesten total, intellektuell isolasjon fra 1935 til 1945.</strong></p>
+<p>Ført bygde Zuse en mekanisk kalkulator for å forenkle sitt eget arbeide. Dette var i 1935. Deretter gikk han i gang med å bygge sin første programmerbare maskin. Den ble drevet med håndsveiv,&nbsp; bestod av rundt 30 tusen metalldeler, og kunne lese programmer fra et hullbånd (perforert 35mm film). Z1 som den het var ferdig i 1938, men fungerte ikke så bra på grunn av for lav presisjon i konstruksjonen. </p>
+<p>Øvelse gjør derimot mester; Konrads største bragd kom nemlig et par år senere. Z3 ble fullført i 1941, og var <strong>verdens første fungerende, programmerbare, Turingkomplette datamaskin</strong>. Ja, du leste riktig, den første virkelige datamaskinen ble skapt i Nazi-tyskland under ander verdenskrig!</p>
+<p>I løpet av 40-tallet designet Zuse også det vi må få kalle det aller første, høynivå programmeringsspråket. <strong>Plankalkül</strong> var forut for sin tid, og ble ikke implementert før etter Konrads død. Det influerte heller ikke de første programmeringsspråkene som <em>ble</em> implementert (såvidt vi vet), men det har en del likheter med dem likevel. Plankalkül har tilordning og variabler, subrutiner, betingelsesuttrykk, iterering (while), flyttallsaritmetikk, arrays, hierarkiske records, bolske tester, unntakshåndtering, og flere andre elementer som man forventer å finne i et fullverdig språk. Det var imperativt, typet, og inneholdt bl.a. også en GOTO kommando.</p>
+<p>Her er et lite program som finner den største av tre verdier ved å kalle rutinen max:</p>
+<p style="border-bottom: silver 1px solid; border-left: silver 1px solid; padding-bottom: 8px; background-color: #fff8c7; padding-left: 8px; padding-right: 8px; margin-left: 10px; border-top: silver 1px solid; margin-right: 10px; border-right: silver 1px solid; padding-top: 8px"><font face="monospace">P1 max3 (V0[:8.0],V1[:8.0],V2[:8.0]) =&gt; R0[:8.0]<br>max(V0[:8.0],V1[:8.0]) =&gt; Z1[:8.0]<br>max(Z1[:8.0],V2[:8.0]) =&gt; R0[:8.0]<br>END<br>P2 max (V0[:8.0],V1[:8.0]) =&gt; R0[:8.0]<br>V0[:8.0] =&gt; Z1[:8.0]<br>(Z1[:8.0] &lt; V1[:8.0]) -&gt; V1[:8.0] =&gt; Z1[:8.0]<br>Z1[:8.0] =&gt; R0[:8.0]<br>END<br></font></p>
+<p>Plankalkül blir noe sånt som "formelt system for planlegging" på norsk. <a href="http://www.zib.de/zuse/Inhalt/Programme/Plankalkuel/Plankalkuel-Report/Plankalkuel-Report.htm" target="_blank">Se her for en presentasjon av den første implementasjonen av språket</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

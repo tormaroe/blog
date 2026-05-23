@@ -1,0 +1,121 @@
+---
+title: "PingLang del 2: En Lexer"
+link: http://blog.kjempekjekt.com/2011/02/04/pinglang-del-2-en-lexer/
+layout: post
+date: 2011-02-04 16:06:52Z
+tags:
+  - DSL
+  - PingLang
+  - C#
+---
+<p><a href="http://blog.kjempekjekt.com/2011/02/03/pinglang-del-1-la-oss-bygge-et-sprk/">I del 1</a> ble du introdusert for det nye språket <strong>PingLang</strong>. Nå som vi har en ide om hvordan det skal se ut og hva det skal kunne gjøre så kan vi så smått begynne å implementere. Alle eksterne DSLer og andre programmeringsspråk må <em>parses</em>, det vil si at kildekoden til et program må analyseres for å finne struktur og mening. Og det aller første steget når man parser kode kalles <strong><em>leksikalsk analyse</em></strong>.</p> <p>Leksikalsk analyse går ut på å sette sammen enkelttegn i kildekoden til ord som har betydning i språket. Til å gjøre dette implementerer vi det som ofte kalles en <strong><em>Lexer</em></strong>, men som også går under navnene <em>Scanner</em> og <em>Tokenizer</em>. Resultatet er en liste med <strong><em>tokens</em></strong>.</p> <p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="lexer" border="0" alt="lexer" src="/uploads/2011/02/lexer.png" width="499" height="373"></p> <p>I dette prosjektet implementerer jeg min egen lexer, og det anbefales gjerne for alle som har lyst til å begynne med språkutvikling. Når man forstår grunnprinsippene har man derimot muligheten til å bruke verktøy som gjør mesteparten av jobben for en – såkalte <em>parsergeneratorer</em>. I gode gamledager brukte man ofte to programmer som heter henholdsvis Lex og Yacc, hvor Lex genererte en Lexer. I dag finnes det mange andre verktøy, og ett jeg har sett litt på er <a href="http://www.antlr.org/" target="_blank">ANTLR</a>. Men det er ikke vanskelig å implementere leksing og parsing selv, og det gir også størst kontroll.</p> <h4>Implementasjon</h4> <p><em>(PS: Steder i kildekoden hvor jeg bruker mye backslash og hermetegn kan bli litt rare pga. måten min fantastiske blogmotor parser teksten. I bunn av denne artikkelen finner du linker til alle filene, slik at du kan se dem i all sin prakt på Github.)</em></p> <p>Jeg har valgt å bruke et pattern som heter <strong><em>Regex Table Lexer</em></strong>. Det er en helt generell lexer som tar som innput teksten/kildekoden som skal skannes og en tabell/liste med regulære uttrykk og token-typer. Token er en veldig enkel klasse med bare to properties: Type (jeg har valgt å bruke en int for å spesifisere type) og Text (som er en streng).</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 9 </span>    <span class="Type">public</span> <span class="Type">class</span> Token
+<span class="lnr">10 </span>    {
+<span class="lnr">11 </span>        <span class="Type">public</span> Token(<span class="Type">int</span> type, <span class="Type">string</span> text)
+<span class="lnr">12 </span>        {
+<span class="lnr">13 </span>            Text = text;
+<span class="lnr">14 </span>            Type = type;
+<span class="lnr">15 </span>        }
+<span class="lnr">16 </span>        <span class="Type">public</span> <span class="Type">int</span> Type { get; set; }
+<span class="lnr">17 </span>        <span class="Type">public</span> <span class="Type">string</span> Text { get; set; }
+<span class="lnr">18 </span>
+<span class="lnr">19 </span>        <span class="Type">public</span> <span class="Type">override</span> <span class="Type">string</span> ToString()
+<span class="lnr">20 </span>        {
+<span class="lnr">21 </span>            <span class="Statement">return</span> <span class="Type">string</span>.Format(<span class="String">"&lt;{0},</span><span class="Special">\"</span><span class="String">{1}</span><span class="Special">\"</span><span class="String">&gt;"</span>,
+<span class="lnr">22 </span>                Tokens.TokenNames[Type],
+<span class="lnr">23 </span>                Text.Replace(<span class="String">"</span><span class="Special">\n</span><span class="String">"</span>, <span class="String">"</span><span class="Special">\\</span><span class="String">n"</span>).Replace(<span class="String">"</span><span class="Special">\r</span><span class="String">"</span>, <span class="String">"</span><span class="Special">\\</span><span class="String">r"</span>));
+<span class="lnr">24 </span>        }
+<span class="lnr">25 </span>    }
+</pre>
+<p>En liste med Tokens er altså resultatet av den leksikalske analusen. Lexeren kommer også til å bruke noe jeg har kalt en TokenRecognizer, som er en mapping mellom en token-type og et regulært uttrykk. I tillegg kan jeg spesifisere om tokenet skal inkluderes i resultatet eller ikke ved å sette output-parameteren. Typiske tokens som ikke skal inkluderes kan være blanke tegn og kommentarer.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 9 </span>    <span class="Type">public</span> <span class="Type">class</span> TokenRecognizer
+<span class="lnr">10 </span>    {
+<span class="lnr">11 </span>        <span class="Type">public</span> TokenRecognizer(<span class="Type">int</span> tokenType, <span class="Type">string</span> regexPattern, <span class="Type">bool</span> output)
+<span class="lnr">12 </span>        {
+<span class="lnr">13 </span>            TokenType = tokenType;
+<span class="lnr">14 </span>            Output = output;
+<span class="lnr">15 </span>            Pattern = <span class="Statement">new</span> Regex(regexPattern, RegexOptions.Compiled);
+<span class="lnr">16 </span>
+<span class="lnr">17 </span>        }
+<span class="lnr">18 </span>        <span class="Type">public</span> Regex Pattern { get; <span class="Type">private</span> set; }
+<span class="lnr">19 </span>        <span class="Type">public</span> <span class="Type">bool</span> Output { get; <span class="Type">private</span> set; }
+<span class="lnr">20 </span>        <span class="Type">public</span> <span class="Type">int</span> TokenType { get; <span class="Type">private</span> set; }
+<span class="lnr">21 </span>    }
+</pre>
+<p>Og da er vi klare for å ta en titt på selve lexeren..</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span>    <span class="Type">public</span> <span class="Type">class</span> Lexer
+<span class="lnr">11 </span>    {
+<span class="lnr">12 </span>        <span class="Type">private</span> <span class="Type">readonly</span> IEnumerable&lt;TokenRecognizer&gt; _recognizers;
+<span class="lnr">13 </span>        <span class="Type">private</span> <span class="Type">string</span> _inputBuffer;
+<span class="lnr">14 </span>
+<span class="lnr">15 </span>        <span class="Type">public</span> Lexer(IEnumerable&lt;TokenRecognizer&gt; recognizers)
+<span class="lnr">16 </span>        {
+<span class="lnr">17 </span>            _recognizers = recognizers;
+<span class="lnr">18 </span>        }
+<span class="lnr">19 </span>
+<span class="lnr">20 </span>        <span class="Comment">// Will contain the result of the scan</span>
+<span class="lnr">21 </span>        <span class="Type">public</span> List&lt;Token&gt; Tokens { get; <span class="Type">private</span> set; }
+<span class="lnr">22 </span>
+<span class="lnr">23 </span>        <span class="Type">public</span> <span class="Type">void</span> Tokenize(<span class="Type">string</span> input)
+<span class="lnr">24 </span>        {
+<span class="lnr">25 </span>            _inputBuffer = input;
+<span class="lnr">26 </span>            Tokens = <span class="Statement">new</span> List&lt;Token&gt;();
+<span class="lnr">27 </span>
+<span class="lnr">28 </span>            <span class="Statement">while</span> (MatchToken()); <span class="Comment">// Loop until MatchToken returns false</span>
+<span class="lnr">29 </span>
+<span class="lnr">30 </span>            <span class="Comment">// End the token stream with a special End Of File token</span>
+<span class="lnr">31 </span>            Tokens.Add(<span class="Statement">new</span> Token(PingLang.Core.Lexing.Tokens.EOF, <span class="String">""</span>));
+<span class="lnr">32 </span>        }
+<span class="lnr">33 </span>
+<span class="lnr">34 </span>        <span class="Type">private</span> <span class="Type">bool</span> MatchToken()
+<span class="lnr">35 </span>        {
+<span class="lnr">36 </span>            <span class="Statement">foreach</span> (var recognizer <span class="Statement">in</span> _recognizers)
+<span class="lnr">37 </span>            {
+<span class="lnr">38 </span>                var match = recognizer.Pattern.Match(_inputBuffer);
+<span class="lnr">39 </span>                <span class="Conditional">if</span> (match.Success)
+<span class="lnr">40 </span>                {
+<span class="lnr">41 </span>                    <span class="Conditional">if</span> (recognizer.Output)
+<span class="lnr">42 </span>                        Tokens.Add(<span class="Statement">new</span> Token(recognizer.TokenType, match.Value));
+<span class="lnr">43 </span>
+<span class="lnr">44 </span>                    <span class="Comment">// Consume the matched token from input</span>
+<span class="lnr">45 </span>                    _inputBuffer = _inputBuffer.Substring(match.Length);
+<span class="lnr">46 </span>                    <span class="Statement">return</span> <span class="Constant">true</span>;
+<span class="lnr">47 </span>                }
+<span class="lnr">48 </span>            }
+<span class="lnr">49 </span>            <span class="Statement">return</span> <span class="Constant">false</span>;
+<span class="lnr">50 </span>        }
+<span class="lnr">51 </span>    }
+</pre>
+<p>Man oppretter Lexeren ved å sende inn en liste med TokenRecognizers. Man kaller så metoden Tokenize, og sender inn kildekoden som argument. Tokenize vil kalle metoden MatchToken inntil denne returnerer false, fordi den ikke klarer å matche flere tokens i input. Jeg legger så til et avsluttende EOF (end of file) token.</p>
+<p>Det er verdt å merke seg at MatchToken vil loope over alle recognizerne, og vil godta det første treffet det finner. Det vil si at recognizernes rekkefølge har en betydning. Har man f.eks. et uttrykk som skal matche strengen “&gt;&gt;” og et annet som skal matche “&gt;”, så er det avgjørende at det første kommer først.</p>
+<p><em>Regex Table Lexer</em> er som sagt en generell metode som kan brukes til å analysere mange språk. Men vær oppmerksom på at det er enkelte syntakser algoritmen ikke egner seg like godt for. Python f.eks., hvor innrykk har betydning for strukturen, lexes best på andre måter.</p>
+<h4>PingLang tokens</h4>
+<p>Vi står nå igjen med definisjonen av de spesifike token-typene for PingLang-språket, og recognizerne som Lexeren vil bruke. Det er på sin plass å advare deg om at koden for dette ikke er spesielt fin å se på. Den er ikke spesielt objektorientert, og inneholder mye repitisjon. Den <em>fungerer</em> derimot bra, og jeg bruker et lite triks som gjør at jeg ikke blir gal av det du skal se nå. Selve koden ser du på Github: <a href="https://github.com/tormaroe/Ping-Ring/blob/master/PingLang/src/PingLang.Core/Lexing/Tokens.cs" target="_blank">Tokens.cs</a>.</p>
+<p>For å unngå problemet med repitisjon hadde det vært ideelt å hatt makroer i C#, slik at jeg kunne generert koden i filen Tokens.cs. C# har ikke makroer, men vi har et lite brukt verktøy som heter <em>Text Template Transformation Toolkit (T4)</em>. Hvis jeg legger til en fil i prosjektet mitt som jeg kaller Tokens.tt, vil denne generere en Tokens.cs fil hver gang jeg lagrer. Og denne teknikken fungerte fint i dette tilfellet. Her er et lite utdrag fra tt-filen min, som er selve spesifikasjonen av token-typene i PingLang.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 37 </span>  TokenInfo[] tokens = new TokenInfo[]{
+<span class="lnr"> 38 </span>    new TokenInfo { token = "EOF" },
+<span class="lnr"> 39 </span>    new TokenInfo { token = "WS",         regex = "^([ \\t])+", dont_include = true },
+<span class="lnr"> 40 </span>    new TokenInfo { token = "T" ,         regex = "^[\r\n;]+"},
+<span class="lnr"> 41 </span>    new TokenInfo { token = "ACTOR_END" , regex = "^\\."},
+<span class="lnr"> 42 </span>    new TokenInfo { token = "LISTEN" ,    regex = "^listen on port"},
+<span class="lnr"> 43 </span>    new TokenInfo { token = "WHEN" ,      regex = "^when"},
+<span class="lnr"> 44 </span>    new TokenInfo { token = "MESSAGE" ,   regex = "^message"},
+<span class="lnr"> 45 </span>    new TokenInfo { token = "PRINT" ,     regex = "^print"},
+<span class="lnr"> 46 </span>    new TokenInfo { token = "PINGED" ,    regex = "^pinged"},
+<span class="lnr"> 47 </span>    new TokenInfo { token = "STARTING" ,  regex = "^starting"},
+<span class="lnr"> 48 </span>    new TokenInfo { token = "PING" ,      regex = "^ping"},
+<span class="lnr"> 49 </span>    new TokenInfo { token = "WAIT" ,      regex = "^wait"},
+<span class="lnr"> 50 </span>    new TokenInfo { token = "SEND" ,      regex = "^send"},
+<span class="lnr"> 51 </span>    new TokenInfo { token = "TO_PORT" ,   regex = "^to port"},
+<span class="lnr"> 52 </span>    new TokenInfo { token = "ERROR" ,     regex = "^error"},
+<span class="lnr"> 53 </span>    new TokenInfo { token = "COUNT" ,     regex = "^count every"},
+<span class="lnr"> 54 </span>    new TokenInfo { token = "RESET" ,     regex = "^reset counter"},
+<span class="lnr"> 55 </span>    new TokenInfo { token = "COUNTER" ,   regex = "^counter"},
+<span class="lnr"> 56 </span>    new TokenInfo { token = "END" ,       regex = "^end"},
+<span class="lnr"> 57 </span>    new TokenInfo { token = "GT" ,        regex = "^\\&gt;"},
+<span class="lnr"> 58 </span>    new TokenInfo { token = "ID" ,        regex = "^([a-zA-Z])+([\\w\\-])*"},
+<span class="lnr"> 59 </span>    new TokenInfo { token = "COMMENT" ,   regex = "^[(\\/\\/)#][^\\r\\n]*", dont_include = true },
+<span class="lnr"> 60 </span>    new TokenInfo { token = "INT" ,       regex = "^(\\d)+"},
+<span class="lnr"> 61 </span>    new TokenInfo { token = "STRING" ,    regex = "^\"[^\\r\\n\"]*\""},
+<span class="lnr"> 62 </span>    new TokenInfo { token = "PROGRAM" }
+<span class="lnr"> 63 </span>  };</pre>
+<p>Og da er egentlig lexeren ferdig. Vil du se flere detaljer, og kanskje bruke dette som utgangspunkt for din egen lexer, kan du <a href="https://github.com/tormaroe/Ping-Ring/tree/master/PingLang/src/PingLang.Core/Lexing" target="_blank">ta en titt på github her, hvor du finner alle filene</a>.</p>
+<p>Til slutt to ord om testing. En lexer egner seg utmerket til enhetstester, og det anbefales på det sterkeste. I blogposten om <a href="http://blog.kjempekjekt.com/2011/01/20/strmlinjeformede-enhetstester/">strømlinjeformede enhetstester</a> inkluderte jeg en test av en lexer. For <a href="https://github.com/tormaroe/Ping-Ring/tree/master/PingLang/src/PingLang.Core.Test/Lexing" target="_blank">den faktiske testkoden av PingLang-lexeren kan du se her</a>.</p>
+<h4>Opprummering</h4>
+<p>I del 2 har vi tatt første steg for å implementere PingLang, som var å lage en Lexer. Man må ikke gjøre dette for hånd – det finnes mange verktøy som kan hjelpe deg – men det er ikke vanskelig å gjøre selv heller. Lexeren tar tekst skrevet i språket vi lager, og returnerer en liste med ord eller byggestener, såkalte <em>tokens</em>, som vi kan jobbe videre med. Denne listen vil gjøre det enklere for oss å analysere den faktiske meningen i koden. I de neste artiklene i serien vil vi gjøre nettopp dette.</p>

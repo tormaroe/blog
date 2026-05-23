@@ -1,0 +1,95 @@
+---
+title: formater, ikke konkatiner
+link: http://blog.kjempekjekt.com/2011/04/07/formater-ikke-konkatiner/
+layout: post
+date: 2011-04-07 22:23:19Z
+tags:
+  - Clojure
+  - Polyglot
+  - C#
+---
+<p>Mye av det programmene våre gjør er å behandle tekst (og da mener jeg <em>“våre”</em> som i <em>“oss utviklere og alt vi finner på å lage”</em>). Noe av det første vi lærer som ferske hackere er å <strong><em>konkatinere strenger</em></strong> – dvs. å slå sammen to biter med tekst.</p> <p>Og i forhold til konstruksjon av tekststrenger stopper det der for veldig mange. Du kan egentlig klare deg ganske lenge med enkel konkatinering, men det er ikke alltid det mest elegante!</p> <p>Siden tidenes morgen (dvs. 50-tallet) har programmeringsspråk inkludert diverse metoder for å formatere tekst. Den aller mest kjente og brukte funksjonen heter <strong><em><a href="http://en.wikipedia.org/wiki/Printf" target="_blank">printf</a></em></strong>, og dukket først opp i språket <strong>C</strong> – men den ble egentlig arvet fra <strong>BCPL</strong>, hvor den het <strong><em>writef</em></strong> (men hvem har vel egentlig hørt om BCPL?). Siden har printf inspirert andre, og i dag finner du dens etterkommere i nær sagt alle programmeringsspråk.</p> <h4>Format i .Net</h4> <p>Ett av disse språkene er C#, hvor vi kan bruke formatstrenger i mange sammenhenger. Den vanligste bruken er en statisk metode på String-klassen som heter <a href="http://msdn.microsoft.com/en-us/library/system.string.format.aspx" target="_blank">Format</a>. Her er et banalt eksempel:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Type">int</span> age = <span class="Number">35</span>;
+<span class="lnr">11 </span><span class="Type">string</span> givenName = <span class="String">"Torbjørn"</span>;
+<span class="lnr">12 </span><span class="Type">string</span> surname = <span class="String">"Marø"</span>;
+<span class="lnr">13 </span>
+<span class="lnr">14 </span><span class="Comment">// Konkatinering på den vanlige måten</span>
+<span class="lnr">15 </span>
+<span class="lnr">16 </span><span class="Type">string</span> displayName = surname + <span class="String">", "</span> + givenName + <span class="String">" ("</span> + age + <span class="String">")"</span>;
+<span class="lnr">17 </span>
+<span class="lnr">18 </span><span class="Comment">// mer elegant med en formatstreng</span>
+<span class="lnr">19 </span>
+<span class="lnr">20 </span><span class="Type">string</span> displayName = String.Format(<span class="String">"{0}, {1} ({2})"</span>,
+<span class="lnr">21 </span>                                   surname,
+<span class="lnr">22 </span>                                   givenName,
+<span class="lnr">23 </span>                                   age);
+</pre>
+<p>Det er mye lettere å innføre feil ved vanlig konkatinering enn ved bruk av format, og det er også (i alle fall for et trent øye) mye lettere å se hva resultatet kommer til å bli når man ser en formatstreng.</p>
+<p>String.Format er mye mer avansert enn det kan virke ved første øyekast. Men det er sjelden vi benytt mer enn det mest elementære, og jeg må nesten alltid slå opp i dokumentasjonen om jeg trenger å formatere f.eks. tall eller en dato på en bestemt måte. </p>
+<p>I det neste eksempelet bruker jeg Console.Writeline, som også aksepterer en formatstreng. Her har jeg spesifisert at tallet skal formateres som penger, og at datoen skal vises som dagens navn, dagens dato (med ett siffer om mindre enn 10) og månedens navn.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">1 </span><span class="Type">double</span> money = <span class="Number">12345.6789</span>;
+<span class="lnr">2 </span>Console.WriteLine(<span class="String">"Pris ({0}): {1:C} | {2:dddd dd. MMMM}"</span>,
+<span class="lnr">3 </span>                  CultureInfo.CurrentCulture,
+<span class="lnr">4 </span>                  money,
+<span class="lnr">5 </span>                  DateTime.Now);
+<span class="lnr">6 </span>
+<span class="lnr">7 </span><span class="Comment">// output: "Pris (nb-NO): kr 12 345,68 | torsdag 7. april"</span>
+</pre>
+<h4>Format i Clojure (og Java)</h4>
+<p>I Clojure har vi også en <a href="http://clojuredocs.org/clojure_core/clojure.core/format" target="_blank"><em>format</em></a>-funksjon, og en tilsvarende <a href="http://clojuredocs.org/clojure_core/clojure.core/printf" target="_blank"><em>printf</em></a>-funksjon som tar en formatstreng som input og skriver til standard out. Under panseret bruker disse funksjonene <a href="http://download.oracle.com/javase/1.5.0/docs/api/java/util/Formatter.html" target="_blank">java.util.Formatter</a>, som er inspirert av C’s tradisjonelle printf. </p>
+<p>Her er noen eksempler på format i bruk, og strengene de genererer..</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"Hello, %s!"</span> <span class="String">"world"</span><span class="Delimiter">)</span>                      <span class="Comment">;=&gt; Hello, world!</span>
+<span class="lnr">11 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%s = %s"</span> <span class="String">"SomeKey"</span> <span class="String">"SomeValue"</span><span class="Delimiter">)</span>           <span class="Comment">;=&gt; SomeKey = SomeValue</span>
+<span class="lnr">12 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%1$s + %1$s = %2$s"</span> <span class="Number">2</span> <span class="Number">4</span><span class="Delimiter">)</span>                  <span class="Comment">;=&gt; 2 + 2 = 4</span>
+<span class="lnr">13 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"e = %+.4f"</span> <span class="Number">2.718281828459045</span><span class="Delimiter">)</span>             <span class="Comment">;=&gt; e = +2,7183</span>
+<span class="lnr">14 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">":%-20s:"</span> <span class="String">"right padding"</span><span class="Delimiter">)</span>                 <span class="Comment">;=&gt; :right padding       :</span>
+<span class="lnr">15 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">":%20s:"</span> <span class="String">"left padding"</span><span class="Delimiter">)</span>                   <span class="Comment">;=&gt; :        left padding:</span>
+<span class="lnr">16 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%b %b %b %b"</span> true false <span class="Statement">nil</span> <span class="String">"something"</span><span class="Delimiter">)</span>  <span class="Comment">;=&gt; true false false true</span>
+<span class="lnr">17 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"#%02x%02x%02x;"</span> <span class="Number">255</span> <span class="Number">0</span> <span class="Number">125</span><span class="Delimiter">)</span>                <span class="Comment">;=&gt; #ff007d;</span>
+<span class="lnr">18 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%s"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>                              <span class="Comment">;=&gt; Thu Apr 07 21:04:29 CEST 2011</span>
+<span class="lnr">19 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"Offset: %tz"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>                     <span class="Comment">;=&gt; Offset: +0100</span>
+<span class="lnr">20 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"Time zone: %tZ"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>                  <span class="Comment">;=&gt; Time zone: CEST</span>
+<span class="lnr">21 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%1$tH:%1$tM:%1$tS"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>               <span class="Comment">;=&gt; 21:04:29</span>
+<span class="lnr">22 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%1$tl:%1$tM %1$tp"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>               <span class="Comment">;=&gt; 9:04 pm</span>
+<span class="lnr">23 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"Unix time: %ts"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>                  <span class="Comment">;=&gt; Unix time: 1302203069</span>
+<span class="lnr">24 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%1$td/%1$tm-%1$ty"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>               <span class="Comment">;=&gt; 07/04-11</span>
+<span class="lnr">25 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%1$td. %1$tb %1$ty"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>              <span class="Comment">;=&gt; 07. apr 11</span>
+<span class="lnr">26 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"%1$td. %1$tB %1$tY"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>              <span class="Comment">;=&gt; 07. april 2011</span>
+<span class="lnr">27 </span><span class="Delimiter">(</span><span class="Statement">format</span> <span class="String">"ISO 8601: %tF"</span> <span class="Delimiter">(</span>Date.<span class="Delimiter">))</span>                   <span class="Comment">;=&gt; ISO 8601: 2011-04-07</span>
+</pre>
+<p>(Dette eksempelet ble generert av et Clojure-skript. Hvis du er interesert <a href="https://gist.github.com/908464" target="_blank">finner du det her</a>.)</p>
+<h4>Interpolering</h4>
+<p><a href="http://en.wikipedia.org/wiki/Variable_(programming)#Interpolation" target="_blank">Variabel-interpolering</a> er en lignende teknikk man finner i mange dynamiske språk, som Perl, PHP og Ruby. Her kan tekst-strenger direkte inneholde referanser til variabler eller mer komplekse uttrykk, og språket parser og evaluerer dem og erstatter dem med teksten.</p>
+<p>Her er et lite eksempel fra Ruby..</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">1 </span>given = <span class="rubyStringDelimiter">'</span><span class="String">James</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr">2 </span>surname = <span class="rubyStringDelimiter">'</span><span class="String">Bond</span><span class="rubyStringDelimiter">'</span>
+<span class="lnr">3 </span>
+<span class="lnr">4 </span>puts <span class="rubyStringDelimiter">"</span><span class="String">My name is </span><span class="rubyInterpolationDelimiter">#{</span>surname<span class="rubyInterpolationDelimiter">}</span><span class="String">, </span><span class="rubyInterpolationDelimiter">#{</span>given<span class="rubyInterpolationDelimiter">}</span><span class="String"> </span><span class="rubyInterpolationDelimiter">#{</span>surname<span class="rubyInterpolationDelimiter">}</span><span class="String">.</span><span class="rubyStringDelimiter">"</span>
+<span class="lnr">5 </span>
+<span class="lnr">6 </span><span class="Comment"># =&gt; My name is Bond, James Bond.</span>
+</pre>
+<p>Clojure har også en interpolerings-funksjon i contrib-bibloteket. Den heter <a href="http://clojuredocs.org/clojure_contrib/clojure.contrib.strint/%3C%3C" target="_blank"><strong>&lt;&lt;</strong></a>, og i bruk ser det slik ut:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="Delimiter">(</span>ns demo <span class="Delimiter">(</span><span class="Type">:use</span> clojure.contrib.strint<span class="Delimiter">))</span>
+<span class="lnr"> 2 </span>
+<span class="lnr"> 3 </span><span class="Delimiter">(</span><span class="Statement">let</span> [given <span class="String">"James"</span> surname <span class="String">"Bond"</span>]
+<span class="lnr"> 4 </span>  <span class="Delimiter">(</span>println <span class="Delimiter">(</span>&lt;&lt; <span class="String">"My name is ~{surname}, ~{given} ~{surname}."</span><span class="Delimiter">)))</span>
+<span class="lnr"> 5 </span>
+<span class="lnr"> 6 </span><span class="Comment">; =&gt; My name is Bond, James Bond.</span>
+<span class="lnr"> 7 </span>
+<span class="lnr"> 8 </span><span class="Delimiter">(</span><span class="Statement">let</span> [numbers <span class="Delimiter">'</span><span class="Special">(</span>1 2 5 9 4 4<span class="Special">)</span>]
+<span class="lnr"> 9 </span>  <span class="Delimiter">(</span>println <span class="Delimiter">(</span>&lt;&lt; <span class="String">"The sum of ~{numbers} is ~(apply + numbers)."</span><span class="Delimiter">)))</span>
+<span class="lnr">10 </span>
+<span class="lnr">11 </span><span class="Comment">; =&gt; The sum of (1 2 5 9 4 4) is 25.</span>
+</pre>
+<h4>Om du trodde regex var uforståelig…</h4>
+<p>De mest avanserte formateringsmulighetene jeg har sett er dem man har i Common Lisp. Format-strengene kan inneholdet sitt helt eget mini-språk, og hvis du synes at <em>regex</em> er komplisert og uforståelig så vent bare til du ser dette. Formatene kan for eksempel ha kontrollflyt, løkker og rekursjon!</p>
+<p>Igjen har clojure en implementasjon av det samme, og den heter <a href="http://clojuredocs.org/clojure_contrib/clojure.contrib.pprint/cl-format" target="_blank">cl-format</a>. Dette er bare en liten smakebit..</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Delimiter">(</span>ns demo <span class="Delimiter">(</span><span class="Type">:use</span> clojure.contrib.pprint<span class="Delimiter">))</span>
+<span class="lnr">11 </span>
+<span class="lnr">12 </span><span class="Delimiter">(</span>defn print-dogs [n]
+<span class="lnr">13 </span>  <span class="Delimiter">(</span>cl-format true <span class="String">"~R dog~:[s are~; is~] here."</span> n <span class="Delimiter">(</span><span class="Statement">=</span> <span class="Number">1</span> n<span class="Delimiter">)))</span>
+<span class="lnr">14 </span>
+<span class="lnr">15 </span><span class="Delimiter">(</span>print-dogs <span class="Number">1</span><span class="Delimiter">)</span> <span class="Comment">; =&gt; one dog is here.</span>
+<span class="lnr">16 </span><span class="Delimiter">(</span>print-dogs <span class="Number">3</span><span class="Delimiter">)</span> <span class="Comment">; =&gt; three dogs are here.</span>
+<span class="lnr">17 </span>
+<span class="lnr">18 </span><span class="Delimiter">(</span>cl-format true <span class="String">"Par:~{ &lt;~S,~S&gt;~}"</span> <span class="Delimiter">'</span><span class="Special">(</span>A 1 B 2 C 3<span class="Special">)</span><span class="Delimiter">)</span>
+<span class="lnr">19 </span>
+<span class="lnr">20 </span><span class="Comment">; =&gt; Par: &lt;A,1&gt; &lt;B,2&gt; &lt;C,3&gt;</span>
+</pre>
+<p>Vil du vite mer om mulighetene kan du ta en titt i <a href="http://www.lispworks.com/documentation/HyperSpec/Body/22_c.htm" target="_blank">Common Lisp HyperSpec</a> (som er den styggeste API-dokumentasjonen jeg noen sinne har sett).</p>
+<h4>Oppsummering</h4>
+<p>Den siste tiden, spesielt gjennom å studere Clojure, har jeg liksom gjennoppdaget <em>printf</em>. Når jeg husker på å benytte meg av de kraftige formateringsmulighetene resulterer det ofte i mer elegant kode. Konkatinering er <em>clunky</em>, bruk format!</p>

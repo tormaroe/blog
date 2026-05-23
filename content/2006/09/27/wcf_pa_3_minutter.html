@@ -1,0 +1,33 @@
+---
+title: Windows Communication Foundation forklart på tre minutter
+link: http://blog.kjempekjekt.com/2006/09/27/wcf_pa_3_minutter/
+layout: post
+date: 2006-09-27 07:41:09Z
+tags:
+  - .net ninja
+---
+Mens inspirasjonen etter MSDN Live fortsatt er på topp skal jeg raskt forklare hva Windows Communication Foundation er for noe.., og hva det vil bety for oss utviklere.
+
+.NET versjon 3.0 består av fire påbygninger til .NET 2.0 rammeverket, og vil bli releaset sammen med Vista ca. november. .NET 3.0 vil også fungere fint på Windows XP og på 2003 server (det er nå på høy tid å oppgradere fra 2000). De fire påbygningene - hvor jeg vil forklare den siste nærmere - er:
+<ul>
+	<li><strong>Windows Cardspace</strong>
+Microsoft's forslag til standardisering av online identitet. For mer informasjon om identitet, besøk <a href="http://identityblog.com/" target="_blank">Kim Cameron's Identity Weblog</a>.</li>
+	<li><strong>Windows Workflow Foundation (WF)</strong>
+Arbeidsflytmotor innebygget i operativsystemet som i praksis vil gjøre at utviklere vil kode business logikk mere deklerativt enn tidligere, og mere adskilt fra øvrig kode.</li>
+	<li><strong>Windows Presentation Foundation (WPF)</strong>
+En helt ny måte å designe/utvikle brukergrensesnitt på både for Windowsplattformen og for Web.</li>
+	<li><strong>Windows Communication Foundation (WCF)</strong>
+En aldri så liten revolusjon i all koding av kommunikasjon mellom klient og tjeneste.</li>
+</ul>
+<div align="center"><img id="image79" src="/uploads/2006/09/netfx.jpg" alt="netfx" /></div>
+Bakgrunnen for WCF (tidligere kaldt <em>Indigo</em>) er at det å f.eks. lage en web service som støtter sikkerhet, reliable messaging og transaksjoner krever mange tusen linjer kode. Og ønsker du i tillegg at tjenesten skal kunne kommunisere over TCP, ja da må du kode en god del til.
+
+WCF endrer dette til å bli <span style="text-decoration: underline;">ingen kodelinjer i det hele tatt</span>, og ved bruk av kun konfigurasjonsfiler kan du sette opp om tjenesten skal kommunisere over SOAP, nyeste web service med WS-security, WS-reliability og WS-transactions, TCP, named pipe, MSMQ, med CORBA, en-veis eller to-veis eller noe helt annet.
+
+Altså, når du i fremtiden skal lage en tjeneste så koder du IKKE en web service på gamlemåten. Det du gjør er rett og slett å dekorere metodene du ønsker å publisere med noen attributter - dette blir <em>kontrakten</em>. I konfigurasjonsfilen bestemmer du så hvilken <em>binding</em> du ønsker å benytte. Bindingen definerer hvilken protokoll, transportmetode (text, binært eller annet), sikkerhet osv. Og så er du ferdig.
+
+På klientsiden så gjør du omtrent som du er vandt til fra ASMX web servicer - du genererer en klasse på bakgrunn av tjenesten.
+
+Og så konfigurerer du opp binding på samme måte som på tjenestesiden. <strong><em>Dette er genialt</em></strong> - som utvikler kan du glemme alt som har med implementasjon av kommunikasjon, og du kan bytte protokoller, sikkerhet osv. <em>on demand</em>.
+
+Jeg anbefaler at du nå <em>sporensträks</em> tar turen innom <a href="http://wcf.netfx3.com/" target="_blank">wcf.netfx3.com</a>. Der kan du laste ned .NET 3.0 (anbefaler at du allerede har VS 2005, men ikke nødvendig) og masse kodeeksempler for WCF. Enjoy!

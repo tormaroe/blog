@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Funksjonell programmering,C#">
+
+    <title>Mange skal bli flere (eller noe sånt)</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Mange skal bli flere (eller noe sånt)</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 13. juni 2010</small> 
+            <a href="/tags/funksjonell-programmering"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Funksjonell programmering</span></a>
+          
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p>I artikkelen <a href="/2010/06/09/filtrer-projiser-aggreger/"><em>Filtrer, Projiser, Aggreger</em></a> presenterte jeg tre av de mest grunnleggende høyereordens-funksjonene man bruker til å behandle lister og andre datastrukturer. Grafisk kan de tre funksjonene illustreres slik:</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="filter_map_fold" border="0" alt="filter_map_fold" src="/uploads/2010/06/filter_map_fold.png" width="448" height="249"> </p>
+<p><em>Filter</em> returnerer et subsett av den orginale strukturen. <em>Map</em> omformer strukturen, og returnerer en ny struktur som har et 1-til-1 forhold til de orginale dataene. <em>Fold</em> returnerer én verdi som er generert ved å analysere hele datastrukturen.</p>
+<p>I denne blogposten vil jeg se nærmere på en fjærde funksjon, som kan illustreres på denne måten:</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="select_many" border="0" alt="select_many" src="/uploads/2010/06/select_many.png" width="448" height="87"> </p>
+<p>Denne funksjonen omformer/projiserer den orginale datastrukturen, på samme måte som <em>map</em>, men uten at det er et 1-til-1 forhold mellom input og output. Dette kan brukes til å "hente ut" data fra en mer kompleks datastruktur, men uten at det slås sammen slik som i <em>fold/aggregate</em>.</p>
+<p>La oss anta at vi har en liste med SMS-meldinger. Hver melding har en meldingstekst, og vi er interessert i å lage en liste med alle ordene som inngår i meldingene. Dette tilfellet er ikke så veldig komplekst, men nok til å illustrere poenget. I C# kunne vi for eksempel ha opprettet en tom liste, og loopet over alle meldingene for så å trekke ut ordene fra teksten, slik som dette:</p>
+<pre>
+// ALTERNATIV 1 : foreach
+var words1 = new List&lt;string&gt;();
+foreach (var message in messages)
+    words1.AddRange(message.Text.Split());
+</pre>
+<p>Takket være <em>AddRange</em>-metoden slipper vi en eksplisit indre loop for å legge til alle ordene.</p>
+<p>Bruker du <a href="http://www.devexpress.com/Products/Visual_Studio_Add-in/Coding_Assistance/">CodeRush</a> i Visual Studio vil den foreslå at du omformer den vanlige foreach-loopen til en Linq ForEach action, slik som i alternativ 2:</p>
+<pre>
+// ALTERNATIV 2 : ForEach action
+var words2 = new List&lt;string&gt;();
+messages.ForEach(message 
+    =&gt; words2.AddRange(message.Text.Split()));
+</pre>
+<p>.. men i bunn og grunn er dette selvsagt akkurat det samme.</p>
+<p>Kan vi bruke en høyereordens-funskjon i stedet? Ja, det er klart, vi kan for eksempel bruke Aggregate. Som du så lengre oppe skal aggregate returnere én verdi, men en liste er jo også én verdi, så det burde gå greit:</p>
+<pre>
+// ALTERNATIV 3 : Aggregate action
+var words3 = messages.Aggregate(new List&lt;string&gt;(), 
+              (list, message) =&gt; 
+              {
+                  list.AddRange(message.Text.Split());
+                  return list;
+              });
+</pre>
+<p>I stedet for å opprette listen som en egen statement (som i alternativ 1 og 2) oppretter vi den her som første argument til aggregate. Den listen brukes så videre når en og en melding blir behandlet, og lambda-uttrykket må returnere listen for hver melding. Ja, dette fungerte, men dette ble ikke særlig elegant…</p>
+<p><strong>Nå er det derimot på tide å introdusere denne artikkelens hovedperson</strong>, funksjonen som i .NET har fått navnet <strong><em>SelectMany</em></strong>. Den gjør akkurat det vi er ute etter; vi spesifiserer en funksjon som gitt en melding returnerer en ny liste. SelectMany vil så slå sammen alle listene som produseres:</p>
+<pre>
+// ALTERNATIV 4 : SelectMany
+IEnumerable&lt;string&gt; words4 = messages.SelectMany(message 
+    =&gt; message.Text.Split());
+</pre>
+<p>Dette var klart mye bedre enn enn å bruke aggregate, og mer konsist og deklerativt enn å bruke foreach.</p>
+<p>Med litt av det syntaktisk sukker som ligger i C# 3.0 og Linq kan dette også skrives slik:</p>
+<pre>
+// ALTERNATIV 5 : From x 2
+var words5 = from message in messages
+             from words in message.Text.Split()
+             select words;
+</pre>
+<p>Slik jeg har forstått det genererer denne bruken av <strong><em>2 from</em></strong> den samme koden som alternativ 4.</p>
+<p>PS: F# har akkurat den samme funksjonen, men der heter den <em>collect</em>. Dette må ikke blandes med <a href="http://www.ruby-lang.org/en/" target="_blank">Ruby</a>, hvor <em>collect</em> forvirrende nok er et alias for <em>map</em>. Jeg kjenner ikke til hvilke andre spåk som har funksjonen, og følgelig ikke hva de heter (men jeg er sikker på at Ameth vil fortelle meg alt om hvilke muligheter man har i Haskell).</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=C#" rel="tag">C#</a>, <a href="/index.php?s=F#" rel="tag">F#</a>, <a href="/index.php?s=LINQ" rel="tag">LINQ</a>, <a href="/index.php?s=Ruby" rel="tag">Ruby</a>, <a href="/index.php?s=SMS" rel="tag">SMS</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

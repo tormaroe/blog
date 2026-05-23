@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Julekalender,Polyglot,Oz">
+
+    <title>Oz</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Oz</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 12. desember 2011</small> 
+            <a href="/tags/julekalender"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Julekalender</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/oz"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Oz</span></a>
+          </p>
+          <p><strong><em>Oz</em></strong> er et programmeringsspråk som skiller seg ut i mengden! Det er utviklet i et sammarbeid mellom flere universiteter, brukes først og fremst til undervisning, og støtter mange ulike programmeringsparadigmer som logisk programmering, funksjonell programmering, imperativ og objektorientert programmering osv. Det støtter samtidighetsbasert programmering blant annet gjennom bruk av <em>actors</em>, og er spesielt tilrettelagt for å lage distribuerte systemer.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="oz" border="0" alt="oz" src="/uploads/2011/12/oz.jpg" width="500" height="406"></p>
+<p>I bunn er Oz et meget enkelt språk med kun noen få datatyper. I tillegg har det en masse "syntaktisk sukker" som gjør språket praktisk. Det er først og fremst inspirert av Lisp, Prolog og Erlang, men har også skapt noe nytt og unikt.</p>
+<p>Oz har derfor lenge fristet meg. Jeg har vurdert det som et språk hvor man kan teste ut og eksperimentere med alle mulige slags programmeringsmodeller.</p>
+<h4>På tide med litt kode</h4>
+<p>Nedenfor er et komplett Oz-program som skriver ut <a href="/2011/11/24/hello-world-euler-style/">summen av alle tall fra 0 til 999 som er multipler av 3 eller 5</a>. Det er ikke det korteste programmet jeg kunne ha skrevet, men illustrerer i stedet flere aspekter ved språket.</p>
+<p>Oz har såvidt jeg vet ingen vanlige løkker. Det ble derfor naturlig å velge en funksjonell, stream-basert løsning.</p>
+<p>I koden får du se hvordan man definerer funksjoner, inkludert en rekursiv funksjon som bygger opp en liste. Du får også se hvordan man bruker høyereordens-funksjoner, hvordan man sender en funksjon som et argument, og hvordan man deklarerer en funksjon <em>in-line</em> i et kallet til FoldL (<em>"fold left"</em>, funksjonen som summerer opp alle tallene).</p>
+<pre style="padding-bottom: 7px; background-color: #000000; padding-left: 7px; padding-right: 7px; font-family: monospace; margin-bottom: 17px; color: #f6f3e8; padding-top: 7px"><span class="lnr">10 </span><span class="Statement">functor</span>
+<span class="lnr">11 </span><span class="Keyword">import</span>
+<span class="lnr">12 </span>   <span class="Normal">Application</span>
+<span class="lnr">13 </span>   <span class="Normal">System</span>
+<span class="lnr">14 </span>
+<span class="lnr">15 </span><span class="Statement">define</span>
+<span class="lnr">16 </span>
+<span class="lnr">17 </span>   <span class="Comment">%% recursive function to create a new list</span>
+<span class="lnr">18 </span>   <span class="Statement">fun</span> {<span class="Normal">Range</span> <span class="Normal">From</span> <span class="Normal">To</span>}
+<span class="lnr">19 </span>     <span class="Keyword">if</span> <span class="Normal">From</span> <span class="Operator">==</span> <span class="Normal">To</span> <span class="Keyword">then</span> [<span class="Normal">From</span>]
+<span class="lnr">20 </span>     <span class="Keyword">else</span> <span class="Normal">From</span> | {<span class="Normal">Range</span> <span class="Normal">From</span><span class="Operator">+</span><span class="Number">1</span> <span class="Normal">To</span>} <span class="Keyword">end</span>
+<span class="lnr">21 </span>   <span class="Keyword">end</span>
+<span class="lnr">22 </span>
+<span class="lnr">23 </span>   <span class="Comment">%% function to get value to include in sum</span>
+<span class="lnr">24 </span>   <span class="Statement">fun</span> {<span class="Normal">Euler1Value</span> <span class="Normal">X</span>}
+<span class="lnr">25 </span>     <span class="Keyword">if</span> <span class="Normal">X</span> <span class="Normal">mod</span> <span class="Number">3</span> <span class="Operator">==</span> <span class="Number">0</span> <span class="Keyword">then</span> <span class="Normal">X</span>
+<span class="lnr">26 </span>     <span class="Keyword">elseif</span> <span class="Normal">X</span> <span class="Normal">mod</span> <span class="Number">5</span> <span class="Operator">==</span> <span class="Number">0</span> <span class="Keyword">then</span> <span class="Normal">X</span>
+<span class="lnr">27 </span>     <span class="Keyword">else</span> <span class="Number">0</span> <span class="Keyword">end</span>
+<span class="lnr">28 </span>   <span class="Keyword">end</span>
+<span class="lnr">29 </span>
+<span class="lnr">30 </span>   <span class="Comment">%% Variables bound in definition body</span>
+<span class="lnr">31 </span>   <span class="Normal">Values</span>
+<span class="lnr">32 </span>   <span class="Normal">Sum</span>
+<span class="lnr">33 </span> <span class="Special">in</span>
+<span class="lnr">34 </span>   <span class="Normal">Values</span> <span class="Operator">=</span> {<span class="Normal">Map</span> {<span class="Normal">Range</span> <span class="Number">0</span> <span class="Number">999</span>} <span class="Normal">Euler1Value</span>}
+<span class="lnr">35 </span>   <span class="Normal">Sum</span> <span class="Operator">=</span> {<span class="Normal">FoldL</span> <span class="Normal">Values</span>
+<span class="lnr">36 </span>                <span class="Statement">fun</span> {$ <span class="Normal">X</span> <span class="Normal">Y</span>} <span class="Normal">X</span> <span class="Operator">+</span> <span class="Normal">Y</span> <span class="Keyword">end</span>
+<span class="lnr">37 </span>                <span class="Number">0</span>}
+<span class="lnr">38 </span>   {<span class="Normal">System</span><span class="Special">.</span><span class="Normal">showInfo</span> <span class="Normal">Sum</span>}
+<span class="lnr">39 </span>   {<span class="Normal">Application</span><span class="Special">.</span><span class="Statement">exit</span> <span class="Number">0</span>}
+<span class="lnr">40 </span><span class="Keyword">end</span>
+</pre>
+<p>Du har sett meg bruke <em>map</em> og <em>fold</em> så mange ganger nå at dette bør være helt greit å skjønne. Når du ser noe slikt som <tt><strong>{Foo Bar Zot}</strong></tt>, så er det et funksjonskall. Foo er funksjonen, og Bar og Zot er argumentene.</p>
+<h4>Min opplevelse av Oz</h4>
+<p>Da jeg begyte å studere Oz virket det svært fremmed og nesten uforståelig. Dokumentasjonen var frustrerende; den var skrevet for å lære meg språket grundig, ikke for at jeg raskt skulle kunne komme igang.</p>
+<p>Etter hvert begynte jeg derimot å se paralellene til Erlang – spesielt hvordan Erlang håndterer lister. Og da jeg så arven fra Lisp i språket begynte brikkene å falle på plass.</p>
+<p>Nå tror jeg det skal gå ganske greit å fortsette med Oz. Det er egentlig et ganske enkelt språk, men med avanserte muligheter. </p>
+<h4>Hvordan komme i gang</h4>
+<p>Hovedimplementasjonen av Oz kalles <em>the </em><a href="http://www.mozart-oz.org/"><em><strong>Mozart Programming System</strong></em></a>. Det er open source, og tilgjengelig på Unix, Linux, FreeBSD, Windows og Mac OS X. </p>
+<p>Jeg lastet det ned på Windows, men fikk det ikke til å virke helt som tiltenkt – GNU Emacs, som er en del av det interaktive miljøet, ville ikke kjøre. Jeg endte til slutt opp med å programmere online i <a href="http://ideone.com/">ideone</a>, et kjekt sted hvor man kan kompilere og kjøre programmer i et utall ulike språk.</p>
+<p>Mozart-sidene har også <a href="http://www.mozart-oz.org/documentation/">den mest komplette dokumentasjonen</a> for Oz. I tillegg finnes det en bok som heter <em><a href="http://www.amazon.com/Concepts-Techniques-Models-Computer-Programming/dp/0262220695">Concepts, Techniques, and Models of Computer Programming</a></em>. Dette er en lærebok i programmering som bruker Oz til å illustrere alle de ulike aspektene og paradigmene. Sikkert ikke en dum bok å ønske seg til Jul.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Konkurranse,F#">
+
+    <title>Kodekamp: Finn dupliserte filer</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Kodekamp: Finn dupliserte filer</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> søndag 16. august 2015</small> 
+            <a href="/tags/konkurranse"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Konkurranse</span></a>
+          
+            <a href="/tags/fsharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> F#</span></a>
+          </p>
+          <p style="text-align:center;"><img src="/uploads/2015/08/kodekamp2.png"></p>
+
+<p>Trenger du noe å gjøre på? Velkommen til kodekamp nummer 2! Dette er en uhøytidelig og vennskapelig utviklerkonkurranse hvor alle som har lyst til å delta har én uke til å kode opp en løsning og sende den til <a href="mailto:kodekamp@kjempekjekt.com">kodekamp@kjempekjekt.com</a>.</p>
+<h2>Problemet: Dupliserte filer</h2>
+<p>Av ulike grunner hender det ofte at en og samme fil lagres flere steder på harddisken. Det kan være mange grunner til dette. Av og til gjør vi det med vilje, men ofte er det utilsiktet.</p>
+<p>Og da oppstår det problemer. For det første bruker vi unødvendig mye diskplass, og for det andre kan filene raskt komme ut av synk. Og hva om vi så bruker feil fil, ikke den vi lagret sist?</p>
+<p>Dette må vi rett og slett finne en løsning på :)</p>
+<h2>Oppgaven</h2>
+<p>I denne kodekampen skal du lage et program som tar som innput to verdier: Første argument er et tall som representerer antall bytes. La oss kalle den <code>arg1</code>. Andre argument er en folder-sti; absolutt, eller relativt til hvor programmet kjøres fra. La oss kalle den <code>arg2</code>.</p>
+<p>Programmet skal så traversere nedover folderstrukturen fra <code>arg2</code> og finne alle filer det finnes to eller flere av. To filer vurderes å være den samme om innholdet er identisk.</p>
+<p style="text-align:center;"><img src="/uploads/2015/08/duplicate-file-remover.jpg"></p>
+
+<p>Hvis filstørrelsen er mindre enn <code>arg1</code> skal programmet se bort fra den.</p>
+<p>Programmet skal liste ut dubletter på en fornuftig måte.</p>
+<p>Programmet skal også validere argumentene, og gi en fornuftig feilmelding om det ikke brukes riktig.</p>
+<p>Og til slutt: Programmeringsspråket som er valgt denne gang er F#. Oppgaven skal leveres som én .fs-fil som kan kompileres til et konsoll-program med F# 3.1, uten andre avhengigheter. Jeg ønsker altså ikke å motta noe Visual Studio-prosjekt.</p>
+<p>PS: Jeg tar ikke her stilling til om du utvikler/kjører på Windows, Mac eller Linux - ingen diskriminering her. Eventuelle OS-ulikheter som har noe å si for å løse oppgaven må du selv vurdere hva du gjør med.</p>
+<h3>Hvis du ikke kan FSharp..</h3>
+<p>... så er dette en fin anledning til å lære! <a href="/2011/12/06/f/">Her er min introduksjon til F#</a>, og <a href="http://fsharp.org/about/learning.html">her finner du noen lære-ressurser</a>.</p>
+<h2>Vurdering av besvarelen</h2>
+<p>Som i forrige runde vil besvarelsene vurderes i forhold til korrekthet, lesbarhet og eleganse. Jeg vil spesielt vurdere strategien valgt for å traversere folderstrukturen, strategien for å finne duplikater, og hvordan resultatet presenteres (god brukeropplevelse). Jeg vil også måle og sammenligne hastighet.</p>
+<p>Besvarelsen må leveres til <a href="mailto:kodekamp@kjempekjekt.com">kodekamp@kjempekjekt.com</a> senest søndag 23. august 2015. Om du synes det er greit at jeg bruker ditt fulle navn, inkluderer lenke til twitter, hjemmeside eller lignende, så gi meg beskjed om det.</p>
+<p>Jeg gleder meg til å se mange, spennende løsninger. For jeg regner nesten med at denne oppgaven vil føre til programmer med større ulikheter enn den første oppgaven. Så lykke til!</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

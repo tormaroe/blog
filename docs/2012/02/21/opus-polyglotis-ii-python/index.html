@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Polyglot,Python">
+
+    <title>Opus Polyglotis II: Python</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Opus Polyglotis II: Python</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 21. februar 2012</small> 
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/python"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Python</span></a>
+          </p>
+          <p><img style="background-image: none; border-right-width: 0px; margin: 0px 15px 0px 0px; padding-left: 0px; padding-right: 0px; display: inline; float: left; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="act1" border="0" alt="act1" align="left" src="/uploads/2012/02/act1.png" width="169" height="160"></p>
+<blockquote><p style="line-height: 16px"><tt><strong>OPUS POLYGLOTIS II, Act 1<br></strong>Tagline: "En enkel men litt naiv begynnelse"<br>På scenen: Python</tt></p>
+</blockquote>
+<p>I første versjon av programmet mitt har jeg laget en litt naiv og <em>"rett frem"</em> implementasjon. Det fungerer, men har litt for lite struktur. Dette vil jeg forbedre i de kommende blogpostene, men da i andre programmeringsspråk.</p>
+<p><em>PS: Gikk du glipp av innledningen til denne bloggserien? Da bør du lese den først for å få nødvendig bakgrunnsinformasjon.</em></p>
+<p>Det er egenlig ganske passende at jeg har valgt <strong>Python</strong> for den første implementasjonen. Jeg har relativt lite erfaring med Python, og det er et språk som anbefales for nybegynnere. Det er fleksibelt og egner seg også bra til funksjonell programmering, noe jeg benytter meg av i stor grad i koden du skal få se nå.</p>
+<p>Så la oss hoppe rett i det...</p>
+<p>Det første jeg må gjøre er å importere de modulene jeg kommer til å benytte i koden:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">21 </span><span class="PreProc">import</span> sys  <span class="Comment"># Needed to get command line args</span>
+<span class="lnr">22 </span><span class="PreProc">import</span> csv  <span class="Comment"># Comma Separated Values module</span>
+<span class="lnr">23 </span><span class="PreProc">import</span> re   <span class="Comment"># Regular expression module</span>
+</pre>
+<p>Og så setter jeg igang med det første output-formatet, som er JSON. Implementasjonen består av funksjonen <strong><em>formatJson</em></strong>, som har to parametre – et array of arrays som inneholder alle dataradene, og et array som inneholder kolonnenavnene. I tillegg trenger jeg to støttefunksjoner og en konstant. Ved hjelp av en del <em><a href="http://docs.python.org/library/functions.html#map">map</a></em> og <em><a href="http://docs.python.org/library/stdtypes.html?highlight=join#str.join">join</a></em> er det ganske enkelt å bygge opp JSON-strengen, men det skjer mye på få linjer kode her, så hold tunga rett i munnen:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">27 </span><span class="Comment"># Pre-compile regular expressions</span>
+<span class="lnr">28 </span>NUMBER_PATTERN = re.<span class="Function">compile</span>(<span class="String">r"\d+.?\d*$"</span>)
+<span class="lnr">29 </span>
+<span class="lnr">30 </span><span class="Statement">def</span> <span class="Function">formatJsonValue</span>(v):
+<span class="lnr">31 </span>    <span class="Conditional">if</span> NUMBER_PATTERN.match(v):
+<span class="lnr">32 </span>        <span class="Statement">return</span> v
+<span class="lnr">33 </span>    <span class="Statement">return</span> <span class="String">'"%s"'</span> % (v)
+<span class="lnr">34 </span>
+<span class="lnr">35 </span><span class="Statement">def</span> <span class="Function">formatJsonObject</span>(values):
+<span class="lnr">36 </span>    fields = <span class="Function">map</span>(
+<span class="lnr">37 </span>        <span class="Statement">lambda</span> h, t: <span class="String">'"%s":%s'</span> % (h, t),
+<span class="lnr">38 </span>        formatJsonObject.headers,
+<span class="lnr">39 </span>        <span class="Function">map</span>(formatJsonValue, values))
+<span class="lnr">40 </span>    <span class="Statement">return</span> <span class="String">"{%s}"</span> % (<span class="String">', '</span>.join(fields))
+<span class="lnr">41 </span>
+<span class="lnr">42 </span><span class="Statement">def</span> <span class="Function">formatJson</span>(records, headers):
+<span class="lnr">43 </span>    <span class="Comment"># Passing headers via function attribute </span>
+<span class="lnr">44 </span>    <span class="Comment"># (functions are objects you see!)</span>
+<span class="lnr">45 </span>    formatJsonObject.headers = headers
+<span class="lnr">46 </span>    <span class="Statement">return</span> <span class="String">"[%s]"</span> % <span class="String">',</span><span class="Special">\n</span><span class="String">'</span>.join(
+<span class="lnr">47 </span>        <span class="Function">map</span>(formatJsonObject, records))
+</pre>
+<p>Er du ikke så vandt med funksjoner som <em>map</em> bør du studere denne koden til du har overbevist deg selv om at den genererer det riktige resultatet. Map er noe du finner i de fleste programmeringsspråk i dag, og er veldig nyttig å beherske. Er du ukomfortabel med regulære uttrykk bør du også studere hvordan jeg lager og bruker konstanten NUMBER_PATTERN. Uttrykket sier at et tall består av en eller flere siffer, etterfulgt av null eller ett punktum, etterflulgt av null eller flere siffer.</p>
+<p>Når man programmerer forsøker man hele tiden å visualisere for seg selv hvordan data flyter og endrer seg gjennom koden. I figuren under har jeg gjort et <em>best effort</em> på å vise hvordan <em>formatJson</em> fungerer.</p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="flow_python" border="0" alt="flow_python" src="/uploads/2012/02/flow_python.png" width="488" height="593"></p>
+<p>Vi fortsetter så med XML-formateringen, som jeg har splittet opp i to funksjoner. Igjen bruker jeg endel map og join, og putter inn endel strategisk plasserte linjeskift og tabulatorer i strengene jeg bygger opp for å formatere XML'en på en fornuftig måte:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">51 </span><span class="Statement">def</span> <span class="Function">formatXmlRecord</span>(values):
+<span class="lnr">52 </span>    fields = <span class="Function">map</span>(
+<span class="lnr">53 </span>        <span class="Statement">lambda</span> h, t:
+<span class="lnr">54 </span>            <span class="String">"&lt;"</span> + h + <span class="String">"&gt;"</span> + t + <span class="String">"&lt;/"</span> + h + <span class="String">"&gt;"</span>,
+<span class="lnr">55 </span>        formatXmlRecord.headers,
+<span class="lnr">56 </span>        values)
+<span class="lnr">57 </span>    <span class="Statement">return</span> <span class="String">"</span><span class="Special">\t</span><span class="String">&lt;record&gt;</span><span class="Special">\n\t\t</span><span class="String">%s</span><span class="Special">\n\t</span><span class="String">&lt;/record&gt;"</span> % <span class="Special">\</span>
+<span class="lnr">58 </span>        (<span class="String">'</span><span class="Special">\n\t\t</span><span class="String">'</span>.join(fields))
+<span class="lnr">59 </span>
+<span class="lnr">60 </span><span class="Statement">def</span> <span class="Function">formatXml</span>(records, headers):
+<span class="lnr">61 </span>    formatXmlRecord.headers = <span class="Special">\</span>
+<span class="lnr">62 </span>        <span class="Function">map</span>(<span class="Statement">lambda</span> h: h.replace(<span class="String">' '</span>, <span class="String">'_'</span>), headers)
+<span class="lnr">63 </span>    <span class="Statement">return</span> <span class="String">"&lt;records&gt;</span><span class="Special">\n</span><span class="String">%s</span><span class="Special">\n</span><span class="String">&lt;/records&gt;"</span> % <span class="String">'</span><span class="Special">\n</span><span class="String">'</span>.join(
+<span class="lnr">64 </span>        <span class="Function">map</span>(formatXmlRecord, records))
+</pre>
+<p>Det finnes selvsagt biblotek for generering av både JSON og XML, men da hadde jeg ikke fått vist så mye strenghåndtering som jeg har lyst til. Jeg holder meg til basisbiblotekene, og mekker mine egne formater!</p>
+<p>Nå er altså formatene ferdige, og jeg begynner på selve "programmet". Siden jeg bruker Python, og ikke tenker så mye på struktur i denne første implementasjonen, så skriver jeg koden for å lese kommandolinjeargumenter, lese csv-filen, og utføre formateringen, direkte i toppnivået i filen. Jeg pakker det altså ikke inn i en egen main-funksjon.</p>
+<p>Her leser jeg de to argumentene, og åpner csv-filen for lesing:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">68 </span>outFormat = sys.argv[<span class="Number">1</span>]
+<span class="lnr">69 </span>dataFile = <span class="Function">open</span>(sys.argv[<span class="Number">2</span>], <span class="String">'r'</span>)
+</pre>
+<p>Så tar jeg i bruk Python's CSV-modul til å opprette et objekt som kan tolke CSV-filen. Denne modulen sparer meg for ganske mye arbeid:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">71 </span>csvReader = csv.reader(dataFile,
+<span class="lnr">72 </span>                       delimiter=<span class="String">';'</span>,
+<span class="lnr">73 </span>                       quotechar=<span class="String">"</span><span class="Special">\"</span><span class="String">"</span>)
+</pre>
+<p>Og da gjenstår det bare å velge en formateringsfunksjon basert på outFormat, og så kalle denne. Det første jeg tenkte å bruke var en <em>switch</em>, men så viste det seg at Python overraskende nok ikke har noen slik struktur! I stedet bruker man ofte det man kaller <a href="http://en.wikipedia.org/wiki/Dispatch_table">table dispatch</a> basert på en <em>dictionary</em>. De siste linjene i programmet mitt definerer dispatch-tabellen, henter ut den riktige funksjone, kaller den, og skriver resultatet til konsollet:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 15px; color: #f6f3e8; padding-top: 6px"><span class="lnr">78 </span><span class="Function">print</span> {
+<span class="lnr">79 </span>    <span class="String">'json'</span>: formatJson,
+<span class="lnr">80 </span>    <span class="String">'xml'</span>: formatXml,
+<span class="lnr">81 </span>    <span class="String">'yaml'</span>: <span class="Statement">lambda</span> a, b: <span class="String">"YAML support coming soon!"</span>
+<span class="lnr">82 </span>}[outFormat.lower()](csvReader,
+<span class="lnr">83 </span>                     csvReader.<span class="Function">next</span>())
+</pre>
+<p>Legg merke til at jeg også la til en dispatch for YAML-formatet – et lambda-uttrykk som bare returnerer <em>"YAML support coming soon!"</em>.</p>
+<h4>Analyse av løsningen</h4>
+<p>Løsningen er enkel, og egentlig ganske ryddig. 60 linjer inkludert noen kommentarer (40 <a href="http://c2.com/cgi/wiki?LinesOfCode">LOC</a>) er mindre enn jeg i utgangspunktet trodde jeg ville bruke.</p>
+<p>Men koden har noen svakheter. Programmet skulle legge til rette for å kunne utvides med flere ut-formater, men mangler struktur for å unngå at dette blir rotete og etterhvert uoversiktelig. <strong>I tillegg bryter jeg det såkalte </strong><a href="http://en.wikipedia.org/wiki/Open/closed_principle"><strong>open/closed-prinsippet</strong></a>, som i praksis sier at jeg burde kunne gjøre de forventede utvidelsene uten å måtte modifisere eksisterende kode. For jeg kan jo ikke legge til flere formater uten å modifisere dispatch-koden min.</p>
+<p>Allerede i den kommende bloggposten vil jeg utbedre disse problemene gjennom å ta i bruk noen kjente design patterns fra objektorientert programmering.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

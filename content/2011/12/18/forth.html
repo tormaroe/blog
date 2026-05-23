@@ -1,0 +1,183 @@
+---
+title: Forth
+link: http://blog.kjempekjekt.com/2011/12/18/forth/
+layout: post
+date: 2011-12-18 10:01:51Z
+tags:
+  - Julekalender
+  - Polyglot
+  - Forth
+---
+<p>Er du klar for noe veldig anderledes? Si hei til <strong>Forth</strong>, et <u>stack-basert</u> programmeringsspråk. Forth har røtter helt tilbake til 1958, men er fortsatt i bruk i dag. Og om du aldri kommer til å benytte et stack-basert språk i jobben din, vil det å lære Forth likevel gi deg verdifull kunnskap og alternative måter å tenke problemløsning på.</p> <p><a href="/uploads/2011/12/FORTH.jpg"><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="FORTH" border="0" alt="FORTH" src="/uploads/2011/12/FORTH_thumb.jpg" width="500" height="392"></a></p> <p>Til å begynne med var Forth det personlige programmeringsmiljøet til en fyr som heter Charles H. Moore. Først tidlig på 70-tallet fikk andre utviklere innblikk i hva Moore holdt på med. I løpet av en tiårsperiode ble språket portet til mange ulike platformer.</p> <p>Charles skiftet ofte jobb, tok med seg Forth, og siden det var et lett språk å porte brukte han og andre det blant annet for å komme i gang med programmering for ny hardware: De første programmene som kjørte på Intel's 8086-chip i 1978 var skrevet i Forth, og MacFORTH var det første utviklingsmiljøet på den første Apple Machintosh'en i 1984.</p> <p><img style="background-image: none; border-right-width: 0px; margin: 0px 0px 0px 15px; padding-left: 0px; padding-right: 0px; display: inline; float: right; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="ch1-push-2468" border="0" alt="ch1-push-2468" align="right" src="/uploads/2011/12/ch1-push-2468.gif" width="100" height="128">I dag brukes Forth fortsatt til mye rart som for eksempel boot-loadere (som <a href="http://en.wikipedia.org/wiki/Open_Firmware">Open Firmware</a>), i noen kritiske systemer hos NASA, og i andre "embedded"-systemer. </p> <p>Forth kan sees på både som et programmeringsspråk og et operativsystem. Men det er ikke alt; det er også implementasjonen av en filosofi. Forth står for <u>enkelthet</u>! Språket har minimalt med syntaks, og det eneste du egentlig har å jobbe med er en LIFO-kø, altså en <a href="http://en.wikipedia.org/wiki/Stack_(data_structure)">stack</a>. Likevel er det ekstremt fleksibelt.</p> <h4>På tide med litt kode</h4> <p>Jeg skal vise deg to ulike løsninger på <a href="http://blog.kjempekjekt.com/2011/11/24/hello-world-euler-style/">Euler-problem nummer 1 – hvordan man finner summen av alle tall under 1000 som er multipler av 3 eller 5</a><em></em>. I begge løsningene trenger jeg å kunne sjekke om et tall er et multippel av 3 eller 5, så vi begynner med å definere prosedyrer for det:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr"> 1 </span><span class="PreProc">: multiple-of-3</span> <span class="Special">dup</span> <span class="Number">3</span> <span class="Operator">mod</span> <span class="Number">0</span> <span class="Operator">=</span> <span class="PreProc">;</span>
+<span class="lnr"> 2 </span><span class="PreProc">: multiple-of-5</span> <span class="Special">dup</span> <span class="Number">5</span> <span class="Operator">mod</span> <span class="Number">0</span> <span class="Operator">=</span> <span class="PreProc">;</span>
+</pre>
+<p>I Forth sier vi egentlig ikke <em>prosedyrer</em> – vi kaller det bare "ord". Ordet <em>multiple-of-3</em> består av fem instruksjoner. Først dupliserer det det øverste elementet på stacken med ordet <em>dup</em>. Deretter putter det et 3-tall på stacken. <em>Mod</em> plukker så de to øverste elementene av stacken, og erstatter dem med modulo-verdien. Hvis det opprinnelige elementet på stacken f.eks. var tallet 6 vil stacken nå innholde 6 og 0.</p>
+<p>Videre pusher multiple-of-3 tallet 0 på stacken, som nå vil inneholde 6, 0 og 0. Til slutt brukes "=" til å poppe de to øverste elementene, sjekke om de er like, og pushe resultatet (true) tilbake. </p>
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="ch2-dup" border="0" alt="ch2-dup" src="/uploads/2011/12/ch2-dup.gif" width="400" height="148"></p>
+<p>Det ble litt mye detaljer, men jeg håper du nå begynner å forstå prinsippet med hvordan Forth fungerer. Nå følger resten av løsningen. Syntaksen virker nok rar og uvandt, men i praksis er dette en loop fra 1 til 999, hvor hvert tall sjekkes og enten plusses på tallet på stacken eller droppes.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="PreProc">: euler1</span>
+<span class="lnr">11 </span>  <span class="Number">0</span>                    <span class="Comment">\ Starting with a sum of 0</span>
+<span class="lnr">12 </span>  <span class="Number">1000</span> <span class="Number">1</span> <span class="Statement">?do</span> <span class="Statement">i</span>         <span class="Comment">\ Loop from 1 to 999</span>
+<span class="lnr">13 </span>    multiple-of-3 <span class="Conditional">if</span>   <span class="Comment">\ if multiple of 3</span>
+<span class="lnr">14 </span>      <span class="Operator">+</span>                <span class="Comment">\ add to sum</span>
+<span class="lnr">15 </span>    <span class="Conditional">else</span>
+<span class="lnr">16 </span>      multiple-of-5 <span class="Conditional">if</span> <span class="Comment">\ else if multiple of 5</span>
+<span class="lnr">17 </span>        <span class="Operator">+</span>              <span class="Comment">\ add to sum</span>
+<span class="lnr">18 </span>      <span class="Conditional">else</span>
+<span class="lnr">19 </span>        <span class="Special">drop</span>           <span class="Comment">\ else discard it</span>
+<span class="lnr">20 </span>      <span class="Conditional">then</span>
+<span class="lnr">21 </span>    <span class="Conditional">then</span>
+<span class="lnr">22 </span>  <span class="Statement">loop</span>
+<span class="lnr">23 </span>  <span class="Number">.</span> <span class="Constant">cr</span>                 <span class="Comment">\ print sum and carriage return</span>
+<span class="lnr">24 </span><span class="PreProc">;</span>
+<span class="lnr">25 </span>
+<span class="lnr">26 </span>euler1                 <span class="Comment">\ "call" euler1</span>
+</pre>
+<p>Koden ser sikkert veldig baklengs ut. Det krever litt erfaring før du kan begynne å lese algoritmer som dette. Men jeg lover det kommer til å gi mening etterhvert om du jobber litt med det..</p>
+<h4>En rekursiv variant</h4>
+<p>Det er vanskelig å forklare hvorfor, men å bruke en loop som i løsningen over føles litt som å jukse. Jeg lagde derfor også en rekursiv løsning på oppgaven. Den er litt mere komplisert, men illustrerer også flere aspekter ved stack-basert programmering.</p>
+<p>Om du har problemer med å følge med på denne koden kan du scrolle litt ned og sammenligne med en identiske løsningen implementert i C#.</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">30 </span><span class="PreProc">: next-is-zero</span> <span class="Special">dup</span> <span class="Number">0</span> <span class="Operator">=</span> <span class="PreProc">;</span>
+<span class="lnr">31 </span><span class="PreProc">: keep-number</span> <span class="Special">dup</span> <span class="PreProc">;</span>
+<span class="lnr">32 </span>
+<span class="lnr">33 </span><span class="PreProc">: keep-number-if-multiple-of-3-or-5</span>
+<span class="lnr">34 </span>  multiple-of-3 <span class="Conditional">if</span>
+<span class="lnr">35 </span>    keep-number
+<span class="lnr">36 </span>  <span class="Conditional">else</span>
+<span class="lnr">37 </span>    multiple-of-5 <span class="Conditional">if</span>
+<span class="lnr">38 </span>      keep-number
+<span class="lnr">39 </span>    <span class="Conditional">then</span>
+<span class="lnr">40 </span>  <span class="Conditional">then</span>
+<span class="lnr">41 </span>  <span class="Operator">1-</span> <span class="Comment">\ Decrement by one to prepare next number</span>
+<span class="lnr">42 </span><span class="PreProc">;</span>
+<span class="lnr">43 </span>
+<span class="lnr">44 </span><span class="PreProc">: generate-numbers</span>
+<span class="lnr">45 </span>  next-is-zero <span class="Operator">invert</span> <span class="Conditional">if</span>
+<span class="lnr">46 </span>    keep-number-if-multiple-of-3-or-5
+<span class="lnr">47 </span>    recurse
+<span class="lnr">48 </span>  <span class="Conditional">then</span>
+<span class="lnr">49 </span><span class="PreProc">;</span>
+<span class="lnr">50 </span>
+<span class="lnr">51 </span><span class="PreProc">: sum-numbers</span> <span class="Comment">\ Sums numbers until next number is 0</span>
+<span class="lnr">52 </span>  <span class="Operator">+</span>
+<span class="lnr">53 </span>  <span class="Special">swap</span> next-is-zero <span class="Conditional">if</span> <span class="Special">drop</span> <span class="Conditional">else</span> <span class="Special">swap</span> recurse <span class="Conditional">then</span>
+<span class="lnr">54 </span><span class="PreProc">;</span>
+<span class="lnr">55 </span>
+<span class="lnr">56 </span><span class="Number">0</span> <span class="Number">999</span> generate-numbers <span class="Special">drop</span> sum-numbers <span class="Number">.</span> <span class="Constant">cr</span> <span class="PreProc">;</span>
+</pre>
+<p>Denne algoritmen bygger først opp en stack med alle tallene som er delelige på 3 eller 5. Nedenfor ser du hvordan stacken bygger seg opp i løpet av de 16 første iterasjonene:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">59 </span><span class="Comment">\ Stack dump from running generate-numbers:</span>
+<span class="lnr">60 </span>&lt;2&gt; <span class="Number">0</span> <span class="Number">999</span>
+<span class="lnr">61 </span>&lt;3&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">998</span>
+<span class="lnr">62 </span>&lt;3&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">997</span>
+<span class="lnr">63 </span>&lt;3&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span>
+<span class="lnr">64 </span>&lt;4&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span>
+<span class="lnr">65 </span>&lt;5&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">994</span>
+<span class="lnr">66 </span>&lt;5&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span>
+<span class="lnr">67 </span>&lt;6&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">992</span>
+<span class="lnr">68 </span>&lt;6&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">991</span>
+<span class="lnr">69 </span>&lt;6&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">990</span>
+<span class="lnr">70 </span>&lt;7&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">990</span> <span class="Number">989</span>
+<span class="lnr">71 </span>&lt;7&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">990</span> <span class="Number">988</span>
+<span class="lnr">72 </span>&lt;7&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">990</span> <span class="Number">987</span>
+<span class="lnr">73 </span>&lt;8&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">990</span> <span class="Number">987</span> <span class="Number">986</span>
+<span class="lnr">74 </span>&lt;8&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">990</span> <span class="Number">987</span> <span class="Number">985</span>
+<span class="lnr">75 </span>&lt;9&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">990</span> <span class="Number">987</span> <span class="Number">985</span> <span class="Number">984</span>
+<span class="lnr">76 </span>osv...
+</pre>
+<p>Det første tallet i klammer på hver linje er antall elementer på stacken. Toppen av stacken er lengst til høyre.</p>
+<p>Etter at alle tallene er samlet opp, brukes ordet <em>sum-numbers</em> til å "slå dem sammen". Her ser du hvordan stacken utvikler seg, og til slutt står igjen med svaret:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">78 </span><span class="Comment">\ Stack dump from running sum-numbers:</span>
+<span class="lnr">79 </span>&lt;467&gt; <span class="Number">20</span> <span class="Number">18</span> <span class="Number">15</span> <span class="Number">12</span> <span class="Number">10</span> <span class="Number">9</span> <span class="Number">6</span> <span class="Number">5</span> <span class="Number">3</span>
+<span class="lnr">80 </span>&lt;466&gt; <span class="Number">21</span> <span class="Number">20</span> <span class="Number">18</span> <span class="Number">15</span> <span class="Number">12</span> <span class="Number">10</span> <span class="Number">9</span> <span class="Number">6</span> <span class="Number">8</span>
+<span class="lnr">81 </span>&lt;465&gt; <span class="Number">24</span> <span class="Number">21</span> <span class="Number">20</span> <span class="Number">18</span> <span class="Number">15</span> <span class="Number">12</span> <span class="Number">10</span> <span class="Number">9</span> <span class="Number">14</span>
+<span class="lnr">82 </span>&lt;464&gt; <span class="Number">25</span> <span class="Number">24</span> <span class="Number">21</span> <span class="Number">20</span> <span class="Number">18</span> <span class="Number">15</span> <span class="Number">12</span> <span class="Number">10</span> <span class="Number">23</span>
+<span class="lnr">83 </span>&lt;463&gt; <span class="Number">27</span> <span class="Number">25</span> <span class="Number">24</span> <span class="Number">21</span> <span class="Number">20</span> <span class="Number">18</span> <span class="Number">15</span> <span class="Number">12</span> <span class="Number">33</span>
+<span class="lnr">84 </span>&lt;462&gt; <span class="Number">30</span> <span class="Number">27</span> <span class="Number">25</span> <span class="Number">24</span> <span class="Number">21</span> <span class="Number">20</span> <span class="Number">18</span> <span class="Number">15</span> <span class="Number">45</span>
+<span class="lnr">85 </span><span class="Number">...</span>
+<span class="lnr">86 </span>&lt;7&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">990</span> <span class="Number">228195</span>
+<span class="lnr">87 </span>&lt;6&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">993</span> <span class="Number">229185</span>
+<span class="lnr">88 </span>&lt;5&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">995</span> <span class="Number">230178</span>
+<span class="lnr">89 </span>&lt;4&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">996</span> <span class="Number">231173</span>
+<span class="lnr">90 </span>&lt;3&gt; <span class="Number">0</span> <span class="Number">999</span> <span class="Number">232169</span>
+<span class="lnr">91 </span>&lt;2&gt; <span class="Number">0</span> <span class="Number">233168</span>
+</pre>
+<p>Som lovet følger til slutt samme løsning "oversatt" til C#. Kommentarene i koden viser hva koden mapper til i Forth:</p><pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 16px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Statement">using</span> System;
+<span class="lnr">11 </span><span class="Statement">using</span> System.Collections.Generic;
+<span class="lnr">12 </span>
+<span class="lnr">13 </span><span class="Type">namespace</span> Euler1.RecursiveStackSolution
+<span class="lnr">14 </span>{
+<span class="lnr">15 </span>    <span class="Type">class</span> Program
+<span class="lnr">16 </span>    {
+<span class="lnr">17 </span>        <span class="Type">static</span> Stack&lt;<span class="Type">int</span>&gt; stack = <span class="Statement">new</span> Stack&lt;<span class="Type">int</span>&gt;();
+<span class="lnr">18 </span>
+<span class="lnr">19 </span>        <span class="Type">static</span> <span class="Type">bool</span> MultipleOf3 {
+<span class="lnr">20 </span>            <span class="Statement">get</span> {
+<span class="lnr">21 </span>                <span class="Statement">return</span> stack.Peek() % <span class="Number">3</span> == <span class="Number">0</span>; <span class="Comment">// dup 3 mod 0 =</span>
+<span class="lnr">22 </span>            }
+<span class="lnr">23 </span>        }
+<span class="lnr">24 </span>
+<span class="lnr">25 </span>        <span class="Type">static</span> <span class="Type">bool</span> MultipleOf5 {
+<span class="lnr">26 </span>            <span class="Statement">get</span> {
+<span class="lnr">27 </span>                <span class="Statement">return</span> stack.Peek() % <span class="Number">5</span> == <span class="Number">0</span>; <span class="Comment">// dup 5 mod 0 =</span>
+<span class="lnr">28 </span>            }
+<span class="lnr">29 </span>        }
+<span class="lnr">30 </span>
+<span class="lnr">31 </span>        <span class="Type">static</span> <span class="Type">bool</span> NextIsZero {
+<span class="lnr">32 </span>            <span class="Statement">get</span> {
+<span class="lnr">33 </span>                <span class="Statement">return</span> stack.Peek() == <span class="Number">0</span>; <span class="Comment">// dup 0 =</span>
+<span class="lnr">34 </span>            }
+<span class="lnr">35 </span>        }
+<span class="lnr">36 </span>
+<span class="lnr">37 </span>        <span class="Type">static</span> <span class="Type">void</span> KeepNumber() {
+<span class="lnr">38 </span>            stack.Push(stack.Peek()); <span class="Comment">// dup</span>
+<span class="lnr">39 </span>        }
+<span class="lnr">40 </span>
+<span class="lnr">41 </span>        <span class="Type">static</span> <span class="Type">void</span> KeepNumberIfMultipleOf3or5() {
+<span class="lnr">42 </span>            <span class="Conditional">if</span> (MultipleOf3) <span class="Comment">// multiple-of-3 if</span>
+<span class="lnr">43 </span>                KeepNumber();
+<span class="lnr">44 </span>            <span class="Conditional">else</span> <span class="Conditional">if</span> ((MultipleOf5)) <span class="Comment">// multiple-of-5 if</span>
+<span class="lnr">45 </span>                KeepNumber();
+<span class="lnr">46 </span>            stack.Push(stack.Pop() - <span class="Number">1</span>); <span class="Comment">// 1-</span>
+<span class="lnr">47 </span>        }
+<span class="lnr">48 </span>
+<span class="lnr">49 </span>        <span class="Type">static</span> <span class="Type">void</span> GenerateNumbers() {
+<span class="lnr">50 </span>            <span class="Conditional">if</span> (!NextIsZero) { <span class="Comment">// next-is-zero invert if</span>
+<span class="lnr">51 </span>                KeepNumberIfMultipleOf3or5();
+<span class="lnr">52 </span>                GenerateNumbers();
+<span class="lnr">53 </span>            }
+<span class="lnr">54 </span>        }
+<span class="lnr">55 </span>
+<span class="lnr">56 </span>        <span class="Type">static</span> <span class="Type">void</span> Swap() { <span class="Comment">// swap</span>
+<span class="lnr">57 </span>            <span class="Type">int</span> a = stack.Pop(); <span class="Type">int</span> b = stack.Pop();
+<span class="lnr">58 </span>            stack.Push(a); stack.Push(b);
+<span class="lnr">59 </span>        }
+<span class="lnr">60 </span>
+<span class="lnr">61 </span>        <span class="Type">static</span> <span class="Type">void</span> SumNumbers() {
+<span class="lnr">62 </span>            stack.Push(stack.Pop() + stack.Pop()); <span class="Comment">// +</span>
+<span class="lnr">63 </span>            Swap();
+<span class="lnr">64 </span>            <span class="Conditional">if</span> (NextIsZero)
+<span class="lnr">65 </span>                stack.Pop(); <span class="Comment">// drop</span>
+<span class="lnr">66 </span>            <span class="Conditional">else</span> {
+<span class="lnr">67 </span>                Swap();
+<span class="lnr">68 </span>                SumNumbers();
+<span class="lnr">69 </span>            }
+<span class="lnr">70 </span>        }
+<span class="lnr">71 </span>
+<span class="lnr">72 </span>        <span class="Type">static</span> <span class="Type">void</span> Main() {
+<span class="lnr">73 </span>            stack.Push(<span class="Number">0</span>); <span class="Comment">// 0</span>
+<span class="lnr">74 </span>            stack.Push(<span class="Number">999</span>); <span class="Comment">// 999</span>
+<span class="lnr">75 </span>            GenerateNumbers();
+<span class="lnr">76 </span>            stack.Pop(); <span class="Comment">// drop</span>
+<span class="lnr">77 </span>            SumNumbers();
+<span class="lnr">78 </span>            Console.WriteLine(stack.Pop()); <span class="Comment">// . cr</span>
+<span class="lnr">79 </span>        }
+<span class="lnr">80 </span>    }
+<span class="lnr">81 </span>}
+</pre>
+<p>Som du ser blir det "mye mer syntaks" i C# for å få til det samme som jeg har gjort i Forth.</p>
+<h4>Hvordan komme i gang med Forth</h4>
+<p><a href="http://bernd-paysan.de/gforth.html">GForth</a> er en open source-implementasjon av Forth. Last den ned! Så leser du online-boken <a href="http://www.forth.com/starting-forth/">Starting Forth</a>. Resten kommer av seg selv!</p>
+<h4>Hvorfor bruke tid på Forth</h4>
+<p>Forth er anderledes, og lærer deg derfor nye måter å tenke på. Denne forklaringen på hvorfor du skal se på et bestemt språk begynner å bli en gjenganger nå.</p>
+<p>I starten sa jeg at Forth representerer en filosofi. Denne filosofien er forklart i boken <a href="http://thinking-forth.sourceforge.net/"><em>Thinking Forth</em></a> (<a href="http://prdownloads.sourceforge.net/thinking-forth/thinking-forth-color.pdf?download">pdf her</a>), publisert første gang i 1984. Det er verdt å lære seg Forth bare fordi det lar deg lese og forstå denne boken, som regnes som en klassiker blant bøker ment for utviklere.</p>
+<p>Følgende utdrag (..mener jeg..) er hentet fra innledningen:</p>
+<p style="margin-left: 15px; font-size: 115%"><em>Our most essential tools and techniques are mental. We need a <u>consistent and practical methodology for thinking about software problems</u>. That is what I have tried to capture in this book. Thinking Forth is meant for anyone interested in writing software to solve problems. It focuses on design and implementation; deciding what you want to accomplish, designing the components of the system, and finally building the program.</em></p>
+<p style="margin-left: 15px; font-size: 115%"><em>The book stresses the importance of writing <u>programs that not only work, but that are also readable, logical, and that express the best solution in the simplest terms.</u></em></p>
+<p>I følge forfatteren korresponderer Forth-programmering bra med måten vi mennesker tenker på. Forth er enkelt, elegant og fleksibelt.</p>

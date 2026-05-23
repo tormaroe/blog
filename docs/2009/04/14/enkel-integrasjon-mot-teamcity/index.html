@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Diverse prosjekter,XML,Jobb">
+
+    <title>Enkel integrasjon mot TeamCity</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Enkel integrasjon mot TeamCity</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 15. april 2009</small> 
+            <a href="/tags/diverse-prosjekter"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Diverse prosjekter</span></a>
+          
+            <a href="/tags/xml"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> XML</span></a>
+          
+            <a href="/tags/jobb"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Jobb</span></a>
+          </p>
+          <p>Du tror det kanskje ikke, men versjon 3 av ContikiCenter er sluppet - bare 14 dager etter versjon 1. Dette er en WPF-applikasjon jeg utvikler som står sentralt plassert i resepsjonen der jeg jobber, og viser noen sentrale data om statusen i CMA Contiki's R&amp;D avdeling.</p>
+<p style="text-align: center;"><a title="ContikiCenter TeamCity integration 1 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3441709360/"><img src="http://farm4.static.flickr.com/3662/3441709360_f67c0cd7d2_o.png" alt="ContikiCenter TeamCity integration 1" width="500" height="205" border="0" /></a><br />
+<em>Contiki Center versjon 3.0</em></p>
+<p>Fra før har jeg laget en modul for personellstatus, og en som viser status på vårt nattlige CruiseControl-bygg som produserer installasjonspakker m.m. (<a href="/2009/04/08/contikicenter-version-20/">litt om den modulen her</a>). Til versjon 3 har jeg utviklet en integrasjon til <a href="http://www.jetbrains.com/teamcity/">TeamCity</a>, og her skal jeg fortelle litt om den og dele noen WPF-erfaringer etc.</p>
+<p>TeamCity er en server for kontinuerlig integrasjon (CI) fra JetBrains, selskapet bak ReSharper. Hver gang vi sjekker inn endringer i kildekodesystemet vårt, fyrer TeamCity igang automatisk kompilering og kjøring av eventuelle enhets- og integrasjonstester. Kontinuerlig integrasjon er et uvurderlig hjelpemiddel når man jobber i felleskap på samme produkt.</p>
+<p style="margin-left: 15px; margin-right: 15px; background-color: goldenrod; padding: 10px;"><strong>Advarsel:</strong> WPF-koden i denne artikkelen utgjør på ingen måte best practice. Jeg har enda ikke lært meg MVVM, og er ikke så flink til å separere logikk og visningskode. Modulene mine er derimot så enkle at dette ikke har vært nødvenig, og jeg håper man kan finne et og annet tips av verdi likevel.</p>
+<p>Modulen jeg har laget for ContikiCenter lister statusen på de viktigste CI-prosjektene vi har kjørende. TeamCity tilbyr Atom-feeds med diverse informasjon (<a href="http://en.wikipedia.org/wiki/Atom_(standard)">Atom</a> er nesten det samme som <a href="http://en.wikipedia.org/wiki/RSS">RSS</a>), og det er dette jeg har brukt for å lage integrasjonen. Med <strong>LINQ to XML</strong> er det enkelt å hente feeden, parse den og opprette instanser av klassen Build som jeg har laget for å holde informasjon om et TeamCity-bygg. Det gjør jeg på denne måten:</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">xml</span> = <span style="color: yellow;">XDocument</span>.<span style="color: #f8ffc6;">Load</span>(<span style="color: #f8ffc6;">_feedUrl</span>);</p>
+<p style="margin: 0px;"><span style="color: yellow;">XNamespace</span> <span style="color: #f8ffc6;">xmlns</span> = <span style="color: #c89191;">"http://www.w3.org/2005/Atom"</span>;</p>
+<p style="margin: 0px;">
+<p style="margin: 0px;"><span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">entries</span> = <span style="font-weight: bold; color: #eaeaac;">from</span> <span style="color: #f8ffc6;">xElem</span> <span style="font-weight: bold; color: #eaeaac;">in</span> <span style="color: #f8ffc6;">xml</span>.<span style="color: #f8ffc6;">Descendants</span>(<span style="color: #f8ffc6;">xmlns</span> + <span style="color: #c89191;">"entry"</span>)</p>
+<p style="margin: 0px;">              <span style="font-weight: bold; color: #eaeaac;">select</span> <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">Build</span></p>
+<p style="margin: 0px;">              {</p>
+<p style="margin: 0px;">                  <span style="color: #f8ffc6;">Name</span> = <span style="color: yellow;">BuildParser</span>.<span style="color: #f8ffc6;">ExtractName</span>(<span style="color: #f8ffc6;">xElem</span>.<span style="color: #f8ffc6;">Element</span>(<span style="color: #f8ffc6;">xmlns</span> + <span style="color: #c89191;">"title"</span>).<span style="color: #f8ffc6;">Value</span>),</p>
+<p style="margin: 0px;">                  <span style="color: #f8ffc6;">BuildTime</span> = <span style="color: yellow;">BuildParser</span>.<span style="color: #f8ffc6;">ExtractTime</span>(<span style="color: #f8ffc6;">xElem</span>.<span style="color: #f8ffc6;">Element</span>(<span style="color: #f8ffc6;">xmlns</span> + <span style="color: #c89191;">"updated"</span>).<span style="color: #f8ffc6;">Value</span>),</p>
+<p style="margin: 0px;">                  <span style="color: #f8ffc6;">StatusDescription</span> = <span style="color: #f8ffc6;">xElem</span>.<span style="color: #f8ffc6;">Element</span>(<span style="color: #f8ffc6;">xmlns</span> + <span style="color: #c89191;">"author"</span>).<span style="color: #f8ffc6;">Element</span>(<span style="color: #f8ffc6;">xmlns</span> + <span style="color: #c89191;">"name"</span>).<span style="color: #f8ffc6;">Value</span>,</p>
+<p style="margin: 0px;">              };</p>
+</div>
+<p>BuildParser er en enkel hjelpeklasse for å parse ut deler av informasjonen jeg trenger. Selve modulen som skal vise byggene har følgende code behind:</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">   24</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">partial</span> <span style="font-weight: bold; color: #eaeaac;">class</span> <span style="color: yellow;">TeamCityDefaultView</span> : <span style="color: yellow;">UserControl</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   25</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   26</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="font-weight: bold; color: #eaeaac;">string</span> <span style="color: #f8ffc6;">_feedUrl</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   27</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="color: yellow;">DispatcherTimer</span> <span style="color: #f8ffc6;">_timer</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   28</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="color: yellow;">ObservableCollection</span>&lt;<span style="color: yellow;">Build</span>&gt; <span style="color: #f8ffc6;">_builds</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">ObservableCollection</span>&lt;<span style="color: yellow;">Build</span>&gt;();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   29</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   30</span>     <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="color: yellow;">ObservableCollection</span>&lt;<span style="color: yellow;">Build</span>&gt; <span style="color: #f8ffc6;">Builds</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   31</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   32</span>         <span style="font-weight: bold; color: #eaeaac;">get</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   33</span>         {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   34</span>             <span style="font-weight: bold; color: #eaeaac;">return</span> <span style="color: #f8ffc6;">_builds</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   35</span>         }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   36</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   37</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   38</span>     <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="color: #f8ffc6;">TeamCityDefaultView</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   39</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   40</span>         <span style="color: #f8ffc6;">_feedUrl</span> = <span style="color: yellow;">ConfigurationManager</span>.<span style="color: #f8ffc6;">AppSettings</span>[<span style="color: #c89191;">"TeamCityFeed"</span>];</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   41</span>         <span style="color: #f8ffc6;">FetchBuilds</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   42</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   43</span>         <span style="color: #f8ffc6;">InitializeComponent</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   44</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   45</span>         <span style="color: #f8ffc6;">_timer</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">DispatcherTimer</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   46</span>         <span style="color: #f8ffc6;">_timer</span>.<span style="color: #f8ffc6;">Interval</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: #2b91af;">TimeSpan</span>(<span style="color: #8acccf;">0</span>, <span style="color: #8acccf;">1</span>, <span style="color: #8acccf;">0</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   47</span>         <span style="color: #f8ffc6;">_timer</span>.<span style="color: #f8ffc6;">Tick</span> += <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: #2b91af;">EventHandler</span>(<span style="color: #f8ffc6;">_timer_Tick</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   48</span>         <span style="color: #f8ffc6;">_timer</span>.<span style="color: #f8ffc6;">Start</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   49</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   50</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   51</span>     <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">_timer_Tick</span>(<span style="font-weight: bold; color: #eaeaac;">object</span> <span style="color: #f8ffc6;">sender</span>, <span style="color: yellow;">EventArgs</span> <span style="color: #f8ffc6;">e</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   52</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   53</span>         <span style="color: #f8ffc6;">FetchBuilds</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   54</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   55</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   56</span>     <span style="font-weight: bold; color: #eaeaac;">private</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">FetchBuilds</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   57</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   58</span>         <span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">teamCityFeed</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">TeamCityFeed</span>(<span style="color: #f8ffc6;">_feedUrl</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   59</span>         <span style="color: #f8ffc6;">teamCityFeed</span>.<span style="color: #f8ffc6;">Load</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   60</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   61</span>         <span style="color: #f8ffc6;">_builds</span>.<span style="color: #f8ffc6;">Clear</span>();</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   62</span>         <span style="font-weight: bold; color: #eaeaac;">foreach</span> (<span style="font-weight: bold; color: #eaeaac;">var</span> <span style="color: #f8ffc6;">item</span> <span style="font-weight: bold; color: #eaeaac;">in</span> <span style="color: #f8ffc6;">teamCityFeed</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   63</span>         {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   64</span>             <span style="color: #f8ffc6;">_builds</span>.<span style="color: #f8ffc6;">Add</span>(<span style="color: #f8ffc6;">item</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   65</span>         }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   66</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   67</span> }</p>
+</div>
+<p>Propertien <em>Builds</em> er en <em>ObservableCollection</em> som til enhver tid inneholder alle byggene fra Atom-feeden. I XAML-delen av kontrollen kan jeg binde mot denne, og brukergrensesnittet vil automatisk oppdatere seg om inneholdet i kolleksjonen oppdaterer seg.</p>
+<p>I konstruktøren setter jeg opp en <em>DispatcherTimer</em> til å tikke én gang i minuttet, og for hvert tikk henter jeg feeden på nytt og oppdaterer Builds-properien. <em>TeamCityFeed</em> er klassen min som henter og parser feeden.</p>
+<p>Resultatet er modulen du ser nedenfor, som viser navnet og statusbeskrivelsen for hver bygg.</p>
+<p style="text-align: center;"><a title="ContikiCenter TeamCity integration 2 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3440897071/"><img src="http://farm4.static.flickr.com/3548/3440897071_37ac07c90f_o.png" alt="ContikiCenter TeamCity integration 2" width="330" height="201" border="0" /></a></p>
+<p>Grensesnittet består av to ulike WPF-kontroller. <em>TeamCityDefaultView</em> er den blå, store boksen. DataContext er satt til å peke på seg selv (ved hjelp av den merkelige syntax'en på linje 5 (se nedenfor)), og slik vil den få tilgang til Builds-propertien. <em>TeamCityDefaultView</em> inneholder videre en <em>ItemsControl</em>, som mer eller mindre tilsvarer en <em>Repeater</em> i ASP.NET (om du er kjent med det). Og det er i den kontrollen vi sier at <em>ItemsSource</em> skal bindes mot <em>Builds</em>.</p>
+<p>Grensesnittet for hvert enkelt bygg defineres av en annen WPF-kontroll jeg har kalt <em>BuildControl</em>. For å bruke den må jeg inkludere namespacet den ligger i, og det har jeg gjort i linje 3. Ved å sette <em>DataContext={Binding}</em> vil hver kontroll som opprettes på bakrunn av <em>Builds</em>-kolleksjonen motta én Build-instans.</p>
+<p style="text-align: center;"><a title="ContikiCenter TeamCity integration 4 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3441021509/sizes/o"><img src="http://farm4.static.flickr.com/3637/3441021509_b2c085ccae.jpg" alt="ContikiCenter TeamCity integration 4" width="500" height="350" border="0" /><br />
+<em>Klikk her for større bilde</em></a></p>
+<p>XAML'en til <em>BuildControl</em> ser du nedenfor. Den inneholder enkelt og greit to tekstblokker som bindes mot henholdsvis <em>Name</em> og <em>StatusDescription</em> fra Build-instansen som er datakonteksten til kontrollen.</p>
+<p style="text-align: center;"><a title="ContikiCenter TeamCity integration 5 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3441834724/sizes/o"><img src="http://farm4.static.flickr.com/3594/3441834724_a6b92190e6.jpg" alt="ContikiCenter TeamCity integration 5" width="500" height="192" border="0" /><br />
+<em>Klikk her for større bilde</em></a></p>
+<p>Nå gjenstår det bare en ting: Om en build feiler ønsker jeg at det skal bli veldig synlig for dem som går forbi statustavlen.., jeg vil at den skal skrike rødt. For å få til det overstyrer jeg <em>OnRender</em> i <em>BuildControl</em>-komponenten, henter ut Build-instansen, og sjekker statusbeskrivelsen. Om beskrivelsen er <strong>"failed build"</strong> overstyrer jeg utseende på <em>Border</em>-kontrollen, som er ansvarlig for hvordan raden ser ut:</p>
+<div style="padding-left: 5px; font-size: 9pt; background: #2e2e2e; margin-bottom: 16px; color: #d2d200; font-family: Courier New;">
+<p style="margin: 0px;"><span style="color: #85ac8d;">   28</span> <span style="font-weight: bold; color: #eaeaac;">protected</span> <span style="font-weight: bold; color: #eaeaac;">override</span> <span style="font-weight: bold; color: #eaeaac;">void</span> <span style="color: #f8ffc6;">OnRender</span>(<span style="color: yellow;">DrawingContext</span> <span style="color: #f8ffc6;">drawingContext</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   29</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   30</span>     <span style="color: yellow;">Build</span> <span style="color: #f8ffc6;">build</span> = <span style="color: #f8ffc6;">DataContext</span> <span style="font-weight: bold; color: #eaeaac;">as</span> <span style="color: yellow;">Build</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   31</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   32</span>     <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">build</span> != <span style="font-weight: bold; color: #eaeaac;">null</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   33</span>     {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   34</span>         <span style="font-weight: bold; color: #eaeaac;">if</span> (<span style="color: #f8ffc6;">IsFailedBuild</span>(<span style="color: #f8ffc6;">build</span>))</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   35</span>         {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   36</span>             <span style="color: yellow;">RadialGradientBrush</span> <span style="color: #f8ffc6;">failedGradientBrush</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">RadialGradientBrush</span>()</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   37</span>             {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   38</span>                 <span style="color: #f8ffc6;">GradientOrigin</span> = <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: #2b91af;">Point</span>(<span style="color: #8acccf;">1</span>, <span style="color: #8acccf;">1.5</span>),</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   39</span>                 <span style="color: #f8ffc6;">SpreadMethod</span> = <span style="color: #2b91af;">GradientSpreadMethod</span>.<span style="color: #f8ffc6;">Pad</span>,</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   40</span>             };</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   41</span>             <span style="color: #f8ffc6;">failedGradientBrush</span>.<span style="color: #f8ffc6;">GradientStops</span>.<span style="color: #f8ffc6;">Add</span>(</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   42</span>                 <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">GradientStop</span>(</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   43</span>                     <span style="color: #2b91af;">Color</span>.<span style="color: #f8ffc6;">FromArgb</span>(<span style="color: #8acccf;">0xFF</span>, <span style="color: #8acccf;">0xFF</span>, <span style="color: #8acccf;">0x93</span>, <span style="color: #8acccf;">0x4A</span>), <span style="color: #8acccf;">0</span>));</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   44</span>             <span style="color: #f8ffc6;">failedGradientBrush</span>.<span style="color: #f8ffc6;">GradientStops</span>.<span style="color: #f8ffc6;">Add</span>(</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   45</span>                 <span style="font-weight: bold; color: #eaeaac;">new</span> <span style="color: yellow;">GradientStop</span>(</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   46</span>                     <span style="color: #2b91af;">Color</span>.<span style="color: #f8ffc6;">FromArgb</span>(<span style="color: #8acccf;">0xFF</span>, <span style="color: #8acccf;">0xFF</span>, <span style="color: #8acccf;">0x19</span>, <span style="color: #8acccf;">0x0B</span>), <span style="color: #8acccf;">1.3</span>));</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   47</span>             <span style="color: #f8ffc6;">_border</span>.<span style="color: #f8ffc6;">Background</span> = <span style="color: #f8ffc6;">failedGradientBrush</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   48</span>             <span style="color: #f8ffc6;">_border</span>.<span style="color: #f8ffc6;">Opacity</span> = <span style="color: #8acccf;">1</span>;</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   49</span>         }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   50</span>     }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   51</span>     <span style="font-weight: bold; color: #eaeaac;">base</span>.<span style="color: #f8ffc6;">OnRender</span>(<span style="color: #f8ffc6;">drawingContext</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   52</span> }</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   53</span></p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   54</span> <span style="font-weight: bold; color: #eaeaac;">public</span> <span style="font-weight: bold; color: #eaeaac;">bool</span> <span style="color: #f8ffc6;">IsFailedBuild</span>(<span style="color: yellow;">Build</span> <span style="color: #f8ffc6;">build</span>)</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   55</span> {</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   56</span>     <span style="font-weight: bold; color: #eaeaac;">return</span> <span style="color: #f8ffc6;">build</span>.<span style="color: #f8ffc6;">StatusDescription</span>.<span style="color: #f8ffc6;">ToLower</span>().<span style="color: #f8ffc6;">Equals</span>(<span style="color: #c89191;">"failed build"</span>);</p>
+<p style="margin: 0px;"><span style="color: #85ac8d;">   57</span> }</p>
+</div>
+<p>Borderen (og dens innhold) har jeg også per default satt til å være gjennomsiktig. Om bygget feiler setter jeg <em>opacity</em> til 1, slik at den blir ekstra synlig. Og sånn blir resultatet:</p>
+<p style="text-align: center;"><a title="ContikiCenter TeamCity integration 3 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3440897103/"><img src="http://farm4.static.flickr.com/3559/3440897103_a693bd7ae1_o.png" alt="ContikiCenter TeamCity integration 3" width="330" height="201" border="0" /></a></p>
+<p>Jeg måtte fremprovosere en feil for å få tatt dette snapshot'et, siden byggene våre er så stabile :)</p>
+<p>Håper du fant noe av interesse her. Har du noen kommentarer til mine ynkelige forsøk på bruk av WPF så setter jeg umåtelig pris på en kommentar eller tre.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=Continous+integration" rel="tag">Continous integration</a>, <a href="/index.php?s=Contiki" rel="tag">Contiki</a>, <a href="/index.php?s=ContikiCenter" rel="tag">ContikiCenter</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

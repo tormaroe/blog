@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="C#">
+
+    <title>Skummelt med virtuelle metoder</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Skummelt med virtuelle metoder</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> onsdag 2. desember 2009</small> 
+            <a href="/tags/csharp"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> C#</span></a>
+          </p>
+          <p>Ta en titt på følgende program, og se om du kan utlede hva output blir når det kjøres.</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #e3d5c1; color: black; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 1</span>&nbsp;<span style="color: #400080">class</span> <span style="color: #305fb6">SomeClass</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 2</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 3</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #400080">protected</span> <span style="color: #010001">SomeClass</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 4</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 5</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #010001">SomeFunction</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 6</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 7</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #400080">protected</span> <span style="color: #400080">virtual</span> <span style="color: #400080">void</span> <span style="color: #010001">SomeFunction</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 8</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp;&nbsp; 9</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #305fb6">Console</span><span style="color: #2e53d1">.</span><span style="color: #010001">WriteLine</span>(<span style="color: #259241; font-weight: bold">"SomeFunction in SomeClass"</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 10</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 11</span> }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 12</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 13</span>&nbsp;<span style="color: #400080">class</span> <span style="color: #305fb6">SomeDerivedClass</span> : <span style="color: #305fb6">SomeClass</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 14</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 15</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #400080">private</span> <span style="color: #400080">readonly</span> <span style="color: #400080">string</span> <span style="color: #010001">msg</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 16</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 17</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #400080">public</span> <span style="color: #010001">SomeDerivedClass</span>(<span style="color: #400080">string</span> <span style="color: #010001">msg</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 18</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 19</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #400080">this</span><span style="color: #2e53d1">.</span><span style="color: #010001">msg</span> <span style="color: #2e53d1">=</span> <span style="color: #010001">msg</span>;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 20</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 21</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #400080">protected</span> <span style="color: #400080">override</span> <span style="color: #400080">void</span> <span style="color: #010001">SomeFunction</span>()</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 22</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 23</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #305fb6">Console</span><span style="color: #2e53d1">.</span><span style="color: #010001">WriteLine</span>(<span style="color: #010001">msg</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 24</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 25</span> }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 26</span>&nbsp;</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 27</span>&nbsp;<span style="color: #400080">class</span> <span style="color: #305fb6">Program</span></p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 28</span> {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 29</span>&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #400080">static</span> <span style="color: #400080">void</span> <span style="color: #010001">Main</span>(<span style="color: #400080">string</span>[] <span style="color: #010001">args</span>)</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 30</span>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 31</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #400080">var</span> <span style="color: #010001">d</span> <span style="color: #2e53d1">=</span> <span style="color: #400080">new</span> <span style="color: #305fb6">SomeDerivedClass</span>(<span style="color: #259241; font-weight: bold">"Constructed in main"</span>);</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 32</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #305fb6">Console</span><span style="color: #2e53d1">.</span><span style="color: #010001">ReadLine</span>();</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 33</span>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 34</span> }</p>
+</div>
+<p>Ikke juks! Hva tror du det blir? Jeg skal vedde på at i alle fall forfatteren av SomeDerivedClass håper output blir "Constructed in main". Det blir det derimot ikke - Dette programmet har ikke noe annet output enn en newline!</p>
+<p>Det som skjer når man oppretter objektet i linje 31 er at konstruktøren i linje 17 kalles. Men før den kan eksekvere innholdet i linje 19 kaller den implisit konstruktøren til baseklassen – linje 3. Denne konstruktøren kaller SomeFunction, men siden dette er et objekt av type SomeDerivedClass vil den ikke kalle SomeFunction i SomeClass, den vil kalle SomeFunction i SomeDerivedClass. Problemet er at den metoden bruker en instansvariabel som settes i konstruktøren, men linje 19 har ikke blitt kjørt enda. this.msg er derfor null i det øyeblikket den skrives ut.</p>
+<p>Om msg hadde hatt en "default-verdi", ved at linje 15 for eksempel så ut som nedenfor, ville det vært den verdien som ble output.</p>
+<div style="padding-left: 5px; font-family: monospace; margin-bottom: 12px; background: #e3d5c1; color: black; font-size: 9pt">
+<p style="line-height: 11pt; margin: 0px"><span style="background: #edcfa3; color: #a68a4a">&nbsp;&nbsp; 15</span>&nbsp;<span style="color: #400080">private</span> <span style="color: #400080">readonly</span> <span style="color: #400080">string</span> <span style="color: #010001">msg</span> <span style="color: #2e53d1">=</span> <span style="color: #259241; font-weight: bold">"Set by initializer"</span>;</p>
+</div>
+<p>Denne oppførselen gir logisk sett mening, men er veldig skummel fordi de som sub-klasser SomeClass ikke forventer at det skal fungere slik. I instans-metoder forventer man at konstruktøren har blitt kjørt, slik at man kan benytte seg av tilstand som settes der.</p>
+<p><strong><em>Man bør derfor aldri kalle virtuelle (inkludert abstrakte) metoder i konstruktører</em></strong>, fordi dette fører til en eksekveringsrekkefølge det er vanskelig å holde oversikt over. <em>Don't go down the rabbit hole!</em> Generelt sett bør konstruktører være reservert til å sette den initielle tilstanden til objektet, som normalt sett betyr å lagre referanser til kontruktørens argumenter. Konstruktører skal ikke ha oppførsel. </p>
+<p>Bruker du ting som FxCop eller Code Analysis i Visual Studio vil du også bli advart om slike situasjoner. Ta advarselen seriøst!</p>
+<p><img style="border-right-width: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto" title="CropperCapture[43]" border="0" alt="CropperCapture[43]" src="/uploads/2009/12/CropperCapture43.png" width="389" height="120"></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

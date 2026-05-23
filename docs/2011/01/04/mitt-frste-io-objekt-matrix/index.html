@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Polyglot,Io">
+
+    <title>Mitt første Io-objekt: Matrix</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Mitt første Io-objekt: Matrix</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 4. januar 2011</small> 
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/io"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Io</span></a>
+          </p>
+          <p><strong>Io</strong> er et prototype-basert språk, på samme måte som JavaScript. Her har jeg laget en prototype for å definere en matrise. Den arver fra <em>List</em> og har fire funskjoner: en for å sette dimensjonen, en for å sette verdien for en bestemt koordinat, en for å hente ut igjen verdien, og til slutt en for å printe ut hele matrisen.</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">10 </span><span class="Statement">Matrix</span> := List clone <span class="Statement">do</span>(
+<span class="lnr">11 </span>  dim := method(x, y,
+<span class="lnr">12 </span>    <span class="Statement">for</span>(i, <span class="Number">0</span>, x-<span class="Number">1</span>,
+<span class="lnr">13 </span>      self append(List clone)
+<span class="lnr">14 </span>      self at(i) setSize(y)
+<span class="lnr">15 </span>    )
+<span class="lnr">16 </span>    <span class="Statement">return</span> self
+<span class="lnr">17 </span>  )
+<span class="lnr">18 </span>  set := method(x, y, value,
+<span class="lnr">19 </span>    self at(x) atPut(y, value)
+<span class="lnr">20 </span>    <span class="Statement">return</span> self
+<span class="lnr">21 </span>  )
+<span class="lnr">22 </span>  get := method(x, y,
+<span class="lnr">23 </span>    self at(x) at(y)
+<span class="lnr">24 </span>  )
+<span class="lnr">25 </span>  print := method(
+<span class="lnr">26 </span>    self foreach(x,
+<span class="lnr">27 </span>      <span class="String">"["</span> print
+<span class="lnr">28 </span>      x reduce(acc, y, acc .. <span class="String">", "</span> .. y) print
+<span class="lnr">29 </span>      <span class="String">"]"</span> println
+<span class="lnr">30 </span>    )
+<span class="lnr">31 </span>  )
+<span class="lnr">32 </span>)
+</pre>
+<p>Deretter lager jeg en metode for å gjøre det litt enklere å opprette nye matriser:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">34 </span><span class="Statement">matrix</span> := method(x, y, Matrix clone dim(x, y))
+</pre>
+<p>Og så bruker jeg det jeg har laget. Først oppretter jeg en ny matrise jeg kaller <em>foo</em>, og skriver den ut. Deretter setter jeg verdier for alle koordinatene, og skiver den ut på nytt. Til slutt skriver jeg ut en tekstreng hvor jeg henter ut verdien i rad 2, kolonne 1:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px"><span class="lnr">36 </span><span class="Statement">foo</span> := matrix(<span class="Number">3</span>, <span class="Number">2</span>)
+<span class="lnr">37 </span>foo println
+<span class="lnr">38 </span>
+<span class="lnr">39 </span>foo <span class="Statement">do</span>(
+<span class="lnr">40 </span>  set(<span class="Number">0</span>, <span class="Number">0</span>, <span class="String">"Hello"</span>) set(<span class="Number">0</span>, <span class="Number">1</span>, <span class="String">"World"</span>)
+<span class="lnr">41 </span>  set(<span class="Number">1</span>, <span class="Number">0</span>, <span class="String">"My"</span>)    set(<span class="Number">1</span>, <span class="Number">1</span>, <span class="String">"name"</span>)
+<span class="lnr">42 </span>  set(<span class="Number">2</span>, <span class="Number">0</span>, <span class="String">"is"</span>)    set(<span class="Number">2</span>, <span class="Number">1</span>, <span class="String">"Tobben"</span>)
+<span class="lnr">43 </span>)
+<span class="lnr">44 </span>foo println
+<span class="lnr">45 </span>
+<span class="lnr">46 </span>writeln(<span class="String">"My name is "</span> .. foo get(<span class="Number">2</span>, <span class="Number">1</span>))
+</pre>
+<p>Og her er output:</p>
+<pre style="padding-bottom: 6px; background-color: #000000; padding-left: 6px; padding-right: 6px; font-family: monospace; margin-bottom: 18px; color: #f6f3e8; padding-top: 6px">C:\usr\local\bin&gt;io_static.exe c:\temp\hello.io
+[nil, nil]
+[nil, nil]
+[nil, nil]
+
+[Hello, World]
+[My, name]
+[is, Tobben]
+
+My name is Tobben
+</pre>
+<p>Se også forrige artikkel: <a href="/2011/01/02/hello-world-fra-io/">Hello, world fra Io</a>.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

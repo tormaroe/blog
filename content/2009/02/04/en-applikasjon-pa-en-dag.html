@@ -1,0 +1,21 @@
+---
+title: En applikasjon på en dag
+link: http://blog.kjempekjekt.com/2009/02/04/en-applikasjon-pa-en-dag/
+layout: post
+date: 2009-02-04 09:00:59Z
+tags:
+  - Diverse prosjekter
+  - Jobb
+  - Webutvikling
+---
+Av og til er det herlig å bare gjøre et <u>veldig lite</u> utviklingsprosjekt. Man får en ide eller en forespørsel, lar tanken modnes i en dag eller to, og så implementerer man løsningen på ca en arbeidsdag. Jeg har nettopp gjort et slikt prosjekt, hvor jeg utviklet et internt verktøyt på jobben for å samle kunnskap om feilsituasjoner knyttet til utvikling, installasjon og support av produktene våre.
+
+<strong>ContikiException</strong> er en meget enkel web app for registrering av kjente feilmeldinger med mulige løsninger. Det var Halvard (fra <a href="http://blog.kjempekjekt.com/2008/03/26/har-startet-open-source-prosjekt/">The Forecast Exchange</a>) som kom frem til at vi hadde et behov for dette verktøyet, og gav meg lysten til å gjøre det.
+<p align="center"><img id="image412" alt="ContikiExceptionSmaller.png" src="/uploads/2009/02/ContikiExceptionSmaller.png" /></p>
+Det fine med slike småprosjekter er at de fungerer som ideelle "prøvefelt" for nye verktøy og teknikker. Man kan teste ut nesten hva som helst når det meste man kan tape er én dags arbeid. Denne gangen valgte jeg å droppe relasjonsdatabase, og brukte i stedet en objectdatabase som heter <a href="http://www.db4o.com/">db4objects</a>. Jeg bruker denne teknologien på et par andre prosjekter også, men ingenting som er ferdig enda.
+
+I slutten av måneden skal jeg holde et innlegg på <a href="http://nnug.no/Avdelinger/Bergen/">NNUG i Bergen</a> om objectdatabaser, og hva vi .net utviklere kan bruke dem til.
+
+I tillegg har jeg så smått begynt å bruke <a href="http://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> i prosjektene mine; i ContikiException brukte jeg <a href="http://ninject.org/">ninject</a>. Ninject skryter av å være en ultrarask lettvekter, og i stedet for å basere seg på XML-konfigurasjon som mange av de andre DI rammeverkene bruker ninject et såkalt <em>fluent interface</em>. Dette betyr at det er enklere å sette opp avhengighetene - det er i alle fall mitt inntrykk, selv om jeg ikke har mye erfaring. I tillegg kan man dra nytte av <strong>code completion</strong> og <strong>type-safety</strong> - noe som i alle fall er et stort pluss.
+
+Dokumentasjoen sier dessuten at <em>"Ninject makes your application more ninja-like"</em>, så da er det uansett det naturlige valget for meg :)

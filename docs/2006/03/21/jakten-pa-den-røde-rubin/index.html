@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Ruby">
+
+    <title>Jakten på den røde rubin</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Jakten på den røde rubin</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> tirsdag 21. mars 2006</small> 
+            <a href="/tags/ruby"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Ruby</span></a>
+          </p>
+          <p><em><strong>"This is your last chance. After this, there is no turning back. You  take the blue pill - the story ends, you wake up in your bed and believe that C#  is the only way to code. You take the red pill - you stay in Wonderland and I  show you how different, simple and interesting code can really  be."</strong></em></p>
+<p><em><strong><img title="Ruby" id="image15" alt="Ruby" src="/uploads/2006/08/ruby.jpg" /></strong></em></p>
+<p>Jeg har tatt den røde pillen, og takker Morten Brudvik for tipset. Etter å ha  programmert i endel år nå så merker jeg at interessen for selve kodingen har  stagnert. Jeg er opptatt av god arkitektur, og det er mange spennende disipliner  i .NET verdenen, men jeg merker at jeg har blitt litt sløvet i måten å tenke  kode på - the C# way blir litt ensformig i lengden faktisk - og jeg bestemte meg  derfor for å utfordre meg selv litt.</p>
+<p>Jeg har derfor begynt å lære meg <strong>Ruby</strong>; ett litt anderledes  språk som på nostalgisk vis fører meg tilbake til Universitets-dagene og  Unix-livet. På samme måte som C# er det basert på populære språk og erfaringer  (i Ruby's tilfelle Ada, Perl, Smalltalk, Python, Lisp m.m.), men forsøker å gå  et steg videre og adressere svakhetene i disse språkene. Etterhvert som jeg  leser meg opp på Ruby så slår det meg at mange av de unike elementene i Ruby har  paralelle elementer i C# som er løsninger på svakheter i C++ og Java.</p>
+<p>Filosofien bak Ruby er å gjøre programmereren lykkelig ved å fjerne mengden av  "manuelt arbeid" under kodingen, og være minst mulig "overraskende" i sin  virkemåte. Det er et objektorientert språk - ALT er objekter - og bruker  "dynamic typing", en feature jeg faktisk aldri har sett nytten av før nå. Det  som er helt nytt for meg er bruken av kodeblokker som parametre til funksjoner.  Se for deg kode hvor du i nesten hvert eneste metodekall sender med et delegat  til en funksjon som metodekallet kjører. Det er veldig fjernt fra sånn som vi er  vant til å tenke i C-verden, men det er faktisk veldig elegant.</p>
+<p>Selv om Ruby er et såkalt skriptspråk, så påstås det at det kan brukes til det  meste. NASA bruker det til å kjøre simuleringer, så da må det jo være kult.  Ellers brukes det mye til behandling av data, netverks- og systemadministrasjon,  web applikasjoner osv. For meg blir det nok aldri noen erstatning for C# og .NET  rammeverket, og ikke for mine arbeidsgivere heller. C# er bedre på å strukturere  større prosjekter, men som er sekundærspråk for å utføre mindre oppgaver som  f.eks. automatisering av repetetive oppgaver eller parsing/transformering av  data, så er Ruby ypperlig for meg. 10 linjer i TextPad som det tar 5 minutter å  skrive gjør samme jobben som et prosjekt i .NET som det tar en halvtime å  opprette, kode og kompilere. For ikke å snakke om hvor lett det er å gjøre  endringer.</p>
+<p>Men først og fremst får Ruby meg til å tenke.., til å tenke nytt. Kanskje vil  dette også inspirere meg til å ta opp igjen arbeidet med neurale nettverk og  kunstig intelligens, hvem vet..?! Og så er det jo veldig kult da (på en veldig  nerdete måte, jeg vet)!</p>
+<div><strong>Viktige linker:</strong><br /><br />
+Wikipedia: <a href="http://en.wikipedia.org/wiki/Ruby_programming_language">http://en.wikipedia.org/wiki/Ruby_programming_language</a><br /><br />
+Lærebok:  <a href="http://www.rubycentral.com/book/">http://www.rubycentral.com/book/</a><br /><br />
+Ruby  Quiz: <a href="http://www.rubyquiz.com/">http://www.rubyquiz.com/</a></div>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

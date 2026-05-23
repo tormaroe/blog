@@ -1,0 +1,29 @@
+---
+title: "Informatisk julekalender: Lille Julaften"
+link: http://blog.kjempekjekt.com/2010/12/23/informatisk-julekalender-lille-julaften/
+layout: post
+date: 2010-12-23 08:47:10Z
+tags:
+  - Julekalender
+  - C
+---
+<p><img style="background-image: none; border-right-width: 0px; padding-left: 0px; padding-right: 0px; display: block; float: none; border-top-width: 0px; border-bottom-width: 0px; margin-left: auto; border-left-width: 0px; margin-right: auto; padding-top: 0px" title="thompson_ritchie" border="0" alt="thompson_ritchie" src="/uploads/2010/12/thompson_ritchie.png" width="530" height="271"></p> <p>Jeg har funnet frem et par skikkelige skjegg-nisser til å representere lille julaften. Siden utviklingen av de aller første datamaskinene er det er få, om i det hele tatt noen, som har hatt så stor påvirkning på utviklingen av programmeringsindustrien som det <strong>Ken Thompson</strong> og <strong>Dennis MacAlistair Ritchie</strong> hadde gjennom sitt arbeide med operativsystemet <strong>Unix</strong> og programmeringsspråket <strong>C</strong> på 70-tallet.</p> <p>På 60-tallet jobbet Ken og Dennis sammen med å utvikle operativsystemet <strong><em>Multics</em></strong>, og samtidig utviklet Ken et programmeringsspråk han kalte <em>Bon</em>. Da <em>Bell Labs</em> trakk seg ut av dette prosjektet i 1969 brukte duoen erfaringen sin til å utvikle et nytt operativsystem som fikk navnet <strong><em>UNIX</em></strong>. Thompson bestemte også at OS’et behøvde sitt eget språk, og designet programmeringsspråket <strong>B</strong>, forløperen til <strong>C</strong>, som ble utviklet av Dennis. C er som de fleste vet fortsatt mye brukt i dag, og har influert de fleste, moderne programmeringsspråk. Unix har også vært betydningsfullt, og i tillegg til å direkte føre til utviklingen av Linux etablert det konsepter og prinsipper som nå er standard innen utvikling av operativsystemer. </p> <p>Ken Thompson er også kjent for å ha utviklet UTF-8 encodingen, jobbet mye med både hardware og software for sjakk, og for å ha poularisert <strong>regulære uttrykk</strong> gjennom flittig bruk i ulike verktøy på Unix som editoren <em>ed</em> og tekstprosesseringsverktøyet <em>grep</em>. Av Kens nyere prestasjoner bør jeg også nevne at han er en av designerne bak Google’s programmeringsspråk <em>Go</em>.</p> <p>Ken har mange litt spesielle holdninger til programmering, og det er inspirerende å høre på hva han har å si. Han er ekstremt produktiv, og har blant annet sagt:</p> <p style="text-align: center; font-size: 120%"><em>“You can't trust code that you did not totally create yourself.”</em></p> <p>Som et eksempel på litt C-kode har jeg plukket ut implementasjonen av GCD, Greatest Common Devisor, fra kildekoden til Linux. Er du interessert finner du <a href="https://github.com/mirrors/linux-2.6" target="_blank">all koden på github</a>.</p><pre style="padding-bottom: 8px; background-color: #000000; padding-left: 8px; padding-right: 8px; font-family: monospace; margin-bottom: 17px; color: #f6f3e8; padding-top: 8px"><span class="lnr"> 1 </span><span class="PreProc">#include </span><span class="String">&lt;linux/kernel.h&gt;</span>
+<span class="lnr"> 2 </span><span class="PreProc">#include </span><span class="String">&lt;linux/gcd.h&gt;</span>
+<span class="lnr"> 3 </span><span class="PreProc">#include </span><span class="String">&lt;linux/module.h&gt;</span>
+<span class="lnr"> 4 </span>
+<span class="lnr"> 5 </span><span class="Comment">/*</span><span class="Comment"> Greatest common divisor </span><span class="Comment">*/</span>
+<span class="lnr"> 6 </span><span class="Type">unsigned</span> <span class="Type">long</span> gcd(<span class="Type">unsigned</span> <span class="Type">long</span> a, <span class="Type">unsigned</span> <span class="Type">long</span> b)
+<span class="lnr"> 7 </span>{
+<span class="lnr"> 8 </span>  <span class="Type">unsigned</span> <span class="Type">long</span> r;
+<span class="lnr"> 9 </span>
+<span class="lnr">10 </span>  <span class="Conditional">if</span> (a &lt; b)
+<span class="lnr">11 </span>    swap(a, b);
+<span class="lnr">12 </span>  <span class="Statement">while</span> ((r = a % b) != <span class="Number">0</span>) {
+<span class="lnr">13 </span>    a = b;
+<span class="lnr">14 </span>    b = r;
+<span class="lnr">15 </span>  }
+<span class="lnr">16 </span>  <span class="Statement">return</span> b;
+<span class="lnr">17 </span>}
+<span class="lnr">18 </span>EXPORT_SYMBOL_GPL(gcd);
+</pre>
+<p>C har fått mye pepper, og beskyldes for å ha ødelagt mye for utviklingen og bruken av høyerenivå-språk. Dennis sier det selv på denne måten: <em>"C is quirky, flawed, and an enormous success."</em></p>

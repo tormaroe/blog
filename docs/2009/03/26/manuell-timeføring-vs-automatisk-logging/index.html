@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Jobb,Software/verktøy">
+
+    <title>Manuell timeføring vs. automatisk logging</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Manuell timeføring vs. automatisk logging</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 26. mars 2009</small> 
+            <a href="/tags/jobb"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Jobb</span></a>
+          
+            <a href="/tags/software-verktøy"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Software/verktøy</span></a>
+          </p>
+          <p>Utviklerne i Contiki må registrere alle timer de jobber, uavhengig om tiden er fakturerbar eller ikke. Dette gjør vi for å få en oversikt over hva vi bruker tid på, og timeføringen blir dermed svært detaljert. Dere får unnskylde språket, men dette er <em>drit skjedelig</em>, og føles som bortkastet tid. Og programmet vi bruker er <em>svært lite brukervennlig</em>, noe det har til felles med alle andre slike verktøy jeg har vært tvunget til å benytte andre steder.</p>
+<p style="text-align: center"><a title="currenttime by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3372678435/"><img height="283" alt="currenttime" src="http://farm4.static.flickr.com/3539/3372678435_b52705af5e_o.png" width="300" border="0" /></a><br />
+<em>Registreringsgrensesnittet vi bruker</em></p>
+<p>Kvaliteten på det som registreres blir raskt et problem når det gjøres så tungvidt. Man er nesten nødt til å "dikte litt", ettersom utviklere flest multitasker hele tiden. Kategoriene vi skal bruke er som sakt detaljerte, men samtidig er det elementer på samme detaljenivå som mangler fullstendig. Og å hele tiden huske på hva man har gjort en dag (eller en uke (eller en måned)) er komplett umulig - i alle fall for meg.</p>
+<p>Ok, så det er slik jeg har det på jobben. Så hvordan gjør jeg det privat? Jeg er nemlig interessert i tilsvarende mål i forhold til hva jeg gjør av personlige ting, og da benytter jeg en Mye Mer Intelligent Løsning. På laptoppen har jeg kjørende en liten service som hele tiden logger hva jeg holder på med. Informasjonen sendes til en sentral server, hvor jeg får en ekstremt detaljert oversikt over alt jeg har gjort.</p>
+<p>Løsningen heter <a href="http://www.rescuetime.com/">RescueTime</a>, og her er noe av det jeg får ut av den - uten å gjøre en eneste, manuell registrering, og uten å betale en eneste krone. For det første kan jeg se hvor mye tid jeg har brukt i ulike applikasjoner eller på ulike sider på nettet. I tillegg til tabulære data presenteres det slik som dette:</p>
+<p style="text-align: center"><a title="AppsAndSites by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3386746191/"><img height="255" alt="AppsAndSites" src="http://farm4.static.flickr.com/3193/3386746191_6a7e8ff7a5_o.png" width="351" border="0" /></a></p>
+<p>Her kan jeg se at jeg i forrige uke totalt jobbet nesten 5 timer i Visual Studio (på privaten), jobbet nesten like mye med bloggen min, og var nesten 4 timer på twitter. Jeg kan enkelt gå inn på hver enkelt applikasjon og se hvordan tidsforbruket sprer seg fra dag for dag, eller time for time om jeg ønsker det.</p>
+<p style="text-align: center"><a title="Tweetdeck by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3387557090/"><img height="236" alt="Tweetdeck" src="http://farm4.static.flickr.com/3616/3387557090_753110104a.jpg" width="500" border="0" /></a></p>
+<p>Her ser du hvor mye jeg har brukt i tweetdeck siden jeg startet å bruke RescueTime. Og da er det snakk om aktiv tid i applikasjonen - for jeg har da tweetdeck kjørende hele dagen. Alle grafer og tabeller kan forøvrig brytes ned på de tidsintervallene en selv måtte ønske - fra timer til år, og også helt egendefinerte perioder. Jeg kan enkelt finne ut at jeg i dag mellom 8 og 9 om morgenen brukte 3 minutter og 9 sekunder på å sjekke min private mail, og 2 minutter og 57 sekunder på å sjekke jobbmailen. Hvilke andre teknikker kan gi deg informasjon med slik detaljegrad?</p>
+<p>Men det stopper ikke der. RescueTime har også kategorier. De fleste applikasjoner og veldig mange websider ligger allerede ferdigdefinert med kategorier, men man kan legge til flere selv, og endre de relasjonene som er laget for deg. Dermed kan man få oversikter som denne:</p>
+<p style="text-align: center"><a title="TopCategories by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3387557048/"><img height="269" alt="TopCategories" src="http://farm4.static.flickr.com/3420/3387557048_71af44ab74_o.png" width="351" border="0" /></a></p>
+<p>Jeg er veldig fornøyd med å ha Dev Tools på første plass (dette er fra forrige uke). Fargene på søylene er forøvrig en indikasjon på hvor effektiv jeg er (i forhold til hva jeg bør bruke tiden min på) når jeg bruker en gitt applikasjon eller en kategori. Lys blå er bra, rød <em>not so much</em>.</p>
+<p>Det er også interessant å se på kategorier over tid. Under ser du en graf som viser hvordan jeg fordeler tiden min hver dag mellom utvikling, bloggen min, social networking og andre ting.</p>
+<p style="text-align: center"><a title="CategoriesOverTime by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3386746239/"><img height="239" alt="CategoriesOverTime" src="http://farm4.static.flickr.com/3617/3386746239_0173121b68.jpg" width="500" border="0" /></a></p>
+<p>Man kan som sakt også fortelle RescueTime hvor effektiv man er om man benytter en bestemt applikasjon, og da vil systemet fortelle deg hvor effektiv du er totalt sett. Slik kan man måle i hvilken grad man holder på med det man burde holde på med. Under ser du effektivitetsgrafen min for forrige uke:</p>
+<p style="text-align: center"><a title="EfficiencyScoreOverTime by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3386746159/"><img height="175" alt="EfficiencyScoreOverTime" src="http://farm4.static.flickr.com/3610/3386746159_36900f9e6a_o.png" width="348" border="0" /></a></p>
+<p>Og neste graf viser effektiviteten for fredagen - hvor jeg måtte holde meg hjemme etter å ha vrikket foten. Jeg sto opp i sekstiden, og sjekket sansynligvis twitter, noe som igrunnen ikke er så effektivt - og dermed gikk grafen under null. Men så koblet jeg meg opp mot jobben og parprogrammerte remote til nærmere fire. Og utover kvelden drev jeg også å programmerte litt. Helt tydelig en effektiv dag.</p>
+<p style="text-align: center"><a title="EfficiencyScoreOverTime2 by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3386746213/"><img height="169" alt="EfficiencyScoreOverTime2" src="http://farm4.static.flickr.com/3556/3386746213_c423217c49_o.png" width="356" border="0" /></a></p>
+<p>RescueTime dashboardet, hvor de fleste av disse grafene er klippet fra, gir meg også en effektivitetsindikator som sammeligner meg med øvrige brukere. Det aner meg at denne biten kommer til å bli mer avansert etterhvert som produktet utvikles videre.</p>
+<p style="text-align: center"><a title="EfficiencyScore by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3387557060/"><img height="157" alt="EfficiencyScore" src="http://farm4.static.flickr.com/3602/3387557060_9a8f6b7bb0_o.png" width="328" border="0" /></a></p>
+<p>Man kan også sette opp diverse mål som RescueTime vil overvåke for deg, og rapportere grad av oppnåelse på. Jeg har sålangt satt opp fire stykker, som skal sørge for at jeg programmerer en viss mengde hver uke (#1 og 2), få meg til å huske å registrere timer på jobben (#3), og ar en tur innom <a href="http://www.dimecasts.net/">DimeCasts.net</a> og ser en 10-minutters programmeringsvideo (#4).</p>
+<p style="text-align: center"><a title="Goals by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3387557118/"><img height="218" alt="Goals" src="http://farm4.static.flickr.com/3581/3387557118_6ba86f1ff2.jpg" width="500" border="0" /></a></p>
+<p>Så spørsmålet mitt er: Hvorfor har vi / bruker vi så dårlige og gammeldagse måter å overvåke tidsforbruk på på arbeidsplassen når det finnes teknikker som er hundre ganger bedre? RescueTime kan også brukes profesjonelt. Man kan bl.a. sette opp teams som overvåkes samlet, og for et team på 10 personer må man ut med 85 dollar i måneden. Jeg lurer på hvor mye CurrentTime, som er det vi bruker i dag, koster oss. For ikke å snakke om hva frustrasjonen over timeføringen og tiden vi bruker på manuell registrering koster.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=Contiki" rel="tag">Contiki</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

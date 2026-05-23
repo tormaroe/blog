@@ -1,0 +1,23 @@
+---
+title: Høy IQ-faktor i Oslo akkurat nå!
+link: http://blog.kjempekjekt.com/2012/06/06/hy-iq-faktor-i-oslo-akkurat-n/
+layout: post
+date: 2012-06-06 00:55:25Z
+tags:
+  - NDC
+  - Testing
+  - Greg Young
+---
+<p>Nå er NDC2012 pre-conference workshop-dagene vel gjennomført, og i morgen braker det løs med selve konferansen i Oslo Spektrum. Geeks fra hele verden har flydd inn, og utviklerne som deltar vil kunne velge blant over 160 foredrag av høyeste kvalitet.<a href="/uploads/2012/06/young_mccoy_battle.jpg"><img style="background-image: none; border-right-width: 0px; margin: 15px 0px; padding-left: 0px; padding-right: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; border-left-width: 0px; padding-top: 0px" title="young_mccoy_battle" border="0" alt="young_mccoy_battle" src="/uploads/2012/06/young_mccoy_battle_thumb.jpg" width="644" height="444"></a></p> <p>I går og i dag deltok jeg på <a href="https://twitter.com/gregyoung">Greg Youngs</a> workshop. Han er skummelt intelligent, men samtidig en dyktig pedagog. Det han fikk oss til å kode disse dagene var egenlig ganske enkle greier, men de inneholdt noen fundamentale og spennende budskap. Han hjalp oss å se hvordan man kan redusere noen problemer som virker vanskelige til noe som blir helt trivielt.</p> <h3>Hva jeg har lært av Greg</h3> <p>Første dag lagde vi et testrammeverk som genererer detaljert dokumentasjon om koden som testes. Vi lekte med Lambda Calculus og funksjonelle pipelines, og jeg fikk parprogrammert i både C# og Clojure.</p> <p>For noen år siden deltok jeg på <a href="http://blog.kjempekjekt.com/2009/07/05/god-test-bedre-kode/">en workshop med Scott Bellware</a>. Han lærte oss å skrive <strong>context specifications</strong> – tester som dokumenterer koden bedre, får deg til å tenke på hvilken adferd du ønsker at systemet skal ha, og som også kan generere dokumentasjon. Siden har jeg blant annet brukt ting som <a href="https://github.com/cucumber/cucumber/wiki/Gherkin">Gherkin</a> og <a href="http://www.specflow.org/">SpecFlow</a> til å skrive akseptansetester som tar dette enda lengre.</p> <p>Men Greg har fått meg til å innse hva som er problemet med det jeg har gjort til nå; SpecFlow-testene og koden som kjører under dem henger ikke sammen. Det blir det samme problemet som man har med kommentarer i kode – etterhvert begynner de å divergere, og slutter å fortelle sannheten.</p> <p>Testrammeverket vi lagde med Greg produserer dokumentasjon som er tettere koblet sammen med koden som faktisk kjører i testene.</p> <p>Læresetning å huske: <strong>Alle tester kan modelleres som en komposisjon av fem funksjoner!</strong> </p> <p>For eksempel i Clojure:</p><pre>(-&gt; given
+    transition-to-when
+    when
+    transition-to-then
+    then)</pre>
+<p>Det er det at det er en funksjons-komposisjon, en pipeline, som er det viktige. Og at output fra hvert av disse stegene kan bli til dokumentasjon som forretningsfolk kan forstå.</p>
+<p>Andre dag av workshopen dreide seg om <strong>Pi Calculus, Actor Model og message based finite state machines</strong>. Greg illustrerte noen av fordelene med å modellere problemer med disse teknikkene, og hvordan problemer som i utgangspunktet kan virke vanskelige plutselig blir ganske enkle. Som å skrive enhetstestet kode som er avhengig av <em>tid</em>.</p>
+<p>Hjerne er nå full av ideer, og disse to dagene har gitt meg ting jeg helt sikkert kommer til å jobbe og eksperimentere med i mange måneder fremover. Noen flere blogposter blir det nok også...</p>
+<h3>GeekBeer etc.</h3>
+<p>Det sosiale aspektet ved en konferanse som dette må ikke undervurderes. Det er som sagt mange spennende utviklere som har tatt turen til Oslo denne uken. Diskusjonene og læringsprosessen har begge dagene fortsatt til langt ut på kvelden.</p>
+<p>Og nå i kveld var det GeekBeer utenfor Østbanehallen. Det virket som om de fleste foreleserne som allerede var ankommet tok turen ut for å møte sitt publikum, og stemningen var upåklagelig..</p>
+<p>På bildet lengre oppe ser du (fra høyre) Greg Young, IL Ninja <a href="http://plaureano.blogspot.no/">Philip Laureano</a> og .NET-hacker <a href="http://digitalbodyguard.com/">John McCoy</a>. Det utartet seg nesten til en "battle" mellom Greg og John da de diskuterte avanserte finurligheter rundt hvordan man kan analysere og endre kjørende .NET-kode. Jeg er fortsatt svimmel av å forsøke å henge med på hva de to snakket om!</p>
+<p>I mine øyne har NDC 2012 allerede vært en stor suksess. Og konferansen har ikke begynt engang! Hvor skal dette ende?</p>

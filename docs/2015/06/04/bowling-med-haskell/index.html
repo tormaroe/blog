@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Haskell,Polyglot,Pattern matching">
+
+    <title>Bowling med Haskell</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Bowling med Haskell</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 4. juni 2015</small> 
+            <a href="/tags/haskell"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Haskell</span></a>
+          
+            <a href="/tags/polyglot"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Polyglot</span></a>
+          
+            <a href="/tags/pattern-matching"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Pattern matching</span></a>
+          </p>
+          <img src="/uploads/2015/06/bowling.jpg" alt="Bowling" />
+
+<p>Jeg har lekt meg litt med <a href="/2011/12/07/haskell/">Haskell</a> igjen. Jeg kjøpte en bok om programmeringsspråket for lenge siden, som jeg aldri har lest meg gjennom.., men av og til titter jeg i den, og får lyst til å prøve litt.</p>
+<p>Denne gangen tenkte jeg å implementere en enkel løsning på <em>bowling game kata</em> som jeg viste tidligere i F# og Erlang (<a href="/2011/11/18/likheter-mellom-f-og-erlang/">post fra 2011</a>). Jeg skal gjengi de to implementasjonene her før jeg viser hva jeg ha gjort i Haskell - sånn at du kan sammenligne hvordan det ser ut.</p>
+<h2>Bowling game kata?</h2>
+<p>Oppgaven er bare å lage en funksjon som kan gi poengresultatet av et bowling-spill. Spillet er representert som en liste med antall kjegler man har fått ned pr kast. Jeg lagde en video hvor jeg demonstrerte dette i Clojure også, og hvor jeg gjorde det test-drevet.</p>
+<h2>FSharp</h2>
+<p>Løsningen i F# er stjålet fra Christian Abildsø:</p>
+<pre><code class="hljs"><span class="hljs-keyword">let</span> <span class="hljs-variable">rec</span> CalcFrame rolls frame =
+    <span class="hljs-keyword">match</span> rolls with
+        | _ when frame = <span class="hljs-number">10</span>         <span class="hljs-punctuation">-&gt;</span> <span class="hljs-number">0</span>
+        | <span class="hljs-number">10</span>::y::z::rest            <span class="hljs-punctuation">-&gt;</span> <span class="hljs-number">10</span>+y+z + <span class="hljs-title function_ invoke__">CalcFrame</span> (y::z::rest) (frame+<span class="hljs-number">1</span>)
+        | x::y::z::rest when x+y=<span class="hljs-number">10</span> <span class="hljs-punctuation">-&gt;</span> <span class="hljs-number">10</span>+z   + <span class="hljs-title function_ invoke__">CalcFrame</span> (z::rest)    (frame+<span class="hljs-number">1</span>)
+        | x::y::rest                <span class="hljs-punctuation">-&gt;</span> x+y    + CalcFrame <span class="hljs-title function_ invoke__">rest</span>         (frame+<span class="hljs-number">1</span>)
+        | _                         <span class="hljs-punctuation">-&gt;</span> <span class="hljs-number">0</span>
+
+<span class="hljs-keyword">let</span> <span class="hljs-variable">CalculateScore</span> rolls = CalcFrame rolls <span class="hljs-number">0</span> </code></pre><h2>Erlang</h2>
+<p>Basert på løsningen i F# gjorde jeg min egen i Erlang:</p>
+<pre><code class="hljs">calc_frame(Rolls, Frame) -&gt;
+  case Rolls of
+    _ when Frame == <span class="hljs-number">10</span>        -&gt; <span class="hljs-number">0</span>;
+    [<span class="hljs-number">10</span>,<span class="hljs-keyword">Y</span>,<span class="hljs-keyword">Z</span>|Rest]             -&gt; <span class="hljs-number">10</span>+<span class="hljs-keyword">Y</span>+<span class="hljs-keyword">Z</span> + calc_frame([<span class="hljs-keyword">Y</span>,<span class="hljs-keyword">Z</span>|Rest], Frame+<span class="hljs-number">1</span>);
+    [<span class="hljs-keyword">X</span>,<span class="hljs-keyword">Y</span>,<span class="hljs-keyword">Z</span>|Rest] when <span class="hljs-keyword">X</span>+<span class="hljs-keyword">Y</span>==<span class="hljs-number">10</span> -&gt; <span class="hljs-number">10</span>+<span class="hljs-keyword">Z</span>   + calc_frame([<span class="hljs-keyword">Z</span>|Rest], Frame+<span class="hljs-number">1</span>);
+    [<span class="hljs-keyword">X</span>,<span class="hljs-keyword">Y</span>|Rest]                -&gt; <span class="hljs-keyword">X</span>+<span class="hljs-keyword">Y</span>    + calc_frame(Rest, Frame+<span class="hljs-number">1</span>);
+    _                         -&gt; <span class="hljs-number">0</span>
+  end.
+
+calculate_score(Rolls) -&gt; calc_frame(Rolls, <span class="hljs-number">0</span>).</code></pre><h2>Haskell - første forsøk</h2>
+<p>Full disclaimer: Jeg er helt nybegynner i Haskell - har gjort minimalt. Det jeg forsøkte her var å bruke det jeg kunne av språket til å implementere den samme løsningen som du har sett over.</p>
+<p>Haskell har en <code>case .. of</code> ala F#/Erlang, men såvidt jeg kunne se har den ikke <code>when</code> guards. I stedet valgte jeg å splitte funksjonsdefinisjonen opp og bruke pattern matching i signaturen.</p>
+<pre><code class="hljs">calcFrame :: Int -&gt; [Int] -&gt; Int
+calcFrame <span class="hljs-number">10</span> _          = <span class="hljs-number">0</span>
+calcFrame n (<span class="hljs-number">10</span>:<span class="hljs-variable language_">y</span>:z:xs) = calcFrame (n+<span class="hljs-number">1</span>) (<span class="hljs-variable language_">y</span>:z:xs) + <span class="hljs-number">10</span>+<span class="hljs-variable language_">y</span>+z
+calcFrame n ( <span class="hljs-variable language_">x</span>:<span class="hljs-variable language_">y</span>:z:xs) = calcFrame (n+<span class="hljs-number">1</span>) (z:xs) 
+                          + <span class="hljs-keyword">if</span> <span class="hljs-variable language_">x</span> + <span class="hljs-variable language_">y</span> == <span class="hljs-number">10</span>
+                            <span class="hljs-keyword">then</span> <span class="hljs-number">10</span>+z 
+                            <span class="hljs-keyword">else</span> <span class="hljs-variable language_">x</span>+<span class="hljs-variable language_">y</span>
+calcFrame n ( <span class="hljs-variable language_">x</span>:<span class="hljs-variable language_">y</span>:xs)   = calcFrame (n+<span class="hljs-number">1</span>) xs + <span class="hljs-variable language_">x</span>+<span class="hljs-variable language_">y</span>
+calcFrame _ _           = <span class="hljs-number">0</span> 
+
+<span class="hljs-variable language_">score</span> :: [Int] -&gt; Int
+<span class="hljs-variable language_">score</span> = calcFrame <span class="hljs-number">0</span></code></pre><p>Det fungerte, men ble (synes jeg) ikke spesielt vakkert.</p>
+<p>Jeg lagrer koden i filen <code>Bowling.hs</code>, fyrer opp <a href="https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci.html">GHCi</a> (interaktiv Haskell), og kompilerer og laster funksjonen med kommandoen <code>:load Bowling</code>.</p>
+<p>Så kan jeg teste funksjonen direkte ved å for eksempel si:</p>
+<pre><code class="hljs">score [<span class="hljs-number">10,10,10,10</span>,<span class="hljs-number">10,10,10,10</span>,<span class="hljs-number">10,10,10,10</span>]</code></pre><p>.. som er et perfekt spill, og gir 300 poeng :)</p>
+<h2>Haskell - andre iterasjon</h2>
+<p>Etter litt googling fant jeg ut at jeg kunne bruke én funksjonsdefinisjon med guards, og at jeg kunne bruke funksjoner i guardene. Så jeg prøvde det, og er mer fornødy med dette resultatet:</p>
+<pre><code class="hljs">calcFrame <span class="hljs-symbol">:</span><span class="hljs-symbol">:</span> <span class="hljs-built_in">Int</span> -&gt; [<span class="hljs-built_in">Int</span>] -&gt; <span class="hljs-built_in">Int</span>
+calcFrame <span class="hljs-built_in">n</span> xs
+  | <span class="hljs-built_in">n</span> == <span class="hljs-number">10</span>     = <span class="hljs-number">0</span>
+  | strike   xs = <span class="hljs-built_in">sum</span> (<span class="hljs-built_in">take</span> <span class="hljs-number">3</span> xs) + next (<span class="hljs-built_in">drop</span> <span class="hljs-number">1</span> xs)
+  | spare    xs = <span class="hljs-built_in">sum</span> (<span class="hljs-built_in">take</span> <span class="hljs-number">3</span> xs) + next (<span class="hljs-built_in">drop</span> <span class="hljs-number">2</span> xs)
+  | hasFrame xs = <span class="hljs-built_in">sum</span> (<span class="hljs-built_in">take</span> <span class="hljs-number">2</span> xs) + next (<span class="hljs-built_in">drop</span> <span class="hljs-number">2</span> xs)
+  | otherwise   = <span class="hljs-number">0</span>
+  where
+    strike xs      = head xs == <span class="hljs-number">10</span>
+    spare (<span class="hljs-symbol">x:y</span><span class="hljs-symbol">:xs</span>) =   x + y == <span class="hljs-number">10</span>
+    spare []       = <span class="hljs-built_in">False</span>
+    hasFrame xs    = length xs &gt; <span class="hljs-number">1</span> 
+    next           = calcFrame $ <span class="hljs-built_in">n</span> + <span class="hljs-number">1</span>
+
+score <span class="hljs-symbol">:</span><span class="hljs-symbol">:</span> [<span class="hljs-built_in">Int</span>] -&gt; <span class="hljs-built_in">Int</span>
+score = calcFrame <span class="hljs-number">0</span></code></pre><p>Her bruker jeg også <code>where</code>, som er en slags omvendt <code>let</code>; definisjonene av verdier jeg bruker i første del kommer etter <code>where</code>. Ved å definere funksjoner som <code>strike</code>, <code>spare</code> og <code>hasFrame</code> har jeg gjort algoritmen mere lesbar.</p>
+<p>Jeg bruker også mer av Haskell her. Her er typesignaturene til funksjoner som er brukt i iterasjon to:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-title">head</span> :: [a] -&gt;</span> a
+<span class="hljs-function"><span class="hljs-title">take</span> :: Int -&gt;</span> [<span class="hljs-function"><span class="hljs-title">a</span>] -&gt;</span> [a]
+<span class="hljs-function"><span class="hljs-title">drop</span> :: Int -&gt;</span> [<span class="hljs-function"><span class="hljs-title">a</span>] -&gt;</span> [a]
+<span class="hljs-function"><span class="hljs-title">sum</span> :: Num a =&gt; [a] -&gt;</span> a
+<span class="hljs-function"><span class="hljs-title">length</span> :: [a] -&gt;</span> Int
+($) :: (<span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">b</span>) -&gt;</span> <span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> b</code></pre><p>Den siste der kaller <em>application operator</em>, og er i praksis bare litt sukker som gjør at jeg ikke behøver å bruke paranteser i definisjonen av funksjonen <code>next</code>. Haskellianere bruker <code>$</code> nokså mye, så det er greit å øve litt på den..</p>
+<h2>Haskell - tredje iterasjon</h2>
+<p>Jeg dupliserer litt mye listeoperasjoner i løsningen over - bruken av sum, take og drop. Jeg forsøkte ulike ting for å få dette &quot;bedre&quot;, og endte til slutt opp med dette:</p>
+<pre><code class="hljs">calcFrame <span class="hljs-symbol">:</span><span class="hljs-symbol">:</span> <span class="hljs-built_in">Int</span> -&gt; [<span class="hljs-built_in">Int</span>] -&gt; <span class="hljs-built_in">Int</span>
+calcFrame <span class="hljs-built_in">n</span> xs
+  | <span class="hljs-built_in">n</span> == <span class="hljs-number">10</span>     = <span class="hljs-number">0</span>
+  | strike   xs = sumRolls <span class="hljs-number">3</span> + nextWithout <span class="hljs-number">1</span>
+  | spare    xs = sumRolls <span class="hljs-number">3</span> + nextWithout <span class="hljs-number">2</span>
+  | hasFrame xs = sumRolls <span class="hljs-number">2</span> + nextWithout <span class="hljs-number">2</span>
+  | otherwise   = <span class="hljs-number">0</span>
+  where
+    strike xs      = head xs == <span class="hljs-number">10</span>
+    spare (<span class="hljs-symbol">x:y</span><span class="hljs-symbol">:xs</span>) =   x + y == <span class="hljs-number">10</span>
+    spare []       = <span class="hljs-built_in">False</span>
+    hasFrame xs    = length xs &gt; <span class="hljs-number">1</span> 
+    next           = calcFrame $ <span class="hljs-built_in">n</span> + <span class="hljs-number">1</span>
+    sumRolls       = <span class="hljs-built_in">sum</span> . flip <span class="hljs-built_in">take</span> xs
+    nextWithout    = next . flip <span class="hljs-built_in">drop</span> xs
+    
+score <span class="hljs-symbol">:</span><span class="hljs-symbol">:</span> [<span class="hljs-built_in">Int</span>] -&gt; <span class="hljs-built_in">Int</span>
+score = calcFrame <span class="hljs-number">0</span></code></pre><p>Enda litt flere abstraksjoner nå - om det gjør det enklere eller vanskeligere å forstå koden kan diskuteres.</p>
+<p>Nye ting jeg lærte meg og brukte her:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-title">flip</span> :: (a -&gt;</span> <span class="hljs-function"><span class="hljs-title">b</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">c</span>) -&gt;</span> <span class="hljs-function"><span class="hljs-title">b</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> c
+(.) :: (<span class="hljs-function"><span class="hljs-title">b</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">c</span>) -&gt;</span> (<span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> <span class="hljs-function"><span class="hljs-title">b</span>) -&gt;</span> <span class="hljs-function"><span class="hljs-title">a</span> -&gt;</span> c</code></pre><p><code>flip</code> er en funksjon som endrer rekkefølgen på parametrene til en annen funksjon. Punktum bruker for <em>funksjonskomposisjon</em> - å slå sammen to funksjoner. Jeg brukte dette til å implementere <code>sumRolls</code> og <code>nextWithout</code> i såkalt <em>point-free style</em>, nevnt for ikke så lenge siden i posten <a href="/2015/04/02/reverser-deg-frem-til-svaret/">reverser deg frem til svaret</a>.</p>
+<h2>Sirkelen sluttes</h2>
+<p>Da jeg begynte å skrive denne posten for å dokumentere hva jeg hadde gjort, kom jeg på at Christian (som implementerte F#-løsningen) i 2011 kommenterte at hans kode egentlig var en portering av en løsning han hadde gjort i Haskell!!!</p>
+<p>... og i <a href="http://codernub.blogspot.no/2010/03/bowling-kata-as-haskell-exercise-first.html">en blogpost fra mars 2010</a> fant jeg også den:</p>
+<pre><code class="hljs">calculateScore :: (Num a) =&gt; [a] -&gt; a
+calculateScore rolls = scoreFrame rolls <span class="hljs-number">0</span> <span class="hljs-number">0</span>
+     
+scoreFrame :: (Num a) =&gt; [a] -&gt; a -&gt; a -&gt; a
+scoreFrame rolls <span class="hljs-variable language_">score</span> <span class="hljs-number">10</span> = <span class="hljs-variable language_">score</span>
+scoreFrame [<span class="hljs-variable language_">x</span>,<span class="hljs-variable language_">y</span>] <span class="hljs-variable language_">score</span> frame = <span class="hljs-variable language_">score</span>+<span class="hljs-variable language_">x</span>+<span class="hljs-variable language_">y</span>
+scoreFrame (<span class="hljs-variable language_">x</span>:<span class="hljs-variable language_">y</span>:z:rest) <span class="hljs-variable language_">score</span> frame
+    | <span class="hljs-variable language_">x</span> == <span class="hljs-number">10</span>     = scoreFrame (<span class="hljs-variable language_">y</span>:z:rest) (<span class="hljs-variable language_">score</span>+<span class="hljs-variable language_">x</span>+<span class="hljs-variable language_">y</span>+z) (frame+<span class="hljs-number">1</span>)
+    | <span class="hljs-variable language_">x</span> + <span class="hljs-variable language_">y</span> == <span class="hljs-number">10</span> = scoreFrame (z:rest)   (<span class="hljs-variable language_">score</span>+<span class="hljs-variable language_">x</span>+<span class="hljs-variable language_">y</span>+z) (frame+<span class="hljs-number">1</span>)
+    | otherwise   = scoreFrame (z:rest)   (<span class="hljs-variable language_">score</span>+<span class="hljs-variable language_">x</span>+<span class="hljs-variable language_">y</span>)   (frame+<span class="hljs-number">1</span>)</code></pre><p>Mer behagelig å se på enn alle mine forsøk.</p>
+<p>Rekursjonen er litt anderledes; han akkumulerer scoren underveis, og returnerer denne når han kommer til enden av listen, i stedet for der å returnere 0 og så &quot;poppe&quot; tilbake gjennom de rekursive kallene. Denne siste implementasjonen er altså <em>halerekursiv</em>. Halerekursjon - som jeg har snakket om mange ganger - er ofte en nødvendig optimalisering i funksjonelle språk, men utgjør ingen forskjell når vi snakker om så korte lister som et bowlingspill.</p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

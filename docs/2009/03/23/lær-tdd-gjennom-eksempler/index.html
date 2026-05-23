@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Bøker,Testing / TDD">
+
+    <title>Lær TDD gjennom eksempler</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Lær TDD gjennom eksempler</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> mandag 23. mars 2009</small> 
+            <a href="/tags/books"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Bøker</span></a>
+          
+            <a href="/tags/testing-tdd"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Testing / TDD</span></a>
+          </p>
+          <p><a title="TDD By Example by Torbjørn Marø, on Flickr" href="http://www.flickr.com/photos/kjempekjekt/3379733470/"><img style="padding-left: 20px; padding-bottom: 15px" height="207" alt="TDD By Example" src="http://farm4.static.flickr.com/3641/3379733470_eca1fe7cf6_o.png" width="160" align="right" border="0" /></a><strong>Kent Beck</strong> er en legende innen smidig softwareutvikling: Han er opphavsmannen til <strong>Extreme Programming (XP)</strong>. Han var en av 17 personer som utformet og signerte the <strong>Agile Manifesto</strong>. Sammen med Ward Cunningham gjorde han CRC-kort populært, og han lagde testrammeverket JUnit sammen med Erich Gamma. Og han er en av de mest sentrale personene innen <strong>testdreven utvikling (TDD)</strong>.</p>
+<p>Kent har skrevet mange bøker, og en av dem er <strong><em>Test-Driven Development: By Example</em></strong>, utgitt i 2002.</p>
+<p>Denne boken har et uvanlig format. Den er delt inn i tre deler, og i stedet for å fortelle om TDD og argumentere for hvorfor det er en bra teknikk, så tar forfatteren deg i de to første delene av boken med på et par programmeringsøkter. Hver del har rett og slett et problem som skal løses, og Kent koder og forklarer underveis hva han tenker og hvordan han går frem.</p>
+<p>I den første delen implementerer han <em>penger</em> som støtter flere valuta, og han bruker Java som programmeringspråk (Java er så likt C# at det er lett å ta feil av og til). Målet er å illustrere <em>rytmen</em> i testdreven utvikling.</p>
+<p>Og i den andre delen skrur Kent opp vanskelighetsgraden et par hakk og implementerer faktisk et rammeverk for enhetstesting. Han lærer oss altså om slike rammeverk gjennom å implementere det, og han bruker testdreven utvikling for å gjøre det. Han tester faktisk koden sin med rammeverket som han koder, hvilket jo er ganske snedig. Han gjør dette eksempelet i programmeringspråket <em>Phython</em> - og selv om du ikke har noen erfaring med det språket så klarer du å henge med, for han forklarer det du trenger underveis.</p>
+<p>Etter å ha lest de to første tredjedelene av boken føler du at du har fått bra tak på TDD. Og da går Kent endelig over til å "snakke" litt også. Del tre handler om patterns i TDD, dvs en litt mer formell forklaring av hvordan man går frem, og hva som er viktig å tenke på. Han går også inn på enkelte design-patterns og refaktureringsteknikker - refakturering er tross alt en meget sentral del av testdrevet utvikling.</p>
+<p>Det aller siste kapittelet handler om å mestre TDD. Her stiller han en del spørsmål som får leseren til å tenke. Av og til hinter han til hva svaret kan være, andre ganger lar han spørsmålet henge der. Han knytter også TDD opp mot Extreme Programming, men boken snakker generelt lite om dette.</p>
+<p>Jeg har gjort noe TDD fra tid til annen, men er langt fra erfaren - og <em>Test-Driven Development: By Example</em> gav meg mye god kunnskap og forståelse - både om hvorfor TDD fungerer, og hva jeg har gjort "galt" i min egen praktisering. Å lese boken er ingen erstatning for å øve, øve, øve - for det er kun slik man kan lære det orntlig. Men den fungerer ypperlig som en introduksjon og inspirasjon til testdreven utvikling for utviklere som allerede har noen års erfaring og som er interessert i TDD, men enten aldri har forsøkt det selv eller ikke helt har fått det til.</p>
+<p>Du kan se <a href="http://books.google.com/books?id=gFgnde_vwMAC&dq=Test-driven+development+kent+beck&printsec=frontcover&source=bn&hl=en&ei=lrnHSdvnJsiEsAbMxfXgCw&sa=X&oi=book_result&resnum=4&ct=result#PPP1,M1">en smakebit av boken på Google Books</a> om du vil. Og hvis du allerede har lest den, eller en annen god bok om TDD, er det veldig kjekt om du legger igjen en liten kommentar.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=TDD" rel="tag">TDD</a>, <a href="/index.php?s=Kent+Beck" rel="tag">Kent Beck</a>, <a href="/index.php?s=Agile" rel="tag">Agile</a>, <a href="/index.php?s=Smidig" rel="tag">Smidig</a>, <a href="/index.php?s=Patterns" rel="tag">Patterns</a>, <a href="/index.php?s=Refakturering" rel="tag">Refakturering</a>, <a href="/index.php?s=Enhetstest" rel="tag">Enhetstest</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>

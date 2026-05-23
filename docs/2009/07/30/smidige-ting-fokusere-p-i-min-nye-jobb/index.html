@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keywords" content="Jobb,Softwareutvikling">
+
+    <title>Smidige ting å fokusere på i min nye jobb</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap.css" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/kjempekjekt.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/highlight/default.css">
+    <link href="/assets/js/jquery.counter-analog.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/assets/js/jquery.counter-analog2.css" media="screen" rel="stylesheet" type="text/css" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"><img src="/assets/images/logo-sm.png"></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+          <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Hjem</a></li>
+          <li class=""><a href="/tags"><span class="glyphicon glyphicon-tags"></span> Tags</a></li>
+          <li class=""><a href="/prosjekter"><span class="glyphicon glyphicon-folder-close"></span> Prosjekter</a></li>
+          <li class=""><a href="/arkiv"><span class="glyphicon glyphicon-calendar"></span> Arkiv</a></li>
+        </ul>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input id="searchInput" type="text" class="form-control" placeholder="Søk">
+          </div>
+          <a onclick="kjempekjekt.search()" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></a>
+        </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="row" style="margin-top:40px;">
+        <div class="col-md-9">
+          <h1>Smidige ting å fokusere på i min nye jobb</h1>
+          <hr style="margin:5px;">
+          <p style="margin-bottom:25px;"><small><span class="glyphicon glyphicon-calendar"></span> torsdag 30. juli 2009</small> 
+            <a href="/tags/jobb"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Jobb</span></a>
+          
+            <a href="/tags/softwareutvikling"><span class="label label-success"><span class="glyphicon glyphicon-tag"></span> Softwareutvikling</span></a>
+          </p>
+          <div style="border-bottom: #cc0000 1px dashed; border-left: #cc0000 1px dashed; padding-bottom: 4px; background-color: #ffff99; margin: 0px 0px 17px; padding-left: 8px; padding-right: 8px; border-top: #cc0000 1px dashed; border-right: #cc0000 1px dashed; padding-top: 4px"><i>Dette er en artikkel i en serie som handler om mine forventninger og forberedelser til min nye jobb i <a href="/?s=PSWinCom">PSWinCom</a>. Jeg håper de kan inspirere og være til nytte for andre i samme situasjon. Og jeg håper mine nye kollegaer setter pris på åpenheten.</i></div>
+<p>Som nevnt et par-tre (eller fire, fem) ganger nå begynner jeg om få dager i ny jobb. Det er utrolig mange ting jeg har lyst til å ta tak i og forsøke å gjennomføre, selv om jeg selvsagt vet alt for lite om forholdene jeg kommer til og hvilke utfordringer som er viktigst – et forbehold du må ha i bakhodet når du leser denne artikkelen.</p>
+<p>Jeg har plukket ut fire ting som jeg føler veldig sterkt for, som jeg vil forsøke å innarbeide så tidlig som mulig. Jeg håper teamet vil se verdien i disse tingene, og at ledelsen er med på at det er viktige fokusområder. Jeg vil gjøre hva jeg kan for at utviklingsavdelingen i PSWinCom skal bli en smidig enhet som kan levere høy kvalitet or respondere raskt på endringer, og for å få til det vil jeg forsøke å jobbe med følgende…</p>
+<h4><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 15px; border-left-width: 0px; margin-right: 0px" title="CropperCapture[19]" border="0" alt="CropperCapture[19]" align="right" src="/uploads/2009/07/CropperCapture19.png" width="166" height="162">1. Kontinuerlig integrasjon</h4>
+<p>Husker jeg riktig fra intervjurundene jeg har vært igjennom bruker man i dag ingen byggserver / <a href="http://en.wikipedia.org/wiki/Continuous_integration">continuous integration</a> server. For meg er dette en absolutt nødvendighet for et profesjonelt utviklingsteam. Jeg satser på å installere <a href="http://www.jetbrains.com/teamcity/">TeamCity</a> en av de første dagene mine (siden det er den jeg har best erfaring med – kjørte en test-install på laptopen på under 2 minutter, og integrerte <a href="/2009/06/26/snookiepoof-pa-google-code/">Snookiepoof</a> og <a href="/2009/07/08/fussball-manager-blir-apen-kildekode/">Foosball Manager</a> på rundt 15 minutter).</p>
+<p>I tillegg vil dette være en fin øvelse å gjennomføre for at jeg skal bli kjent med hvilke løsninger vi har og hvordan de henger sammen.</p>
+<p>En integrasjonserver er viktig av mange grunner. Den sørger for at vi har software som fungerer - ikke bare på utviklerens maskin – og at vi kan release hurtig. Den sørger for at alle testene kjører gjevnlig (se neste punkt), og reduserer betraktelig problemer knyttet til merging.</p>
+<p>Jeg vil skape en kultur hvor man gjør hva man kan for å <em>ikke bryte builden</em>. Jeg vil at vi skal sjekke inn endringer så ofte som mulig, og få øyeblikkelig feedback om noe er galt. Som sagt vet jeg ikke hvordan forholdene rundt dette er i PSWinCom i dag, men jeg håper vi kan etablere kontinuerlig integrasjon som et senntralt konsept i vår utviklingsprosess.</p>
+<h4><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 15px; border-left-width: 0px; margin-right: 0px" title="CropperCapture[20]" border="0" alt="CropperCapture[20]" align="right" src="/uploads/2009/07/CropperCapture20.png" width="164" height="146">2. Testing</h4>
+<p>Det neste jeg vil sette fokus på er testing. Vi har ingen dedikerte testressurser i mitt nye selskap, men vi leverer en tjeneste hvor stabilitet er superviktig. Jeg kjenner ikke til (og tviler på) om det eksisterer noen form for automatiserte tester i dag, men jeg vil jobbe for å gradvis få systemene våre under test.</p>
+<p>Videre vil jeg introdusere gutta for testdreven utvikling og design (<a href="http://en.wikipedia.org/wiki/Test-driven_development">TDD</a>), og håper jeg over tid kan illustrere hvordan dette fører til design/arkitektur som er enklere å vedlikeholde og endre, og som er mer intuitiv, i tillegg til ferre bugs og mindre regresjon, hurtigere utvikling, og en større trygghet i hva man leverer. </p>
+<p>For som Robert C. Martin sa det i hovedtalen på NDC i år: <em>"Debatten er over. <strong>Testdreven utvikling fungerer</strong>, og det finnes ingen gode grunner til å ikke bruke det. Faktisk kan det tenkes man bør karakterisere det som uprofesjonelt å ikke bruke det."</em></p>
+<p>Igjen vil innføring av tester være en god øvelse for meg, som vil gjøre meg kjent med den eksisterende koden. Jeg leser nå <a href="http://www.amazon.com/Working-Effectively-Legacy-Robert-Martin/dp/0131177052"><em>Working Effectively with Legacy Code</em></a> for å være bedre rystet til å skrive enhetstester for et system som i utgangspunktet ikke er designet for det.</p>
+<p>Til slutt et lite gullkorn fra Martin Fowler: <em>"Manual scripted testing should be a human rights violation!"</em> Jeg tror han mener det oppriktig.</p>
+<h4><a href="/uploads/2009/07/CropperCapture21.png" target="_blank"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 15px; border-left-width: 0px; margin-right: 0px" title="CropperCapture[21]" border="0" alt="CropperCapture[21]" align="right" src="/uploads/2009/07/CropperCapture21_thumb.png" width="162" height="150"></a>3. Kvalitetskode</h4>
+<p>Kodekvalitet har etterhvert blitt noe av det viktigste for meg som utvikler. Det er ikke nok at programvaren tilfredstiller de funksjonelle kravene – vi må også stille krav til vedlikeholbarhet, og jeg ønsker derfor at vi i vår daglige utvikling skal legge vekt på ting som enkelhet i design, ren kode, og å følge <a href="/2009/03/11/dry-dont-repeat-yourself/">DRY</a>, SOLID og andre prinsipper som kjennetegner en god kodebase.</p>
+<p>Jeg ønsker også at vi skal sammarbeide godt om utviklingen som et team, og at vi skal bruke en viss grad av parprogrammering og kodegjennomgang for å øke kvaliteten og felles eierskap til koden (<a href="http://www.codinghorror.com/blog/archives/000999.html">Coding Horror: Pair Programming vs. Code Reviews</a>). Parprogrammering er i tillegg nok en teknikk som vil hjelpe meg som er ny på teamet til å bli kjent med de eksisterende løsningene.</p>
+<h4><a href="/uploads/2009/07/CropperCapture22.png"><img style="border-right-width: 0px; display: inline; border-top-width: 0px; border-bottom-width: 0px; margin-left: 15px; border-left-width: 0px; margin-right: 0px" title="CropperCapture[22]" border="0" alt="CropperCapture[22]" align="right" src="/uploads/2009/07/CropperCapture22_thumb.png" width="159" height="122"></a>4. Iterasjoner og prosess</h4>
+<p>Dette er området hvor det sansynligvis er størst forventninger til at jeg skal bruke min erfaring til å forbedre måten PSWinCom jobber på. De har brukt Scrum en viss tid, men jeg fikk inntrykket av at de selv ikke er helt fornøy med hvordan de har gjennomført det. Utfordringen er at dette punktet er det som er mest uklart for meg før jeg får et bedre innblikk i hvordan ting fungerer i dag.</p>
+<p>Smidige prosesser er ikke enkle oppskrifter som man bare kan følge for å oppnå raskere utvikling, høyere kvalitet og forutsigbarhet. Smidige teknikker må tilpasses, og det er ikke sikkert mine erfaringer er direkte overførbare. Dessuten har det skjedd mye i <em>Agile</em>-miljøet etter at Scrum dukket opp (i den formen som jeg har lært); ting som Lean og Kanban er ting vi bør se nærmere på, og som sansynligvis vil passe bra i en bedrift som vår.</p>
+<p>Uansett ser jeg på dette som en viktig oppgave – <strong>å etablere en god prosess for prioritering, planlegging og gjennomføring</strong>. Jeg ønsker at vi skal kunne slippe oppdateringer ofte – alltid ha fungerende software, og at vi skal kunne fokusere på få ting om gangen (<a href="http://lateralaction.com/articles/multitasking/">multitasking fungere ikke!</a>). Som jeg var inne på <a href="/2009/07/28/en-smidig-team-leder/">i forrige artikkel</a> mener jeg det er viktig at teamet skaper denne prosessen i felleskap.</p>
+<p>Så det var altså mine fire, smidige <em>kjepphester</em>. Jeg håper å kunne rapportere tilbake til mine lesere med gode erfaringer rundt alle disse om noen måneders tid.</p>
+<p><strong>Knagger:</strong> <a href="/index.php?s=Clean+Code" rel="tag">Clean Code</a>, <a href="/index.php?s=DRY" rel="tag">DRY</a>, <a href="/index.php?s=kontinuerlig+integrasjon" rel="tag">kontinuerlig integrasjon</a>, <a href="/index.php?s=parprogrammering" rel="tag">parprogrammering</a>, <a href="/index.php?s=PSWinCom" rel="tag">PSWinCom</a>, <a href="/index.php?s=Robert+C.+Martin" rel="tag">Robert C. Martin</a>, <a href="/index.php?s=Scrum" rel="tag">Scrum</a>, <a href="/index.php?s=SOLID" rel="tag">SOLID</a>, <a href="/index.php?s=TeamCity" rel="tag">TeamCity</a>, <a href="/index.php?s=TDD" rel="tag">TDD</a></p>
+
+
+        </div>
+        <div class="col-md-3" id="sidebar">
+
+        </div>
+      </div>
+
+      
+      <hr style="margin-top:100px;">
+
+      <footer>
+        <p>&copy; <a href="http://tormaroe.github.io">Torbjørn Marø</a> 2006-2026</p>
+      </footer>
+
+
+    </div> <!-- /container -->
+
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/kjempekjekt.js"></script>
+  </body>
+</html>
