@@ -1,23 +1,23 @@
 {
   "features": [
     {
-      "heading": "En funksjonell state machine",
-      "text": "Mine tanker rundt hvordan en funksjonell tilstandsmaskin kan se ut.",
-      "link": "/blog/2015/01/05/funksjonell-state-machine/",
-      "image": "ffsm.png"
+      "heading": "En god teamplayer",
+      "text": "Alle sier de er gode teamplayere, men hva betyr det egentlig?",
+      "link": "/blog/2013/06/03/en-god-teamplayer/",
+      "image": "bbTeamplayer.jpg"
     },
     {
-      "heading": "May<T>",
-      "text": "Her har du en fin implementasjon av option type for C#.",
-      "link": "/blog/2015/12/03/may-of-t/",
-      "image": "maybe.png"
+      "heading": "Er Lisp bedre enn andre programmeringsspråk?",
+      "text": "I 2010 oppdaget jeg en fantastisk verden som heter LISP. Les min første bloggpost om språket...",
+      "link": "/blog/2010/07/08/er-lisp-bedre-enn-andre-programmeringssprket/",
+      "image": "bbLispbedre.jpg"
     }
   ],
   "featuredTag": {
-    "name": "Bøker",
-    "slug": "books",
-    "image": "cbBooks.jpg",
-    "text": "Her finner du en rekke anbefalte bøker for utviklere."
+    "name": "CoffeeScript",
+    "slug": "coffeescript",
+    "image": "bbCoffeeScript2.jpg",
+    "text": "Er ikke JavaScript elegant nok for deg? Da bør du kanskje ta en titt på CoffeeScript."
   },
   "posts": [
     {

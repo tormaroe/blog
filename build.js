@@ -279,8 +279,8 @@ const cleanUrls = (dir, prefix) => {
       // Prepend prefix to root-relative paths in HTML/JSON attributes (preventing double-prefixing)
       if (prefix && prefix !== '/') {
         const prefixWithoutSlash = prefix.startsWith('/') ? prefix.slice(1) : prefix;
-        const regexDoubleQuotes = new RegExp('(href|src)="\\/((?!' + prefixWithoutSlash + '(?:\\/|$))[^/][^"]*)"', 'g');
-        const regexSingleQuotes = new RegExp('(href|src)=\'\\/((?!' + prefixWithoutSlash + '(?:\\/|$))[^/][^\']*)\'', 'g');
+        const regexDoubleQuotes = new RegExp('(href|src)="\\/((?!' + prefixWithoutSlash + '(?:\\/|$))[^/<>][^"<>]*)"', 'g');
+        const regexSingleQuotes = new RegExp('(href|src)=\'\\/((?!' + prefixWithoutSlash + '(?:\\/|$))[^/<>][^\'<>]*)\'', 'g');
 
         content = content.replace(regexDoubleQuotes, `$1="${prefix}/$2"`);
         content = content.replace(regexSingleQuotes, `$1='${prefix}/$2'`);
